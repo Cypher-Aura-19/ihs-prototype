@@ -133,7 +133,26 @@ const state = {
     accessType: "all"
   },
   isLoading: false,
-  submittedTrials: {}
+  submittedTrials: {},
+  classDisruptions: {
+    rescheduleRequests: [
+      {
+        id: "RESCHEDULE-REQ-LEARNER-001",
+        occurrenceId: "CLASS-002",
+        requestedBy: "Learner",
+        requestedFor: "Ali Khan",
+        preferredDate: "2026-08-21",
+        preferredTime: "19:00",
+        reason: "Learner unavailable",
+        notes: "Learner has an appointment during the original class time.",
+        status: "Pending" // Pending | Approved | Declined
+      }
+    ],
+    reschedules: {}, // e.g. "CLASS-002": RESCHEDULE-001 record
+    cancellations: {}, // e.g. "CLASS-002": CANCEL-001 record
+    makeups: {}, // e.g. "CLASS-002": MAKEUP-CLASS-002-001 record
+    selectedScenario: "Happy Reschedule" // Happy Reschedule | Late Cancellation | Trainer No-show | Technical Issue | Group Class
+  }
 };
 
 // DOM Elements
@@ -188,6 +207,7 @@ function handleRouting() {
   const staffSchedulingLiveView = document.getElementById("staff-scheduling-live-view");
   const learnerCourseWorkspaceView = document.getElementById("learner-course-workspace-view");
   const trainerClassReportView = document.getElementById("trainer-class-report-view");
+  const opsClassChangeView = document.getElementById("ops-class-change-view");
 
   if (membershipRequestView) membershipRequestView.style.display = "none";
   if (staffEnrolmentsView) staffEnrolmentsView.style.display = "none";
@@ -196,6 +216,7 @@ function handleRouting() {
   if (staffSchedulingLiveView) staffSchedulingLiveView.style.display = "none";
   if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
   if (trainerClassReportView) trainerClassReportView.style.display = "none";
+  if (opsClassChangeView) opsClassChangeView.style.display = "none";
 
   if (hash.startsWith("#staff")) {
     // Hide learner sidebar & views
@@ -420,6 +441,29 @@ function handleRouting() {
           const id = hash.split("/")[2]; // "OCC-TRIAL-001"
           renderTrainerReportForm(id);
         }
+      }
+    }
+  } else if (hash.startsWith("#operations")) {
+    // Hide learner sidebar & views
+    if (catalogueView) catalogueView.style.display = "none";
+    if (detailsView) detailsView.style.display = "none";
+    if (trialView) trialView.style.display = "none";
+    if (appSidebar) appSidebar.style.display = "none";
+    if (staffView) staffView.style.display = "none";
+    if (schedulingView) schedulingView.style.display = "none";
+    if (staffSidebar) staffSidebar.style.display = "block";
+    if (rolePill) {
+      rolePill.style.display = "flex";
+      rolePill.innerHTML = `<span style="background-color: var(--color-tertiary-fixed); color: var(--color-on-tertiary-fixed); padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px;">Operations</span>`;
+    }
+    if (switchBtn) switchBtn.innerText = "Learner View";
+
+    const classChangeView = document.getElementById("ops-class-change-view");
+    if (classChangeView) {
+      classChangeView.style.display = "block";
+      if (hash.startsWith("#operations/classes/") && hash.endsWith("/manage")) {
+        const id = hash.split("/")[2];
+        renderOpsClassChangePage(id);
       }
     }
   } else {
@@ -13040,7 +13084,7 @@ window.executeSchedulingProvisioning = function() {
   setTimeout(() => {
     // Generate classOccurrences records
     const generated = state.previewOccurrences.map((o, idx) => {
-      const classId = `CLASS-${100 + idx + 1}`;
+      const classId = `CLASS-${(idx + 1).toString().padStart(3, '0')}`;
       return {
         id: classId,
         seriesId: "SERIES-001",
@@ -13068,7 +13112,7 @@ window.executeSchedulingProvisioning = function() {
           oneHour: "Scheduled"
         },
         history: [
-          { time: "14 Aug · 1:10 PM", text: `CLASS-${100 + idx + 1} generated from SCHED-PLAN-001.` },
+          { time: "14 Aug · 1:10 PM", text: `${classId} generated from SCHED-PLAN-001.` },
           { time: "14 Aug · 1:11 PM", text: "Participant records created." },
           { time: "14 Aug · 1:12 PM", text: "Classroom room status provisioned." }
         ]
@@ -13109,7 +13153,7 @@ function renderSchedulingSuccessScreen() {
 
       <div style="background-color:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:8px; padding:16px; text-align:left; margin-bottom:24px; font-size:13px;">
         <div style="margin-bottom:8px;">Series Ref: <strong style="font-family:monospace;">SERIES-001</strong></div>
-        <div style="margin-bottom:8px;">Total Created: <strong>${count} Addressable Classes (CLASS-101 to CLASS-${100 + count})</strong></div>
+        <div style="margin-bottom:8px;">Total Created: <strong>${count} Addressable Classes (CLASS-001 to CLASS-${count.toString().padStart(3, '0')})</strong></div>
         <div style="margin-bottom:8px;">Active Learner: <strong>Ali Khan</strong></div>
         <div style="margin-bottom:8px;">Primary Trainer: <strong>Ayesha Rahman</strong></div>
         <div style="margin-bottom:8px;">Classroom Room: <strong>Daily.co simulation ready</strong></div>
@@ -13355,7 +13399,7 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
         if (day === 2 || day === 4) {
           const dateStr = currentDate.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
           proposed.push({
-            id: `CLASS-${100 + count + 1}`,
+            id: `CLASS-${(count + 1).toString().padStart(3, '0')}`,
             seriesId: "SERIES-001",
             enrolmentId: "ENR-001",
             schedulePlanId: "SCHED-PLAN-001",
@@ -13370,7 +13414,7 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
             timezone: "Asia/Karachi",
             durationMinutes: 45,
             status: "Scheduled",
-            meeting: { status: "Ready", roomId: `ROOM-CLASS-${100+count+1}`, provider: "Daily" },
+            meeting: { status: "Ready", roomId: `ROOM-CLASS-${(count + 1).toString().padStart(3, '0')}`, provider: "Daily" },
             reminders: { confirmation: "Queued", twentyFourHour: "Scheduled", oneHour: "Scheduled" },
             history: []
           });
@@ -13487,37 +13531,137 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
     let nextClassHtml = "";
     if (isEnglish) {
       if (class1Approved) {
-        nextClassHtml = `
-          <div class="form-card" style="border-top:4px solid var(--color-secondary); padding:20px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
-              <div>
-                <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-                  <h4 style="font-size:12.5px; font-weight:800; text-transform:uppercase; color:var(--color-tertiary); letter-spacing:0.05em; margin:0;">Next Live Class (Class 2 of 12)</h4>
-                  <span class="badge-status status-ready" style="font-size:10px; background-color:#e6f4ea; color:#137333; border-color:#c2e7cc;">Scheduled</span>
+        // Look up CLASS-002 and check for reschedule/makeup status
+        ensureClassOccurrencesGenerated();
+        const class2 = state.classOccurrences.find(c => c.id === "CLASS-002") || { status: "Scheduled", date: "Thursday, 20 August 2026", time: "7:00 PM – 7:45 PM" };
+        const class2Replacement = state.classOccurrences.find(c => c.replacementFor === "CLASS-002");
+        const class2Makeup = state.classDisruptions.makeups["CLASS-002"];
+
+        if (class2.status === "Rescheduled" && class2Replacement) {
+          nextClassHtml = `
+            <div class="form-card" style="border-top:4px solid var(--color-secondary); padding:20px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+                <div>
+                  <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                    <h4 style="font-size:12.5px; font-weight:800; text-transform:uppercase; color:var(--color-tertiary); letter-spacing:0.05em; margin:0;">Next Live Class (Class 2 of 12)</h4>
+                    <span class="badge-status status-submitted" style="font-size:10px; background-color:#e8f0fe; color:#1a73e8; border-color:#b4c8f8;">Rescheduled</span>
+                  </div>
+                  <h2 style="font-family:var(--font-family-headings); font-size:22px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:6px;">${class2Replacement.date}</h2>
+                  <p style="margin:4px 0; font-size:13.5px; color:var(--color-tertiary);">Time slot: <strong>7:00 PM – 7:45 PM PKT</strong></p>
+                  <p style="margin:4px 0; font-size:13px; color:var(--color-tertiary);">Assigned Trainer: <strong>Ayesha Rahman (1-to-1)</strong></p>
+                  <div style="font-size:11.5px; color:var(--color-tertiary); margin-top:10px;">
+                    Class ID: <strong>${class2Replacement.id}</strong> &middot; 
+                    <span style="text-decoration:line-through; color:var(--color-error); font-weight:700;">Previously: Thursday, 20 August &middot; 7:00 PM</span>
+                  </div>
                 </div>
-                <h2 style="font-family:var(--font-family-headings); font-size:22px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:6px;">Thursday, 20 August 2026</h2>
-                <p style="margin:4px 0; font-size:13.5px; color:var(--color-tertiary);">Time slot: <strong>7:00 PM – 7:45 PM PKT</strong></p>
-                <p style="margin:4px 0; font-size:13px; color:var(--color-tertiary);">Assigned Trainer: <strong>Ayesha Rahman (1-to-1)</strong></p>
-                <div style="font-size:11.5px; color:var(--color-tertiary); margin-top:10px;">Class ID: <strong>CLASS-002</strong></div>
+                <div style="text-align:right; display:flex; flex-direction:column; gap:6px;">
+                  <button class="btn btn-primary" style="height:44px; padding:0 24px; font-weight:800; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000;" disabled>
+                    Join Class
+                  </button>
+                  <span style="font-size:11.5px; color:var(--color-tertiary); font-style:italic;">Join opens 10 minutes before class.</span>
+                </div>
               </div>
-              <div style="text-align:right; display:flex; flex-direction:column; gap:6px;">
-                <button class="btn btn-primary" style="height:44px; padding:0 24px; font-weight:800; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000;" disabled>
-                  Join Class
-                </button>
-                <span style="font-size:11.5px; color:var(--color-tertiary); font-style:italic;">Join opens 10 minutes before class.</span>
-              </div>
-            </div>
-            
-            <div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--color-outline-variant); font-size:12.5px;">
-              <div style="font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:6px;">Prepare for Class 2</div>
-              <div style="display:flex; flex-direction:column; gap:4px; color:var(--color-tertiary);">
-                <div>📝 <strong>Homework:</strong> <span style="text-decoration:underline; cursor:pointer; color:var(--color-secondary); font-weight:700;" onclick="setTabSelectionState('${enrolmentId}', 'homework')">Introduce Yourself Practice</span> (Status: <strong style="color:${state.homeworkRecords["HOMEWORK-CLASS-001"].status === 'Practised' ? '#137333' : '#b06000'}">${state.homeworkRecords["HOMEWORK-CLASS-001"].status}</strong>)</div>
-                <div>🎯 <strong>Focus:</strong> Everyday question-and-answer practice</div>
-                <div>📖 <strong>Recommended Resource:</strong> <span style="text-decoration:underline; cursor:pointer; color:var(--color-secondary);" onclick="setTabSelectionState('${enrolmentId}', 'resources')">Introduction Vocabulary Sheet</span></div>
+
+              <div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--color-outline-variant); font-size:12.5px;">
+                <div style="font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:6px;">Prepare for Class 2</div>
+                <div style="display:flex; flex-direction:column; gap:4px; color:var(--color-tertiary);">
+                  <div>📝 <strong>Homework:</strong> <span style="text-decoration:underline; cursor:pointer; color:var(--color-secondary); font-weight:700;" onclick="setTabSelectionState('${enrolmentId}', 'homework')">Introduce Yourself Practice</span> (Status: <strong style="color:${state.homeworkRecords["HOMEWORK-CLASS-001"].status === 'Practised' ? '#137333' : '#b06000'}">${state.homeworkRecords["HOMEWORK-CLASS-001"].status}</strong>)</div>
+                  <div>🎯 <strong>Focus:</strong> Everyday question-and-answer practice</div>
+                  <div>📖 <strong>Recommended Resource:</strong> <span style="text-decoration:underline; cursor:pointer; color:var(--color-secondary);" onclick="setTabSelectionState('${enrolmentId}', 'resources')">Introduction Vocabulary Sheet</span></div>
+                </div>
               </div>
             </div>
-          </div>
-        `;
+          `;
+        } else if (class2.status === "Cancelled" && class2Makeup) {
+          nextClassHtml = `
+            <div class="form-card" style="border-top:4px solid #137333; padding:20px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+                <div>
+                  <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                    <h4 style="font-size:12.5px; font-weight:800; text-transform:uppercase; color:var(--color-tertiary); letter-spacing:0.05em; margin:0;">Next Live Class (Class 2 of 12)</h4>
+                    <span class="badge-status status-ready" style="font-size:10px; background-color:#e6f4ea; color:#137333; border-color:#c2e7cc;">Scheduled Makeup</span>
+                  </div>
+                  <h2 style="font-family:var(--font-family-headings); font-size:22px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:6px;">${class2Makeup.date}</h2>
+                  <p style="margin:4px 0; font-size:13.5px; color:var(--color-tertiary);">Time slot: <strong>${class2Makeup.time} PKT</strong></p>
+                  <p style="margin:4px 0; font-size:13px; color:var(--color-tertiary);">Assigned Trainer: <strong>Ayesha Rahman (1-to-1)</strong></p>
+                  <div style="font-size:11.5px; color:var(--color-tertiary); margin-top:10px;">
+                    Class ID: <strong>${class2Makeup.id}</strong> &middot; 
+                    <span style="color:var(--color-error); font-weight:700;">Makeup for Cancelled CLASS-002</span>
+                  </div>
+                </div>
+                <div style="text-align:right; display:flex; flex-direction:column; gap:6px;">
+                  <button class="btn btn-primary" style="height:44px; padding:0 24px; font-weight:800; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000;" disabled>
+                    Join Class
+                  </button>
+                  <span style="font-size:11.5px; color:var(--color-tertiary); font-style:italic;">Join opens 10 minutes before class.</span>
+                </div>
+              </div>
+
+              <div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--color-outline-variant); font-size:12.5px;">
+                <div style="font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:6px;">Prepare for Class 2</div>
+                <div style="display:flex; flex-direction:column; gap:4px; color:var(--color-tertiary);">
+                  <div>📝 <strong>Homework:</strong> <span style="text-decoration:underline; cursor:pointer; color:var(--color-secondary); font-weight:700;" onclick="setTabSelectionState('${enrolmentId}', 'homework')">Introduce Yourself Practice</span> (Status: <strong style="color:${state.homeworkRecords["HOMEWORK-CLASS-001"].status === 'Practised' ? '#137333' : '#b06000'}">${state.homeworkRecords["HOMEWORK-CLASS-001"].status}</strong>)</div>
+                  <div>🎯 <strong>Focus:</strong> Everyday question-and-answer practice</div>
+                  <div>📖 <strong>Recommended Resource:</strong> <span style="text-decoration:underline; cursor:pointer; color:var(--color-secondary);" onclick="setTabSelectionState('${enrolmentId}', 'resources')">Introduction Vocabulary Sheet</span></div>
+                </div>
+              </div>
+            </div>
+          `;
+        } else if (class2.status === "Cancelled") {
+          nextClassHtml = `
+            <div class="form-card" style="border-top:4px solid var(--color-error); padding:20px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+                <div>
+                  <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                    <h4 style="font-size:12.5px; font-weight:800; text-transform:uppercase; color:var(--color-tertiary); letter-spacing:0.05em; margin:0;">Next Live Class (Class 2 of 12)</h4>
+                    <span class="badge-status status-submitted" style="font-size:10px; background-color:#fce8e6; color:#a50e0e; border-color:#fad2cf;">Cancelled</span>
+                  </div>
+                  <h2 style="font-family:var(--font-family-headings); font-size:22px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:6px;">Class Cancelled</h2>
+                  <p style="margin:4px 0; font-size:13.5px; color:var(--color-tertiary);">Original Schedule: <strong>Thursday, 20 August &middot; 7:00 PM</strong></p>
+                  <p style="margin:4px 0; font-size:13px; color:var(--color-tertiary);">Reason: <strong>${state.classDisruptions.cancellations["CLASS-002"] ? state.classDisruptions.cancellations["CLASS-002"].reason : 'Learner unavailable'}</strong></p>
+                  <div style="font-size:11.5px; color:var(--color-tertiary); margin-top:10px; font-style:italic;">Please wait for school staff to schedule a makeup class.</div>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          // Default Scheduled CLASS-002
+          nextClassHtml = `
+            <div class="form-card" style="border-top:4px solid var(--color-secondary); padding:20px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+                <div>
+                  <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                    <h4 style="font-size:12.5px; font-weight:800; text-transform:uppercase; color:var(--color-tertiary); letter-spacing:0.05em; margin:0;">Next Live Class (Class 2 of 12)</h4>
+                    <span class="badge-status status-ready" style="font-size:10px; background-color:#e6f4ea; color:#137333; border-color:#c2e7cc;">Scheduled</span>
+                  </div>
+                  <h2 style="font-family:var(--font-family-headings); font-size:22px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:6px;">Thursday, 20 August 2026</h2>
+                  <p style="margin:4px 0; font-size:13.5px; color:var(--color-tertiary);">Time slot: <strong>7:00 PM – 7:45 PM PKT</strong></p>
+                  <p style="margin:4px 0; font-size:13px; color:var(--color-tertiary);">Assigned Trainer: <strong>Ayesha Rahman (1-to-1)</strong></p>
+                  <div style="font-size:11.5px; color:var(--color-tertiary); margin-top:10px;">Class ID: <strong>CLASS-002</strong></div>
+                </div>
+                <div style="text-align:right; display:flex; flex-direction:column; gap:6px;">
+                  <button class="btn btn-primary" style="height:44px; padding:0 24px; font-weight:800; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000;" disabled>
+                    Join Class
+                  </button>
+                  <span style="font-size:11.5px; color:var(--color-tertiary); font-style:italic;">Join opens 10 minutes before class.</span>
+                </div>
+              </div>
+
+              <div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--color-outline-variant); font-size:12.5px;">
+                <div style="font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:6px;">Prepare for Class 2</div>
+                <div style="display:flex; flex-direction:column; gap:4px; color:var(--color-tertiary);">
+                  <div>📝 <strong>Homework:</strong> <span style="text-decoration:underline; cursor:pointer; color:var(--color-secondary); font-weight:700;" onclick="setTabSelectionState('${enrolmentId}', 'homework')">Introduce Yourself Practice</span> (Status: <strong style="color:${state.homeworkRecords["HOMEWORK-CLASS-001"].status === 'Practised' ? '#137333' : '#b06000'}">${state.homeworkRecords["HOMEWORK-CLASS-001"].status}</strong>)</div>
+                  <div>🎯 <strong>Focus:</strong> Everyday question-and-answer practice</div>
+                  <div>📖 <strong>Recommended Resource:</strong> <span style="text-decoration:underline; cursor:pointer; color:var(--color-secondary);" onclick="setTabSelectionState('${enrolmentId}', 'resources')">Introduction Vocabulary Sheet</span></div>
+                </div>
+              </div>
+
+              <div style="margin-top:12px; border-top:1px solid var(--color-outline-variant); padding-top:12px; display:flex; justify-content:flex-end;">
+                <button class="btn btn-secondary" onclick="openLearnerRescheduleRequestModal('${enrolmentId}', 'CLASS-002')" style="height:32px; font-size:12px; font-weight:700;">Request Schedule Change</button>
+              </div>
+            </div>
+          `;
+        }
       } else if (class1AwaitingReview) {
         nextClassHtml = `
           <div class="form-card" style="border-top:4px solid var(--color-secondary); padding:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
@@ -13741,18 +13885,48 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
 
     if (class1Approved) {
       // Class 1 completed, Class 2-12 upcoming
-      const upcomingRows = upcoming.slice(1).map((u, idx) => `
-        <tr style="border-bottom:1px solid var(--color-outline-variant);">
-          <td style="padding:10px; font-weight:700; color:var(--color-on-tertiary-fixed);">Class ${idx+2} of 12</td>
-          <td style="padding:10px; font-size:13px;">${u.date}</td>
-          <td style="padding:10px; font-family:monospace; font-size:12.5px;">${u.time} PKT</td>
-          <td style="padding:10px; font-size:13px; color:var(--color-tertiary);">${u.trainer}</td>
-          <td style="padding:10px;"><span class="badge-status status-ready" style="font-size:10px; background-color:#e8f0fe; color:#1a73e8; border-color:#b4c8f8;">${u.status}</span></td>
-          <td style="padding:10px; text-align:center;">
-            <button class="btn btn-secondary" onclick="openLearnerClassDetailsModal('${u.id}', '${u.date}', '${u.time}', '${u.trainer}', '${u.status}')" style="padding:3px 6px; font-size:11.5px; height:24px;">View</button>
-          </td>
-        </tr>
-      `).join("");
+      const scheduleItems = state.classOccurrences.filter(c => c.id !== "CLASS-001");
+      const upcomingRows = scheduleItems.map(u => {
+        let sequenceLabel = `Class ${u.classSequence || 2} of 12`;
+        if (u.type === "Makeup") {
+          sequenceLabel = `Class ${u.classSequence || 2} of 12 (Makeup)`;
+        }
+        
+        let statusBg = "";
+        let statusBadgeColor = "";
+        let statusBorder = "";
+        
+        if (u.status === "Rescheduled") {
+          statusBg = "#e8f0fe";
+          statusBadgeColor = "#1a73e8";
+          statusBorder = "#b4c8f8";
+        } else if (u.status === "Cancelled") {
+          statusBg = "#fce8e6";
+          statusBadgeColor = "#a50e0e";
+          statusBorder = "#fad2cf";
+        } else {
+          statusBg = "#e6f4ea";
+          statusBadgeColor = "#137333";
+          statusBorder = "#c2e7cc";
+        }
+
+        return `
+          <tr style="border-bottom:1px solid var(--color-outline-variant); background-color:${u.status === 'Rescheduled' || u.status === 'Cancelled' ? 'var(--color-surface-low)' : 'inherit'};">
+            <td style="padding:10px; font-weight:700; color:${u.status === 'Rescheduled' || u.status === 'Cancelled' ? 'var(--color-tertiary)' : 'var(--color-on-tertiary-fixed)'};">${sequenceLabel}</td>
+            <td style="padding:10px; font-size:13px; color:${u.status === 'Rescheduled' || u.status === 'Cancelled' ? 'var(--color-tertiary)' : 'inherit'};">${u.date}</td>
+            <td style="padding:10px; font-family:monospace; font-size:12.5px; color:${u.status === 'Rescheduled' || u.status === 'Cancelled' ? 'var(--color-tertiary)' : 'inherit'};">${u.time} PKT</td>
+            <td style="padding:10px; font-size:13px; color:var(--color-tertiary);">${u.trainer}</td>
+            <td style="padding:10px;">
+              <span class="badge-status" style="font-size:10px; padding:2px 8px; font-weight:700; background-color:${statusBg}; color:${statusBadgeColor}; border-color:${statusBorder};">
+                ${u.status}
+              </span>
+            </td>
+            <td style="padding:10px; text-align:center;">
+              <button class="btn btn-secondary" onclick="openLearnerClassDetailsModal('${u.id}', '${u.date}', '${u.time}', '${u.trainer}', '${u.status}')" style="padding:3px 6px; font-size:11.5px; height:24px;">View</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
 
       scheduleHtml = `
         <div class="form-card" style="margin-bottom:16px;">
@@ -14067,6 +14241,15 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
 
           <h4 style="font-size:13.5px; font-weight:700; margin-bottom:10px;">Workspace Access Log Timeline:</h4>
           <ul class="timeline-evidence" style="font-size:12px; margin-bottom:0;">
+            ${(() => {
+              const cl2 = state.classOccurrences.find(c => c.id === "CLASS-002");
+              if (cl2 && cl2.status === "Rescheduled") {
+                return `<li class="timeline-evidence-item" style="border-left: 2px solid var(--color-secondary);"><span style="font-weight:700; color:var(--color-secondary);">19 Aug &middot; 10:32 AM</span> - Class 2 rescheduled to Friday, 21 August at 7:00 PM PKT (Ref: RESCHEDULE-001)</li>`;
+              } else if (cl2 && cl2.status === "Cancelled") {
+                return `<li class="timeline-evidence-item" style="border-left: 2px solid var(--color-error);"><span style="font-weight:700; color:var(--color-error);">19 Aug &middot; 10:31 AM</span> - Class 2 cancelled. Reason: Learner unavailable (Ref: CANCEL-001)</li>`;
+              }
+              return "";
+            })()}
             <li class="timeline-evidence-item" style="border-left: 2px solid #137333;"><span style="font-weight:700; color:#137333;">18 Aug &middot; 8:01 PM</span> - Progress updated (PROGRESS-CLASS-001)</li>
             <li class="timeline-evidence-item" style="border-left: 2px solid #137333;"><span style="font-weight:700; color:#137333;">18 Aug &middot; 8:00 PM</span> - Class 1 approved by Operations reviewer</li>
             <li class="timeline-evidence-item" style="border-left: 2px solid #137333;"><span style="font-weight:700; color:#137333;">18 Aug &middot; 7:45 PM</span> - Class 1 delivered (1-to-1 session completed)</li>
@@ -15616,6 +15799,891 @@ window.simulatePaidReportState = function(occurrenceId, stateName) {
 
   renderTrainerPaidClassReport(occurrenceId);
   showToastAlert(`Simulating: ${stateName}`);
+};
+
+// ==========================================================================
+// Screen 20 - Class Reschedule / Cancellation / Makeup Workflow
+// ==========================================================================
+
+function ensureClassOccurrencesGenerated() {
+  if (!state.classOccurrences || state.classOccurrences.length === 0) {
+    let proposed = [];
+    let currentDate = new Date(2026, 7, 18); // 18 Aug 2026
+    let count = 0;
+    while (count < 12) {
+      const day = currentDate.getDay();
+      if (day === 2 || day === 4) {
+        const dateStr = currentDate.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
+        const classId = `CLASS-${(count + 1).toString().padStart(3, '0')}`;
+        proposed.push({
+          id: classId,
+          seriesId: "SERIES-001",
+          enrolmentId: "ENR-001",
+          schedulePlanId: "SCHED-PLAN-001",
+          learner: "Ali Khan",
+          trainer: "Ayesha Rahman",
+          course: "Spoken English",
+          type: "Regular",
+          classSequence: count + 1,
+          date: dateStr,
+          time: "7:00 PM – 7:45 PM",
+          startsAt: `2026-08-${currentDate.getDate()}T19:00:00+05:00`,
+          timezone: "Asia/Karachi",
+          durationMinutes: 45,
+          status: (count === 0) ? "Completed" : "Scheduled", // Class 1 completed
+          meeting: { status: "Ready", roomId: `ROOM-${classId}`, provider: "Daily" },
+          reminders: { confirmation: "Queued", twentyFourHour: "Scheduled", oneHour: "Scheduled" },
+          history: [
+            { time: "14 Aug &middot; 1:10 PM", text: `${classId} scheduled under recurring plan SERIES-001.` }
+          ]
+        });
+        count++;
+      }
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    state.classOccurrences = proposed;
+  }
+}
+
+function getScenarioTimingText(scen) {
+  if (scen === "Happy Reschedule") return "Early Change (> 24 Hrs)";
+  if (scen === "Late Cancellation") return "Late Cancel (< 24 Hrs)";
+  if (scen === "Trainer No-show") return "Missed Session";
+  if (scen === "Technical Issue") return "Technical Exception";
+  return "Schedule Change";
+}
+
+function getScenarioDebitText(scen) {
+  if (scen === "Late Cancellation") return "1 Class Debit (Late Fee)";
+  return "No Class Debit (Protected)";
+}
+
+function getScenarioDebitColor(scen) {
+  if (scen === "Late Cancellation") return "var(--color-error)";
+  return "#137333";
+}
+
+function getScenarioTrainerPayText(scen) {
+  if (scen === "Happy Reschedule") return "No Pay Generated";
+  if (scen === "Trainer No-show") return "Not Compensated (No-show)";
+  if (scen === "Late Cancellation") return "Trainer Compensated";
+  if (scen === "Technical Issue") return "Review Required";
+  return "No Pay Generated";
+}
+
+function getScenarioMakeupText(scen) {
+  if (scen === "Late Cancellation") return "Not Automatically Included";
+  return "Makeup / Replacement Required";
+}
+
+window.setDisruptionScenario = function(occurrenceId, val) {
+  state.classDisruptions.selectedScenario = val;
+  window.renderOpsClassChangePage(occurrenceId);
+  showToastAlert(`Scenario shifted to: ${val}`);
+};
+
+window.renderOpsClassChangePage = function(occurrenceId) {
+  const view = document.getElementById("ops-class-change-view");
+  if (!view) return;
+
+  ensureClassOccurrencesGenerated();
+
+  let occ = state.classOccurrences.find(c => c.id === occurrenceId);
+  if (!occ) {
+    occ = {
+      id: occurrenceId,
+      seriesId: "SERIES-001",
+      enrolmentId: "ENR-001",
+      schedulePlanId: "SCHED-PLAN-001",
+      learner: "Ali Khan",
+      trainer: "Ayesha Rahman",
+      course: "Spoken English",
+      type: "Regular",
+      classSequence: 2,
+      date: "Thursday, 20 Aug 2026",
+      time: "7:00 PM – 7:45 PM",
+      startsAt: "2026-08-20T19:00:00+05:00",
+      timezone: "Asia/Karachi",
+      durationMinutes: 45,
+      status: "Scheduled"
+    };
+  }
+
+  const replacementOcc = state.classOccurrences.find(c => c.replacementFor === occurrenceId);
+  const scenario = state.classDisruptions.selectedScenario || "Happy Reschedule";
+
+  // Derive used/remaining classes based on completed classes & cancellations
+  let completedCount = state.classOccurrences.filter(o => o.status === "Completed").length;
+  
+  // Late cancellation debits an extra class
+  const hasLateCancelDebit = Object.values(state.classDisruptions.cancellations).some(
+    c => c.occurrenceId === occurrenceId && c.policyOutcome === "1 Class Debit"
+  );
+  
+  let usedClasses = completedCount + (hasLateCancelDebit ? 1 : 0);
+  let remainingClasses = 12 - usedClasses;
+
+  // Simulator Header Switcher
+  const switcherHtml = `
+    <div style="background-color:var(--color-surface-container); padding:16px; border-radius:12px; border:1px solid var(--color-outline-variant); margin-bottom:20px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="font-weight:800; font-size:12px; text-transform:uppercase; letter-spacing:0.5px; color:var(--color-secondary);">Scenario Selector</span>
+        <select class="form-input" style="width:230px; height:32px; font-size:12.5px; margin-bottom:0; font-weight:700;" onchange="setDisruptionScenario('${occurrenceId}', this.value)">
+          <option value="Happy Reschedule" ${scenario === 'Happy Reschedule' ? 'selected' : ''}>Happy Reschedule (Learner Early)</option>
+          <option value="Late Cancellation" ${scenario === 'Late Cancellation' ? 'selected' : ''}>Late Cancellation (Learner Late)</option>
+          <option value="Trainer No-show" ${scenario === 'Trainer No-show' ? 'selected' : ''}>Trainer No-show Exception</option>
+          <option value="Technical Issue" ${scenario === 'Technical Issue' ? 'selected' : ''}>Technical Outage Outlying</option>
+          <option value="Group Class" ${scenario === 'Group Class' ? 'selected' : ''}>Group Class Change</option>
+        </select>
+      </div>
+      <div style="font-size:12px; color:var(--color-tertiary);">
+        Evaluating: <strong>${scenario} Policies</strong>
+      </div>
+    </div>
+  `;
+
+  // Relationship Link UI if rescheduled or cancelled
+  let relationshipHtml = "";
+  if (occ.status === "Rescheduled" && replacementOcc) {
+    relationshipHtml = `
+      <div class="form-card" style="padding:16px; border-left:4px solid var(--color-secondary); margin-bottom:20px;">
+        <h4 style="font-size:13.5px; font-weight:800; margin:0 0 8px 0; color:var(--color-on-tertiary-fixed);">Occurrence Relationship Link</h4>
+        <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap; font-size:12.5px;">
+          <div>
+            <div style="font-size:11px; color:var(--color-tertiary);">Original Occurrence (Retired)</div>
+            <div style="font-weight:700; font-family:monospace;">${occ.id} (${occ.status})</div>
+            <div style="font-size:12px; color:var(--color-tertiary);">${occ.date} &middot; 7:00 PM</div>
+          </div>
+          <div style="font-size:18px; color:var(--color-tertiary); font-weight:bold;">➔</div>
+          <div>
+            <div style="font-size:11px; color:#137333; font-weight:700;">Replacement Occurrence (Active)</div>
+            <div style="font-weight:700; font-family:monospace; color:#137333;">${replacementOcc.id} (Scheduled)</div>
+            <div style="font-size:12px; font-weight:700; color:#137333;">${replacementOcc.date} &middot; 7:00 PM PKT</div>
+          </div>
+        </div>
+      </div>
+    `;
+  } else if (occ.status === "Cancelled" && state.classDisruptions.makeups[occ.id]) {
+    const mk = state.classDisruptions.makeups[occ.id];
+    relationshipHtml = `
+      <div class="form-card" style="padding:16px; border-left:4px solid #137333; margin-bottom:20px;">
+        <h4 style="font-size:13.5px; font-weight:800; margin:0 0 8px 0; color:var(--color-on-tertiary-fixed);">Occurrence Relationship Link</h4>
+        <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap; font-size:12.5px;">
+          <div>
+            <div style="font-size:11px; color:var(--color-tertiary);">Cancelled Occurrence</div>
+            <div style="font-weight:700; font-family:monospace; color:var(--color-error);">${occ.id} (${occ.status})</div>
+            <div style="font-size:12px; color:var(--color-tertiary);">${occ.date} &middot; 7:00 PM</div>
+          </div>
+          <div style="font-size:18px; color:var(--color-tertiary); font-weight:bold;">➔</div>
+          <div>
+            <div style="font-size:11px; color:#137333; font-weight:700;">Makeup Occurrence (Active)</div>
+            <div style="font-weight:700; font-family:monospace; color:#137333;">${mk.id} (Scheduled)</div>
+            <div style="font-size:12px; font-weight:700; color:#137333;">${mk.date} &middot; ${mk.time}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Group participants list
+  let groupParticipantsHtml = "";
+  if (scenario === "Group Class") {
+    groupParticipantsHtml = `
+      <div class="form-card" style="padding:20px; margin-bottom:20px; border-left:4px solid var(--color-primary);">
+        <h3 class="form-section-title" style="margin-bottom:8px; color:var(--color-on-surface-variant);">Group Class Participants Context</h3>
+        <p style="font-size:12.5px; color:var(--color-tertiary); margin-bottom:12px;">This occurrence represents a group course run class. Rescheduling changes the time slot for all participants.</p>
+        <div style="background-color:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:8px; padding:12px; margin-bottom:16px;">
+          <div style="font-weight:800; font-size:12.5px; margin-bottom:8px; color:var(--color-on-tertiary-fixed);">8 Impacted Enrolled Students:</div>
+          <div style="display:flex; flex-wrap:wrap; gap:6px;">
+            <span class="badge-status status-ready" style="font-size:11px; background:#fff; color:var(--color-on-surface); border-color:var(--color-outline-variant);">Ali Khan</span>
+            <span class="badge-status status-ready" style="font-size:11px; background:#fff; color:var(--color-on-surface); border-color:var(--color-outline-variant);">Fatima Ahmed</span>
+            <span class="badge-status status-ready" style="font-size:11px; background:#fff; color:var(--color-on-surface); border-color:var(--color-outline-variant);">Zainab Bibi</span>
+            <span class="badge-status status-ready" style="font-size:11px; background:#fff; color:var(--color-on-surface); border-color:var(--color-outline-variant);">Hamza Yusuf</span>
+            <span class="badge-status status-ready" style="font-size:11px; background:#fff; color:var(--color-on-surface); border-color:var(--color-outline-variant);">Sara Khan</span>
+            <span class="badge-status status-ready" style="font-size:11px; background:#fff; color:var(--color-on-surface); border-color:var(--color-outline-variant);">Ayaan Malik</span>
+            <span class="badge-status status-ready" style="font-size:11px; background:#fff; color:var(--color-on-surface); border-color:var(--color-outline-variant);">Bilal Qureshi</span>
+            <span class="badge-status status-ready" style="font-size:11px; background:#fff; color:var(--color-on-surface); border-color:var(--color-outline-variant);">Maryam Noor</span>
+          </div>
+        </div>
+        <div style="font-size:11.5px; color:var(--color-tertiary);">
+          🔔 A schedule change will trigger notification templates to all 8 students simultaneously.
+        </div>
+      </div>
+    `;
+  }
+
+  // Timeline entries
+  let timelineItems = [
+    { time: "14 Aug &middot; 1:12 PM", text: `CLASS-002 scheduled under recurring plan SERIES-001.` }
+  ];
+
+  if (state.classDisruptions.rescheduleRequests && state.classDisruptions.rescheduleRequests.some(r => r.occurrenceId === occ.id)) {
+    timelineItems.push({ time: "19 Aug &middot; 10:15 AM", text: "Learner Ali Khan submitted reschedule request (preferred: Friday, 21 August &middot; 7:00 PM PKT)." });
+  }
+
+  if (occ.status === "Rescheduled") {
+    timelineItems.push({ time: "19 Aug &middot; 10:30 AM", text: "Reschedule request approved by Operations." });
+    timelineItems.push({ time: "19 Aug &middot; 10:32 AM", text: "Original occurrence CLASS-002 status shifted to Rescheduled." });
+    timelineItems.push({ time: "19 Aug &middot; 10:32 AM", text: "Replacement occurrence CLASS-002-R1 created." });
+    timelineItems.push({ time: "19 Aug &middot; 10:33 AM", text: "Reminders confirmation/24-hour/1-hour jobs marked Cancelled." });
+    timelineItems.push({ time: "19 Aug &middot; 10:33 AM", text: "Replacement classroom meeting provisioned and reminders confirmation queued." });
+    timelineItems.push({ time: "19 Aug &middot; 10:34 AM", text: "Notifications delivered: Learner Ali Khan (sent) & Trainer Ayesha Rahman (sent)." });
+  }
+
+  if (occ.status === "Cancelled") {
+    timelineItems.push({ time: "19 Aug &middot; 10:30 AM", text: "Cancellation process initiated by Learner." });
+    timelineItems.push({ time: "19 Aug &middot; 10:31 AM", text: `CLASS-002 marked Cancelled. Policy applied: ${scenario === 'Late Cancellation' ? '1 Class Debit' : 'No Debit'}.` });
+    timelineItems.push({ time: "19 Aug &middot; 10:32 AM", text: "Original reminders confirmation/24-hour/1-hour jobs marked Cancelled." });
+    timelineItems.push({ time: "19 Aug &middot; 10:33 AM", text: "Classroom room provider session retired." });
+    timelineItems.push({ time: "19 Aug &middot; 10:34 AM", text: "Notifications delivered: Learner Ali Khan (sent) & Trainer Ayesha Rahman (sent)." });
+    
+    if (state.classDisruptions.makeups[occ.id]) {
+      const mk = state.classDisruptions.makeups[occ.id];
+      timelineItems.push({ time: "19 Aug &middot; 11:00 AM", text: `Makeup class scheduled: ${mk.id} for ${mk.date} at ${mk.time}.` });
+      timelineItems.push({ time: "19 Aug &middot; 11:01 AM", text: "Linked reminders queued." });
+    }
+  }
+
+  const timelineHtml = timelineItems.map(item => `
+    <li class="timeline-evidence-item" style="border-left: 2px solid var(--color-outline-variant); padding-left:14px; padding-bottom:12px; font-size:12px; position:relative; list-style:none; line-height:1.6;">
+      <span style="font-weight:700; color:var(--color-on-tertiary-fixed); display:block; margin-bottom:2px;">${item.time}</span>
+      <span style="color:var(--color-on-surface-variant);">${item.text}</span>
+    </li>
+  `).join("");
+
+  view.innerHTML = `
+    <div class="form-container-main animate-fade-in" style="padding:var(--spacing-md) var(--spacing-gutter); max-width:1200px; margin:0 auto; color:var(--color-on-tertiary-fixed);">
+      
+      <!-- Selector simulation bar -->
+      ${switcherHtml}
+
+      <!-- Page Header -->
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h2 style="font-family:var(--font-family-headings); font-size:22px; font-weight:800; margin:0 0 4px 0; color:var(--color-on-tertiary-fixed);">Manage Scheduled Class</h2>
+          <div style="font-size:13px; color:var(--color-tertiary);">
+            Spoken English &middot; <span style="font-family:monospace; font-weight:700;">${occ.id}</span> &middot; Learner: Ali Khan
+          </div>
+        </div>
+        <span class="badge-status ${occ.status === 'Scheduled' ? 'status-ready' : (occ.status === 'Cancelled' ? 'status-submitted' : 'status-draft')}" style="font-size:11px; padding:4px 10px; font-weight:700; background-color:${occ.status === 'Cancelled' ? '#fce8e6' : ''}; color:${occ.status === 'Cancelled' ? '#a50e0e' : ''}; border-color:${occ.status === 'Cancelled' ? '#fad2cf' : ''};">
+          ${occ.status}
+        </span>
+      </div>
+
+      <!-- Schedule Link Relationship Card -->
+      ${relationshipHtml}
+
+      <!-- Group Class Card -->
+      ${groupParticipantsHtml}
+
+      <!-- Two Column Layout -->
+      <div style="display:grid; grid-template-columns: 1.3fr 1fr; gap:20px; align-items:start;">
+        
+        <!-- Left Column -->
+        <div style="display:flex; flex-direction:column; gap:20px;">
+          
+          <!-- Current Schedule Detail Card -->
+          <div class="form-card" style="padding:20px;">
+            <h3 class="form-section-title" style="margin-bottom:12px;">Current Schedule</h3>
+            <table style="width:100%; font-size:13px; border-collapse:collapse; line-height:24px;">
+              <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Syllabus Series Class:</td><td style="font-weight:700; text-align:right;">${scenario === 'Group Class' ? 'Group Class' : 'Class 2 of 12'}</td></tr>
+              <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Occurrence Ref:</td><td style="font-weight:700; text-align:right; font-family:monospace;">${occ.id}</td></tr>
+              <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Course & Run:</td><td style="font-weight:700; text-align:right;">${scenario === 'Group Class' ? 'IELTS Evening Group B' : occ.course}</td></tr>
+              <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Learner(s):</td><td style="font-weight:700; text-align:right;">${scenario === 'Group Class' ? '8 Enrolled Learners' : occ.learner}</td></tr>
+              <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Trainer:</td><td style="font-weight:700; text-align:right;">${occ.trainer}</td></tr>
+              <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Date:</td><td style="font-weight:700; text-align:right;">${occ.date}</td></tr>
+              <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Time Slot:</td><td style="font-weight:700; text-align:right;">${occ.time}</td></tr>
+              <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Timezone:</td><td style="font-weight:700; text-align:right; font-family:monospace;">${occ.timezone}</td></tr>
+              <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Meeting Room:</td><td style="font-weight:700; text-align:right; font-family:monospace; color:${occ.status === 'Cancelled' || occ.status === 'Rescheduled' ? 'var(--color-error)' : '#137333'};">${occ.status === 'Cancelled' || occ.status === 'Rescheduled' ? 'Retired / Cancelled' : 'Ready'} (${occ.meeting ? occ.meeting.roomId : 'ROOM-CLASS-002'})</td></tr>
+              <tr><td style="color:var(--color-tertiary);">Reminders status:</td><td style="font-weight:700; text-align:right; color:${occ.status === 'Cancelled' || occ.status === 'Rescheduled' ? 'var(--color-error)' : '#137333'};">${occ.status === 'Cancelled' || occ.status === 'Rescheduled' ? 'Cancelled' : 'Confirmation Queued &middot; 24-Hour Scheduled'}</td></tr>
+            </table>
+          </div>
+
+          <!-- Learner Schedule Change Requests -->
+          <div class="form-card" style="padding:20px;">
+            <h3 class="form-section-title" style="margin-bottom:12px;">Learner Schedule Change Requests</h3>
+            ${state.classDisruptions.rescheduleRequests && state.classDisruptions.rescheduleRequests.some(r => r.occurrenceId === occ.id && r.status === 'Pending') ? `
+              <div style="background-color:#fffcf0; border:1px solid #f0d97a; border-radius:8px; padding:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+                  <div>
+                    <div style="font-weight:800; font-size:14px; color:var(--color-on-tertiary-fixed);">Ali Khan Requested Reschedule</div>
+                    <div style="font-size:12px; color:var(--color-tertiary); margin-top:2px;">Requested: Friday, 21 August 2026 &middot; 7:00 PM PKT</div>
+                  </div>
+                  <span class="badge-status status-submitted" style="font-size:10px; background-color:#fffcf0; color:#b06000; border-color:#f0d97a;">Pending Review</span>
+                </div>
+                <div style="font-size:13px; color:var(--color-on-surface); line-height:1.5; margin-bottom:12px;">
+                  <strong>Reason:</strong> "Learner has an appointment during the original class time."
+                </div>
+                <div style="display:flex; gap:10px;">
+                  <button class="btn btn-primary" onclick="approveRescheduleRequest('${occ.id}')" style="height:32px; font-size:11.5px; font-weight:700; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; flex:1.2;">Approve & Reschedule</button>
+                  <button class="btn btn-secondary" onclick="declineRescheduleRequest('${occ.id}')" style="height:32px; font-size:11.5px; font-weight:700; color:var(--color-error); border-color:var(--color-error); flex:1;">Decline</button>
+                </div>
+              </div>
+            ` : `
+              <div style="padding:16px; background-color:var(--color-surface-low); border:1px dashed var(--color-outline-variant); border-radius:6px; text-align:center; color:var(--color-tertiary); font-size:12.5px;">
+                No pending learner requests for this class.
+              </div>
+            `}
+          </div>
+
+          <!-- Timeline Audit Logs -->
+          <div class="form-card" style="padding:20px;">
+            <h3 class="form-section-title" style="margin-bottom:16px;">Schedule Disruption timeline</h3>
+            <ul style="padding:0; margin:0;">
+              ${timelineHtml}
+            </ul>
+          </div>
+
+        </div>
+
+        <!-- Right Column -->
+        <div style="display:flex; flex-direction:column; gap:20px;">
+          
+          <!-- Actions Panel -->
+          <div class="form-card" style="padding:20px;">
+            <h3 class="form-section-title" style="margin-bottom:12px;">Actions</h3>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              ${occ.status === 'Scheduled' ? `
+                <button class="btn btn-primary" onclick="openRescheduleModal('${occ.id}')" style="width:100%; height:40px; font-weight:700; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000;">Reschedule Class</button>
+                <button class="btn btn-secondary" onclick="openCancellationModal('${occ.id}')" style="width:100%; height:40px; font-weight:700; color:var(--color-error); border-color:var(--color-error);">Cancel Class</button>
+              ` : ''}
+              ${occ.status === 'Cancelled' && !state.classDisruptions.makeups[occ.id] ? `
+                <button class="btn btn-primary" onclick="openScheduleMakeupModal('${occ.id}')" style="width:100%; height:40px; font-weight:700; background-color:#137333; border-color:#137333; color:#fff;">Schedule Makeup Class</button>
+              ` : ''}
+              ${occ.status === 'Rescheduled' || occ.status === 'Cancelled' ? `
+                <div style="padding:10px; background-color:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:6px; font-size:12.5px; text-align:center; color:var(--color-tertiary); font-weight:600;">
+                  This class is <strong>${occ.status}</strong>. Refer to the replacement or timeline for history.
+                </div>
+              ` : ''}
+            </div>
+          </div>
+
+          <!-- Class Allowance Context -->
+          <div class="form-card" style="padding:20px; background-color:var(--color-surface-low);">
+            <h3 class="form-section-title" style="margin-bottom:8px; color:var(--color-on-surface-variant);">Class Allowance</h3>
+            <table style="width:100%; font-size:12.5px; border-collapse:collapse; line-height:22px; margin-bottom:12px;">
+              <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Included Grant:</td><td style="font-weight:700; text-align:right;">12 Classes</td></tr>
+              <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Used / Approved:</td><td style="font-weight:700; text-align:right;">${usedClasses} Class</td></tr>
+              <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Remaining Balance:</td><td style="font-weight:700; text-align:right; color:#137333;">${remainingClasses} Classes</td></tr>
+              <tr><td style="color:var(--color-tertiary);">Upcoming Scheduled:</td><td style="font-weight:700; text-align:right;">11 Classes</td></tr>
+            </table>
+            <div style="font-size:11px; color:var(--color-tertiary); font-style:italic; line-height:1.4;">
+              Changing the schedule does not automatically mean a class credit is consumed. Policy rules apply.
+            </div>
+          </div>
+
+          <!-- Policy Preview Card -->
+          <div class="form-card" style="padding:20px;">
+            <h3 class="form-section-title" style="margin-bottom:12px;">Configured Policy Preview</h3>
+            <div style="background-color:var(--color-surface-lowest); border:1px solid var(--color-outline-variant); border-radius:8px; padding:12px; font-size:12.5px; line-height:22px;">
+              <div style="display:flex; justify-content:space-between; border-bottom:1.5px dashed var(--color-outline-variant); padding-bottom:6px; margin-bottom:6px; font-weight:700;">
+                <span>Evaluation Policy:</span>
+                <span style="color:var(--color-secondary);">${scenario} Policy</span>
+              </div>
+              <div style="display:flex; justify-content:space-between;">
+                <span style="color:var(--color-tertiary);">Timing Window:</span>
+                <span style="font-weight:700;">${getScenarioTimingText(scenario)}</span>
+              </div>
+              <div style="display:flex; justify-content:space-between;">
+                <span style="color:var(--color-tertiary);">Entitlement Impact:</span>
+                <span style="font-weight:700; color:${getScenarioDebitColor(scenario)};">${getScenarioDebitText(scenario)}</span>
+              </div>
+              <div style="display:flex; justify-content:space-between;">
+                <span style="color:var(--color-tertiary);">Trainer Compensation:</span>
+                <span style="font-weight:700;">${getScenarioTrainerPayText(scenario)}</span>
+              </div>
+              <div style="display:flex; justify-content:space-between;">
+                <span style="color:var(--color-tertiary);">Replacement Class:</span>
+                <span style="font-weight:700;">${getScenarioMakeupText(scenario)}</span>
+              </div>
+              <div style="display:flex; justify-content:space-between;">
+                <span style="color:var(--color-tertiary);">Notifications Queued:</span>
+                <span style="font-weight:700; color:#137333;">Yes (Learner + Trainer)</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  `;
+};
+
+// Approve/Decline learner request
+window.approveRescheduleRequest = function(occurrenceId) {
+  const req = state.classDisruptions.rescheduleRequests.find(r => r.occurrenceId === occurrenceId);
+  if (req) {
+    req.status = "Approved";
+  }
+  confirmRescheduleClass(occurrenceId, "2026-08-21", "19:00", "Learner", "Learner unavailable", "This Class Only");
+  showToastAlert("Learner reschedule request approved.");
+};
+
+window.declineRescheduleRequest = function(occurrenceId) {
+  const req = state.classDisruptions.rescheduleRequests.find(r => r.occurrenceId === occurrenceId);
+  if (req) {
+    req.status = "Declined";
+  }
+  window.renderOpsClassChangePage(occurrenceId);
+  showToastAlert("Learner reschedule request declined.");
+};
+
+// Reschedule modal & confirmation
+window.openRescheduleModal = function(id) {
+  const occ = state.classOccurrences.find(c => c.id === id);
+  if (!occ) return;
+
+  if (occ.status === "Completed") {
+    showToastAlert("Completed classes cannot be rescheduled as future occurrences.");
+    return;
+  }
+
+  const scenario = state.classDisruptions.selectedScenario || "Happy Reschedule";
+
+  const content = `
+    <div style="text-align:left; font-size:13px; line-height:1.6; display:flex; flex-direction:column; gap:14px;">
+      
+      <!-- Current details -->
+      <div style="background-color:var(--color-surface-low); border:1px solid var(--color-outline-variant); padding:12px; border-radius:8px; font-size:12.5px;">
+        <div>Current Schedule: <strong>${occ.date} &middot; ${occ.time} PKT</strong></div>
+        <div>Trainer: <strong>${occ.trainer}</strong></div>
+      </div>
+
+      <!-- Form Inputs -->
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div>
+          <label style="font-weight:700; display:block; margin-bottom:4px;">New Date:</label>
+          <input type="date" id="resch-date-input" class="form-input" style="margin-bottom:0; height:36px;" value="2026-08-21">
+        </div>
+        <div>
+          <label style="font-weight:700; display:block; margin-bottom:4px;">New Start Time:</label>
+          <input type="time" id="resch-time-input" class="form-input" style="margin-bottom:0; height:36px;" value="19:00">
+        </div>
+        <div>
+          <label style="font-weight:700; display:block; margin-bottom:4px;">Requested By:</label>
+          <select id="resch-by-input" class="form-input" style="margin-bottom:0; height:36px;">
+            <option value="Learner" selected>Learner (Ali Khan)</option>
+            <option value="Trainer">Trainer (Ayesha Rahman)</option>
+            <option value="Operations">Operations Coordinator</option>
+            <option value="COO">COO (Executive Override)</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-weight:700; display:block; margin-bottom:4px;">Reason for Change:</label>
+          <select id="resch-reason-input" class="form-input" style="margin-bottom:0; height:36px;" onchange="handleRescheduleReasonChange(this.value)">
+            <option value="Learner unavailable" selected>Learner unavailable</option>
+            <option value="Trainer unavailable">Trainer unavailable (Emergency / Sick)</option>
+            <option value="Schedule conflict">Overlap conflict detected</option>
+            <option value="Technical issue">Technical exception / Internet outage</option>
+            <option value="Other">Other reason...</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-weight:700; display:block; margin-bottom:4px;">Reason Details:</label>
+          <textarea id="resch-notes-input" class="form-input" style="margin-bottom:0; height:60px; font-size:12.5px; padding:6px 10px;" placeholder="Learner has an appointment during the original class time."></textarea>
+        </div>
+        <div>
+          <label style="font-weight:700; display:block; margin-bottom:4px;">Series Scope:</label>
+          <select id="resch-scope-input" class="form-input" style="margin-bottom:0; height:36px;">
+            <option value="This Class Only" selected>This Class Only (CLASS-002 only)</option>
+            <option value="This and Following">This and Following Classes (SERIES-001 cascade)</option>
+            <option value="Future Series">Future Series Schedule Recurrence</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Conflict & Policy checks box -->
+      <div id="reschedule-modal-status-box" style="background-color:#f0f4f8; border:1px solid var(--color-outline-variant); border-radius:8px; padding:12px; font-size:12px;">
+        <div style="font-weight:700; margin-bottom:6px; color:var(--color-on-tertiary-fixed);">⚡ Real-time Availability & Conflict checks:</div>
+        <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+          <span>👤 Learner: <strong style="color:#137333;">✓ Available</strong></span>
+          <span>👩‍🏫 Trainer: <strong style="color:#137333;" id="modal-trainer-conflict-badge">✓ Available</strong></span>
+          <span>📅 Overlaps: <strong style="color:#137333;">None</strong></span>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div style="display:flex; gap:12px; margin-top:8px;">
+        <button class="btn btn-primary" onclick="submitRescheduleModal('${id}')" style="flex:1.2; height:40px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;">Confirm Reschedule</button>
+        <button class="btn btn-secondary" onclick="closeModal()" style="flex:1; height:40px;">Cancel</button>
+      </div>
+
+    </div>
+  `;
+  openModal(`Reschedule Live Class — ${id}`, content);
+};
+
+window.handleRescheduleReasonChange = function(reason) {
+  const badge = document.getElementById("modal-trainer-conflict-badge");
+  if (!badge) return;
+
+  if (reason === "Schedule conflict") {
+    badge.innerHTML = "⚠️ Conflict (Already busy)";
+    badge.style.color = "var(--color-error)";
+    showToastAlert("Trainer Ayesha Rahman already has another class at Friday, 21 August 7:00 PM.");
+  } else {
+    badge.innerHTML = "✓ Available";
+    badge.style.color = "#137333";
+  }
+};
+
+window.submitRescheduleModal = function(id) {
+  const date = document.getElementById("resch-date-input").value;
+  const time = document.getElementById("resch-time-input").value;
+  const requestedBy = document.getElementById("resch-by-input").value;
+  const reason = document.getElementById("resch-reason-input").value;
+  const scope = document.getElementById("resch-scope-input").value;
+
+  if (reason === "Schedule conflict") {
+    showToastAlert("Rescheduling blocked: Trainer has schedule conflict. Please choose another time.");
+    return;
+  }
+
+  closeModal();
+  confirmRescheduleClass(id, date, time, requestedBy, reason, scope);
+};
+
+window.confirmRescheduleClass = function(id, newDate, newTime, requestedBy, reason, scope) {
+  const occ = state.classOccurrences.find(c => c.id === id);
+  if (occ) {
+    occ.status = "Rescheduled";
+    occ.reminders = { confirmation: "Cancelled", twentyFourHour: "Cancelled", oneHour: "Cancelled" };
+    if (occ.meeting) {
+      occ.meeting.status = "Cancelled / Retired";
+    }
+  }
+
+  state.classDisruptions.reschedules[id] = {
+    id: "RESCHEDULE-001",
+    occurrenceId: id,
+    requestedBy: requestedBy,
+    requestedFor: "Ali Khan",
+    reason: reason,
+    originalDate: occ ? occ.date : "2026-08-20",
+    originalTime: occ ? occ.time : "7:00 PM",
+    newDate: newDate,
+    newTime: newTime,
+    timezone: "Asia/Karachi",
+    scope: scope,
+    status: "Approved"
+  };
+
+  const newDateParsed = new Date(newDate);
+  const formattedDate = newDateParsed.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
+  const replacementId = `${id}-R1`;
+
+  state.classOccurrences = state.classOccurrences.filter(c => c.id !== replacementId);
+
+  state.classOccurrences.push({
+    id: replacementId,
+    replacementFor: id,
+    seriesId: "SERIES-001",
+    enrolmentId: "ENR-001",
+    learner: "Ali Khan",
+    trainer: "Ayesha Rahman",
+    course: "Spoken English",
+    type: "Regular",
+    classSequence: 2,
+    date: formattedDate,
+    time: "7:00 PM – 7:45 PM",
+    startsAt: `${newDate}T19:00:00+05:00`,
+    timezone: "Asia/Karachi",
+    durationMinutes: 45,
+    classType: "Rescheduled Regular Class",
+    status: "Scheduled",
+    meeting: { status: "Ready", roomId: `ROOM-${replacementId}`, provider: "Daily" },
+    reminders: { confirmation: "Queued", twentyFourHour: "Scheduled", oneHour: "Scheduled" },
+    history: [
+      { time: "19 Aug &middot; 10:32 AM", text: `Rescheduled replacement created for ${formattedDate}.` }
+    ]
+  });
+
+  window.renderOpsClassChangePage(id);
+  showToastAlert(`Class successfully rescheduled to ${formattedDate} at 7:00 PM PKT.`);
+};
+
+// Cancellation modal & confirmation
+window.openCancellationModal = function(id) {
+  const occ = state.classOccurrences.find(c => c.id === id);
+  if (!occ) return;
+
+  if (occ.status === "Completed") {
+    showToastAlert("Completed classes cannot be cancelled.");
+    return;
+  }
+
+  const scenario = state.classDisruptions.selectedScenario || "Happy Reschedule";
+
+  let billingOutcome = "No Debit";
+  let trainerPayOutcome = "Not Compensated";
+  let makeupAllowed = "Allowed";
+  let isLateWarning = false;
+
+  if (scenario === "Late Cancellation") {
+    billingOutcome = "1 Class Debit";
+    trainerPayOutcome = "Trainer Compensated";
+    makeupAllowed = "Not Automatically Included";
+    isLateWarning = true;
+  } else if (scenario === "Trainer No-show") {
+    billingOutcome = "No Debit";
+    trainerPayOutcome = "Not Compensated (No-show case created)";
+    makeupAllowed = "Required";
+  } else if (scenario === "Technical Issue") {
+    billingOutcome = "No Debit";
+    trainerPayOutcome = "Review Required";
+    makeupAllowed = "Required";
+  }
+
+  const content = `
+    <div style="text-align:left; font-size:13px; line-height:1.6; display:flex; flex-direction:column; gap:14px;">
+      
+      <!-- Current details -->
+      <div style="background-color:var(--color-surface-low); border:1px solid var(--color-outline-variant); padding:12px; border-radius:8px; font-size:12.5px;">
+        <div>Cancellation target: <strong>${occ.id}</strong></div>
+        <div>Date: <strong>${occ.date} &middot; ${occ.time} PKT</strong></div>
+      </div>
+
+      <!-- Late cancellation alert -->
+      ${isLateWarning ? `
+        <div style="background-color:#fce8e6; border:1px solid #fad2cf; border-radius:8px; padding:12px; color:#a50e0e; font-size:12px; line-height:1.5;">
+          <strong>⚠️ Late Cancellation Window Warning:</strong> This cancellation falls inside the configured 24-hour late policy. Learner will be debited 1 credit and trainer remains compensated.
+        </div>
+      ` : ''}
+
+      <!-- Form Inputs -->
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div>
+          <label style="font-weight:700; display:block; margin-bottom:4px;">Cancellation Initiated By:</label>
+          <select id="cancel-by-input" class="form-input" style="margin-bottom:0; height:36px;">
+            <option value="Learner" ${scenario === 'Late Cancellation' || scenario === 'Happy Reschedule' ? 'selected' : ''}>Learner (Ali Khan)</option>
+            <option value="Trainer" ${scenario === 'Trainer No-show' ? 'selected' : ''}>Trainer (Ayesha Rahman)</option>
+            <option value="Operations">Operations Coordinator</option>
+            <option value="COO">COO (Executive Override)</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-weight:700; display:block; margin-bottom:4px;">Cancellation Reason:</label>
+          <select id="cancel-reason-input" class="form-input" style="margin-bottom:0; height:36px;">
+            <option value="Learner unavailable" ${scenario === 'Happy Reschedule' || scenario === 'Late Cancellation' ? 'selected' : ''}>Learner unavailable</option>
+            <option value="Trainer unavailable">Trainer unavailable (Emergency)</option>
+            <option value="Learner no-show">Learner no-show (Missed class)</option>
+            <option value="Trainer no-show" ${scenario === 'Trainer No-show' ? 'selected' : ''}>Trainer no-show (Missed class)</option>
+            <option value="Technical issue" ${scenario === 'Technical Issue' ? 'selected' : ''}>Technical issue (Join failure)</option>
+            <option value="Emergency">Emergency</option>
+            <option value="Operational closure">Operational closure</option>
+            <option value="Schedule error">Schedule error</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Policy preview box -->
+      <div style="background-color:#f0f4f8; border:1px solid var(--color-outline-variant); border-radius:8px; padding:12px; font-size:12.5px; line-height:20px;">
+        <div style="font-weight:700; margin-bottom:6px; color:var(--color-on-tertiary-fixed);">⚡ Policy Outcome Preview:</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+          <div>Timing: <strong>${isLateWarning ? 'Late (< 24 Hrs)' : 'Early (> 24 Hrs)'}</strong></div>
+          <div>Entitlement: <strong>${billingOutcome}</strong></div>
+          <div>Trainer Pay: <strong>${trainerPayOutcome}</strong></div>
+          <div>Makeup: <strong>${makeupAllowed}</strong></div>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div style="display:flex; gap:12px; margin-top:8px;">
+        <button class="btn btn-primary" onclick="submitCancellationModal('${id}', '${billingOutcome}', '${makeupAllowed}')" style="flex:1.2; height:40px; background-color:var(--color-error); border-color:var(--color-error); color:#fff; font-weight:800;">Confirm Cancellation</button>
+        <button class="btn btn-secondary" onclick="closeModal()" style="flex:1; height:40px;">Back</button>
+      </div>
+
+    </div>
+  `;
+  openModal(`Cancel Live Class — ${id}`, content);
+};
+
+window.submitCancellationModal = function(id, billingOutcome, makeupAllowed) {
+  const initiatedBy = document.getElementById("cancel-by-input").value;
+  const reason = document.getElementById("cancel-reason-input").value;
+
+  closeModal();
+  confirmCancellationClass(id, initiatedBy, reason, billingOutcome, makeupAllowed);
+};
+
+window.confirmCancellationClass = function(id, initiatedBy, reason, billingOutcome, makeupAllowed) {
+  const occ = state.classOccurrences.find(c => c.id === id);
+  if (occ) {
+    occ.status = "Cancelled";
+    occ.reminders = { confirmation: "Cancelled", twentyFourHour: "Cancelled", oneHour: "Cancelled" };
+    if (occ.meeting) {
+      occ.meeting.status = "Cancelled / Retired";
+    }
+  }
+
+  state.classDisruptions.cancellations[id] = {
+    id: "CANCEL-001",
+    occurrenceId: id,
+    actorType: initiatedBy,
+    reason: reason,
+    policyOutcome: billingOutcome,
+    makeupAllowed: (makeupAllowed !== "Not Automatically Included"),
+    status: "Confirmed"
+  };
+
+  if (billingOutcome === "1 Class Debit") {
+    if (!state.entitlementLedger) state.entitlementLedger = [];
+    state.entitlementLedger.push({
+      id: "ENT-ADJ-CLASS-002",
+      membershipTermId: "MEM-TERM-001",
+      occurrenceId: id,
+      type: "Cancellation Debit",
+      quantity: 1,
+      reason: "Configured late cancellation policy",
+      status: "Posted"
+    });
+  }
+
+  window.renderOpsClassChangePage(id);
+  showToastAlert(`Class CLASS-002 successfully cancelled. Policy: ${billingOutcome}.`);
+};
+
+// Makeup scheduling modal
+window.openScheduleMakeupModal = function(id) {
+  const content = `
+    <div style="text-align:left; font-size:13px; line-height:1.6; display:flex; flex-direction:column; gap:14px;">
+      <div style="background-color:var(--color-surface-low); border:1px solid var(--color-outline-variant); padding:12px; border-radius:8px;">
+        Makeup for original disrupted class: <strong>${id}</strong>
+      </div>
+
+      <!-- Inputs -->
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div>
+          <label style="font-weight:700; display:block; margin-bottom:4px;">Date for Makeup:</label>
+          <input type="date" id="makeup-date-input" class="form-input" style="margin-bottom:0; height:36px;" value="2026-08-22">
+        </div>
+        <div>
+          <label style="font-weight:700; display:block; margin-bottom:4px;">Start Time:</label>
+          <input type="time" id="makeup-time-input" class="form-input" style="margin-bottom:0; height:36px;" value="18:00">
+        </div>
+        <div>
+          <label style="font-weight:700; display:block; margin-bottom:4px;">Trainer Allocation:</label>
+          <input type="text" class="form-input" style="margin-bottom:0; height:36px; background-color:#e9e9e9;" value="Ayesha Rahman (Original)" readonly>
+        </div>
+      </div>
+
+      <!-- Conflict verification -->
+      <div style="background-color:#e6f4ea; border:1px solid #c2e7cc; border-radius:8px; padding:12px; font-size:12.5px; color:#137333;">
+        ✓ No schedule conflicts detected on Saturday, 22 Aug at 6:00 PM PKT.
+      </div>
+
+      <!-- Action buttons -->
+      <div style="display:flex; gap:12px; margin-top:8px;">
+        <button class="btn btn-primary" onclick="submitMakeupModal('${id}')" style="flex:1.2; height:40px; background-color:#137333; border-color:#137333; color:#fff; font-weight:800;">Schedule Makeup</button>
+        <button class="btn btn-secondary" onclick="closeModal()" style="flex:1; height:40px;">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Schedule Makeup Class", content);
+};
+
+window.submitMakeupModal = function(id) {
+  const date = document.getElementById("makeup-date-input").value;
+  const time = document.getElementById("makeup-time-input").value;
+
+  closeModal();
+
+  const dateParsed = new Date(date);
+  const formattedDate = dateParsed.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
+  const timeStr = "6:00 PM – 6:45 PM";
+
+  const makeupId = `MAKEUP-CLASS-002-001`;
+  state.classDisruptions.makeups[id] = {
+    id: makeupId,
+    originalOccurrenceId: id,
+    enrolmentId: "ENR-001",
+    membershipTermId: "MEM-TERM-001",
+    learner: "Ali Khan",
+    trainer: "Ayesha Rahman",
+    classType: "Makeup",
+    date: formattedDate,
+    time: timeStr,
+    status: "Scheduled"
+  };
+
+  state.classOccurrences = state.classOccurrences.filter(c => c.id !== makeupId);
+  state.classOccurrences.push({
+    id: makeupId,
+    originalOccurrenceId: id,
+    seriesId: "SERIES-001",
+    enrolmentId: "ENR-001",
+    learner: "Ali Khan",
+    trainer: "Ayesha Rahman",
+    course: "Spoken English",
+    type: "Makeup",
+    classSequence: 2,
+    date: formattedDate,
+    time: timeStr,
+    timezone: "Asia/Karachi",
+    startsAt: `${date}T18:00:00+05:00`,
+    durationMinutes: 45,
+    status: "Scheduled",
+    meeting: { status: "Ready", roomId: `ROOM-${makeupId}`, provider: "Daily" },
+    reminders: { confirmation: "Queued", twentyFourHour: "Scheduled", oneHour: "Scheduled" },
+    history: [
+      { time: "19 Aug &middot; 11:00 AM", text: `Makeup created for disrupted class ${id}.` }
+    ]
+  });
+
+  window.renderOpsClassChangePage(id);
+  showToastAlert(`Makeup class scheduled for ${formattedDate} at 6:00 PM PKT.`);
+};
+
+// Learner request modals
+window.openLearnerRescheduleRequestModal = function(enrolmentId, occurrenceId) {
+  const content = `
+    <div style="text-align:left; font-size:13px; line-height:1.6; display:flex; flex-direction:column; gap:14px;">
+      <p style="margin:0; color:var(--color-tertiary);">Submit your preferred slot. Operations will review your request and confirm changes within 2 hours.</p>
+      
+      <div>
+        <label style="font-weight:700; display:block; margin-bottom:4px;">Preferred Date:</label>
+        <input type="date" id="req-pref-date" class="form-input" style="margin-bottom:0; height:36px;" value="2026-08-21">
+      </div>
+      <div>
+        <label style="font-weight:700; display:block; margin-bottom:4px;">Preferred Start Time:</label>
+        <input type="time" id="req-pref-time" class="form-input" style="margin-bottom:0; height:36px;" value="19:00">
+      </div>
+      <div>
+        <label style="font-weight:700; display:block; margin-bottom:4px;">Reason for Request:</label>
+        <textarea id="req-pref-reason" class="form-input" style="margin-bottom:0; height:60px; font-size:12.5px; padding:6px 10px;" placeholder="e.g. I have an appointment during the original class time."></textarea>
+      </div>
+
+      <div style="display:flex; gap:12px; margin-top:8px;">
+        <button class="btn btn-primary" onclick="submitLearnerRescheduleRequest('${enrolmentId}', '${occurrenceId}')" style="flex:1.2; height:40px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;">Send Request</button>
+        <button class="btn btn-secondary" onclick="closeModal()" style="flex:1; height:40px;">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Request Schedule Change", content);
+};
+
+window.submitLearnerRescheduleRequest = function(enrolmentId, occurrenceId) {
+  const date = document.getElementById("req-pref-date").value;
+  const time = document.getElementById("req-pref-time").value;
+  const reason = document.getElementById("req-pref-reason").value || "Learner unavailable";
+
+  closeModal();
+
+  state.classDisruptions.rescheduleRequests = [{
+    id: "RESCHEDULE-REQ-LEARNER-001",
+    occurrenceId: occurrenceId,
+    requestedBy: "Learner",
+    requestedFor: "Ali Khan",
+    preferredDate: date,
+    preferredTime: time,
+    reason: reason,
+    status: "Pending"
+  }];
+
+  window.renderLearnerCourseWorkspace(enrolmentId);
+  showToastAlert("Reschedule request submitted to Operations review queue.");
 };
 
 
