@@ -13282,12 +13282,31 @@ window.confirmCancelClassOccurrence = function(id) {
 // ==========================================================================
 
 // Preload mock course workspace state
+state.homeworkRecords = {
+  "HOMEWORK-CLASS-001": {
+    id: "HOMEWORK-CLASS-001",
+    enrolmentId: "ENR-001",
+    occurrenceId: "CLASS-001",
+    title: "Introduce Yourself Practice",
+    instructions: "Prepare a 60–90 second spoken introduction including your name, work/study background, interests and one personal goal.",
+    status: "To Do",
+    dueContext: "Before Class 2",
+    assignedFrom: "Class 1",
+    trainer: "Ayesha Rahman",
+    type: "Speaking Practice"
+  }
+};
+
 state.courseWorkspaceState = {
   currentTab: "overview", // overview | schedule | attendance | homework | resources | progress | messages | membership
   demoJoinState: "Too Early", // Too Early | Opens Soon | Join Available | Preparing Classroom | Classroom Error | Class Ended
   accessState: "Active", // Active | Suspended | Expired | Low Entitlement
+  demoCourseState: "Class 1 Approved", // Before Class 1 | Class 1 Awaiting Review | Class 1 Approved | Low Entitlement | Access Suspended
+  class1BannerDismissed: false,
+  dismissedNotifications: [], // list of notification ids dismissed
   activeMessages: [
-    { sender: "Ayesha Rahman", role: "Trainer", text: "Welcome Ali! Your first class is scheduled for Tuesday at 7:00 PM. Looking forward to working with you.", time: "14 Aug · 1:15 PM" }
+    { sender: "Ayesha Rahman", role: "Trainer", text: "Welcome Ali! Your first class is scheduled for Tuesday at 7:00 PM. Looking forward to working with you.", time: "14 Aug · 1:15 PM" },
+    { sender: "Ayesha Rahman", role: "Trainer", text: "Great work today Ali! Please practice your introduction before our next class on Thursday.", time: "18 Aug · 8:15 PM", isNew: true }
   ]
 };
 
@@ -13303,10 +13322,25 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
   const scheduleText = isEnglish ? "Tuesday & Thursday · 7:00 PM PKT" : "Self-Paced (Immediate Access)";
 
   // Check access state
-  const access = state.courseWorkspaceState.accessState;
+  const demoCourseState = state.courseWorkspaceState.demoCourseState || "Class 1 Approved";
+  const access = (demoCourseState === "Access Suspended") ? "Suspended" : (demoCourseState === "Low Entitlement" ? "Low Entitlement" : "Active");
   const isSuspended = access === "Suspended";
   const isExpired = access === "Expired";
   const isLowCredits = access === "Low Entitlement";
+
+  const class1Approved = isEnglish && (demoCourseState === "Class 1 Approved" || demoCourseState === "Low Entitlement" || (state.entitlementLedger && state.entitlementLedger.some(e => e.id === 'ENT-DEBIT-CLASS-001')));
+  const class1AwaitingReview = isEnglish && demoCourseState === "Class 1 Awaiting Review";
+
+  let usedClasses = 0;
+  if (class1Approved) {
+    usedClasses = 1;
+  }
+  let remainingClasses = 12 - usedClasses;
+  if (demoCourseState === "Low Entitlement") {
+    remainingClasses = 2;
+  }
+  const completedClasses = usedClasses;
+  const progressPercent = isEnglish ? Math.round((completedClasses / 12) * 100) : 35;
 
   // Reconcile occurrences from Screen 14 for Spoken English
   let upcoming = [];
@@ -13351,7 +13385,7 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
 
   // Course Switcher HTML
   const switcherHtml = `
-    <div style="background-color:var(--color-surface-low); border:1px solid var(--color-outline-variant); padding:10px 16px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+    <div style="background-color:var(--color-surface-low); border:1px solid var(--color-outline-variant); padding:10px 16px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
       <div style="display:flex; align-items:center; gap:8px;">
         <span style="font-size:12.5px; font-weight:700; color:var(--color-tertiary);">Current Course Workspace:</span>
         <select class="form-input" style="width:240px; height:34px; font-size:13px; font-weight:700; margin-bottom:0;" onchange="window.location.hash='#learner/courses/' + this.value">
@@ -13362,21 +13396,13 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
 
       <!-- Dev Demo Controls -->
       <div style="display:flex; align-items:center; gap:8px;">
-        <span style="font-size:11.5px; font-weight:700; color:#ba1a1a;">Demo Workspace State:</span>
-        <select class="form-input" style="width:160px; height:30px; font-size:11px; margin-bottom:0; background:#fce8e6; border-color:#fad2cf;" onchange="changeWorkspaceDemoState('${enrolmentId}', this.value)">
-          <option value="Too Early" ${state.courseWorkspaceState.demoJoinState === 'Too Early' ? 'selected' : ''}>Too Early</option>
-          <option value="Opens Soon" ${state.courseWorkspaceState.demoJoinState === 'Opens Soon' ? 'selected' : ''}>Opens Soon</option>
-          <option value="Join Available" ${state.courseWorkspaceState.demoJoinState === 'Join Available' ? 'selected' : ''}>Join Available</option>
-          <option value="Preparing Classroom" ${state.courseWorkspaceState.demoJoinState === 'Preparing Classroom' ? 'selected' : ''}>Preparing...</option>
-          <option value="Classroom Error" ${state.courseWorkspaceState.demoJoinState === 'Classroom Error' ? 'selected' : ''}>Room Error</option>
-          <option value="Class Ended" ${state.courseWorkspaceState.demoJoinState === 'ClassEnded' ? 'selected' : ''}>Class Ended</option>
-        </select>
-
-        <select class="form-input" style="width:130px; height:30px; font-size:11px; margin-bottom:0; background:#fce8e6; border-color:#fad2cf;" onchange="changeWorkspaceAccessState('${enrolmentId}', this.value)">
-          <option value="Active" ${access === 'Active' ? 'selected' : ''}>Access Active</option>
-          <option value="Suspended" ${access === 'Suspended' ? 'selected' : ''}>Suspended</option>
-          <option value="Expired" ${access === 'Expired' ? 'selected' : ''}>Expired</option>
-          <option value="Low Entitlement" ${access === 'Low Entitlement' ? 'selected' : ''}>Low Credits (2)</option>
+        <span style="font-size:11.5px; font-weight:700; color:#ba1a1a;">Demo Course State:</span>
+        <select class="form-input" style="width:200px; height:34px; font-size:12px; margin-bottom:0; background:#fce8e6; border-color:#fad2cf; font-weight:700;" onchange="changeDemoCourseState('${enrolmentId}', this.value)">
+          <option value="Before Class 1" ${demoCourseState === 'Before Class 1' ? 'selected' : ''}>Before Class 1</option>
+          <option value="Class 1 Awaiting Review" ${demoCourseState === 'Class 1 Awaiting Review' ? 'selected' : ''}>Class 1 Awaiting Review</option>
+          <option value="Class 1 Approved" ${demoCourseState === 'Class 1 Approved' ? 'selected' : ''}>Class 1 Approved</option>
+          <option value="Low Entitlement" ${demoCourseState === 'Low Entitlement' ? 'selected' : ''}>Low Entitlement</option>
+          <option value="Access Suspended" ${demoCourseState === 'Access Suspended' ? 'selected' : ''}>Access Suspended</option>
         </select>
       </div>
     </div>
@@ -13437,61 +13463,143 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
   // Tab Content Renderer
   let tabBodyHtml = "";
   if (activeTab === "overview") {
-    // 1. Next Class CTA Card
-    let ctaTitle = "Join Class";
-    let ctaDisabled = true;
-    let ctaCaption = "Join opens 10 minutes before class.";
-    let ctaBadge = "";
-    
-    const demo = state.courseWorkspaceState.demoJoinState;
-    if (demo === "Opens Soon") {
-      ctaBadge = `<span class="badge-status status-submitted" style="font-size:10px; background-color:#e8f0fe; color:#1a73e8; border-color:#d2e3fc;">Opens Soon</span>`;
-      ctaCaption = "Join opens in 08:32";
-    } else if (demo === "Join Available") {
-      ctaBadge = `<span class="badge-status status-ready" style="font-size:10px; background-color:#e6f4ea; color:#137333; border-color:#c2e7cc;">Join Now</span>`;
-      ctaDisabled = false;
-      ctaCaption = "Your classroom is ready.";
-    } else if (demo === "Preparing Classroom") {
-      ctaTitle = "Preparing...";
-      ctaCaption = "Provisioning meeting room details...";
-    } else if (demo === "Classroom Error") {
-      ctaTitle = "Retry Room Link";
-      ctaDisabled = false;
-      ctaCaption = "⚠️ Classroom is temporarily unavailable.";
-    } else if (demo === "Class Ended") {
-      ctaTitle = "Class Ended";
-      ctaCaption = "Class completed. Reports are under review.";
+    // Class 1 Completed success notice banner
+    let class1BannerHtml = "";
+    if (class1Approved && !state.courseWorkspaceState.class1BannerDismissed) {
+      class1BannerHtml = `
+        <div class="alarm-box animate-fade-in" style="background:#e6f4ea; border-color:#c2e7cc; color:#137333; border-left:3px solid #34a853; padding:16px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:flex-start; gap:16px; border-radius:6px;">
+          <div style="flex:1;">
+            <h4 style="color:#137333; font-weight:800; font-size:15px; margin:0 0 6px 0;">🎉 Class 1 Completed & Approved</h4>
+            <p style="color:#137333; font-size:13px; margin:0 0 8px 0;">Your live session from 18 August has been reviewed and finalized by Operations.</p>
+            <div style="font-size:12px; display:flex; gap:16px; flex-wrap:wrap; margin-bottom:8px;">
+              <span>📅 Attendance: <strong>Present</strong></span>
+              <span>⏱️ Duration: <strong>40 min</strong></span>
+              <span>👤 Trainer: <strong>Ayesha Rahman</strong></span>
+            </div>
+            <button class="btn btn-secondary" onclick="openClass1SummaryModal('details')" style="height:28px; font-size:11.5px; padding:0 12px; font-weight:700; color:#137333; border-color:#c2e7cc; background:#f4fbf7;">View Class Summary</button>
+          </div>
+          <button onclick="dismissClass1Banner('${enrolmentId}')" style="background:none; border:none; color:#137333; font-size:18px; font-weight:800; cursor:pointer; line-height:1;">&times;</button>
+        </div>
+      `;
     }
 
-    const nextClassHtml = isEnglish ? `
-      <div class="form-card" style="border-top:4px solid var(--color-secondary); padding:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
-        <div>
-          <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-            <h4 style="font-size:12.5px; font-weight:800; text-transform:uppercase; color:var(--color-tertiary); letter-spacing:0.05em; margin:0;">Next Live Class</h4>
-            ${ctaBadge}
+    // 1. Next Class CTA Card
+    let nextClassHtml = "";
+    if (isEnglish) {
+      if (class1Approved) {
+        nextClassHtml = `
+          <div class="form-card" style="border-top:4px solid var(--color-secondary); padding:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+              <div>
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                  <h4 style="font-size:12.5px; font-weight:800; text-transform:uppercase; color:var(--color-tertiary); letter-spacing:0.05em; margin:0;">Next Live Class (Class 2 of 12)</h4>
+                  <span class="badge-status status-ready" style="font-size:10px; background-color:#e6f4ea; color:#137333; border-color:#c2e7cc;">Scheduled</span>
+                </div>
+                <h2 style="font-family:var(--font-family-headings); font-size:22px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:6px;">Thursday, 20 August 2026</h2>
+                <p style="margin:4px 0; font-size:13.5px; color:var(--color-tertiary);">Time slot: <strong>7:00 PM – 7:45 PM PKT</strong></p>
+                <p style="margin:4px 0; font-size:13px; color:var(--color-tertiary);">Assigned Trainer: <strong>Ayesha Rahman (1-to-1)</strong></p>
+                <div style="font-size:11.5px; color:var(--color-tertiary); margin-top:10px;">Class ID: <strong>CLASS-002</strong></div>
+              </div>
+              <div style="text-align:right; display:flex; flex-direction:column; gap:6px;">
+                <button class="btn btn-primary" style="height:44px; padding:0 24px; font-weight:800; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000;" disabled>
+                  Join Class
+                </button>
+                <span style="font-size:11.5px; color:var(--color-tertiary); font-style:italic;">Join opens 10 minutes before class.</span>
+              </div>
+            </div>
+            
+            <div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--color-outline-variant); font-size:12.5px;">
+              <div style="font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:6px;">Prepare for Class 2</div>
+              <div style="display:flex; flex-direction:column; gap:4px; color:var(--color-tertiary);">
+                <div>📝 <strong>Homework:</strong> <span style="text-decoration:underline; cursor:pointer; color:var(--color-secondary); font-weight:700;" onclick="setTabSelectionState('${enrolmentId}', 'homework')">Introduce Yourself Practice</span> (Status: <strong style="color:${state.homeworkRecords["HOMEWORK-CLASS-001"].status === 'Practised' ? '#137333' : '#b06000'}">${state.homeworkRecords["HOMEWORK-CLASS-001"].status}</strong>)</div>
+                <div>🎯 <strong>Focus:</strong> Everyday question-and-answer practice</div>
+                <div>📖 <strong>Recommended Resource:</strong> <span style="text-decoration:underline; cursor:pointer; color:var(--color-secondary);" onclick="setTabSelectionState('${enrolmentId}', 'resources')">Introduction Vocabulary Sheet</span></div>
+              </div>
+            </div>
           </div>
-          <h2 style="font-family:var(--font-family-headings); font-size:22px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:6px;">Tuesday, 18 August 2026</h2>
-          <p style="margin:4px 0; font-size:13.5px; color:var(--color-tertiary);">Time slot: <strong>7:00 PM – 7:45 PM PKT</strong></p>
-          <p style="margin:4px 0; font-size:13px; color:var(--color-tertiary);">Assigned Trainer: <strong>Ayesha Rahman (1-to-1)</strong></p>
-          <div style="font-size:11.5px; color:#ba1a1a; margin-top:10px; font-weight:700;">5 days until your next scheduled session</div>
-        </div>
-        <div style="text-align:right; display:flex; flex-direction:column; gap:6px;">
-          <button class="btn btn-primary" onclick="launchLearnerWorkspaceJoin('${enrolmentId}')" style="height:44px; padding:0 24px; font-weight:800; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000;" ${ctaDisabled ? 'disabled' : ''}>
-            ${ctaTitle}
-          </button>
-          <span style="font-size:11.5px; color:var(--color-tertiary); font-style:italic;">${ctaCaption}</span>
-        </div>
-      </div>
-    ` : `
-      <div class="form-card" style="border-top:4px solid var(--color-secondary); padding:20px; text-align:center;">
-        <h4 style="font-size:13px; font-weight:800; text-transform:uppercase; color:var(--color-tertiary); margin-bottom:8px;">Self-Paced Learning Module</h4>
-        <p style="font-size:14.5px; margin-bottom:16px;">This course has immediate release access. Open module syllabus to start reading.</p>
-        <button class="btn btn-primary" onclick="window.location.hash='#courses/practical-ai'" style="height:40px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:700;">Continue Learning Course</button>
-      </div>
-    `;
+        `;
+      } else if (class1AwaitingReview) {
+        nextClassHtml = `
+          <div class="form-card" style="border-top:4px solid var(--color-secondary); padding:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+            <div>
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                <h4 style="font-size:12.5px; font-weight:800; text-transform:uppercase; color:var(--color-tertiary); letter-spacing:0.05em; margin:0;">Class 1 Awaiting Review</h4>
+                <span class="badge-status status-submitted" style="font-size:10px; background-color:#fffcf0; color:#b06000; border-color:#f0d97a;">Awaiting Review</span>
+              </div>
+              <h2 style="font-family:var(--font-family-headings); font-size:22px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:6px;">Tuesday, 18 August 2026</h2>
+              <p style="margin:4px 0; font-size:13.5px; color:var(--color-tertiary);">Time slot: <strong>7:00 PM – 7:45 PM PKT</strong></p>
+              <p style="margin:4px 0; font-size:13px; color:var(--color-tertiary);">Assigned Trainer: <strong>Ayesha Rahman (1-to-1)</strong></p>
+              <div style="font-size:11.5px; color:#ba1a1a; margin-top:10px; font-weight:700;">Completed. Reports are under review by school staff.</div>
+            </div>
+            <div style="text-align:right; display:flex; flex-direction:column; gap:6px;">
+              <button class="btn btn-primary" style="height:44px; padding:0 24px; font-weight:800; background-color:var(--color-outline-variant); border-color:var(--color-outline-variant); color:var(--color-on-surface-variant);" disabled>
+                Class Ended
+              </button>
+              <span style="font-size:11.5px; color:var(--color-tertiary); font-style:italic;">Processing attendance & feedback...</span>
+            </div>
+          </div>
+        `;
+      } else {
+        // Before Class 1 (or default)
+        let ctaTitle = "Join Class";
+        let ctaDisabled = true;
+        let ctaCaption = "Join opens 10 minutes before class.";
+        let ctaBadge = "";
+        
+        const demo = state.courseWorkspaceState.demoJoinState;
+        if (demo === "Opens Soon") {
+          ctaBadge = `<span class="badge-status status-submitted" style="font-size:10px; background-color:#e8f0fe; color:#1a73e8; border-color:#d2e3fc;">Opens Soon</span>`;
+          ctaCaption = "Join opens in 08:32";
+        } else if (demo === "Join Available") {
+          ctaBadge = `<span class="badge-status status-ready" style="font-size:10px; background-color:#e6f4ea; color:#137333; border-color:#c2e7cc;">Join Now</span>`;
+          ctaDisabled = false;
+          ctaCaption = "Your classroom is ready.";
+        } else if (demo === "Preparing Classroom") {
+          ctaTitle = "Preparing...";
+          ctaCaption = "Provisioning meeting room details...";
+        } else if (demo === "Classroom Error") {
+          ctaTitle = "Retry Room Link";
+          ctaDisabled = false;
+          ctaCaption = "⚠️ Classroom is temporarily unavailable.";
+        } else if (demo === "Class Ended") {
+          ctaTitle = "Class Ended";
+          ctaCaption = "Class completed. Reports are under review.";
+        }
 
-    // 2. Upcoming schedule summaries
-    const upcomingList = isEnglish ? upcoming.slice(0, 4).map(u => `
+        nextClassHtml = `
+          <div class="form-card" style="border-top:4px solid var(--color-secondary); padding:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+            <div>
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                <h4 style="font-size:12.5px; font-weight:800; text-transform:uppercase; color:var(--color-tertiary); letter-spacing:0.05em; margin:0;">Next Live Class (Class 1 of 12)</h4>
+                ${ctaBadge}
+              </div>
+              <h2 style="font-family:var(--font-family-headings); font-size:22px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:6px;">Tuesday, 18 August 2026</h2>
+              <p style="margin:4px 0; font-size:13.5px; color:var(--color-tertiary);">Time slot: <strong>7:00 PM – 7:45 PM PKT</strong></p>
+              <p style="margin:4px 0; font-size:13px; color:var(--color-tertiary);">Assigned Trainer: <strong>Ayesha Rahman (1-to-1)</strong></p>
+              <div style="font-size:11.5px; color:#ba1a1a; margin-top:10px; font-weight:700;">Classroom will open 10 minutes prior.</div>
+            </div>
+            <div style="text-align:right; display:flex; flex-direction:column; gap:6px;">
+              <button class="btn btn-primary" onclick="launchLearnerWorkspaceJoin('${enrolmentId}')" style="height:44px; padding:0 24px; font-weight:800; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000;" ${ctaDisabled ? 'disabled' : ''}>
+                ${ctaTitle}
+              </button>
+              <span style="font-size:11.5px; color:var(--color-tertiary); font-style:italic;">${ctaCaption}</span>
+            </div>
+          </div>
+        `;
+      }
+    } else {
+      nextClassHtml = `
+        <div class="form-card" style="border-top:4px solid var(--color-secondary); padding:20px; text-align:center;">
+          <h4 style="font-size:13px; font-weight:800; text-transform:uppercase; color:var(--color-tertiary); margin-bottom:8px;">Self-Paced Learning Module</h4>
+          <p style="font-size:14.5px; margin-bottom:16px;">This course has immediate release access. Open module syllabus to start reading.</p>
+          <button class="btn btn-primary" onclick="window.location.hash='#courses/practical-ai'" style="height:40px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:700;">Continue Learning Course</button>
+        </div>
+      `;
+    }
+
+    // 2. Upcoming schedule summaries (hide Class 1 if completed)
+    const previewList = isEnglish ? (class1Approved ? upcoming.slice(1, 5) : upcoming.slice(0, 4)) : [];
+    const upcomingList = isEnglish ? previewList.map(u => `
       <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--color-outline-variant); padding:10px 0; font-size:13px;">
         <div>
           <span style="font-weight:700; color:var(--color-on-tertiary-fixed);">${u.date}</span>
@@ -13505,25 +13613,16 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
     `).join("") : `<div style="font-style:italic; color:var(--color-tertiary); font-size:13px;">No live classes scheduled for self-paced courses.</div>`;
 
     // 3. Grid blocks: progress summary, credits counters
-    // Read approval state from downstream records (set by Screen 18)
-    const class1Approved = isEnglish && state.entitlementLedger && state.entitlementLedger.some(e => e.id === 'ENT-DEBIT-CLASS-001');
-    const class1Report = isEnglish && state.trainerReports && state.trainerReports['CLASS-001'];
-    const class1FeedbackPublished = class1Report && class1Report.feedbackPublished;
-    const class1HomeworkPublished = class1Report && class1Report.homeworkPublished;
-    const usedClasses = class1Approved ? 1 : 0;
-    const remainingClasses = 12 - usedClasses;
-    const completedClasses = usedClasses;
-    const progressPercent = isEnglish ? Math.round((completedClasses / 12) * 100) : 35;
-
     const creditsHtml = `
       <div class="form-card" style="padding:16px;">
         <h4 style="font-size:13.5px; font-weight:800; margin-bottom:10px; color:var(--color-on-tertiary-fixed);">Class Credits Balance</h4>
-        <table style="width:100%; font-size:12.5px; border-collapse:collapse; line-height:22px;">
+        <table style="width:100%; font-size:12.5px; border-collapse:collapse; line-height:22px; margin-bottom:12px;">
           <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Included Classes:</td><td style="font-weight:700; text-align:right;">12</td></tr>
           <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Scheduled:</td><td style="font-weight:700; text-align:right; color:var(--color-secondary);">${isEnglish ? 12 : 0}</td></tr>
           <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Used / Approved:</td><td style="font-weight:700; text-align:right; color:${usedClasses > 0 ? '#137333' : 'var(--color-on-surface)'}">${usedClasses}</td></tr>
           <tr><td style="color:var(--color-tertiary);">Credits Remaining:</td><td style="font-weight:700; text-align:right; color:#137333;">${remainingClasses} Classes</td></tr>
         </table>
+        ${isEnglish ? `<button class="btn btn-secondary" onclick="openEntitlementUsageModal('${enrolmentId}')" style="width:100%; height:32px; font-size:11.5px; font-weight:700;">View Usage History</button>` : ''}
       </div>
     `;
 
@@ -13531,7 +13630,7 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
       <div class="form-card" style="padding:16px;">
         <h4 style="font-size:13.5px; font-weight:800; margin-bottom:10px; color:var(--color-on-tertiary-fixed);">Course Progress</h4>
         <div style="font-size:32px; font-weight:800; color:var(--color-secondary); margin-bottom:4px;">${isEnglish ? progressPercent + '%' : '35%'}</div>
-        <p style="font-size:12.5px; color:var(--color-tertiary); margin:0 0 10px 0;">Classes completed: <strong>${isEnglish ? completedClasses + ' / 12' : 'Course modules open'}</strong></p>
+        <p style="font-size:12.5px; color:var(--color-tertiary); margin:0 0 10px 0;">Classes completed: <strong>${isEnglish ? completedClasses + ' / 12 approved' : 'Course modules open'}</strong></p>
         <div style="font-size:12px; color:var(--color-tertiary); font-style:italic;">
           Next step: <strong>${isEnglish ? (class1Approved ? 'Attend Class 2 — Basic Sentence Formation' : 'Attend Class 1 speaking guide') : 'Submit Module 3 assignment'}</strong>
         </div>
@@ -13542,10 +13641,10 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
     let lowCreditsBanner = "";
     if (isLowCredits) {
       lowCreditsBanner = `
-        <div class="alarm-box animate-fade-in" style="background:#fffcf0; border-color:#f0d97a; color:#b06000; border-left-color:#f0d97a; margin-bottom:16px;">
-          <h4 style="color:#b06000;">⚠️ Low Class Credits Warning</h4>
-          <p style="color:#b06000;">You have only <strong>2 remaining paid classes</strong>. Renew your package to prevent scheduling disruptions.</p>
-          <button class="btn btn-secondary" onclick="showToastAlert('Opening packages options renewals.')" style="margin-top:8px; height:28px; font-size:11.5px; font-weight:700;">Renew Membership</button>
+        <div class="alarm-box animate-fade-in" style="background:#fffcf0; border-color:#f0d97a; color:#b06000; border-left:3px solid #f0d97a; margin-bottom:16px; border-radius:6px; padding:16px;">
+          <h4 style="color:#b06000; font-weight:800; font-size:14px; margin:0 0 4px 0;">⚠️ Low Class Credits Warning</h4>
+          <p style="color:#b06000; font-size:13px; margin:0 0 10px 0;">You have only <strong>2 remaining paid classes</strong>. Renew your package to prevent scheduling disruptions.</p>
+          <button class="btn btn-secondary" onclick="showToastAlert('Opening renewal packages options.')" style="height:28px; font-size:11.5px; font-weight:700; color:#b06000; border-color:#f0d97a; background:#fffdf5;">Renew Membership</button>
         </div>
       `;
     }
@@ -13553,6 +13652,7 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
     tabBodyHtml = `
       <div style="display:flex; flex-direction:column; gap:16px;">
         ${lowCreditsBanner}
+        ${class1BannerHtml}
         ${nextClassHtml}
 
         <div style="display:grid; grid-template-columns: 2fr 1fr; gap:20px; align-items:flex-start;">
@@ -13568,20 +13668,47 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
               ` : ''}
             </div>
 
+            <!-- Recent Homework Card -->
             <div class="form-card">
               <h3 class="form-section-title" style="margin-bottom:12px;">Recent Homework</h3>
-              ${(isEnglish && class1HomeworkPublished && class1Report) ? `
+              ${class1Approved ? `
               <div style="background:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:8px; padding:14px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                  <div style="font-size:14px; font-weight:800; color:var(--color-on-tertiary-fixed);">${class1Report.homework.title}</div>
-                  <span style="font-size:11px; font-weight:700; padding:2px 8px; border-radius:12px; background:#e8f0fe; color:#1a73e8; border:1px solid #b4c8f8;">To Do</span>
+                  <div style="font-size:14px; font-weight:800; color:var(--color-on-tertiary-fixed);">${state.homeworkRecords["HOMEWORK-CLASS-001"].title}</div>
+                  <span style="font-size:11px; font-weight:700; padding:2px 8px; border-radius:12px; background:#e8f0fe; color:#1a73e8; border:1px solid #b4c8f8;">${state.homeworkRecords["HOMEWORK-CLASS-001"].status}</span>
                 </div>
-                <div style="font-size:12.5px; color:var(--color-on-surface); margin-bottom:6px;">${class1Report.homework.instructions}</div>
-                <div style="font-size:11.5px; color:var(--color-tertiary);">Due: ${class1Report.homework.dueDate} &nbsp;|&nbsp; Class 1 &middot; Ayesha Rahman</div>
+                <div style="font-size:12.5px; color:var(--color-on-surface); margin-bottom:10px; line-height:1.5;">${state.homeworkRecords["HOMEWORK-CLASS-001"].instructions}</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <div style="font-size:11.5px; color:var(--color-tertiary);">Due: ${state.homeworkRecords["HOMEWORK-CLASS-001"].dueContext} &middot; Ayesha Rahman</div>
+                  <button class="btn btn-secondary" onclick="setTabSelectionState('${enrolmentId}', 'homework')" style="height:26px; font-size:11px; font-weight:700; padding:0 8px;">View Homework</button>
+                </div>
               </div>
               ` : `
               <div style="padding:16px; background-color:var(--color-surface-low); border:1px dashed var(--color-outline-variant); border-radius:6px; text-align:center; color:var(--color-tertiary); font-size:12.5px;">
                 No active homework yet. Homework links will display here after live sessions are completed.
+              </div>`}
+            </div>
+
+            <!-- Recent Feedback Card -->
+            <div class="form-card">
+              <h3 class="form-section-title" style="margin-bottom:12px;">Recent Feedback</h3>
+              ${class1Approved ? `
+              <div style="background:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:8px; padding:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                  <div style="font-size:12.5px; font-weight:800; color:var(--color-tertiary);">Class 1 Speaking & Introductions Feedback</div>
+                  <span style="font-size:11px; font-weight:700; padding:2px 8px; border-radius:12px; background:#e6f4ea; color:#137333; border:1px solid #c2e7cc;">Published</span>
+                </div>
+                <div style="font-size:13px; color:var(--color-on-surface); font-style:italic; line-height:1.5; margin-bottom:10px;">
+                  "Good first class. Continue practising short introductions aloud and focus on speaking slowly and clearly."
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <div style="font-size:11.5px; color:var(--color-tertiary);">Trainer: Ayesha Rahman &middot; 18 Aug 2026</div>
+                  <button class="btn btn-secondary" onclick="openClass1SummaryModal('feedback')" style="height:26px; font-size:11px; font-weight:700; padding:0 8px;">View Detailed Feedback</button>
+                </div>
+              </div>
+              ` : `
+              <div style="padding:16px; background-color:var(--color-surface-low); border:1px dashed var(--color-outline-variant); border-radius:6px; text-align:center; color:var(--color-tertiary); font-size:12.5px;">
+                No class feedback yet. Feedback from your trainer will appear here after live sessions are approved.
               </div>`}
             </div>
           </div>
@@ -13592,7 +13719,7 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
             ${progressCard}
             
             <div class="form-card" style="padding:16px;">
-              <h4 style="font-size:13.5px; font-weight:800; margin-bottom:8px; color:var(--color-on-tertiary-fixed);">Your Trainer</h4>
+              <h4 style="font-size:13.5px; font-weight:800; margin-bottom:8px; color:var(--color-on-surface-variant);">Your Trainer</h4>
               <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
                 <div style="width:36px; height:36px; background-color:var(--color-secondary-container); color:var(--color-on-secondary-container); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px;">
                   ${trainerName.split(" ").map(n => n[0]).join("")}
@@ -13610,53 +13737,127 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
     `;
 
   } else if (activeTab === "schedule") {
-    // Render list of scheduled occurrences
-    const scheduleRows = upcoming.map((u, idx) => `
-      <tr>
-        <td style="padding:10px; font-weight:700; color:var(--color-on-tertiary-fixed);">Class ${idx+1} of 12</td>
-        <td style="padding:10px; font-size:13px;">${u.date}</td>
-        <td style="padding:10px; font-family:monospace; font-size:12.5px;">${u.time}</td>
-        <td style="padding:10px; font-size:13px; color:var(--color-tertiary);">${u.trainer}</td>
-        <td style="padding:10px;"><span class="badge-status status-ready" style="font-size:10px; ${u.status === 'Cancelled' ? 'background-color:#fce8e6; color:#a50e0e; border-color:#fad2cf;' : ''}">${u.status}</span></td>
-        <td style="padding:10px; text-align:center;">
-          <button class="btn btn-secondary" onclick="openLearnerClassDetailsModal('${u.id}', '${u.date}', '${u.time}', '${u.trainer}', '${u.status}')" style="padding:3px 6px; font-size:11.5px; height:24px;">View</button>
-        </td>
-      </tr>
-    `).join("");
+    let scheduleHtml = "";
 
-    tabBodyHtml = `
-      <div class="form-card">
-        <h3 class="form-section-title" style="margin-bottom:12px;">Full Class Schedule</h3>
-        
-        <div style="background-color:var(--color-surface-lowest); border:1px solid var(--color-outline-variant); border-radius:8px; overflow:hidden; margin-bottom:16px;">
-          <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
-            <thead>
-              <tr style="background-color:var(--color-surface-low); border-bottom:1px solid var(--color-outline-variant);">
-                <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Syllabus Session</th>
-                <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Date</th>
-                <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Time Slot</th>
-                <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Trainer</th>
-                <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Status</th>
-                <th style="padding:10px; text-align:center; font-weight:800; color:var(--color-tertiary);">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${scheduleRows || `<tr><td colspan="6" style="padding:20px; text-align:center; font-style:italic; color:var(--color-tertiary);">No scheduled sessions available.</td></tr>`}
-            </tbody>
-          </table>
+    if (class1Approved) {
+      // Class 1 completed, Class 2-12 upcoming
+      const upcomingRows = upcoming.slice(1).map((u, idx) => `
+        <tr style="border-bottom:1px solid var(--color-outline-variant);">
+          <td style="padding:10px; font-weight:700; color:var(--color-on-tertiary-fixed);">Class ${idx+2} of 12</td>
+          <td style="padding:10px; font-size:13px;">${u.date}</td>
+          <td style="padding:10px; font-family:monospace; font-size:12.5px;">${u.time} PKT</td>
+          <td style="padding:10px; font-size:13px; color:var(--color-tertiary);">${u.trainer}</td>
+          <td style="padding:10px;"><span class="badge-status status-ready" style="font-size:10px; background-color:#e8f0fe; color:#1a73e8; border-color:#b4c8f8;">${u.status}</span></td>
+          <td style="padding:10px; text-align:center;">
+            <button class="btn btn-secondary" onclick="openLearnerClassDetailsModal('${u.id}', '${u.date}', '${u.time}', '${u.trainer}', '${u.status}')" style="padding:3px 6px; font-size:11.5px; height:24px;">View</button>
+          </td>
+        </tr>
+      `).join("");
+
+      scheduleHtml = `
+        <div class="form-card" style="margin-bottom:16px;">
+          <h3 class="form-section-title" style="margin-bottom:12px;">Past Classes</h3>
+          <div style="background-color:var(--color-surface-lowest); border:1px solid var(--color-outline-variant); border-radius:8px; overflow:hidden;">
+            <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
+              <thead>
+                <tr style="background-color:var(--color-surface-low); border-bottom:1px solid var(--color-outline-variant);">
+                  <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Syllabus Session</th>
+                  <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Date</th>
+                  <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Trainer</th>
+                  <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Status</th>
+                  <th style="padding:10px; text-align:center; font-weight:800; color:var(--color-tertiary);">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid var(--color-outline-variant);">
+                  <td style="padding:10px; font-weight:700;">Class 1 of 12</td>
+                  <td style="padding:10px; color:var(--color-tertiary);">18 Aug 2026 &middot; 7:00 PM</td>
+                  <td style="padding:10px;">Ayesha Rahman</td>
+                  <td style="padding:10px;">
+                    <span class="badge-status status-ready" style="font-size:10px; background-color:#e6f4ea; color:#137333; border-color:#c2e7cc;">Completed</span>
+                    <span style="font-size:11px; margin-left:4px; font-weight:700; color:#137333;">Present</span>
+                  </td>
+                  <td style="padding:10px; text-align:center; display:flex; gap:6px; justify-content:center; align-items:center;">
+                    <button class="btn btn-secondary" onclick="openClass1SummaryModal('details')" style="padding:3px 6px; font-size:11.5px; height:24px; font-weight:700;">View Summary</button>
+                    <button class="btn btn-secondary" onclick="openClass1SummaryModal('feedback')" style="padding:3px 6px; font-size:11.5px; height:24px; font-weight:700;">View Feedback</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
-    `;
+
+        <div class="form-card">
+          <h3 class="form-section-title" style="margin-bottom:12px;">Upcoming Schedule</h3>
+          <div style="background-color:var(--color-surface-lowest); border:1px solid var(--color-outline-variant); border-radius:8px; overflow:hidden;">
+            <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
+              <thead>
+                <tr style="background-color:var(--color-surface-low); border-bottom:1px solid var(--color-outline-variant);">
+                  <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Syllabus Session</th>
+                  <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Date</th>
+                  <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Time Slot</th>
+                  <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Trainer</th>
+                  <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Status</th>
+                  <th style="padding:10px; text-align:center; font-weight:800; color:var(--color-tertiary);">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${upcomingRows}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    } else {
+      // Class 1 Awaiting Review or Before Class 1
+      const scheduleRows = upcoming.map((u, idx) => `
+        <tr style="border-bottom:1px solid var(--color-outline-variant);">
+          <td style="padding:10px; font-weight:700; color:var(--color-on-tertiary-fixed);">Class ${idx+1} of 12</td>
+          <td style="padding:10px; font-size:13px;">${u.date}</td>
+          <td style="padding:10px; font-family:monospace; font-size:12.5px;">${u.time} PKT</td>
+          <td style="padding:10px; font-size:13px; color:var(--color-tertiary);">${u.trainer}</td>
+          <td style="padding:10px;">
+            ${(idx === 0 && class1AwaitingReview) 
+              ? `<span class="badge-status status-submitted" style="font-size:10px; background-color:#fffcf0; color:#b06000; border-color:#f0d97a;">Awaiting Review</span>` 
+              : `<span class="badge-status status-ready" style="font-size:10px;">${u.status}</span>`}
+          </td>
+          <td style="padding:10px; text-align:center;">
+            <button class="btn btn-secondary" onclick="openLearnerClassDetailsModal('${u.id}', '${u.date}', '${u.time}', '${u.trainer}', '${u.status}')" style="padding:3px 6px; font-size:11.5px; height:24px;">View</button>
+          </td>
+        </tr>
+      `).join("");
+
+      scheduleHtml = `
+        <div class="form-card">
+          <h3 class="form-section-title" style="margin-bottom:12px;">Full Class Schedule</h3>
+          <div style="background-color:var(--color-surface-lowest); border:1px solid var(--color-outline-variant); border-radius:8px; overflow:hidden;">
+            <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
+              <thead>
+                <tr style="background-color:var(--color-surface-low); border-bottom:1px solid var(--color-outline-variant);">
+                  <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Syllabus Session</th>
+                  <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Date</th>
+                  <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Time Slot</th>
+                  <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Trainer</th>
+                  <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Status</th>
+                  <th style="padding:10px; text-align:center; font-weight:800; color:var(--color-tertiary);">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${scheduleRows}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    tabBodyHtml = scheduleHtml;
 
   } else if (activeTab === "attendance") {
-    // Read approval state
-    const c1Approved = isEnglish && state.entitlementLedger && state.entitlementLedger.some(e => e.id === 'ENT-DEBIT-CLASS-001');
-    const c1Report = isEnglish && state.trainerReports && state.trainerReports['CLASS-001'];
-    tabBodyHtml = `
-      <div class="form-card">
-        <h3 class="form-section-title" style="margin-bottom:12px;">Attendance History</h3>
-        <p style="font-size:13.5px; color:var(--color-tertiary); margin-bottom:20px;">Your completed classes attendance marks will appear here. Note: trial classrooms are kept separate.</p>
-        ${c1Approved ? `
+    let attendanceHtml = "";
+
+    if (class1Approved) {
+      attendanceHtml = `
         <div style="background:var(--color-surface-lowest); border:1px solid var(--color-outline-variant); border-radius:8px; overflow:hidden;">
           <table style="width:100%; border-collapse:collapse; font-size:13px;">
             <thead><tr style="background:var(--color-surface-low); border-bottom:1px solid var(--color-outline-variant);">
@@ -13665,6 +13866,7 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
               <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Duration</th>
               <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Trainer</th>
               <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Outcome</th>
+              <th style="padding:10px; text-align:center; font-weight:800; color:var(--color-tertiary);">Action</th>
             </tr></thead>
             <tbody>
               <tr style="border-bottom:1px solid var(--color-outline-variant);">
@@ -13673,6 +13875,9 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
                 <td style="padding:10px;">40 min connected</td>
                 <td style="padding:10px;">Ayesha Rahman</td>
                 <td style="padding:10px;"><span style="font-size:11px; font-weight:700; padding:3px 10px; border-radius:12px; background:#e6f4ea; color:#137333; border:1px solid #c2e7cc;">Present</span></td>
+                <td style="padding:10px; text-align:center;">
+                  <button class="btn btn-secondary" onclick="openAttendanceDetailsModal('CLASS-001')" style="padding:3px 6px; font-size:11.5px; height:24px;">View Details</button>
+                </td>
               </tr>
               ${upcoming.slice(1, 4).map((u, i) => `
               <tr style="border-bottom:1px solid var(--color-outline-variant);">
@@ -13681,58 +13886,132 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
                 <td style="padding:10px; color:var(--color-tertiary);">—</td>
                 <td style="padding:10px; color:var(--color-tertiary);">${u.trainer}</td>
                 <td style="padding:10px;"><span style="font-size:11px; padding:3px 10px; border-radius:12px; background:var(--color-surface-low); color:var(--color-tertiary); border:1px solid var(--color-outline-variant);">Upcoming</span></td>
+                <td style="padding:10px; text-align:center;">—</td>
               </tr>`).join('')}
             </tbody>
           </table>
         </div>
-        ` : `
+      `;
+    } else if (class1AwaitingReview) {
+      attendanceHtml = `
+        <div style="background:var(--color-surface-lowest); border:1px solid var(--color-outline-variant); border-radius:8px; overflow:hidden;">
+          <table style="width:100%; border-collapse:collapse; font-size:13px;">
+            <thead><tr style="background:var(--color-surface-low); border-bottom:1px solid var(--color-outline-variant);">
+              <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Class</th>
+              <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Date</th>
+              <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Duration</th>
+              <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Trainer</th>
+              <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Outcome</th>
+              <th style="padding:10px; text-align:center; font-weight:800; color:var(--color-tertiary);">Action</th>
+            </tr></thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--color-outline-variant);">
+                <td style="padding:10px; font-weight:700;">Class 1 of 12</td>
+                <td style="padding:10px; color:var(--color-tertiary);">18 Aug 2026</td>
+                <td style="padding:10px;">40 min connected</td>
+                <td style="padding:10px;">Ayesha Rahman</td>
+                <td style="padding:10px;"><span style="font-size:11px; font-weight:700; padding:3px 10px; border-radius:12px; background:#fffcf0; color:#b06000; border:1px solid #f0d97a;">Pending Finalization</span></td>
+                <td style="padding:10px; text-align:center;">—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+    } else {
+      attendanceHtml = `
         <div style="padding:32px; background-color:var(--color-surface-low); border:1px dashed var(--color-outline-variant); border-radius:6px; text-align:center; color:var(--color-tertiary);">
           <div style="font-size:24px; margin-bottom:8px;">📅</div>
           <div style="font-weight:700; color:var(--color-on-tertiary-fixed); margin-bottom:4px;">No Attendance Records Yet</div>
           <div>Completed live slots will display status tags (Present / Absent) after trainer reports are approved by Operations.</div>
-        </div>`}
+        </div>
+      `;
+    }
+
+    tabBodyHtml = `
+      <div class="form-card">
+        <h3 class="form-section-title" style="margin-bottom:12px;">Attendance History</h3>
+        <p style="font-size:13.5px; color:var(--color-tertiary); margin-bottom:20px;">Your completed classes attendance marks will appear here. Note: trial classrooms are kept separate.</p>
+        ${attendanceHtml}
       </div>
     `;
 
   } else if (activeTab === "homework") {
-    // Read approval state
-    const c1HomeworkPub = isEnglish && state.trainerReports && state.trainerReports['CLASS-001'] && state.trainerReports['CLASS-001'].homeworkPublished;
-    const c1Rpt = isEnglish && state.trainerReports && state.trainerReports['CLASS-001'];
-    tabBodyHtml = `
-      <div class="form-card">
-        <h3 class="form-section-title" style="margin-bottom:12px;">Homework Assignments</h3>
-        ${(c1HomeworkPub && c1Rpt && c1Rpt.homework.enabled) ? `
-        <div style="display:flex; flex-direction:column; gap:12px;">
-          <div style="background:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:8px; padding:16px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+    const hw = state.homeworkRecords["HOMEWORK-CLASS-001"];
+    let homeworkHtml = "";
+
+    if (class1Approved && hw) {
+      homeworkHtml = `
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div style="background:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:8px; padding:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
               <div>
-                <div style="font-size:15px; font-weight:800; color:var(--color-on-tertiary-fixed);">${c1Rpt.homework.title}</div>
-                <div style="font-size:12px; color:var(--color-tertiary); margin-top:2px;">Class 1 &middot; Ayesha Rahman &middot; ${c1Rpt.homework.type}</div>
+                <h4 style="font-size:16px; font-weight:800; color:var(--color-on-tertiary-fixed); margin:0 0 4px 0;">${hw.title}</h4>
+                <div style="font-size:12.5px; color:var(--color-tertiary);">${hw.type} &middot; Assigned from Class 1 &middot; Trainer: ${hw.trainer}</div>
               </div>
-              <span style="font-size:11.5px; font-weight:700; padding:3px 12px; border-radius:12px; background:#e8f0fe; color:#1a73e8; border:1px solid #b4c8f8;">To Do</span>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:12px; font-weight:700; color:var(--color-tertiary);">Status:</span>
+                <select class="form-input" style="width:120px; height:30px; font-size:12px; margin-bottom:0; font-weight:700;" onchange="updateHomeworkStatus('HOMEWORK-CLASS-001', this.value)">
+                  <option value="To Do" ${hw.status === 'To Do' ? 'selected' : ''}>To Do</option>
+                  <option value="In Progress" ${hw.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                  <option value="Practised" ${hw.status === 'Practised' ? 'selected' : ''}>Practised</option>
+                </select>
+              </div>
             </div>
-            <div style="font-size:13.5px; color:var(--color-on-surface); line-height:1.6; margin-bottom:10px;">${c1Rpt.homework.instructions}</div>
-            <div style="font-size:12px; color:var(--color-tertiary);">Due: ${c1Rpt.homework.dueDate}</div>
+            
+            <p style="font-size:13.5px; color:var(--color-on-surface); line-height:1.6; margin-bottom:16px;">
+              ${hw.instructions}
+            </p>
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; border-top:1px solid var(--color-outline-variant); padding-top:12px;">
+              <span style="font-size:12.5px; color:#ba1a1a; font-weight:700;">⏱️ Due: ${hw.dueContext}</span>
+              <div style="display:flex; gap:8px;">
+                <button class="btn btn-secondary" onclick="openHomeworkDetailModal('HOMEWORK-CLASS-001')" style="height:32px; font-size:12px; font-weight:700;">View Details</button>
+                ${hw.status !== 'Practised' ? `<button class="btn btn-primary" onclick="updateHomeworkStatus('HOMEWORK-CLASS-001', 'Practised')" style="height:32px; font-size:12px; font-weight:700; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000;">Mark as Practised</button>` : ''}
+              </div>
+            </div>
           </div>
         </div>
-        ` : `
+      `;
+    } else if (class1AwaitingReview) {
+      homeworkHtml = `
+        <div style="padding:32px; background-color:var(--color-surface-low); border:1px dashed var(--color-outline-variant); border-radius:6px; text-align:center; color:var(--color-tertiary);">
+          <div style="font-size:24px; margin-bottom:8px;">📝</div>
+          <div style="font-weight:700; color:var(--color-on-tertiary-fixed); margin-bottom:4px;">Homework Under Review</div>
+          <div>Homework tasks assigned during Class 1 will be published as soon as the trainer's report is approved by Operations.</div>
+        </div>
+      `;
+    } else {
+      homeworkHtml = `
         <div style="padding:32px; background-color:var(--color-surface-low); border:1px dashed var(--color-outline-variant); border-radius:6px; text-align:center; color:var(--color-tertiary);">
           <div style="font-size:24px; margin-bottom:8px;">📝</div>
           <div style="font-weight:700; color:var(--color-on-tertiary-fixed); margin-bottom:4px;">No Homework Assigned Yet</div>
           <div>Active exercises and speaking homework sheets will appear here once live class reports are approved by Operations.</div>
-        </div>`}
+        </div>
+      `;
+    }
+
+    tabBodyHtml = `
+      <div class="form-card">
+        <h3 class="form-section-title" style="margin-bottom:12px;">Homework Assignments</h3>
+        ${homeworkHtml}
       </div>
     `;
 
   } else if (activeTab === "resources") {
     // Resources catalog
-    const resources = [
+    const generalResources = [
       { name: "Beginner Speaking Guide", type: "PDF Document", size: "2.4 MB" },
       { name: "English Pronunciation Basics", type: "Audio Track", size: "12.8 MB" },
       { name: "General Vocabulary Practice Sheet", type: "PDF Worksheet", size: "1.1 MB" }
     ];
 
-    const cards = resources.map(r => `
+    const class1Resources = [
+      { name: "Beginner Speaking Guide", type: "PDF Document", size: "2.4 MB", context: "Added from Class 1" },
+      { name: "English Pronunciation Basics", type: "Audio Track", size: "12.8 MB", context: "Added from Class 1" },
+      { name: "Introduction Vocabulary Practice Sheet", type: "PDF Worksheet", size: "1.2 MB", context: "Added from Class 1" }
+    ];
+
+    const generalCards = generalResources.map(r => `
       <div class="form-card" style="padding:16px; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
         <div>
           <h4 style="font-size:14px; font-weight:700; color:var(--color-on-tertiary-fixed); margin:0 0 4px 0;">${r.name}</h4>
@@ -13742,43 +14021,106 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
       </div>
     `).join("");
 
+    const class1Cards = class1Resources.map(r => `
+      <div class="form-card" style="padding:16px; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div>
+          <h4 style="font-size:14px; font-weight:700; color:var(--color-on-tertiary-fixed); margin:0 0 4px 0;">${r.name}</h4>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:12px; color:var(--color-tertiary);">${r.type} &middot; ${r.size}</span>
+            <span class="badge-status status-ready" style="font-size:9.5px; background-color:#e6f4ea; color:#137333; border-color:#c2e7cc; padding:1px 6px;">${r.context}</span>
+          </div>
+        </div>
+        <button class="btn btn-secondary" onclick="showToastAlert('Downloading class resource ${r.name}')" style="height:32px; font-size:12px; font-weight:700;">Open & View</button>
+      </div>
+    `).join("");
+
     tabBodyHtml = `
       <div>
-        <h3 style="font-size:16px; font-weight:800; margin-bottom:12px; color:var(--color-on-tertiary-fixed);">Course Resources & Syllabus Documents</h3>
-        ${cards}
+        <h3 style="font-size:16px; font-weight:800; margin-bottom:16px; color:var(--color-on-tertiary-fixed);">Course Resources & Syllabus Documents</h3>
+        
+        <div style="margin-bottom:24px;">
+          <h4 style="font-size:14px; font-weight:800; margin-bottom:12px; color:var(--color-tertiary);">General Syllabus Resources</h4>
+          ${generalCards}
+        </div>
+
+        ${class1Approved ? `
+        <div>
+          <h4 style="font-size:14px; font-weight:800; margin-bottom:12px; color:var(--color-tertiary);">Shared from Class 1</h4>
+          ${class1Cards}
+        </div>
+        ` : ''}
       </div>
     `;
 
   } else if (activeTab === "progress") {
-    // Progress detail timeline logs
-    tabBodyHtml = `
-      <div class="form-card">
-        <h3 class="form-section-title" style="margin-bottom:12px;">Progress Audit Logs</h3>
-        <table style="width:100%; font-size:13px; border-collapse:collapse; margin-bottom:20px; line-height:24px;">
-          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Current Milestone Stage:</td><td style="font-weight:700; text-align:right;">Getting Started</td></tr>
-          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Completed Classes:</td><td style="font-weight:700; text-align:right;">0 / 12</td></tr>
-          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Target Proficiency Level:</td><td style="font-weight:700; text-align:right; color:var(--color-secondary);">Beginner Spoken English</td></tr>
-        </table>
+    let progressHtml = "";
+    if (class1Approved) {
+      progressHtml = `
+        <div class="form-card">
+          <h3 class="form-section-title" style="margin-bottom:12px;">Progress Audit Logs</h3>
+          <table style="width:100%; font-size:13px; border-collapse:collapse; margin-bottom:20px; line-height:24px;">
+            <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Current Milestone Stage:</td><td style="font-weight:700; text-align:right;">Getting Started</td></tr>
+            <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Completed Classes:</td><td style="font-weight:700; text-align:right; color:#137333;">1 / 12 approved live classes completed</td></tr>
+            <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Remaining Classes:</td><td style="font-weight:700; text-align:right;">11</td></tr>
+            <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Target Proficiency Level:</td><td style="font-weight:700; text-align:right; color:var(--color-secondary);">Beginner Spoken English</td></tr>
+          </table>
 
-        <h4 style="font-size:13.5px; font-weight:700; margin-bottom:10px;">Workspace Access Log Timeline:</h4>
-        <ul class="timeline-evidence" style="font-size:12px; margin-bottom:0;">
-          <li class="timeline-evidence-item"><span style="font-weight:700;">14 Aug · 1:12 PM</span> - Course schedule plan mapped</li>
-          <li class="timeline-evidence-item"><span style="font-weight:700;">14 Aug · 12:43 PM</span> - Enrolment activated</li>
-          <li class="timeline-evidence-item"><span style="font-weight:700;">14 Aug · 12:42 PM</span> - Academic access grant generated</li>
-        </ul>
-      </div>
-    `;
+          <h4 style="font-size:13.5px; font-weight:700; margin-bottom:10px;">Workspace Access Log Timeline:</h4>
+          <ul class="timeline-evidence" style="font-size:12px; margin-bottom:0;">
+            <li class="timeline-evidence-item" style="border-left: 2px solid #137333;"><span style="font-weight:700; color:#137333;">18 Aug &middot; 8:01 PM</span> - Progress updated (PROGRESS-CLASS-001)</li>
+            <li class="timeline-evidence-item" style="border-left: 2px solid #137333;"><span style="font-weight:700; color:#137333;">18 Aug &middot; 8:00 PM</span> - Class 1 approved by Operations reviewer</li>
+            <li class="timeline-evidence-item" style="border-left: 2px solid #137333;"><span style="font-weight:700; color:#137333;">18 Aug &middot; 7:45 PM</span> - Class 1 delivered (1-to-1 session completed)</li>
+            <li class="timeline-evidence-item"><span style="font-weight:700;">14 Aug &middot; 1:12 PM</span> - Course schedule plan mapped (12 paid classes scheduled)</li>
+            <li class="timeline-evidence-item"><span style="font-weight:700;">14 Aug &middot; 12:43 PM</span> - Enrolment activated</li>
+            <li class="timeline-evidence-item"><span style="font-weight:700;">14 Aug &middot; 12:42 PM</span> - Academic access grant generated</li>
+          </ul>
+        </div>
+      `;
+    } else {
+      progressHtml = `
+        <div class="form-card">
+          <h3 class="form-section-title" style="margin-bottom:12px;">Progress Audit Logs</h3>
+          <table style="width:100%; font-size:13px; border-collapse:collapse; margin-bottom:20px; line-height:24px;">
+            <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Current Milestone Stage:</td><td style="font-weight:700; text-align:right;">Getting Started</td></tr>
+            <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Completed Classes:</td><td style="font-weight:700; text-align:right;">0 / 12</td></tr>
+            <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Target Proficiency Level:</td><td style="font-weight:700; text-align:right; color:var(--color-secondary);">Beginner Spoken English</td></tr>
+          </table>
+
+          <h4 style="font-size:13.5px; font-weight:700; margin-bottom:10px;">Workspace Access Log Timeline:</h4>
+          <ul class="timeline-evidence" style="font-size:12px; margin-bottom:0;">
+            <li class="timeline-evidence-item"><span style="font-weight:700;">14 Aug &middot; 1:12 PM</span> - Course schedule plan mapped</li>
+            <li class="timeline-evidence-item"><span style="font-weight:700;">14 Aug &middot; 12:43 PM</span> - Enrolment activated</li>
+            <li class="timeline-evidence-item"><span style="font-weight:700;">14 Aug &middot; 12:42 PM</span> - Academic access grant generated</li>
+          </ul>
+        </div>
+      `;
+    }
+    tabBodyHtml = progressHtml;
 
   } else if (activeTab === "messages") {
-    // Messages list & send input simulation
-    const msgListHtml = state.courseWorkspaceState.activeMessages.map(m => `
-      <div style="margin-bottom:14px; text-align:${m.role === 'Trainer' ? 'left' : 'right'};">
-        <div style="display:inline-block; max-width:80%; background-color:${m.role === 'Trainer' ? 'var(--color-surface-container-high)' : 'var(--color-secondary-container)'}; color:${m.role === 'Trainer' ? 'var(--color-on-surface)' : 'var(--color-on-secondary-container)'}; padding:10px 14px; border-radius:12px; font-size:13px; text-align:left;">
-          <div style="font-size:10.5px; font-weight:700; color:var(--color-tertiary); margin-bottom:3px;">${m.sender} (${m.role}) &middot; ${m.time}</div>
-          <div>${m.text}</div>
+    // Filter messages based on state
+    const messagesToRender = state.courseWorkspaceState.activeMessages.filter(m => {
+      // Hide the post-class message if class is not completed yet
+      if (m.text.includes("Great work today") && !class1Approved) {
+        return false;
+      }
+      return true;
+    });
+
+    const msgListHtml = messagesToRender.map(m => {
+      const isNewBadge = (m.isNew && class1Approved) ? `<span class="badge-status status-submitted" style="font-size:9px; margin-left:4px; padding:1px 4px; background:#1a73e8; color:#fff; border:none;">New</span>` : "";
+      return `
+        <div style="margin-bottom:14px; text-align:${m.role === 'Trainer' ? 'left' : 'right'};">
+          <div style="display:inline-block; max-width:80%; background-color:${m.role === 'Trainer' ? 'var(--color-surface-container-high)' : 'var(--color-secondary-container)'}; color:${m.role === 'Trainer' ? 'var(--color-on-surface)' : 'var(--color-on-secondary-container)'}; padding:10px 14px; border-radius:12px; font-size:13px; text-align:left;">
+            <div style="font-size:10.5px; font-weight:700; color:var(--color-tertiary); margin-bottom:3px; display:flex; align-items:center; gap:4px;">
+              <span>${m.sender} (${m.role}) &middot; ${m.time}</span>
+              ${isNewBadge}
+            </div>
+            <div>${m.text}</div>
+          </div>
         </div>
-      </div>
-    `).join("");
+      `;
+    }).join("");
 
     tabBodyHtml = `
       <div class="form-card" style="padding:16px;">
@@ -13796,31 +14138,70 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
     `;
 
   } else if (activeTab === "membership") {
-    // Membership SNAPSHOT info
+    // Membership terms
     tabBodyHtml = `
       <div class="form-card">
         <h3 class="form-section-title" style="margin-bottom:12px;">Membership & Access Terms</h3>
         
-        <div style="background-color:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:8px; padding:16px; font-size:13px; line-height:22px; margin-bottom:20px;">
-          <div>Membership Ref: <strong>${membershipId}</strong></div>
+        <div style="background-color:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:8px; padding:16px; font-size:13px; line-height:24px; margin-bottom:20px;">
+          <div>Membership Ref: <strong>MEM-TERM-001</strong></div>
           <div>Status: <strong style="color:#137333;">Active</strong></div>
           <div>Product Term: <strong>Spoken English Live Online — 12 Classes</strong></div>
           <div>Access Grant: <strong>ACCESS-001 (Active)</strong></div>
-          <div>Payment reference: <strong>PAY-TXN-001 &middot; Confirmed</strong></div>
-          <div>Official school Bill Receipt: <strong>IHS-REC-001</strong></div>
+          <div style="border-top:1px solid var(--color-outline-variant); margin-top:8px; padding-top:8px;">
+            <div>Total Included: <strong>12 Classes</strong></div>
+            <div>Total Used / Approved: <strong style="color:${usedClasses > 0 ? '#137333' : 'inherit'};">${usedClasses} Class${usedClasses === 1 ? '' : 'es'}</strong></div>
+            <div>Remaining Balance: <strong style="color:#137333;">${remainingClasses} Classes</strong></div>
+          </div>
+          <div style="border-top:1px solid var(--color-outline-variant); margin-top:8px; padding-top:8px;">
+            <div>Payment Reference: <strong>PAY-TXN-001 &middot; Confirmed</strong></div>
+            <div>Official school Bill Receipt: <strong>IHS-REC-001</strong></div>
+          </div>
         </div>
 
         <div style="display:flex; gap:12px;">
           <button class="btn btn-secondary" onclick="previewLearnerOfficialReceipt()" style="height:38px; font-weight:700;">View Official Receipt</button>
+          ${isEnglish ? `<button class="btn btn-secondary" onclick="openEntitlementUsageModal('${enrolmentId}')" style="height:38px; font-weight:700;">View Class Usage Drawer</button>` : ''}
           <button class="btn btn-secondary" onclick="showToastAlert('Opening renewal package catalog.')" style="height:38px; font-weight:700;">View Renewal Options</button>
         </div>
       </div>
     `;
   }
 
+  // Render notification bar if any active
+  let notificationsHtml = "";
+  if (class1Approved) {
+    const list = [
+      { id: "summary", text: "Class 1 Summary Available", icon: "🔔", action: `openClass1SummaryModal('details')` },
+      { id: "homework", text: "Homework Assigned: Introduce Yourself Practice", icon: "📝", action: `setTabSelectionState('${enrolmentId}', 'homework')` },
+      { id: "feedback", text: "Trainer Feedback Available for Class 1", icon: "💬", action: `openClass1SummaryModal('feedback')` }
+    ];
+
+    const activeNotifs = list.filter(n => !state.courseWorkspaceState.dismissedNotifications.includes(n.id));
+    if (activeNotifs.length > 0) {
+      notificationsHtml = `
+        <div class="notifications-bar" style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;">
+          ${activeNotifs.map(n => `
+            <div style="background-color:#e8f0fe; border:1px solid #d2e3fc; color:#1a73e8; border-radius:6px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; font-size:12.5px; font-weight:600;" class="animate-fade-in">
+              <span style="display:flex; align-items:center; gap:8px; cursor:pointer;" onclick="${n.action}">
+                <span>${n.icon}</span>
+                <span>${n.text}</span>
+                <span class="badge-status status-submitted" style="font-size:10px; background-color:#1a73e8; color:#fff; border:none; padding:1px 6px;">New</span>
+              </span>
+              <button onclick="dismissLearnerNotification('${enrolmentId}', '${n.id}')" style="background:none; border:none; color:#1a73e8; cursor:pointer; font-weight:800; font-size:16px; line-height:1;">&times;</button>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+  }
+
   view.innerHTML = `
     <!-- Top switcher controls -->
     ${switcherHtml}
+    
+    <!-- Notifications -->
+    ${notificationsHtml}
     
     <!-- Title header -->
     ${headerHtml}
@@ -13842,16 +14223,185 @@ window.setTabSelectionState = function(enrolmentId, tabId) {
 };
 
 // Change workspace demo state
-window.changeWorkspaceDemoState = function(enrolmentId, val) {
-  state.courseWorkspaceState.demoJoinState = val;
+window.changeDemoCourseState = function(enrolmentId, val) {
+  state.courseWorkspaceState.demoCourseState = val;
   window.renderLearnerCourseWorkspace(enrolmentId);
-  showToastAlert(`Join CTA button state shifted to ${val}.`);
+  showToastAlert(`Demo course state shifted to: ${val}`);
 };
 
-window.changeWorkspaceAccessState = function(enrolmentId, val) {
-  state.courseWorkspaceState.accessState = val;
+// Dismiss banner
+window.dismissClass1Banner = function(enrolmentId) {
+  state.courseWorkspaceState.class1BannerDismissed = true;
   window.renderLearnerCourseWorkspace(enrolmentId);
-  showToastAlert(`Access permissions state shifted to ${val}.`);
+};
+
+// Dismiss notification
+window.dismissLearnerNotification = function(enrolmentId, id) {
+  if (!state.courseWorkspaceState.dismissedNotifications.includes(id)) {
+    state.courseWorkspaceState.dismissedNotifications.push(id);
+  }
+  window.renderLearnerCourseWorkspace(enrolmentId);
+};
+
+// Update homework status
+window.updateHomeworkStatus = function(hwId, val) {
+  if (state.homeworkRecords[hwId]) {
+    state.homeworkRecords[hwId].status = val;
+    window.renderLearnerCourseWorkspace("ENR-001");
+    showToastAlert(`Homework status marked as ${val}`);
+  }
+};
+
+// Open Class 1 Summary modal (learner-safe)
+window.openClass1SummaryModal = function(section) {
+  const highlightStyle = "border:2px solid var(--color-secondary); background-color:var(--color-surface-low); padding:12px; border-radius:8px;";
+  const normalStyle = "border:1px solid var(--color-outline-variant); padding:12px; border-radius:8px; background-color:var(--color-surface-lowest);";
+
+  const content = `
+    <div style="text-align:left; font-size:13px; line-height:1.6; display:flex; flex-direction:column; gap:16px;">
+      
+      <!-- Session Details Card -->
+      <div style="${section === 'details' ? highlightStyle : normalStyle}">
+        <h4 style="font-size:14px; font-weight:800; color:var(--color-on-tertiary-fixed); margin:0 0 8px 0;">Class 1 Details & Delivery Summary</h4>
+        <table style="width:100%; border-collapse:collapse; font-size:12.5px; line-height:22px;">
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Date & Time:</td><td style="font-weight:700; text-align:right;">18 August 2026 &middot; 7:00 PM PKT</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Trainer:</td><td style="font-weight:700; text-align:right;">Ayesha Rahman</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Attendance Outcome:</td><td style="font-weight:700; text-align:right; color:#137333;">Present</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Recorded Duration:</td><td style="font-weight:700; text-align:right;">40 minutes connected</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Delivery Status:</td><td style="font-weight:700; text-align:right; color:#137333;">Approved & Finalized</td></tr>
+        </table>
+        <div style="font-size:11px; color:var(--color-tertiary); margin-top:8px; font-style:italic;">Note: A brief connection interruption of 2 minutes was successfully resolved. Final outcome: Present.</div>
+      </div>
+
+      <!-- Syllabus Covered Card -->
+      <div style="${normalStyle}">
+        <h4 style="font-size:14px; font-weight:800; color:var(--color-on-tertiary-fixed); margin:0 0 8px 0;">What We Covered</h4>
+        <ul style="margin:0; padding-left:18px; font-size:12.5px; display:flex; flex-direction:column; gap:4px;">
+          <li>👋 <strong>Greetings:</strong> Contextual greetings for formal/informal settings.</li>
+          <li>🗣️ <strong>Introductions:</strong> Structure of a short spoken introduction.</li>
+          <li>📚 <strong>Everyday vocabulary:</strong> Words for daily routines and activities.</li>
+          <li>🎙️ <strong>Pronunciation practice:</strong> Correct intonation for simple questions.</li>
+        </ul>
+      </div>
+
+      <!-- Trainer Feedback Card -->
+      <div style="${section === 'feedback' ? highlightStyle : normalStyle}">
+        <h4 style="font-size:14px; font-weight:800; color:var(--color-on-tertiary-fixed); margin:0 0 8px 0;">Trainer Feedback & Guidance</h4>
+        <p style="font-size:13.5px; font-style:italic; margin:0 0 10px 0; color:var(--color-on-surface); padding-left:8px; border-left:3px solid var(--color-secondary);">
+          "Good first class. Continue practising short introductions aloud and focus on speaking slowly and clearly."
+        </p>
+        <div style="margin-top:10px; border-top:1.5px dashed var(--color-outline-variant); padding-top:8px;">
+          <div style="margin-bottom:6px;">🌟 <strong>What Went Well:</strong> Good listening comprehension and willingness to speak.</div>
+          <div>🎯 <strong>Focus for Next Class:</strong> Sentence fluency, pronunciation consistency and speaking without prompts.</div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display:flex; gap:12px; margin-top:8px;">
+        <button class="btn btn-primary" onclick="closeModal()" style="flex:1; height:38px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:700;">Back to Course</button>
+        <button class="btn btn-secondary" onclick="closeModal(); setTabSelectionState('ENR-001', 'homework')" style="flex:1; height:38px;">Go to Homework</button>
+      </div>
+
+    </div>
+  `;
+  openModal("Spoken English — Class 1 Review & Summary", content);
+};
+
+// Open Attendance Details modal (learner-safe)
+window.openAttendanceDetailsModal = function(occurrenceId) {
+  const content = `
+    <div style="text-align:left; font-size:13px; line-height:1.6;">
+      <div style="background-color:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:8px; padding:16px; margin-bottom:16px;">
+        <table style="width:100%; border-collapse:collapse; font-size:13px; line-height:24px;">
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Session Type:</td><td style="font-weight:700; text-align:right;">Regular Live 1-to-1 Class</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Schedule Slot:</td><td style="font-weight:700; text-align:right;">Tuesday, 18 Aug &middot; 7:00 PM – 7:45 PM</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Trainer Name:</td><td style="font-weight:700; text-align:right;">Ayesha Rahman</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Recorded Connected Duration:</td><td style="font-weight:700; text-align:right;">40 minutes</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Attendance Status:</td><td style="font-weight:700; text-align:right; color:#137333;">Present (Finalized)</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Operational Verification:</td><td style="font-weight:700; text-align:right; color:#137333;">Approved</td></tr>
+        </table>
+      </div>
+      <p style="font-size:12px; color:var(--color-tertiary); margin-bottom:20px;">Attendance records are compiled automatically using classroom platform log times and verified manually by school staff.</p>
+      <button class="btn btn-primary" onclick="closeModal()" style="width:100%; height:38px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:700;">Close Details</button>
+    </div>
+  `;
+  openModal("Attendance Record Details — Class 1", content);
+};
+
+// Open Homework Detail modal (learner-safe)
+window.openHomeworkDetailModal = function(hwId) {
+  const hw = state.homeworkRecords[hwId];
+  if (!hw) return;
+
+  const content = `
+    <div style="text-align:left; font-size:13px; line-height:1.6; display:flex; flex-direction:column; gap:16px;">
+      <div style="background-color:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:8px; padding:16px;">
+        <div style="font-size:12px; color:var(--color-tertiary); margin-bottom:4px;">${hw.type} &middot; Assigned from Class 1</div>
+        <h4 style="font-size:16px; font-weight:800; color:var(--color-on-tertiary-fixed); margin:0 0 10px 0;">${hw.title}</h4>
+        
+        <div style="border-top:1.5px dashed var(--color-outline-variant); padding-top:10px; margin-bottom:10px;">
+          <strong>Instructions:</strong>
+          <p style="margin:6px 0 0 0; color:var(--color-on-surface);">${hw.instructions}</p>
+        </div>
+
+        <table style="width:100%; border-collapse:collapse; font-size:12.5px; line-height:22px; border-top:1px solid var(--color-outline-variant); margin-top:12px; padding-top:12px;">
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Assigned By:</td><td style="font-weight:700; text-align:right;">${hw.trainer}</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Due Date Context:</td><td style="font-weight:700; text-align:right; color:#ba1a1a;">${hw.dueContext}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Current Status:</td><td style="font-weight:700; text-align:right; color:${hw.status === 'Practised' ? '#137333' : '#b06000'};">${hw.status}</td></tr>
+        </table>
+      </div>
+
+      <div style="display:flex; gap:12px;">
+        <button class="btn btn-secondary" onclick="closeModal()" style="flex:1; height:38px;">Back to Course</button>
+        ${hw.status !== 'Practised' ? `
+          <button class="btn btn-primary" onclick="closeModal(); updateHomeworkStatus('${hwId}', 'Practised');" style="flex:1.3; height:38px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:700;">Mark as Practised</button>
+        ` : ''}
+      </div>
+    </div>
+  `;
+  openModal("Homework Assignment Details", content);
+};
+
+// Open Entitlement Usage Modal (learner-safe)
+window.openEntitlementUsageModal = function(enrolmentId) {
+  const content = `
+    <div style="text-align:left; font-size:13px; line-height:1.6;">
+      <h4 style="font-size:14px; font-weight:800; color:var(--color-on-tertiary-fixed); margin:0 0 12px 0;">Class Credit Balance History</h4>
+      
+      <div style="background-color:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:8px; padding:12px; margin-bottom:16px;">
+        <div style="display:flex; justify-content:space-between; font-weight:700; font-size:13.5px; color:var(--color-on-tertiary-fixed); margin-bottom:4px;">
+          <span>Current Active Balance:</span>
+          <span style="color:#137333;">11 Classes Remaining</span>
+        </div>
+        <div style="font-size:11.5px; color:var(--color-tertiary);">Enrolment reference: ${enrolmentId}</div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
+        <!-- Grant -->
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--color-outline-variant); padding-bottom:8px; font-size:12.5px;">
+          <div>
+            <div style="font-weight:700; color:var(--color-on-surface);">Opening Membership Grant</div>
+            <div style="font-size:11.5px; color:var(--color-tertiary);">14 Aug 2026 &middot; Ref: MEM-TERM-001</div>
+          </div>
+          <div style="font-weight:800; color:#137333;">+12 Classes</div>
+        </div>
+
+        <!-- Class 1 Debit -->
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--color-outline-variant); padding-bottom:8px; font-size:12.5px;">
+          <div>
+            <div style="font-weight:700; color:var(--color-on-surface);">CLASS-001 Debit</div>
+            <div style="font-size:11.5px; color:var(--color-tertiary);">18 Aug 2026 &middot; Approved Session Delivery &middot; Ref: ENT-DEBIT-CLASS-001</div>
+          </div>
+          <div style="font-weight:800; color:#ba1a1a;">-1 Class</div>
+        </div>
+      </div>
+
+      <p style="font-size:11.5px; color:var(--color-tertiary); font-style:italic; margin-bottom:20px;">Note: Credits are debited only after Operations successfully reviews and finalizes the trainer session report.</p>
+      
+      <button class="btn btn-primary" onclick="closeModal()" style="width:100%; height:38px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:700;">Close Drawer</button>
+    </div>
+  `;
+  openModal("Membership Entitlement Usage Drawer", content);
 };
 
 // Send message locally
