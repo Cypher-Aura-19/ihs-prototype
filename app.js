@@ -208,6 +208,7 @@ function handleRouting() {
   const learnerCourseWorkspaceView = document.getElementById("learner-course-workspace-view");
   const trainerClassReportView = document.getElementById("trainer-class-report-view");
   const opsClassChangeView = document.getElementById("ops-class-change-view");
+  const learnerAssessmentView = document.getElementById("learner-assessment-view");
 
   if (membershipRequestView) membershipRequestView.style.display = "none";
   if (staffEnrolmentsView) staffEnrolmentsView.style.display = "none";
@@ -217,6 +218,7 @@ function handleRouting() {
   if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
   if (trainerClassReportView) trainerClassReportView.style.display = "none";
   if (opsClassChangeView) opsClassChangeView.style.display = "none";
+  if (learnerAssessmentView) learnerAssessmentView.style.display = "none";
 
   if (hash.startsWith("#staff")) {
     // Hide learner sidebar & views
@@ -582,9 +584,22 @@ function handleRouting() {
         renderLearnerCourseWorkspace(enrolmentId);
       }
     } else if (hash.startsWith("#learner/assessments/")) {
-      const assessmentId = hash.replace("#learner/assessments/", "");
-      showToastAlert(`Screen 22 Assessment Engine: Loading ${assessmentId}... (Placeholder)`);
-      window.location.hash = "#learner/courses/ENR-PAI-001";
+      const quizId = hash.replace("#learner/assessments/", "");
+      if (catalogueView) catalogueView.style.display = "none";
+      if (detailsView) detailsView.style.display = "none";
+      if (trialView) trialView.style.display = "none";
+      const detailsTrialView = document.getElementById("learner-trial-details-view");
+      const classroomView = document.getElementById("learner-classroom-view");
+      if (detailsTrialView) detailsTrialView.style.display = "none";
+      if (classroomView) classroomView.style.display = "none";
+      if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
+
+      const assessmentView = document.getElementById("learner-assessment-view");
+      if (assessmentView) {
+        assessmentView.style.display = "block";
+        if (coursesLink) coursesLink.classList.add("active");
+        renderLearnerQuizWorkspace(quizId);
+      }
     } else if (hash === "#learner/my-courses") {
       if (catalogueView) catalogueView.style.display = "none";
       if (detailsView) detailsView.style.display = "none";
@@ -16733,7 +16748,7 @@ window.ensureSelfPacedState = function() {
         "ACT-PAI-007": { status: "In Progress", lastPositionSeconds: 402, durationSeconds: 720 },
         "ACT-PAI-008": { status: "Available" },
         "ACT-PAI-009": { status: "Locked" },
-        "ACT-PAI-010": { status: "Locked", score: null, attemptsUsed: 0 },
+        "ACT-PAI-QUIZ-001": { status: "Locked", score: null, attemptsUsed: 0 },
         "ACT-PAI-011": { status: "Locked" },
         "ACT-PAI-012": { status: "Locked" },
         "ACT-PAI-013": { status: "Locked" }
@@ -16749,7 +16764,42 @@ window.ensureSelfPacedState = function() {
       ],
       chatMessages: [
         { sender: "Hamza Siddiqui", role: "Coach", text: "Welcome Ali to the Practical AI course! I will be your coach and manual assignment reviewer. Let me know if you get stuck on any prompting topics.", time: "8 Aug · 1:30 PM" }
-      ]
+      ],
+      attempts: [],
+      attemptResponses: {},
+      quizState: {
+        selectedDemoState: "Ready to Start",
+        activeAttemptId: null,
+        timerSeconds: 600,
+        currentQuestionIndex: 0,
+        flaggedQuestions: [],
+        includeManualReviewQuestion: false,
+        accommodationsApplied: false,
+        networkStatus: "connected",
+        saveStatus: "Saved",
+        lastSavedTime: "Just now",
+        answers: {}
+      },
+      gradebook: []
+    };
+  }
+  // Ensure fields are defined if state.selfPaced was already partially initialized
+  if (!state.selfPaced.attempts) state.selfPaced.attempts = [];
+  if (!state.selfPaced.attemptResponses) state.selfPaced.attemptResponses = {};
+  if (!state.selfPaced.gradebook) state.selfPaced.gradebook = [];
+  if (!state.selfPaced.quizState) {
+    state.selfPaced.quizState = {
+      selectedDemoState: "Ready to Start",
+      activeAttemptId: null,
+      timerSeconds: 600,
+      currentQuestionIndex: 0,
+      flaggedQuestions: [],
+      includeManualReviewQuestion: false,
+      accommodationsApplied: false,
+      networkStatus: "connected",
+      saveStatus: "Saved",
+      lastSavedTime: "Just now",
+      answers: {}
     };
   }
 };
@@ -16771,7 +16821,7 @@ window.changeDemoSelfPacedState = function(val) {
     "ACT-PAI-007": { status: "In Progress", lastPositionSeconds: 402, durationSeconds: 720 },
     "ACT-PAI-008": { status: "Available" },
     "ACT-PAI-009": { status: "Locked" },
-    "ACT-PAI-010": { status: "Locked", score: null, attemptsUsed: 0 },
+    "ACT-PAI-QUIZ-001": { status: "Locked", score: null, attemptsUsed: 0 },
     "ACT-PAI-011": { status: "Locked" },
     "ACT-PAI-012": { status: "Locked" },
     "ACT-PAI-013": { status: "Locked" }
@@ -16809,13 +16859,13 @@ window.changeDemoSelfPacedState = function(val) {
     state.selfPaced.activities["ACT-PAI-007"] = { status: "Completed" };
     state.selfPaced.activities["ACT-PAI-008"] = { status: "Completed" };
     state.selfPaced.activities["ACT-PAI-009"] = { status: "Completed" };
-    state.selfPaced.activities["ACT-PAI-010"] = { status: "Failed", score: 60, attemptsUsed: 1 };
-    state.selfPaced.activeActivityId = "ACT-PAI-010";
+    state.selfPaced.activities["ACT-PAI-QUIZ-001"] = { status: "Failed", score: 60, attemptsUsed: 1 };
+    state.selfPaced.activeActivityId = "ACT-PAI-QUIZ-001";
     state.selfPaced.progressEvents.push(
       { id: "PROG-PAI-007-C", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-007", event: "completed", occurredAt: "2026-08-12T19:25:00Z" },
       { id: "PROG-PAI-008-C", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-008", event: "completed", occurredAt: "2026-08-12T19:40:00Z" },
       { id: "PROG-PAI-009-C", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-009", event: "completed", occurredAt: "2026-08-12T20:10:00Z" },
-      { id: "PROG-PAI-010-F", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-010", event: "failed", occurredAt: "2026-08-12T20:30:00Z" }
+      { id: "PROG-PAI-QUIZ-001-F", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-QUIZ-001", event: "failed", occurredAt: "2026-08-12T20:30:00Z" }
     );
   } else if (val === "Awaiting Manual Review") {
     state.selfPaced.activities["ACT-PAI-007"] = { status: "Completed" };
@@ -16831,7 +16881,7 @@ window.changeDemoSelfPacedState = function(val) {
     state.selfPaced.accessState = "Expired";
   } else if (val === "Course Completed") {
     Object.keys(state.selfPaced.activities).forEach(k => {
-      if (k === "ACT-PAI-010") {
+      if (k === "ACT-PAI-QUIZ-001") {
         state.selfPaced.activities[k] = { status: "Completed", score: 90, attemptsUsed: 1 };
       } else {
         state.selfPaced.activities[k] = { status: "Completed" };
@@ -16839,7 +16889,7 @@ window.changeDemoSelfPacedState = function(val) {
     });
     state.selfPaced.activeActivityId = "ACT-PAI-013";
     state.selfPaced.progressEvents.push(
-      { id: "PROG-PAI-010-P", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-010", event: "passed", occurredAt: "2026-08-12T21:00:00Z" },
+      { id: "PROG-PAI-QUIZ-001-P", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-QUIZ-001", event: "passed", occurredAt: "2026-08-12T21:00:00Z" },
       { id: "PROG-PAI-COMP", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-013", event: "completed", occurredAt: "2026-08-12T21:30:00Z" }
     );
   }
@@ -16925,7 +16975,7 @@ window.submitPracticeExercise = function(activityId) {
   
   if (state.selfPaced.activities[activityId]) {
     state.selfPaced.activities[activityId].status = "Completed";
-    state.selfPaced.activities["ACT-PAI-010"].status = "Available"; // Unlock quiz
+    state.selfPaced.activities["ACT-PAI-QUIZ-001"].status = "Available"; // Unlock quiz
 
     state.selfPaced.progressEvents.push({
       id: `PROG-PAI-${Date.now()}`,
@@ -17040,7 +17090,7 @@ window.renderPracticalAICourseWorkspace = function(enrolmentId, view) {
               { id: "ACT-PAI-007", title: "Prompt Structure Basics", type: "Video", est: "12 min" },
               { id: "ACT-PAI-008", title: "Context and Constraints", type: "Text", est: "8 min" },
               { id: "ACT-PAI-009", title: "Prompt Improvement Exercise", type: "Practice", est: "15 min" },
-              { id: "ACT-PAI-010", title: "Prompting Fundamentals Quiz", type: "Quiz", est: "15 min" }
+              { id: "ACT-PAI-QUIZ-001", title: "Prompting Fundamentals Quiz", type: "Quiz", est: "15 min" }
             ]
           }
         ]
@@ -17207,7 +17257,7 @@ window.renderPracticalAICourseWorkspace = function(enrolmentId, view) {
       currentStatusText = "Failed (Retry Available)";
       progressDuration = "Score: 60% (Pass: 70%)";
       resumeCaption = "Try Again";
-      activeActId = "ACT-PAI-010";
+      activeActId = "ACT-PAI-QUIZ-001";
     } else if (demoCourseState === "Awaiting Manual Review") {
       currentActivityText = "Prompt Improvement Exercise";
       currentActivityType = "Practice Task";
@@ -17299,7 +17349,7 @@ window.renderPracticalAICourseWorkspace = function(enrolmentId, view) {
               </div>
               <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 0;">
                 <span>4. Prompting Fundamentals Quiz (Quiz)</span>
-                <strong style="color:${spState.activities["ACT-PAI-010"].status === 'Completed' ? '#137333' : (spState.activities["ACT-PAI-010"].status === 'Failed' ? '#ba1a1a' : (spState.activities["ACT-PAI-010"].status === 'Locked' ? 'var(--color-tertiary)' : '#b06000'))}">${spState.activities["ACT-PAI-010"].status}</strong>
+                <strong style="color:${spState.activities["ACT-PAI-QUIZ-001"].status === 'Completed' ? '#137333' : (spState.activities["ACT-PAI-QUIZ-001"].status === 'Failed' ? '#ba1a1a' : (spState.activities["ACT-PAI-QUIZ-001"].status === 'Locked' ? 'var(--color-tertiary)' : '#b06000'))}">${spState.activities["ACT-PAI-QUIZ-001"].status}</strong>
               </div>
             </div>
           </div>
@@ -17469,7 +17519,7 @@ window.renderPracticalAICourseWorkspace = function(enrolmentId, view) {
       let targetPrereqId = "";
       if (activeActId === "ACT-PAI-008") { prereqText = "Prompt Structure Basics"; targetPrereqId = "ACT-PAI-007"; }
       else if (activeActId === "ACT-PAI-009") { prereqText = "Context and Constraints"; targetPrereqId = "ACT-PAI-008"; }
-      else if (activeActId === "ACT-PAI-010") { prereqText = "all activities in Writing Effective Prompts (Lesson 3)"; targetPrereqId = "ACT-PAI-007"; }
+      else if (activeActId === "ACT-PAI-QUIZ-001") { prereqText = "Prompt Improvement Exercise"; targetPrereqId = "ACT-PAI-009"; }
       else { prereqText = "the previous milestones and lessons"; targetPrereqId = "ACT-PAI-007"; }
       
       contentHtml = `
@@ -17589,40 +17639,85 @@ window.renderPracticalAICourseWorkspace = function(enrolmentId, view) {
           </div>
         `;
       } else if (activeAct.type === "Quiz") {
-        const isFailed = activeActState.status === "Failed";
-        const isPassed = activeActState.status === "Completed" || activeActState.status === "Passed";
+        const attempts = spState.attempts || [];
+        const attemptsUsed = attempts.length;
+        const attemptsRemaining = Math.max(0, 3 - attemptsUsed);
+        
+        let quizStatus = activeActState.status; // Locked, Available, In Progress, Submitted, Completed, Failed
+        let lastScore = activeActState.score;
+        let lastAttempt = attempts[attempts.length - 1];
+        
+        if (lastAttempt) {
+          lastScore = lastAttempt.score;
+          if (lastAttempt.status === "Passed" || lastAttempt.status === "Graded" && lastAttempt.score >= 70) {
+            quizStatus = "Completed";
+          } else if (lastAttempt.status === "Failed" || lastAttempt.status === "Graded" && lastAttempt.score < 70) {
+            quizStatus = attemptsRemaining === 0 ? "FailedLimit" : "Failed";
+          } else if (lastAttempt.status === "Submitted") {
+            quizStatus = "Submitted";
+          } else if (lastAttempt.status === "Under Review") {
+            quizStatus = "UnderReview";
+          }
+        }
+
+        const isPassed = quizStatus === "Completed";
+        const isFailed = quizStatus === "Failed";
+        const isFailedLimit = quizStatus === "FailedLimit";
+        const isSubmitted = quizStatus === "Submitted";
+        const isUnderReview = quizStatus === "UnderReview";
         
         contentHtml = `
           <div class="form-card" style="padding:24px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
               <h2 style="font-family:var(--font-family-headings); font-size:22px; font-weight:800; color:var(--color-on-tertiary-fixed); margin:0;">${activeAct.title}</h2>
-              <span class="badge-status ${isPassed ? 'status-ready' : (isFailed ? 'status-cancelled' : 'status-submitted')}" style="font-size:11px;">
-                ${isPassed ? 'Passed' : (isFailed ? 'Failed' : 'Available')}
+              <span class="badge-status ${isPassed ? 'status-ready' : ((isFailed || isFailedLimit) ? 'status-cancelled' : (isSubmitted || isUnderReview) ? 'status-scheduled' : 'status-submitted')}" style="font-size:11px;">
+                ${isPassed ? 'Passed' : (isFailed ? 'Failed' : (isFailedLimit ? 'Limit Reached' : (isSubmitted ? 'Awaiting Review' : (isUnderReview ? 'Integrity Flagged' : 'Available'))))}
               </span>
             </div>
 
             ${isFailed ? `
               <div style="background-color:#fdf2f2; border:1px solid #fde8e8; color:#b81818; padding:14px; border-radius:8px; margin-bottom:20px; font-size:13px;">
                 <h4 style="margin:0 0 4px 0; font-weight:800;">⚠️ Quiz Not Passed</h4>
-                <div>Your Score: <strong>60%</strong> (Required Passing Grade: <strong>70%</strong>)</div>
-                <div style="margin-top:6px;">Status: <strong style="text-transform:uppercase;">Retry Available</strong> (Attempts Used: 1 / 3)</div>
+                <div>Your Last Score: <strong>${lastScore}%</strong> (Required Passing Grade: <strong>70%</strong>)</div>
+                <div style="margin-top:6px;">Status: <strong style="text-transform:uppercase;">Retry Available</strong> (Attempts Used: ${attemptsUsed} / 3)</div>
               </div>
-              <button class="btn btn-primary" onclick="retrySelfPacedQuiz('${activeActId}')" style="height:38px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:700;">Try Again</button>
+              <button class="btn btn-primary" onclick="window.location.hash='#learner/assessments/QUIZ-PAI-001'" style="height:38px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:700;">Try Again</button>
+            ` : isFailedLimit ? `
+              <div style="background-color:#fdf2f2; border:1px solid #fde8e8; color:#b81818; padding:14px; border-radius:8px; margin-bottom:20px; font-size:13px;">
+                <h4 style="margin:0 0 4px 0; font-weight:800;">⚠️ Attempt Limit Reached</h4>
+                <div>Your Score: <strong>${lastScore}%</strong> (Required Passing Grade: <strong>70%</strong>)</div>
+                <div style="margin-top:6px; color:#600;">No remaining attempts. Please contact coach Hamza Siddiqui for guidance or access reset.</div>
+              </div>
+              <button class="btn btn-secondary" style="height:38px;" disabled>No Attempts Remaining</button>
             ` : isPassed ? `
               <div style="background-color:#f0fbf4; border:1px solid #e1f7ea; color:#137333; padding:14px; border-radius:8px; margin-bottom:20px; font-size:13px;">
                 <h4 style="margin:0 0 4px 0; font-weight:800;">🎉 Quiz Passed</h4>
-                <div>Your Score: <strong>90%</strong> (Required Passing Grade: <strong>70%</strong>)</div>
+                <div>Your Highest Score: <strong>${lastScore}%</strong> (Required Passing Grade: <strong>70%</strong>)</div>
                 <div style="margin-top:6px;">All lesson requirements have been completed.</div>
               </div>
               <button class="btn btn-secondary" style="height:38px; border-color:#c2e7cc; color:#137333;" disabled>✓ Completed</button>
+            ` : isSubmitted ? `
+              <div style="background-color:#fffdf3; border:1px solid #fcf3d1; color:#856404; padding:14px; border-radius:8px; margin-bottom:20px; font-size:13px;">
+                <h4 style="margin:0 0 4px 0; font-weight:800;">⏳ Awaiting Manual Grading</h4>
+                <div>Your attempt is submitted and requires manual grading for subjective question(s) by Hamza Siddiqui.</div>
+                <div style="margin-top:6px; color:var(--color-tertiary);">You will be notified once the final score is published.</div>
+              </div>
+              <button class="btn btn-secondary" style="height:38px;" disabled>Awaiting Manual Review</button>
+            ` : isUnderReview ? `
+              <div style="background-color:#fff3f3; border:1px solid #fad2cf; color:#ba1a1a; padding:14px; border-radius:8px; margin-bottom:20px; font-size:13px;">
+                <h4 style="margin:0 0 4px 0; font-weight:800;">⚠️ Integrity Flags Flagged</h4>
+                <div>Your attempt is currently under review for potential integrity policy violations (e.g. browser focus changes or network interruption anomalies).</div>
+                <div style="margin-top:6px; color:var(--color-tertiary);">Your coach Hamza Siddiqui will contact you shortly.</div>
+              </div>
+              <button class="btn btn-secondary" style="height:38px;" disabled>Under Academic Review</button>
             ` : `
               <div style="font-size:13px; color:var(--color-tertiary); margin-bottom:20px; line-height:1.6;">
                 <p>Welcome to the Prompting Fundamentals Quiz. Review what you learned about Prompt Roles, Goals, Context, and Constraints before starting.</p>
                 <div style="background-color:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:6px; padding:12px; margin-top:8px;">
                   <div>Pass Mark: <strong>70%</strong></div>
                   <div>Attempts Allowed: <strong>3</strong></div>
-                  <div>Attempts Used: <strong>0</strong></div>
-                  <div>Attempts Remaining: <strong>3</strong></div>
+                  <div>Attempts Used: <strong>${attemptsUsed}</strong></div>
+                  <div>Attempts Remaining: <strong>${attemptsRemaining}</strong></div>
                 </div>
               </div>
               <button class="btn btn-primary" onclick="window.location.hash='#learner/assessments/QUIZ-PAI-001'" style="height:40px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; padding:0 24px;">Start Quiz</button>
@@ -17802,9 +17897,9 @@ window.renderPracticalAICourseWorkspace = function(enrolmentId, view) {
               <td><strong>Prompting Fundamentals Quiz</strong></td>
               <td>Multiple Choice Quiz</td>
               <td>70% Score</td>
-              <td>${spState.activities["ACT-PAI-010"].attemptsUsed || 0} / 3 used</td>
+              <td>${spState.activities["ACT-PAI-QUIZ-001"].attemptsUsed || 0} / 3 used</td>
               <td>
-                ${spState.activities["ACT-PAI-010"].status === 'Completed' ? '<span style="color:#137333; font-weight:700;">Passed (90%)</span>' : (spState.activities["ACT-PAI-010"].status === 'Failed' ? '<span style="color:#ba1a1a; font-weight:700;">Failed (60%)</span>' : '<span style="color:var(--color-tertiary);">Locked</span>')}
+                ${spState.activities["ACT-PAI-QUIZ-001"].status === 'Completed' ? '<span style="color:#137333; font-weight:700;">Passed (' + (spState.activities["ACT-PAI-QUIZ-001"].score || 90) + '%)</span>' : (spState.activities["ACT-PAI-QUIZ-001"].status === 'Failed' ? '<span style="color:#ba1a1a; font-weight:700;">Failed (' + (spState.activities["ACT-PAI-QUIZ-001"].score || 60) + '%)</span>' : (spState.activities["ACT-PAI-QUIZ-001"].status === 'Submitted' ? '<span style="color:#b06000; font-weight:700;">Awaiting Review</span>' : '<span style="color:var(--color-tertiary);">Locked</span>'))}
               </td>
             </tr>
             <tr>
@@ -17946,6 +18041,1312 @@ window.renderPracticalAICourseWorkspace = function(enrolmentId, view) {
   if (activeTab === "messages") {
     const chatHist = document.getElementById("sp-chat-history");
     if (chatHist) chatHist.scrollTop = chatHist.scrollHeight;
+  }
+};
+
+
+// ==========================================================================
+// Screen 22 - Quiz Attempt Workspace & Interactive Evaluation
+// ==========================================================================
+
+const QUIZ_QUESTIONS = [
+  {
+    id: "Q1",
+    type: "SingleChoice",
+    text: "Which of the following represents the 'Role' component in a prompt?",
+    options: [
+      { key: "A", text: "Act as a professional senior copywriter." },
+      { key: "B", text: "Explain the benefits of green tea." },
+      { key: "C", text: "Keep the final summary under 100 words." },
+      { key: "D", text: "Use simple bullet points." }
+    ],
+    answer: "A",
+    explanation: "The Role specifies the persona, perspective, or expertise the AI should assume when generating the response."
+  },
+  {
+    id: "Q2",
+    type: "MultipleChoice",
+    text: "Which components are essential parts of the four-pillar prompt structure? (Select all that apply)",
+    options: [
+      { key: "A", text: "Role (Persona)" },
+      { key: "B", text: "Goal (Task)" },
+      { key: "C", text: "Context (Background info)" },
+      { key: "D", text: "Constraints (Limits & Rules)" }
+    ],
+    answer: ["A", "B", "C", "D"],
+    explanation: "All four components—Role, Goal, Context, and Constraints—constitute the four pillars of structured prompt engineering."
+  },
+  {
+    id: "Q3",
+    type: "TrueFalse",
+    text: "Setting constraints in a prompt helps reduce the likelihood of hallucination.",
+    options: [
+      { key: "T", text: "True" },
+      { key: "F", text: "False" }
+    ],
+    answer: "T",
+    explanation: "Constraints bound the AI's generation boundaries, significantly lowering the probability of it fabricating facts."
+  },
+  {
+    id: "Q4",
+    type: "ShortAnswer",
+    text: "Define what a 'constraint' is in prompt engineering (e.g. limit, boundary, rule, restriction).",
+    answer: ["limit", "limitation", "restriction", "boundary", "rule", "criteria"],
+    explanation: "Constraints are rules, word limits, formatting constraints, or stylistic boundaries imposed on the AI output."
+  },
+  {
+    id: "Q5",
+    type: "Matching",
+    text: "Match each prompt engineering technique to its description:",
+    items: [
+      { id: "1", text: "Few-Shot Prompting" },
+      { id: "2", text: "Zero-Shot Prompting" },
+      { id: "3", text: "Chain-of-Thought" }
+    ],
+    matches: [
+      { key: "A", text: "Providing examples of desired input/output" },
+      { key: "B", text: "Asking for a task directly without any examples" },
+      { key: "C", text: "Prompting the AI to show its step-by-step reasoning" }
+    ],
+    answer: { "1": "A", "2": "B", "3": "C" },
+    explanation: "Few-shot uses examples; zero-shot asks directly; Chain-of-Thought prompts the model to break down its reasoning step-by-step."
+  },
+  {
+    id: "Q6",
+    type: "Ordering",
+    text: "Arrange the prompt engineering process steps in the correct logical sequence (1 to 3):",
+    items: [
+      { id: "step_1", text: "Draft initial prompt" },
+      { id: "step_2", text: "Test output and analyze failures" },
+      { id: "step_3", text: "Refine constraints and roles" }
+    ],
+    answer: ["step_1", "step_2", "step_3"],
+    explanation: "Standard prompt optimization cycle: Draft -> Test -> Refine."
+  },
+  {
+    id: "Q7",
+    type: "SingleChoice",
+    text: "Which of the following is a negative constraint?",
+    options: [
+      { key: "A", text: "Write in a professional tone" },
+      { key: "B", text: "Do NOT use passive voice" },
+      { key: "C", text: "Include three examples" },
+      { key: "D", text: "Format as markdown table" }
+    ],
+    answer: "B",
+    explanation: "Negative constraints specify what the AI should NOT do (e.g. 'Do not use...')."
+  },
+  {
+    id: "Q8",
+    type: "ShortAnswerSubjective",
+    text: "Describe a real-world scenario where you would use a Role constraint of 'Senior Data Analyst'. How does it modify the output?",
+    explanation: "Roles prime the model with domain-specific knowledge, jargon, and quality standards (e.g. focusing on data cleaning, statistical rigor, and clear metrics)."
+  }
+];
+
+// Initialize global variables
+window.quizTimerInterval = null;
+window.autosaveInterval = null;
+window.autosaveQueue = [];
+
+// Watch browser tab focus for academic integrity violations
+window.addEventListener("blur", () => {
+  if (state.selfPaced && state.selfPaced.quizState && state.selfPaced.quizState.selectedDemoState === "In Progress") {
+    ensureSelfPacedState();
+    
+    // Log focus loss event
+    if (!state.selfPaced.quizState.integrityEvents) {
+      state.selfPaced.quizState.integrityEvents = [];
+    }
+    state.selfPaced.quizState.integrityEvents.push({
+      event: "Tab Focus Lost",
+      timestamp: new Date().toISOString()
+    });
+    
+    // Alert the user
+    showToastAlert("⚠️ Academic Integrity Alert: Window focus loss detected. This event has been logged.");
+    
+    // Auto-render to update the display if visible
+    if (window.location.hash.startsWith("#learner/assessments/")) {
+      window.renderLearnerQuizWorkspace("QUIZ-PAI-001");
+    }
+  }
+});
+
+// Sound generator using Web Audio API
+window.playQuizWarningSound = function() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = 880; // Gentle tone
+    gain.gain.setValueAtTime(0.04, ctx.currentTime);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.15);
+  } catch (e) {
+    console.warn("AudioContext warning beep failed to play: " + e);
+  }
+};
+
+window.renderLearnerQuizWorkspace = function(quizId) {
+  ensureSelfPacedState();
+  const spState = state.selfPaced;
+  const qState = spState.quizState;
+  
+  const assessmentView = document.getElementById("learner-assessment-view");
+  if (!assessmentView) return;
+
+  // Active sub-views based on selectedDemoState
+  const viewState = qState.selectedDemoState; // "Ready to Start", "In Progress", "Review & Submit", "Results", "Answer Explanations"
+
+  // Breadcrumb HTML
+  const breadcrumbHtml = `
+    <div class="breadcrumb-container" style="margin-bottom:12px;">
+      <a href="#learner/my-courses">My Courses</a> &gt;
+      <a href="#learner/courses/ENR-PAI-001">Practical AI (Self-Paced)</a> &gt;
+      <span>Prompting Fundamentals Quiz</span>
+    </div>
+  `;
+
+  // Dev Console HTML
+  const devConsoleHtml = `
+    <div style="background-color:#fce8e6; border:1px solid #fad2cf; padding:12px 16px; border-radius:8px; margin-bottom:16px; display:flex; flex-direction:column; gap:10px;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:12.5px; font-weight:800; color:#ba1a1a; display:flex; align-items:center; gap:6px;">
+          <span>🛠️ Assessment Developer & CSR Simulator Console</span>
+        </span>
+        <button class="btn btn-secondary" onclick="resetQuizState()" style="font-size:11px; height:24px; padding:2px 8px; border-color:#ba1a1a; color:#ba1a1a; background:none;">Reset All Quiz Data</button>
+      </div>
+      
+      <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; font-size:12px; color:#5c1a1a;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span>Timer:</span>
+          <button class="btn btn-secondary" onclick="simulateSetTimer(10)" style="height:24px; font-size:11px; padding:2px 6px;">Set 10s Remaining</button>
+          <button class="btn btn-secondary" onclick="toggleTimerPause()" style="height:24px; font-size:11px; padding:2px 6px;">
+            ${qState.isTimerPaused ? '▶️ Resume Timer' : '⏸️ Pause Timer'}
+          </button>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span>Network:</span>
+          <button class="btn ${qState.networkStatus === 'connected' ? 'btn-secondary' : 'btn-primary'}" onclick="toggleQuizNetwork()" style="height:24px; font-size:11px; padding:2px 8px; background-color:${qState.networkStatus === 'connected' ? 'none' : '#c5221f'}; color:${qState.networkStatus === 'connected' ? '#ba1a1a' : '#fff'};">
+            ${qState.networkStatus === 'connected' ? 'Simulate Connection Loss' : 'Simulate Connection Restore'}
+          </button>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span>Subjective review (Q8):</span>
+          <label style="display:flex; align-items:center; gap:4px; font-weight:700; cursor:pointer;">
+            <input type="checkbox" id="dev-manual-review" ${qState.includeManualReviewQuestion ? 'checked' : ''} onchange="toggleManualReviewCheckbox(this.checked)">
+            Require Review
+          </label>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span>Integrity Policy:</span>
+          <button class="btn btn-secondary" onclick="triggerAcademicIntegrityFlag()" style="height:24px; font-size:11px; padding:2px 6px; border-color:#ba1a1a; color:#ba1a1a;">Simulate focus violation</button>
+        </div>
+      </div>
+      
+      ${spState.attempts && spState.attempts.length > 0 ? `
+        <div style="border-top:1.5px dashed #fad2cf; padding-top:8px; margin-top:4px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+          <span style="font-size:11px; font-weight:700; color:#ba1a1a;">Active Attempt Operations:</span>
+          <div style="display:flex; gap:8px;">
+            ${spState.attempts.map((att, idx) => {
+              if (att.status === "Submitted") {
+                return `
+                  <button class="btn btn-primary" onclick="simulateGradeAttempt('${att.id}', 90)" style="font-size:10px; height:22px; padding:0 6px; background-color:#137333; border-color:#137333; color:#fff;">Grade Att ${idx+1} Pass (90%)</button>
+                  <button class="btn btn-primary" onclick="simulateGradeAttempt('${att.id}', 50)" style="font-size:10px; height:22px; padding:0 6px; background-color:#ba1a1a; border-color:#ba1a1a; color:#fff;">Grade Att ${idx+1} Fail (50%)</button>
+                `;
+              } else if (att.status === "Under Review") {
+                return `
+                  <button class="btn btn-primary" onclick="simulateResolveIntegrity('${att.id}', true)" style="font-size:10px; height:22px; padding:0 6px; background-color:#137333; border-color:#137333; color:#fff;">Resolve Att ${idx+1} (Allow Pass)</button>
+                  <button class="btn btn-primary" onclick="simulateResolveIntegrity('${att.id}', false)" style="font-size:10px; height:22px; padding:0 6px; background-color:#ba1a1a; border-color:#ba1a1a; color:#fff;">Resolve Att ${idx+1} (Mark Fail)</button>
+                `;
+              }
+              return '';
+            }).join("")}
+          </div>
+        </div>
+      ` : ''}
+    </div>
+  `;
+
+  // 1. Ready to Start View
+  if (viewState === "Ready to Start") {
+    const attemptsCount = spState.attempts ? spState.attempts.length : 0;
+    const remaining = Math.max(0, 3 - attemptsCount);
+    
+    let instructionsHtml = `
+      <div class="form-card" style="padding:28px;">
+        <h2 style="font-family:var(--font-family-headings); font-size:22px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:12px;">Prompting Fundamentals Quiz</h2>
+        <p style="font-size:13.5px; line-height:1.6; color:var(--color-tertiary); margin-bottom:20px;">
+          This quiz covers the core structures of prompt engineering including <strong>Roles</strong>, <strong>Goals</strong>, <strong>Context</strong>, and <strong>Constraints</strong>. Please ensure you have completed Lesson 3 content before beginning.
+        </p>
+
+        <div style="background-color:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:8px; padding:16px; margin-bottom:24px; display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:16px;">
+          <div>
+            <div style="font-size:11px; text-transform:uppercase; color:var(--color-tertiary); font-weight:700;">Duration Limit</div>
+            <div style="font-size:18px; font-weight:800; color:var(--color-on-surface-variant);">10 Minutes</div>
+          </div>
+          <div>
+            <div style="font-size:11px; text-transform:uppercase; color:var(--color-tertiary); font-weight:700;">Total Questions</div>
+            <div style="font-size:18px; font-weight:800; color:var(--color-on-surface-variant);">8 Questions</div>
+          </div>
+          <div>
+            <div style="font-size:11px; text-transform:uppercase; color:var(--color-tertiary); font-weight:700;">Passing Grade</div>
+            <div style="font-size:18px; font-weight:800; color:var(--color-on-surface-variant);">70% (6/8 Correct)</div>
+          </div>
+          <div>
+            <div style="font-size:11px; text-transform:uppercase; color:var(--color-tertiary); font-weight:700;">Attempts Allowed</div>
+            <div style="font-size:18px; font-weight:800; color:var(--color-on-surface-variant);">${attemptsCount} / 3 Used</div>
+          </div>
+        </div>
+
+        <div style="background-color:#fff3cd; border:1px solid #ffeeba; border-radius:6px; padding:12px; font-size:12.5px; color:#856404; margin-bottom:24px; display:flex; gap:8px;">
+          <span style="font-size:16px;">⚠️</span>
+          <div>
+            <strong>Important Policy Notice:</strong> Once you click start, the timer cannot be paused. Moving away from the window or switching tabs will be tracked as an academic integrity event.
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <button class="btn btn-secondary" onclick="window.location.hash='#learner/courses/ENR-PAI-001'" style="height:40px; font-weight:700;">Cancel & Return</button>
+          
+          ${remaining > 0 ? `
+            <button class="btn btn-primary" onclick="startQuizAttempt()" style="height:42px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; padding:0 24px;">Start Assessment</button>
+          ` : `
+            <button class="btn btn-secondary" style="height:42px; color:var(--color-error); border-color:var(--color-outline-variant);" disabled>No Attempts Remaining</button>
+          `}
+        </div>
+      </div>
+    `;
+
+    assessmentView.innerHTML = `
+      ${breadcrumbHtml}
+      ${devConsoleHtml}
+      ${instructionsHtml}
+    `;
+    return;
+  }
+
+  // 2. Active Attempt View
+  if (viewState === "In Progress") {
+    // Current question data
+    const curIndex = qState.currentQuestionIndex;
+    const q = QUIZ_QUESTIONS[curIndex];
+    const isFirst = curIndex === 0;
+    const isLast = curIndex === QUIZ_QUESTIONS.length - 1;
+    const isFlagged = qState.flaggedQuestions.includes(curIndex);
+
+    // Format remaining time
+    const minutes = Math.floor(qState.timerSeconds / 60);
+    const seconds = qState.timerSeconds % 60;
+    const timeFormatted = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    const timeCritical = qState.timerSeconds <= 90;
+
+    // Header Workspace row
+    const workspaceHeader = `
+      <div style="display:flex; justify-content:space-between; align-items:center; background-color:var(--color-surface-low); border:1px solid var(--color-outline-variant); padding:10px 16px; border-radius:8px; margin-bottom:16px;">
+        <div style="display:flex; align-items:center; gap:16px;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background-color:${qState.networkStatus === 'connected' ? '#137333' : '#ba1a1a'};"></span>
+            <span style="font-size:12px; font-weight:700; color:${qState.networkStatus === 'connected' ? 'var(--color-tertiary)' : '#ba1a1a'};">
+              ${qState.networkStatus === 'connected' ? 'Sync Connected' : 'Simulated Disconnected'}
+            </span>
+          </div>
+          
+          <div style="font-size:12px; font-weight:700; color:var(--color-tertiary);">
+            Status: <span style="font-weight:800; color:${qState.saveStatus === 'Saved' ? '#137333' : '#b06000'};">${qState.saveStatus}</span>
+            <span style="font-size:10.5px; font-weight:500;">(Last sync: ${qState.lastSavedTime})</span>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="font-size:12px; font-weight:700; color:var(--color-tertiary);">Time Remaining:</div>
+          <div id="quiz-timer-display" style="font-size:18px; font-weight:900; font-family:monospace; color:${timeCritical ? '#ba1a1a' : 'var(--color-on-surface)'}; ${timeCritical ? 'animation: pulse 1s infinite;' : ''}">
+            ${timeFormatted}
+          </div>
+        </div>
+      </div>
+      
+      ${qState.networkStatus === 'disconnected' ? `
+        <div style="background-color:#fdf2f2; border:1px solid #fde8e8; color:#b81818; padding:10px; border-radius:6px; margin-bottom:16px; font-size:12.5px; display:flex; gap:6px; align-items:center;">
+          <span>⚠️</span>
+          <span><strong>Network Offline:</strong> Your progress is buffered locally. Reconnect before submission to sync changes.</span>
+        </div>
+      ` : ''}
+    `;
+
+    // Sidebar navigation questions grid
+    let navGridHtml = `
+      <div class="form-card" style="padding:16px; display:flex; flex-direction:column; gap:12px; height:fit-content;">
+        <h4 style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--color-tertiary); margin-bottom:4px;">Questions</h4>
+        
+        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:6px;">
+    `;
+
+    for (let i = 0; i < QUIZ_QUESTIONS.length; i++) {
+      const isAnswered = qState.answers[QUIZ_QUESTIONS[i].id] !== undefined && qState.answers[QUIZ_QUESTIONS[i].id] !== "";
+      const isCur = i === curIndex;
+      const isF = qState.flaggedQuestions.includes(i);
+      
+      let border = "1px solid var(--color-outline-variant)";
+      let bg = "var(--color-surface-lowest)";
+      let color = "var(--color-on-surface)";
+      
+      if (isCur) {
+        border = "2px solid var(--color-secondary)";
+        bg = "var(--color-secondary-container)";
+        color = "var(--color-on-secondary-container)";
+      } else if (isAnswered) {
+        bg = "var(--color-surface-container)";
+        color = "var(--color-tertiary)";
+      }
+
+      navGridHtml += `
+        <button onclick="gotoQuizQuestion(${i})" style="position:relative; height:36px; border-radius:6px; border:${border}; background-color:${bg}; color:${color}; font-weight:700; cursor:pointer; font-size:13px; display:flex; justify-content:center; align-items:center;">
+          ${i + 1}
+          ${isF ? '<span style="position:absolute; top:-2px; right:-2px; font-size:10px;">🚩</span>' : ''}
+          ${isAnswered && !isCur ? '<span style="position:absolute; bottom:1px; right:2px; font-size:8px; color:#137333;">✓</span>' : ''}
+        </button>
+      `;
+    }
+
+    navGridHtml += `
+        </div>
+
+        <div style="border-top:1px solid var(--color-outline-variant); padding-top:12px; margin-top:8px;">
+          <button class="btn btn-secondary" onclick="toggleAccommodation()" style="width:100%; height:32px; font-size:11px; font-weight:700; border-color:var(--color-outline-variant); justify-content:center;">
+            ${qState.accommodationsApplied ? '✓ Accommodation Applied' : '⏱️ Apply Time Accommodation (+5m)'}
+          </button>
+          <div style="font-size:10px; color:var(--color-tertiary); text-align:center; margin-top:4px; line-height:1.2;">
+            Allows 5 extra minutes for learners with verified academic needs.
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Active Question display
+    let questionContentHtml = "";
+    
+    if (q.type === "SingleChoice" || q.type === "TrueFalse") {
+      const selectedKey = qState.answers[q.id];
+      questionContentHtml = `
+        <div style="display:flex; flex-direction:column; gap:12px; margin-top:16px;">
+          ${q.options.map(opt => {
+            const isSel = selectedKey === opt.key;
+            return `
+              <label style="display:flex; align-items:center; gap:10px; background-color:${isSel ? 'var(--color-surface-container)' : 'var(--color-surface-lowest)'}; border:1.5px solid ${isSel ? 'var(--color-secondary)' : 'var(--color-outline-variant)'}; border-radius:8px; padding:12px 16px; cursor:pointer; font-size:13px; font-weight:${isSel ? '700' : '500'}; transition:all 0.15s;">
+                <input type="radio" name="quiz-q-${q.id}" value="${opt.key}" ${isSel ? 'checked' : ''} onchange="saveQuizAnswer('${q.id}', '${opt.key}')" style="accent-color:var(--color-secondary);">
+                <span><strong>${opt.key}:</strong> ${opt.text}</span>
+              </label>
+            `;
+          }).join("")}
+        </div>
+      `;
+    } else if (q.type === "MultipleChoice") {
+      const selectedList = qState.answers[q.id] || [];
+      questionContentHtml = `
+        <div style="display:flex; flex-direction:column; gap:12px; margin-top:16px;">
+          ${q.options.map(opt => {
+            const isSel = selectedList.includes(opt.key);
+            return `
+              <label style="display:flex; align-items:center; gap:10px; background-color:${isSel ? 'var(--color-surface-container)' : 'var(--color-surface-lowest)'}; border:1.5px solid ${isSel ? 'var(--color-secondary)' : 'var(--color-outline-variant)'}; border-radius:8px; padding:12px 16px; cursor:pointer; font-size:13px; font-weight:${isSel ? '700' : '500'}; transition:all 0.15s;">
+                <input type="checkbox" name="quiz-q-${q.id}" value="${opt.key}" ${isSel ? 'checked' : ''} onchange="saveQuizMultipleAnswer('${q.id}', '${opt.key}')" style="accent-color:var(--color-secondary);">
+                <span><strong>${opt.key}:</strong> ${opt.text}</span>
+              </label>
+            `;
+          }).join("")}
+        </div>
+      `;
+    } else if (q.type === "ShortAnswer" || q.type === "ShortAnswerSubjective") {
+      const selectedVal = qState.answers[q.id] || "";
+      questionContentHtml = `
+        <div style="margin-top:16px;">
+          <textarea class="form-input" style="height:120px; font-size:13px; line-height:1.5; padding:12px;" placeholder="${q.type === 'ShortAnswerSubjective' ? 'Describe your scenario and response modifications...' : 'Type your answer here...'}" oninput="saveQuizAnswer('${q.id}', this.value)">${selectedVal}</textarea>
+          <div style="font-size:11px; color:var(--color-tertiary); text-align:right; margin-top:4px;">
+            ${q.type === 'ShortAnswerSubjective' ? 'Subjective format: Reviewer will verify details after submission.' : 'Word count / exact matches evaluated automatically.'}
+          </div>
+        </div>
+      `;
+    } else if (q.type === "Matching") {
+      const answersMap = qState.answers[q.id] || {};
+      questionContentHtml = `
+        <div style="display:flex; flex-direction:column; gap:12px; margin-top:16px;">
+          ${q.items.map(item => {
+            const currentMatch = answersMap[item.id] || "";
+            return `
+              <div style="display:flex; align-items:center; justify-content:space-between; background-color:var(--color-surface-lowest); border:1px solid var(--color-outline-variant); border-radius:8px; padding:10px 14px;">
+                <span style="font-size:13px; font-weight:700; color:var(--color-on-surface-variant);">${item.text}</span>
+                <select onchange="saveQuizMatchingAnswer('${q.id}', '${item.id}', this.value)" class="form-input" style="width:280px; height:34px; margin-bottom:0; font-size:12.5px;">
+                  <option value="">-- Match Option --</option>
+                  ${q.matches.map(m => `
+                    <option value="${m.key}" ${currentMatch === m.key ? 'selected' : ''}>${m.key}: ${m.text}</option>
+                  `).join("")}
+                </select>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+    } else if (q.type === "Ordering") {
+      const currentOrder = qState.answers[q.id] || q.items.map(it => it.id);
+      questionContentHtml = `
+        <div style="display:flex; flex-direction:column; gap:10px; margin-top:16px;">
+          <p style="font-size:12px; color:var(--color-tertiary); margin:0;">Arrange items in chronological or logical sequence using selectors:</p>
+          ${q.items.map((item, index) => {
+            // Find current rank (index) in currentOrder
+            const curRankIdx = currentOrder.indexOf(item.id);
+            const displayRank = curRankIdx !== -1 ? (curRankIdx + 1) : (index + 1);
+
+            return `
+              <div style="display:flex; align-items:center; justify-content:space-between; background-color:var(--color-surface-lowest); border:1px solid var(--color-outline-variant); border-radius:8px; padding:10px 14px;">
+                <span style="font-size:13px; font-weight:700;">${item.text}</span>
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:12px; color:var(--color-tertiary);">Sequence Rank:</span>
+                  <select onchange="saveQuizOrderingAnswer('${q.id}', '${item.id}', parseInt(this.value)-1)" class="form-input" style="width:70px; height:34px; margin-bottom:0; font-size:13px; font-weight:700; text-align:center;">
+                    ${q.items.map((_, i) => `
+                      <option value="${i+1}" ${displayRank === (i+1) ? 'selected' : ''}>${i+1}</option>
+                    `).join("")}
+                  </select>
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    const questionCardHtml = `
+      <div class="form-card" style="padding:24px; flex:1;">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--color-outline-variant); padding-bottom:12px; margin-bottom:16px;">
+          <div>
+            <span style="font-size:11.5px; font-weight:800; text-transform:uppercase; color:var(--color-tertiary);">Question ${curIndex + 1} of ${QUIZ_QUESTIONS.length}</span>
+            <h3 style="font-family:var(--font-family-headings); font-size:16px; font-weight:800; margin:4px 0 0 0; color:var(--color-on-tertiary-fixed);">${q.text}</h3>
+          </div>
+          
+          <button onclick="toggleFlagQuestion(${curIndex})" style="background:none; border:1px solid ${isFlagged ? 'var(--color-secondary)' : 'var(--color-outline-variant)'}; border-radius:6px; padding:4px 10px; cursor:pointer; font-size:12px; font-weight:700; display:flex; align-items:center; gap:4px; color:${isFlagged ? 'var(--color-secondary)' : 'var(--color-tertiary)'}; background-color:${isFlagged ? 'var(--color-surface-container)' : 'none'};">
+            <span>🚩</span> ${isFlagged ? 'Flagged' : 'Flag Question'}
+          </button>
+        </div>
+
+        <!-- Question Body Content -->
+        ${questionContentHtml}
+
+        <!-- Navigation Buttons footer -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:28px; border-top:1px solid var(--color-outline-variant); padding-top:16px;">
+          <button class="btn btn-secondary" onclick="gotoQuizQuestion(${curIndex - 1})" style="height:36px; padding:0 16px; font-weight:700;" ${isFirst ? 'disabled' : ''}>
+            &larr; Previous
+          </button>
+          
+          ${isLast ? `
+            <button class="btn btn-primary" onclick="setQuizDemoState('Review & Submit')" style="height:38px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; padding:0 20px;">
+              Review & Submit
+            </button>
+          ` : `
+            <button class="btn btn-primary" onclick="gotoQuizQuestion(${curIndex + 1})" style="height:38px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; padding:0 20px;">
+              Next &rarr;
+            </button>
+          `}
+        </div>
+      </div>
+    `;
+
+    // Combine Left sidebar + center question panel
+    assessmentView.innerHTML = `
+      ${breadcrumbHtml}
+      ${devConsoleHtml}
+      ${workspaceHeader}
+      <div style="display:grid; grid-template-columns: 240px 1fr; gap:16px; align-items:start;">
+        ${navGridHtml}
+        ${questionCardHtml}
+      </div>
+    `;
+    return;
+  }
+
+  // 3. Review and Submit View
+  if (viewState === "Review & Submit") {
+    // Formulate review table
+    let reviewRows = "";
+    
+    for (let i = 0; i < QUIZ_QUESTIONS.length; i++) {
+      const q = QUIZ_QUESTIONS[i];
+      const isAnswered = qState.answers[q.id] !== undefined && qState.answers[q.id] !== "";
+      const isF = qState.flaggedQuestions.includes(i);
+      
+      let answerSummary = "";
+      if (isAnswered) {
+        const val = qState.answers[q.id];
+        if (q.type === "Matching") {
+          answerSummary = Object.entries(val).map(([k, v]) => `${k}→${v}`).join(", ");
+        } else if (q.type === "Ordering") {
+          // Find titles
+          answerSummary = val.map(stepId => {
+            const step = q.items.find(it => it.id === stepId);
+            return step ? step.text.split(" ")[0] : stepId;
+          }).join(" → ");
+        } else if (Array.isArray(val)) {
+          answerSummary = val.join(", ");
+        } else {
+          answerSummary = typeof val === 'string' && val.length > 30 ? (val.substring(0, 30) + "...") : val;
+        }
+      }
+
+      reviewRows += `
+        <tr style="border-bottom:1px solid var(--color-outline-variant);">
+          <td style="padding:10px 12px; font-weight:700; text-align:center;">Question ${i + 1}</td>
+          <td style="padding:10px 12px;">${q.text}</td>
+          <td style="padding:10px 12px; text-align:center;">
+            <span class="badge-status ${isAnswered ? 'status-ready' : 'status-closed'}" style="font-size:11px; padding:3px 8px;">
+              ${isAnswered ? '✓ Answered' : '⚠️ Missing'}
+            </span>
+          </td>
+          <td style="padding:10px 12px; font-style:italic; font-size:12px; color:var(--color-tertiary); max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+            ${isAnswered ? answerSummary : '-'}
+          </td>
+          <td style="padding:10px 12px; text-align:center;">
+            ${isF ? '<span style="color:#ba1a1a; font-weight:700;">🚩 Yes</span>' : '<span style="color:var(--color-tertiary);">No</span>'}
+          </td>
+          <td style="padding:10px 12px; text-align:center;">
+            <button class="btn btn-secondary" onclick="gotoQuizQuestion(${i})" style="height:26px; font-size:11px; padding:0 10px;">Edit</button>
+          </td>
+        </tr>
+      `;
+    }
+
+    const reviewPanelHtml = `
+      <div class="form-card" style="padding:24px;">
+        <h2 style="font-family:var(--font-family-headings); font-size:22px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:8px;">Review and Submit Answers</h2>
+        <p style="font-size:13.5px; color:var(--color-tertiary); margin-bottom:20px;">Review your answers before final submission. Flagged questions are highlighted below for final consideration.</p>
+        
+        <table style="width:100%; border-collapse:collapse; font-size:12.5px; margin-bottom:24px;">
+          <thead>
+            <tr style="border-bottom:1.5px solid var(--color-outline-variant); color:var(--color-tertiary); font-weight:700;">
+              <th style="padding:8px; text-align:center;">ID</th>
+              <th style="padding:8px; text-align:left;">Question Text</th>
+              <th style="padding:8px; text-align:center;">Status</th>
+              <th style="padding:8px; text-align:left;">Selected Response</th>
+              <th style="padding:8px; text-align:center;">Flagged</th>
+              <th style="padding:8px; text-align:center;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${reviewRows}
+          </tbody>
+        </table>
+
+        ${qState.includeManualReviewQuestion ? `
+          <div style="background-color:#fffdf3; border:1px solid #fcf3d1; padding:12px 16px; border-radius:6px; font-size:12.5px; color:#856404; margin-bottom:24px; display:flex; gap:8px;">
+            <span style="font-size:16px;">⏳</span>
+            <div>
+              <strong>Manual Review Note:</strong> Subjective Question 8 is enabled. Your quiz attempt status will be set to <strong>Awaiting manual review</strong> upon clicking submit.
+            </div>
+          </div>
+        ` : ''}
+
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <button class="btn btn-secondary" onclick="setQuizDemoState('In Progress')" style="height:38px; font-weight:700;">&larr; Back to Quiz Workspace</button>
+          <button class="btn btn-primary" onclick="submitQuizAttempt(false)" style="height:40px; background-color:#137333; border-color:#137333; color:#fff; font-weight:800; padding:0 24px;">Submit Quiz Attempt</button>
+        </div>
+      </div>
+    `;
+
+    assessmentView.innerHTML = `
+      ${breadcrumbHtml}
+      ${devConsoleHtml}
+      ${reviewPanelHtml}
+    `;
+    return;
+  }
+
+  // 4. Results View / Answers Review View
+  if (viewState === "Results" || viewState === "Answer Explanations") {
+    const attempts = spState.attempts || [];
+    const lastAttempt = attempts[attempts.length - 1];
+    
+    if (!lastAttempt) {
+      assessmentView.innerHTML = `
+        ${breadcrumbHtml}
+        ${devConsoleHtml}
+        <div class="form-card" style="padding:32px; text-align:center;">
+          <h3>No attempts recorded yet.</h3>
+          <button class="btn btn-primary" onclick="setQuizDemoState('Ready to Start')">Return to Start</button>
+        </div>
+      `;
+      return;
+    }
+
+    const isPassed = lastAttempt.status === "Passed" || lastAttempt.status === "Graded" && lastAttempt.score >= 70;
+    const isFailed = lastAttempt.status === "Failed" || lastAttempt.status === "Graded" && lastAttempt.score < 70;
+    const isSubmitted = lastAttempt.status === "Submitted";
+    const isUnderReview = lastAttempt.status === "Under Review";
+
+    // Results Header Card
+    let verdictHeaderHtml = "";
+    if (isPassed) {
+      verdictHeaderHtml = `
+        <div style="background-color:#f0fbf4; border:1px solid #e1f7ea; border-radius:8px; padding:24px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:8px;">
+          <div style="font-size:48px;">🎉</div>
+          <h2 style="font-family:var(--font-family-headings); font-size:22px; font-weight:800; color:#137333; margin:0;">Congratulations! You Passed!</h2>
+          <div style="font-size:14px; color:var(--color-tertiary);">Score: <strong style="font-size:18px; color:#137333;">${lastAttempt.score}%</strong> (Passing requirement: 70%)</div>
+          <p style="font-size:12.5px; color:var(--color-tertiary); margin:4px 0 12px 0;">All milestone 2 learning objectives have been met and recorded in your student profile.</p>
+        </div>
+      `;
+    } else if (isFailed) {
+      const attemptsRemaining = Math.max(0, 3 - attempts.length);
+      verdictHeaderHtml = `
+        <div style="background-color:#fdf2f2; border:1px solid #fde8e8; border-radius:8px; padding:24px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:8px;">
+          <div style="font-size:48px;">❌</div>
+          <h2 style="font-family:var(--font-family-headings); font-size:22px; font-weight:800; color:#ba1a1a; margin:0;">Quiz Not Passed</h2>
+          <div style="font-size:14px; color:var(--color-tertiary);">Score: <strong style="font-size:18px; color:#ba1a1a;">${lastAttempt.score}%</strong> (Passing requirement: 70%)</div>
+          <p style="font-size:12.5px; color:var(--color-tertiary); margin:4px 0 12px 0;">
+            ${attemptsRemaining > 0 ? `Don't worry, you have <strong>${attemptsRemaining}</strong> attempts remaining to pass this milestone.` : 'Attempt limit reached. Please contact coach Hamza Siddiqui for guidance.'}
+          </p>
+        </div>
+      `;
+    } else if (isSubmitted) {
+      verdictHeaderHtml = `
+        <div style="background-color:#fffdf3; border:1px solid #fcf3d1; border-radius:8px; padding:24px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:8px;">
+          <div style="font-size:48px;">⏳</div>
+          <h2 style="font-family:var(--font-family-headings); font-size:22px; font-weight:800; color:#b06000; margin:0;">Attempt Submitted — Awaiting Review</h2>
+          <div style="font-size:14px; color:var(--color-tertiary);">Auto-graded score components: <strong>${lastAttempt.autoGradedScore}%</strong></div>
+          <p style="font-size:12.5px; color:var(--color-tertiary); margin:4px 0 12px 0;">Question 8 requires manual evaluation by your reviewer Hamza Siddiqui. Your final grade will update once graded.</p>
+        </div>
+      `;
+    } else if (isUnderReview) {
+      verdictHeaderHtml = `
+        <div style="background-color:#fff3f3; border:1px solid #fad2cf; border-radius:8px; padding:24px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:8px;">
+          <div style="font-size:48px;">⚠️</div>
+          <h2 style="font-family:var(--font-family-headings); font-size:22px; font-weight:800; color:#ba1a1a; margin:0;">Attempt Under Integrity Review</h2>
+          <p style="font-size:12.5px; color:var(--color-tertiary); margin:4px 0 12px 0; max-width:500px;">
+            This attempt was flagged for potential academic integrity policy violations (e.g. repeated window/tab switching during the session). Your coach will review the event logs to verify the result.
+          </p>
+        </div>
+      `;
+    }
+
+    // Historical Attempts Gradebook
+    let attemptsHistoryRows = "";
+    attempts.forEach((att, idx) => {
+      let statusColor = "var(--color-tertiary)";
+      if (att.status === "Passed" || att.status === "Graded" && att.score >= 70) statusColor = "#137333";
+      else if (att.status === "Failed" || att.status === "Graded" && att.score < 70) statusColor = "#ba1a1a";
+      else if (att.status === "Submitted") statusColor = "#b06000";
+      
+      const attDate = new Date(att.completedAt || att.startedAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      
+      attemptsHistoryRows += `
+        <tr style="border-bottom:1px solid var(--color-outline-variant);">
+          <td style="padding:8px 12px; font-weight:700; text-align:center;">Attempt ${idx + 1}</td>
+          <td style="padding:8px 12px;">${attDate}</td>
+          <td style="padding:8px 12px; font-weight:800; text-align:right;">${att.score !== null ? (att.score + '%') : '-'}</td>
+          <td style="padding:8px 12px; font-weight:800; text-align:center; color:${statusColor};">${att.status}</td>
+        </tr>
+      `;
+    });
+
+    const gradebookCardHtml = `
+      <div class="form-card" style="padding:20px; margin-top:20px;">
+        <h4 style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--color-tertiary); margin-bottom:12px;">Gradebook & History</h4>
+        <table style="width:100%; font-size:12.5px; border-collapse:collapse;">
+          <thead>
+            <tr style="border-bottom:1.5px solid var(--color-outline-variant); color:var(--color-tertiary); font-weight:700;">
+              <th style="padding:6px; text-align:center;">Attempt #</th>
+              <th style="padding:6px; text-align:left;">Date Completed</th>
+              <th style="padding:6px; text-align:right;">Score</th>
+              <th style="padding:6px; text-align:center;">Verdict</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${attemptsHistoryRows}
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    // Display Question Explanations if toggled
+    let reviewExplanationsHtml = "";
+    if (viewState === "Answer Explanations") {
+      let qListHtml = "";
+      
+      QUIZ_QUESTIONS.forEach((q, idx) => {
+        const userVal = lastAttempt.answers[q.id];
+        
+        // Evaluate correctness
+        let isCorrect = false;
+        let selectedRep = "";
+        
+        if (q.type === "SingleChoice" || q.type === "TrueFalse") {
+          isCorrect = userVal === q.answer;
+          selectedRep = userVal ? `${userVal}` : "(Unanswered)";
+        } else if (q.type === "MultipleChoice") {
+          const uArr = userVal || [];
+          isCorrect = uArr.length === q.answer.length && uArr.every(x => q.answer.includes(x));
+          selectedRep = uArr.length > 0 ? uArr.join(", ") : "(Unanswered)";
+        } else if (q.type === "ShortAnswer") {
+          isCorrect = userVal && q.answer.some(ans => userVal.toLowerCase().includes(ans.toLowerCase()));
+          selectedRep = userVal ? `"${userVal}"` : "(Unanswered)";
+        } else if (q.type === "ShortAnswerSubjective") {
+          isCorrect = lastAttempt.status === "Passed" || lastAttempt.score >= 70; // Subjective evaluation mock
+          selectedRep = userVal ? `"${userVal}"` : "(Unanswered)";
+        } else if (q.type === "Matching") {
+          const uMap = userVal || {};
+          isCorrect = Object.keys(q.answer).every(k => uMap[k] === q.answer[k]);
+          selectedRep = Object.entries(uMap).map(([k, v]) => `${k}→${v}`).join(", ");
+        } else if (q.type === "Ordering") {
+          const uArr = userVal || [];
+          isCorrect = uArr.length === q.answer.length && uArr.every((v, i) => v === q.answer[i]);
+          selectedRep = uArr.map(stepId => {
+            const step = q.items.find(it => it.id === stepId);
+            return step ? step.text.split(" ")[0] : stepId;
+          }).join(" → ");
+        }
+
+        const displayCorrectAns = q.type === "Matching" ? Object.entries(q.answer).map(([k, v]) => `${k}→${v}`).join(", ") : 
+                                  (q.type === "Ordering" ? q.answer.map(x => q.items.find(it => it.id === x)?.text.split(" ")[0]).join(" → ") : 
+                                  (Array.isArray(q.answer) ? q.answer.join(", ") : q.answer));
+
+        qListHtml += `
+          <div style="border-bottom:1.5px solid var(--color-outline-variant); padding:16px 0; display:flex; flex-direction:column; gap:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:start; flex-wrap:wrap; gap:8px;">
+              <strong style="font-size:13px; color:var(--color-on-tertiary-fixed);">Question ${idx + 1}: ${q.text}</strong>
+              <span class="badge-status ${isCorrect ? 'status-ready' : 'status-closed'}" style="font-size:11px; font-weight:700;">
+                ${isCorrect ? 'Correct' : 'Incorrect'}
+              </span>
+            </div>
+            
+            <div style="font-size:12.5px; display:grid; grid-template-columns:140px 1fr; gap:6px;">
+              <span style="color:var(--color-tertiary);">Your Selection:</span>
+              <strong style="color:${isCorrect ? '#137333' : '#ba1a1a'};">${selectedRep}</strong>
+              
+              <span style="color:var(--color-tertiary);">Correct Answer:</span>
+              <strong style="color:#137333;">${displayCorrectAns}</strong>
+            </div>
+
+            <div style="background-color:var(--color-surface-low); border-left:3px solid var(--color-secondary); padding:8px 12px; border-radius:4px; font-size:12px; color:var(--color-tertiary); margin-top:4px;">
+              <strong>Explanation:</strong> ${q.explanation}
+            </div>
+          </div>
+        `;
+      });
+
+      reviewExplanationsHtml = `
+        <div class="form-card" style="padding:20px; margin-top:20px;">
+          <h3 style="font-family:var(--font-family-headings); font-size:16px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:12px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:8px;">Detailed Questions Review</h3>
+          <div style="display:flex; flex-direction:column;">
+            ${qListHtml}
+          </div>
+        </div>
+      `;
+    }
+
+    // Action Row Buttons
+    const attemptsRemaining = Math.max(0, 3 - attempts.length);
+    const actionRowHtml = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+        <button class="btn btn-secondary" onclick="window.location.hash='#learner/courses/ENR-PAI-001'" style="height:40px; font-weight:700;">Return to Syllabus Workspace</button>
+        
+        <div style="display:flex; gap:10px;">
+          ${viewState !== "Answer Explanations" ? `
+            <button class="btn btn-secondary" onclick="setQuizDemoState('Answer Explanations')" style="height:40px; font-weight:700;">Review Answers & Explanations</button>
+          ` : `
+            <button class="btn btn-secondary" onclick="setQuizDemoState('Results')" style="height:40px; font-weight:700;">Hide Explanations</button>
+          `}
+          
+          ${isFailed && attemptsRemaining > 0 ? `
+            <button class="btn btn-primary" onclick="retakeQuiz()" style="height:40px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; padding:0 20px;">Retake Quiz</button>
+          ` : ''}
+        </div>
+      </div>
+    `;
+
+    assessmentView.innerHTML = `
+      ${breadcrumbHtml}
+      ${devConsoleHtml}
+      <div style="display:grid; grid-template-columns: 1fr; gap:16px;">
+        <div>
+          ${verdictHeaderHtml}
+          ${actionRowHtml}
+          ${reviewExplanationsHtml}
+          ${gradebookCardHtml}
+        </div>
+      </div>
+    `;
+  }
+};
+
+// State change helper
+window.setQuizDemoState = function(val) {
+  state.selfPaced.quizState.selectedDemoState = val;
+  window.renderLearnerQuizWorkspace("QUIZ-PAI-001");
+};
+
+// Start Quiz Attempt
+window.startQuizAttempt = function() {
+  ensureSelfPacedState();
+  const qState = state.selfPaced.quizState;
+  
+  // Calculate timer seconds based on accommodations
+  const duration = qState.accommodationsApplied ? 900 : 600; // 15 mins vs 10 mins
+
+  qState.selectedDemoState = "In Progress";
+  qState.activeAttemptId = `ATTEMPT-${Date.now()}`;
+  qState.timerSeconds = duration;
+  qState.currentQuestionIndex = 0;
+  qState.flaggedQuestions = [];
+  qState.answers = {};
+  qState.saveStatus = "Saved";
+  qState.lastSavedTime = "Just now";
+  qState.isTimerPaused = false;
+  
+  // Clear existing timer if any
+  if (window.quizTimerInterval) clearInterval(window.quizTimerInterval);
+
+  // Initialize timer interval
+  window.quizTimerInterval = setInterval(() => {
+    if (qState.selectedDemoState === "In Progress" && !qState.isTimerPaused) {
+      if (qState.timerSeconds > 0) {
+        qState.timerSeconds--;
+        
+        // Critical Warning Sound / Pulse
+        if (qState.timerSeconds === 90 || (qState.timerSeconds < 90 && qState.timerSeconds % 30 === 0)) {
+          playQuizWarningSound();
+        }
+
+        // Render timer display if it exists in DOM
+        const display = document.getElementById("quiz-timer-display");
+        if (display) {
+          const minutes = Math.floor(qState.timerSeconds / 60);
+          const seconds = qState.timerSeconds % 60;
+          display.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+          
+          if (qState.timerSeconds <= 90) {
+            display.style.color = "#ba1a1a";
+            display.style.animation = "pulse 1s infinite";
+          } else {
+            display.style.color = "var(--color-on-surface)";
+            display.style.animation = "none";
+          }
+        }
+      } else {
+        // Expiration auto-submit
+        clearInterval(window.quizTimerInterval);
+        showToastAlert("⏰ Time expired! Submitting your answers automatically.");
+        submitQuizAttempt(true);
+      }
+    }
+  }, 1000);
+
+  // Save initial empty state
+  window.localStorage.setItem("ihs_quiz_autosave_answers", JSON.stringify(qState.answers));
+
+  window.renderLearnerQuizWorkspace("QUIZ-PAI-001");
+};
+
+// Navigate inside questions list
+window.gotoQuizQuestion = function(index) {
+  if (index >= 0 && index < QUIZ_QUESTIONS.length) {
+    state.selfPaced.quizState.currentQuestionIndex = index;
+    window.renderLearnerQuizWorkspace("QUIZ-PAI-001");
+  }
+};
+
+// Flag question
+window.toggleFlagQuestion = function(index) {
+  ensureSelfPacedState();
+  const flags = state.selfPaced.quizState.flaggedQuestions;
+  const idxOf = flags.indexOf(index);
+  if (idxOf !== -1) {
+    flags.splice(idxOf, 1);
+  } else {
+    flags.push(index);
+  }
+  window.renderLearnerQuizWorkspace("QUIZ-PAI-001");
+};
+
+// Toggle time accommodation
+window.toggleAccommodation = function() {
+  ensureSelfPacedState();
+  const qState = state.selfPaced.quizState;
+  
+  if (qState.accommodationsApplied) {
+    qState.accommodationsApplied = false;
+    qState.timerSeconds = Math.max(0, qState.timerSeconds - 300);
+    showToastAlert("Time accommodation disabled (-5 mins).");
+  } else {
+    qState.accommodationsApplied = true;
+    qState.timerSeconds += 300;
+    showToastAlert("Time accommodation applied (+5 mins).");
+  }
+  window.renderLearnerQuizWorkspace("QUIZ-PAI-001");
+};
+
+// Toggles quiz simulated network status
+window.toggleQuizNetwork = function() {
+  ensureSelfPacedState();
+  const qState = state.selfPaced.quizState;
+  
+  if (qState.networkStatus === "connected") {
+    qState.networkStatus = "disconnected";
+    qState.saveStatus = "Offline — Retrying sync (1)";
+    showToastAlert("📶 Simulating Network Interruption! Answers buffered in localStorage.");
+  } else {
+    qState.networkStatus = "connected";
+    qState.saveStatus = "Saved";
+    qState.lastSavedTime = "Just now";
+    showToastAlert("📶 Simulated Network Restored. Local buffers successfully synchronized!");
+    
+    // Sync any buffered answers
+    try {
+      const buf = window.localStorage.getItem("ihs_quiz_autosave_answers");
+      if (buf) {
+        qState.answers = JSON.parse(buf);
+      }
+    } catch(e) {}
+  }
+  window.renderLearnerQuizWorkspace("QUIZ-PAI-001");
+};
+
+// Autosave simulated trigger on input change
+window.triggerQuizAutosave = function() {
+  ensureSelfPacedState();
+  const qState = state.selfPaced.quizState;
+  
+  if (qState.networkStatus === "disconnected") {
+    // Increment retry count
+    let retryCount = 1;
+    if (qState.saveStatus.includes("Retrying sync")) {
+      const match = qState.saveStatus.match(/\((\d+)\)/);
+      if (match) retryCount = parseInt(match[1]) + 1;
+    }
+    qState.saveStatus = `Offline — Retrying sync (${retryCount})`;
+    
+    // Save to localStorage
+    window.localStorage.setItem("ihs_quiz_autosave_answers", JSON.stringify(qState.answers));
+  } else {
+    qState.saveStatus = "Saving...";
+    
+    setTimeout(() => {
+      if (qState.networkStatus === "connected") {
+        qState.saveStatus = "Saved";
+        qState.lastSavedTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        
+        // Update save status display
+        const displayStatus = document.querySelector("span[style*='color']");
+        if (displayStatus) {
+          displayStatus.innerText = "Saved";
+          displayStatus.style.color = "#137333";
+        }
+      }
+    }, 400);
+  }
+};
+
+// Single choice / Short answer save answer
+window.saveQuizAnswer = function(questionId, value) {
+  ensureSelfPacedState();
+  state.selfPaced.quizState.answers[questionId] = value;
+  window.triggerQuizAutosave();
+};
+
+// Multiple choice checkbox save answer
+window.saveQuizMultipleAnswer = function(questionId, key) {
+  ensureSelfPacedState();
+  const answers = state.selfPaced.quizState.answers;
+  if (!answers[questionId]) answers[questionId] = [];
+  
+  const arr = answers[questionId];
+  const idx = arr.indexOf(key);
+  if (idx !== -1) {
+    arr.splice(idx, 1);
+  } else {
+    arr.push(key);
+  }
+  window.triggerQuizAutosave();
+};
+
+// Matching selector save answer
+window.saveQuizMatchingAnswer = function(questionId, itemId, value) {
+  ensureSelfPacedState();
+  const answers = state.selfPaced.quizState.answers;
+  if (!answers[questionId]) answers[questionId] = {};
+  
+  answers[questionId][itemId] = value;
+  window.triggerQuizAutosave();
+};
+
+// Ordering rank selector save answer
+window.saveQuizOrderingAnswer = function(questionId, itemId, targetIndex) {
+  ensureSelfPacedState();
+  const answers = state.selfPaced.quizState.answers;
+  
+  // Find current order or build default
+  const q = QUIZ_QUESTIONS.find(x => x.id === questionId);
+  let currentOrder = answers[questionId] || q.items.map(it => it.id);
+  
+  // Remove item from current position
+  const currentIdx = currentOrder.indexOf(itemId);
+  if (currentIdx !== -1) {
+    currentOrder.splice(currentIdx, 1);
+  }
+  
+  // Insert at target position
+  currentOrder.splice(targetIndex, 0, itemId);
+  
+  answers[questionId] = currentOrder;
+  window.triggerQuizAutosave();
+  window.renderLearnerQuizWorkspace("QUIZ-PAI-001");
+};
+
+// Submit Quiz Attempt Logic
+window.submitQuizAttempt = function(isForceSubmit) {
+  ensureSelfPacedState();
+  const spState = state.selfPaced;
+  const qState = spState.quizState;
+  
+  if (window.quizTimerInterval) clearInterval(window.quizTimerInterval);
+
+  // Auto-grading questions 1 to 7
+  let points = 0;
+  
+  // Q1 (Single choice) - Key A
+  if (qState.answers["Q1"] === "A") points++;
+  
+  // Q2 (Multiple choice) - Key A, B, C, D
+  const q2Ans = qState.answers["Q2"] || [];
+  const q2Correct = ["A", "B", "C", "D"];
+  if (q2Ans.length === q2Correct.length && q2Ans.every(x => q2Correct.includes(x))) points++;
+  
+  // Q3 (True/False) - Key T
+  if (qState.answers["Q3"] === "T") points++;
+  
+  // Q4 (Short answer) - matches any item in key list (case insensitive)
+  const q4Ans = (qState.answers["Q4"] || "").trim().toLowerCase();
+  const q4Correct = ["limit", "limitation", "restriction", "boundary", "rule", "criteria"];
+  if (q4Ans && q4Correct.some(c => q4Ans.includes(c))) points++;
+  
+  // Q5 (Matching) - 1:A, 2:B, 3:C
+  const q5Ans = qState.answers["Q5"] || {};
+  if (q5Ans["1"] === "A" && q5Ans["2"] === "B" && q5Ans["3"] === "C") points++;
+  
+  // Q6 (Ordering) - step_1, step_2, step_3 in order
+  const q6Ans = qState.answers["Q6"] || ["step_1", "step_2", "step_3"];
+  if (q6Ans[0] === "step_1" && q6Ans[1] === "step_2" && q6Ans[2] === "step_3") points++;
+  
+  // Q7 (Single choice) - Key B
+  if (qState.answers["Q7"] === "B") points++;
+
+  // Auto-graded portion: out of 7 questions. Max points = 7.
+  const autoGradedPercentage = Math.round((points / 7) * 100);
+
+  // Handle Question 8 subjective grading / Integrity flag
+  let finalStatus = "Passed";
+  let finalScore = autoGradedPercentage;
+  
+  if (qState.integrityViolationTriggered) {
+    finalStatus = "Under Review";
+    finalScore = null;
+  } else if (qState.includeManualReviewQuestion) {
+    finalStatus = "Submitted"; // Awaiting manual review
+    finalScore = null;
+  } else {
+    // Subjective Q8 is auto-marked correct if user answered anything with length > 5
+    const q8Ans = (qState.answers["Q8"] || "").trim();
+    if (q8Ans.length > 5) {
+      points++; // Total 8 points
+    }
+    finalScore = Math.round((points / 8) * 100);
+    finalStatus = finalScore >= 70 ? "Passed" : "Failed";
+  }
+
+  // Create Attempt object
+  const attemptObj = {
+    id: qState.activeAttemptId || `ATTEMPT-${Date.now()}`,
+    startedAt: new Date(Date.now() - (600 - qState.timerSeconds)*1000).toISOString(),
+    completedAt: new Date().toISOString(),
+    score: finalScore,
+    autoGradedScore: autoGradedPercentage,
+    status: finalStatus,
+    answers: JSON.parse(JSON.stringify(qState.answers)),
+    integrityEvents: JSON.parse(JSON.stringify(qState.integrityEvents || []))
+  };
+
+  if (!spState.attempts) spState.attempts = [];
+  spState.attempts.push(attemptObj);
+
+  // Update ACT-PAI-QUIZ-001 activity gradebook entry
+  if (!spState.activities["ACT-PAI-QUIZ-001"]) {
+    spState.activities["ACT-PAI-QUIZ-001"] = { status: "Locked", score: null, attemptsUsed: 0 };
+  }
+  
+  const quizActivity = spState.activities["ACT-PAI-QUIZ-001"];
+  quizActivity.attemptsUsed = spState.attempts.length;
+  
+  if (finalStatus === "Passed") {
+    quizActivity.status = "Completed";
+    quizActivity.score = finalScore;
+    
+    // Unlock downstream items: ACT-PAI-011, ACT-PAI-012, ACT-PAI-013
+    spState.activities["ACT-PAI-011"].status = "Available";
+    spState.activities["ACT-PAI-012"].status = "Available";
+    spState.activities["ACT-PAI-013"].status = "Available";
+
+    // Add progress event
+    spState.progressEvents.push({
+      id: `PROG-PAI-QUIZ-${Date.now()}`,
+      enrolmentId: "ENR-PAI-001",
+      activityId: "ACT-PAI-QUIZ-001",
+      event: "passed",
+      occurredAt: new Date().toISOString()
+    });
+
+    showToastAlert("🎉 Quiz Passed! Downstream lesson activities are now unlocked.");
+  } else if (finalStatus === "Failed") {
+    quizActivity.status = "Failed";
+    // Set highest score if any
+    quizActivity.score = Math.max(quizActivity.score || 0, finalScore);
+    showToastAlert("⚠️ Quiz not passed. Review explanations and retake the quiz.");
+  } else if (finalStatus === "Submitted") {
+    quizActivity.status = "Submitted";
+    showToastAlert("⏳ Attempt submitted. Awaiting manual grading of Question 8.");
+  } else if (finalStatus === "Under Review") {
+    quizActivity.status = "Under Review";
+    showToastAlert("⚠️ Attempt flagged for Academic Integrity review. Coach notified.");
+  }
+
+  qState.selectedDemoState = "Results";
+  window.renderLearnerQuizWorkspace("QUIZ-PAI-001");
+};
+
+// Retake Quiz Action
+window.retakeQuiz = function() {
+  ensureSelfPacedState();
+  const attempts = state.selfPaced.attempts || [];
+  if (attempts.length >= 3) {
+    showToastAlert("You have reached the maximum attempt limit (3).");
+    return;
+  }
+  
+  state.selfPaced.quizState.selectedDemoState = "Ready to Start";
+  window.renderLearnerQuizWorkspace("QUIZ-PAI-001");
+};
+
+// Developer Console triggers
+window.simulateSetTimer = function(seconds) {
+  ensureSelfPacedState();
+  state.selfPaced.quizState.timerSeconds = seconds;
+  showToastAlert(`Simulated timer set to ${seconds} seconds remaining.`);
+  window.renderLearnerQuizWorkspace("QUIZ-PAI-001");
+};
+
+window.toggleTimerPause = function() {
+  ensureSelfPacedState();
+  const qState = state.selfPaced.quizState;
+  qState.isTimerPaused = !qState.isTimerPaused;
+  showToastAlert(qState.isTimerPaused ? "Timer Paused." : "Timer Resumed.");
+  window.renderLearnerQuizWorkspace("QUIZ-PAI-001");
+};
+
+window.toggleManualReviewCheckbox = function(checked) {
+  ensureSelfPacedState();
+  state.selfPaced.quizState.includeManualReviewQuestion = checked;
+  showToastAlert(checked ? "Subjective review active for Question 8." : "Subjective review disabled.");
+  window.renderLearnerQuizWorkspace("QUIZ-PAI-001");
+};
+
+window.triggerAcademicIntegrityFlag = function() {
+  ensureSelfPacedState();
+  state.selfPaced.quizState.integrityViolationTriggered = true;
+  if (!state.selfPaced.quizState.integrityEvents) state.selfPaced.quizState.integrityEvents = [];
+  state.selfPaced.quizState.integrityEvents.push({
+    event: "Developer integrity violation simulated",
+    timestamp: new Date().toISOString()
+  });
+  showToastAlert("⚠️ Integrity policy breach flagged. Attempt will submit as 'Integrity Flagged'.");
+  window.renderLearnerQuizWorkspace("QUIZ-PAI-001");
+};
+
+window.resetQuizState = function() {
+  ensureSelfPacedState();
+  state.selfPaced.attempts = [];
+  state.selfPaced.quizState = {
+    selectedDemoState: "Ready to Start",
+    activeAttemptId: null,
+    timerSeconds: 600,
+    currentQuestionIndex: 0,
+    flaggedQuestions: [],
+    includeManualReviewQuestion: false,
+    accommodationsApplied: false,
+    networkStatus: "connected",
+    saveStatus: "Saved",
+    lastSavedTime: "Just now",
+    answers: {}
+  };
+  state.selfPaced.activities["ACT-PAI-QUIZ-001"] = { status: "Locked", score: null, attemptsUsed: 0 };
+  state.selfPaced.activities["ACT-PAI-011"].status = "Locked";
+  state.selfPaced.activities["ACT-PAI-012"].status = "Locked";
+  state.selfPaced.activities["ACT-PAI-013"].status = "Locked";
+  
+  if (window.quizTimerInterval) clearInterval(window.quizTimerInterval);
+  
+  showToastAlert("All quiz historical attempts and status flags cleared.");
+  window.renderLearnerQuizWorkspace("QUIZ-PAI-001");
+};
+
+// Simulator CSR grading actions
+window.simulateGradeAttempt = function(attemptId, score) {
+  ensureSelfPacedState();
+  const att = state.selfPaced.attempts.find(a => a.id === attemptId);
+  if (att) {
+    att.score = score;
+    att.status = score >= 70 ? "Passed" : "Failed";
+    
+    // Update main activity
+    const quizAct = state.selfPaced.activities["ACT-PAI-QUIZ-001"];
+    quizAct.status = score >= 70 ? "Completed" : "Failed";
+    quizAct.score = score;
+
+    if (score >= 70) {
+      state.selfPaced.activities["ACT-PAI-011"].status = "Available";
+      state.selfPaced.activities["ACT-PAI-012"].status = "Available";
+      state.selfPaced.activities["ACT-PAI-013"].status = "Available";
+    }
+
+    showToastAlert(`Attempt graded by Hamza Siddiqui: ${score}% (${att.status})`);
+    window.renderLearnerQuizWorkspace("QUIZ-PAI-001");
+  }
+};
+
+window.simulateResolveIntegrity = function(attemptId, allowPass) {
+  ensureSelfPacedState();
+  const att = state.selfPaced.attempts.find(a => a.id === attemptId);
+  if (att) {
+    // If allowPass, compute grading
+    if (allowPass) {
+      att.score = att.autoGradedScore || 85;
+      att.status = att.score >= 70 ? "Passed" : "Failed";
+    } else {
+      att.score = 0;
+      att.status = "Failed";
+    }
+
+    // Update main activity
+    const quizAct = state.selfPaced.activities["ACT-PAI-QUIZ-001"];
+    quizAct.status = att.status === "Passed" ? "Completed" : "Failed";
+    quizAct.score = att.score;
+
+    if (att.status === "Passed") {
+      state.selfPaced.activities["ACT-PAI-011"].status = "Available";
+      state.selfPaced.activities["ACT-PAI-012"].status = "Available";
+      state.selfPaced.activities["ACT-PAI-013"].status = "Available";
+    }
+
+    showToastAlert(`Integrity status resolved by coach: Result is ${att.status} (Score: ${att.score}%)`);
+    window.renderLearnerQuizWorkspace("QUIZ-PAI-001");
   }
 };
 
