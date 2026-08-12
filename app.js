@@ -581,6 +581,10 @@ function handleRouting() {
         if (coursesLink) coursesLink.classList.add("active");
         renderLearnerCourseWorkspace(enrolmentId);
       }
+    } else if (hash.startsWith("#learner/assessments/")) {
+      const assessmentId = hash.replace("#learner/assessments/", "");
+      showToastAlert(`Screen 22 Assessment Engine: Loading ${assessmentId}... (Placeholder)`);
+      window.location.hash = "#learner/courses/ENR-PAI-001";
     } else if (hash === "#learner/my-courses") {
       if (catalogueView) catalogueView.style.display = "none";
       if (detailsView) detailsView.style.display = "none";
@@ -12268,17 +12272,31 @@ window.renderLearnerMyCoursesDashboard = function() {
 
   // Ensure state.activeEnrolledCourses has at least some default mock course (e.g. Practical AI self-paced)
   if (!state.activeEnrolledCourses) {
-    state.activeEnrolledCourses = [
-      {
-        title: "Practical AI & Prompt Engineering",
-        instructor: "Sana Malik",
-        schedule: "Self-Paced (Immediate Access)",
-        credits: "35% complete",
-        remaining: "N/A",
-        tag: "Active",
-        badgeClass: "status-ready"
-      }
-    ];
+    state.activeEnrolledCourses = [];
+  }
+  const hasSpoken = state.activeEnrolledCourses.some(c => c.title.includes("Spoken English"));
+  if (!hasSpoken) {
+    state.activeEnrolledCourses.push({
+      title: "Spoken English Bootcamp",
+      instructor: "Ayesha Rahman",
+      schedule: "Tuesday & Thursday · 7:00 PM PKT",
+      credits: "1 of 12 classes used",
+      remaining: 11,
+      tag: "Active",
+      badgeClass: "status-ready"
+    });
+  }
+  const hasAI = state.activeEnrolledCourses.some(c => c.title.includes("Practical AI"));
+  if (!hasAI) {
+    state.activeEnrolledCourses.push({
+      title: "Practical AI & Prompt Engineering",
+      instructor: "Sana Malik",
+      schedule: "Self-Paced (Immediate Access)",
+      credits: "35% complete",
+      remaining: "N/A",
+      tag: "Active",
+      badgeClass: "status-ready"
+    });
   }
 
   const coursesHtml = state.activeEnrolledCourses.map(c => `
@@ -12290,12 +12308,12 @@ window.renderLearnerMyCoursesDashboard = function() {
         ${c.nextClass ? `<p style="margin:4px 0; font-size:13px; color:#137333; font-weight:700;">Next Class: <strong>${c.nextClass}</strong></p>` : ''}
         <div style="margin-top:10px; display:flex; gap:12px; font-size:12.5px;">
           <span>Usage: <strong>${c.credits}</strong></span>
-          ${c.remaining !== 'N/A' ? `<span>Remaining Entitlement: <strong>${c.remaining} classes</strong></span>` : ''}
+          ${c.remaining !== 'N/A' && c.remaining !== undefined ? `<span>Remaining Entitlement: <strong>${c.remaining} classes</strong></span>` : ''}
         </div>
       </div>
       <div style="text-align:right; display:flex; flex-direction:column; gap:8px;">
         <span class="badge-status ${c.badgeClass}" style="font-size:10.5px; width:fit-content; align-self:flex-end;">${c.tag}</span>
-        <button class="btn btn-secondary" onclick="window.location.hash='#learner/courses/' + ('${c.title}'.includes('Spoken') ? 'ENR-001' : 'ENR-002')" style="height:32px; font-size:12px; font-weight:700;">Open Course</button>
+        <button class="btn btn-secondary" onclick="window.location.hash='#learner/courses/' + ('${c.title}'.includes('Spoken') ? 'ENR-001' : 'ENR-PAI-001')" style="height:32px; font-size:12px; font-weight:700;">Open Course</button>
       </div>
     </div>
   `).join("");
@@ -13359,6 +13377,12 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
   if (!view) return;
 
   const isEnglish = (enrolmentId === "ENR-001");
+  if (!isEnglish) {
+    if (typeof renderPracticalAICourseWorkspace === "function") {
+      renderPracticalAICourseWorkspace(enrolmentId, view);
+      return;
+    }
+  }
   const courseTitle = isEnglish ? "Spoken English" : "Practical AI & Prompt Engineering";
   const courseLevel = isEnglish ? "Beginner" : "Intermediate";
   const deliveryModel = isEnglish ? "Live Online" : "Self-Paced";
@@ -13434,7 +13458,7 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
         <span style="font-size:12.5px; font-weight:700; color:var(--color-tertiary);">Current Course Workspace:</span>
         <select class="form-input" style="width:240px; height:34px; font-size:13px; font-weight:700; margin-bottom:0;" onchange="window.location.hash='#learner/courses/' + this.value">
           <option value="ENR-001" ${isEnglish ? 'selected' : ''}>Spoken English (Live Online)</option>
-          <option value="ENR-002" ${!isEnglish ? 'selected' : ''}>Practical AI (Self-Paced)</option>
+          <option value="ENR-PAI-001" ${!isEnglish ? 'selected' : ''}>Practical AI (Self-Paced)</option>
         </select>
       </div>
 
@@ -16685,6 +16709,1246 @@ window.submitLearnerRescheduleRequest = function(enrolmentId, occurrenceId) {
   window.renderLearnerCourseWorkspace(enrolmentId);
   showToastAlert("Reschedule request submitted to Operations review queue.");
 };
+
+// ==========================================================================
+// Screen 21 - Milestone-Based Self-Paced Learning Progression
+// ==========================================================================
+
+window.ensureSelfPacedState = function() {
+  if (!state.selfPaced) {
+    state.selfPaced = {
+      selectedDemoState: "35% — In Progress",
+      currentTab: "overview",
+      courseVersion: "practical-ai-v1.0",
+      accessState: "Active",
+      reviewer: "Hamza Siddiqui",
+      activeActivityId: "ACT-PAI-007",
+      activities: {
+        "ACT-PAI-001": { status: "Completed" },
+        "ACT-PAI-002": { status: "Completed" },
+        "ACT-PAI-003": { status: "Completed" },
+        "ACT-PAI-004": { status: "Completed" },
+        "ACT-PAI-005": { status: "Completed" },
+        "ACT-PAI-006": { status: "Completed" },
+        "ACT-PAI-007": { status: "In Progress", lastPositionSeconds: 402, durationSeconds: 720 },
+        "ACT-PAI-008": { status: "Available" },
+        "ACT-PAI-009": { status: "Locked" },
+        "ACT-PAI-010": { status: "Locked", score: null, attemptsUsed: 0 },
+        "ACT-PAI-011": { status: "Locked" },
+        "ACT-PAI-012": { status: "Locked" },
+        "ACT-PAI-013": { status: "Locked" }
+      },
+      progressEvents: [
+        { id: "PROG-PAI-001", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-001", event: "completed", occurredAt: "2026-08-08T10:00:00Z" },
+        { id: "PROG-PAI-002", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-002", event: "completed", occurredAt: "2026-08-08T10:30:00Z" },
+        { id: "PROG-PAI-003", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-003", event: "completed", occurredAt: "2026-08-09T11:00:00Z" },
+        { id: "PROG-PAI-004", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-004", event: "completed", occurredAt: "2026-08-09T14:00:00Z" },
+        { id: "PROG-PAI-005", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-005", event: "completed", occurredAt: "2026-08-10T14:40:00Z" },
+        { id: "PROG-PAI-006", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-006", event: "completed", occurredAt: "2026-08-10T15:30:00Z" },
+        { id: "PROG-PAI-007", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-007", event: "started", occurredAt: "2026-08-12T19:20:00Z" }
+      ],
+      chatMessages: [
+        { sender: "Hamza Siddiqui", role: "Coach", text: "Welcome Ali to the Practical AI course! I will be your coach and manual assignment reviewer. Let me know if you get stuck on any prompting topics.", time: "8 Aug · 1:30 PM" }
+      ]
+    };
+  }
+};
+
+window.changeDemoSelfPacedState = function(val) {
+  ensureSelfPacedState();
+  state.selfPaced.selectedDemoState = val;
+  state.selfPaced.accessState = "Active";
+  state.selfPaced.activeActivityId = "ACT-PAI-007";
+  
+  // Base default structure
+  state.selfPaced.activities = {
+    "ACT-PAI-001": { status: "Completed" },
+    "ACT-PAI-002": { status: "Completed" },
+    "ACT-PAI-003": { status: "Completed" },
+    "ACT-PAI-004": { status: "Completed" },
+    "ACT-PAI-005": { status: "Completed" },
+    "ACT-PAI-006": { status: "Completed" },
+    "ACT-PAI-007": { status: "In Progress", lastPositionSeconds: 402, durationSeconds: 720 },
+    "ACT-PAI-008": { status: "Available" },
+    "ACT-PAI-009": { status: "Locked" },
+    "ACT-PAI-010": { status: "Locked", score: null, attemptsUsed: 0 },
+    "ACT-PAI-011": { status: "Locked" },
+    "ACT-PAI-012": { status: "Locked" },
+    "ACT-PAI-013": { status: "Locked" }
+  };
+  
+  state.selfPaced.progressEvents = [
+    { id: "PROG-PAI-001", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-001", event: "completed", occurredAt: "2026-08-08T10:00:00Z" },
+    { id: "PROG-PAI-002", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-002", event: "completed", occurredAt: "2026-08-08T10:30:00Z" },
+    { id: "PROG-PAI-003", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-003", event: "completed", occurredAt: "2026-08-09T11:00:00Z" },
+    { id: "PROG-PAI-004", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-004", event: "completed", occurredAt: "2026-08-09T14:00:00Z" },
+    { id: "PROG-PAI-005", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-005", event: "completed", occurredAt: "2026-08-10T14:40:00Z" },
+    { id: "PROG-PAI-006", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-006", event: "completed", occurredAt: "2026-08-10T15:30:00Z" },
+    { id: "PROG-PAI-007", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-007", event: "started", occurredAt: "2026-08-12T19:20:00Z" }
+  ];
+
+  if (val === "0% — New Learner") {
+    Object.keys(state.selfPaced.activities).forEach(k => {
+      state.selfPaced.activities[k] = { status: "Locked" };
+    });
+    state.selfPaced.activities["ACT-PAI-001"] = { status: "Available" };
+    state.selfPaced.activeActivityId = "ACT-PAI-001";
+    state.selfPaced.progressEvents = [
+      { id: "PROG-PAI-INIT", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-001", event: "unlocked", occurredAt: "2026-08-08T09:00:00Z" }
+    ];
+  } else if (val === "Activity Completed / Next Unlocked") {
+    state.selfPaced.activities["ACT-PAI-007"] = { status: "Completed" };
+    state.selfPaced.activities["ACT-PAI-008"] = { status: "Completed" };
+    state.selfPaced.activities["ACT-PAI-009"] = { status: "Available" };
+    state.selfPaced.activeActivityId = "ACT-PAI-009";
+    state.selfPaced.progressEvents.push(
+      { id: "PROG-PAI-007-C", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-007", event: "completed", occurredAt: "2026-08-12T19:25:00Z" },
+      { id: "PROG-PAI-008-C", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-008", event: "completed", occurredAt: "2026-08-12T19:40:00Z" }
+    );
+  } else if (val === "Failed Quiz") {
+    state.selfPaced.activities["ACT-PAI-007"] = { status: "Completed" };
+    state.selfPaced.activities["ACT-PAI-008"] = { status: "Completed" };
+    state.selfPaced.activities["ACT-PAI-009"] = { status: "Completed" };
+    state.selfPaced.activities["ACT-PAI-010"] = { status: "Failed", score: 60, attemptsUsed: 1 };
+    state.selfPaced.activeActivityId = "ACT-PAI-010";
+    state.selfPaced.progressEvents.push(
+      { id: "PROG-PAI-007-C", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-007", event: "completed", occurredAt: "2026-08-12T19:25:00Z" },
+      { id: "PROG-PAI-008-C", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-008", event: "completed", occurredAt: "2026-08-12T19:40:00Z" },
+      { id: "PROG-PAI-009-C", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-009", event: "completed", occurredAt: "2026-08-12T20:10:00Z" },
+      { id: "PROG-PAI-010-F", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-010", event: "failed", occurredAt: "2026-08-12T20:30:00Z" }
+    );
+  } else if (val === "Awaiting Manual Review") {
+    state.selfPaced.activities["ACT-PAI-007"] = { status: "Completed" };
+    state.selfPaced.activities["ACT-PAI-008"] = { status: "Completed" };
+    state.selfPaced.activities["ACT-PAI-009"] = { status: "Submitted" };
+    state.selfPaced.activeActivityId = "ACT-PAI-009";
+    state.selfPaced.progressEvents.push(
+      { id: "PROG-PAI-007-C", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-007", event: "completed", occurredAt: "2026-08-12T19:25:00Z" },
+      { id: "PROG-PAI-008-C", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-008", event: "completed", occurredAt: "2026-08-12T19:40:00Z" },
+      { id: "PROG-PAI-009-S", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-009", event: "submitted", occurredAt: "2026-08-12T20:00:00Z" }
+    );
+  } else if (val === "Access Expired") {
+    state.selfPaced.accessState = "Expired";
+  } else if (val === "Course Completed") {
+    Object.keys(state.selfPaced.activities).forEach(k => {
+      if (k === "ACT-PAI-010") {
+        state.selfPaced.activities[k] = { status: "Completed", score: 90, attemptsUsed: 1 };
+      } else {
+        state.selfPaced.activities[k] = { status: "Completed" };
+      }
+    });
+    state.selfPaced.activeActivityId = "ACT-PAI-013";
+    state.selfPaced.progressEvents.push(
+      { id: "PROG-PAI-010-P", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-010", event: "passed", occurredAt: "2026-08-12T21:00:00Z" },
+      { id: "PROG-PAI-COMP", enrolmentId: "ENR-PAI-001", activityId: "ACT-PAI-013", event: "completed", occurredAt: "2026-08-12T21:30:00Z" }
+    );
+  }
+
+  window.renderLearnerCourseWorkspace("ENR-PAI-001");
+  showToastAlert(`Self-paced state shifted: ${val}`);
+};
+
+window.selectSelfPacedActivity = function(activityId) {
+  ensureSelfPacedState();
+  state.selfPaced.activeActivityId = activityId;
+  window.renderLearnerCourseWorkspace("ENR-PAI-001");
+};
+
+window.simulateVideoWatched = function(activityId, percentage) {
+  ensureSelfPacedState();
+  if (state.selfPaced.activities[activityId]) {
+    state.selfPaced.activities[activityId].status = "Completed";
+    state.selfPaced.activities[activityId].lastPositionSeconds = 720;
+    
+    // Unlock next
+    if (activityId === "ACT-PAI-007") {
+      state.selfPaced.activities["ACT-PAI-008"].status = "Available";
+    }
+
+    state.selfPaced.progressEvents.push({
+      id: `PROG-PAI-${Date.now()}`,
+      enrolmentId: "ENR-PAI-001",
+      activityId: activityId,
+      event: "completed",
+      occurredAt: new Date().toISOString()
+    });
+
+    window.renderLearnerCourseWorkspace("ENR-PAI-001");
+    openModal("Activity Completed", `
+      <div style="text-align:center; padding:12px;">
+        <h2 style="color:#137333; margin-bottom:8px;">🎉 Video watch criteria met!</h2>
+        <p style="font-size:14px; color:var(--color-tertiary);">You watched 85% of <strong>Prompt Structure Basics</strong>. The next activity <strong>Context and Constraints</strong> is now unlocked.</p>
+        <button class="btn btn-primary" onclick="closeModal(); selectSelfPacedActivity('ACT-PAI-008');" style="margin-top:12px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:700;">Continue to Next Activity</button>
+      </div>
+    `);
+  }
+};
+
+window.markSelfPacedActivityComplete = function(activityId) {
+  ensureSelfPacedState();
+  if (state.selfPaced.activities[activityId]) {
+    state.selfPaced.activities[activityId].status = "Completed";
+
+    let nextId = "";
+    if (activityId === "ACT-PAI-001") nextId = "ACT-PAI-002";
+    else if (activityId === "ACT-PAI-002") nextId = "ACT-PAI-003";
+    else if (activityId === "ACT-PAI-003") nextId = "ACT-PAI-004";
+    else if (activityId === "ACT-PAI-004") nextId = "ACT-PAI-005";
+    else if (activityId === "ACT-PAI-005") nextId = "ACT-PAI-006";
+    else if (activityId === "ACT-PAI-006") nextId = "ACT-PAI-007";
+    else if (activityId === "ACT-PAI-008") nextId = "ACT-PAI-009";
+
+    if (nextId && state.selfPaced.activities[nextId]) {
+      state.selfPaced.activities[nextId].status = "Available";
+    }
+
+    state.selfPaced.progressEvents.push({
+      id: `PROG-PAI-${Date.now()}`,
+      enrolmentId: "ENR-PAI-001",
+      activityId: activityId,
+      event: "completed",
+      occurredAt: new Date().toISOString()
+    });
+
+    window.renderLearnerCourseWorkspace("ENR-PAI-001");
+    showToastAlert("Activity marked as complete!");
+  }
+};
+
+window.submitPracticeExercise = function(activityId) {
+  ensureSelfPacedState();
+  const text = document.getElementById("practice-text-input")?.value || "";
+  if (!text) {
+    showToastAlert("Please write your prompt rewrite before submitting.");
+    return;
+  }
+  
+  if (state.selfPaced.activities[activityId]) {
+    state.selfPaced.activities[activityId].status = "Completed";
+    state.selfPaced.activities["ACT-PAI-010"].status = "Available"; // Unlock quiz
+
+    state.selfPaced.progressEvents.push({
+      id: `PROG-PAI-${Date.now()}`,
+      enrolmentId: "ENR-PAI-001",
+      activityId: activityId,
+      event: "completed",
+      occurredAt: new Date().toISOString()
+    });
+
+    window.renderLearnerCourseWorkspace("ENR-PAI-001");
+    showToastAlert("Practice prompt submitted! The prompting fundamentals quiz is now unlocked.");
+  }
+};
+
+window.retrySelfPacedQuiz = function(activityId) {
+  ensureSelfPacedState();
+  if (state.selfPaced.activities[activityId]) {
+    state.selfPaced.activities[activityId].status = "Available";
+    state.selfPaced.activities[activityId].score = null;
+    window.renderLearnerCourseWorkspace("ENR-PAI-001");
+    showToastAlert("Quiz reset. You may start a new attempt.");
+  }
+};
+
+window.sendSelfPacedChatMessage = function() {
+  const input = document.getElementById("sp-chat-input");
+  const text = input?.value || "";
+  if (!text) return;
+  
+  ensureSelfPacedState();
+  state.selfPaced.chatMessages.push({
+    sender: "Ali Khan",
+    role: "Learner",
+    text: text,
+    time: "Today"
+  });
+  
+  input.value = "";
+  window.renderLearnerCourseWorkspace("ENR-PAI-001");
+  
+  // Auto response from Hamza
+  setTimeout(() => {
+    state.selfPaced.chatMessages.push({
+      sender: "Hamza Siddiqui",
+      role: "Coach",
+      text: "Thanks for your message! I have received your question and will reply in detail within 2 hours.",
+      time: "Today"
+    });
+    window.renderLearnerCourseWorkspace("ENR-PAI-001");
+  }, 1200);
+};
+
+window.renderPracticalAICourseWorkspace = function(enrolmentId, view) {
+  ensureSelfPacedState();
+  const spState = state.selfPaced;
+  const activeTab = spState.currentTab || "overview";
+  
+  const courseTitle = "Practical AI & Prompt Engineering";
+  const courseLevel = "Level 1 — AI Foundations";
+  const deliveryModel = "Self-Paced";
+  const trainerName = "Sana Malik";
+  const demoCourseState = spState.selectedDemoState;
+  
+  // Compute dynamic percentage based on progress state
+  let progressPercent = 35;
+  if (demoCourseState === "0% — New Learner") progressPercent = 0;
+  else if (demoCourseState === "Activity Completed / Next Unlocked") progressPercent = 50;
+  else if (demoCourseState === "Failed Quiz" || demoCourseState === "Awaiting Manual Review") progressPercent = 65;
+  else if (demoCourseState === "Course Completed") progressPercent = 100;
+  
+  const totalLessons = 6;
+  let completedLessons = 0;
+  
+  // Define course mapping structure
+  const PAI_COURSE = {
+    id: "practical-ai-v1.0",
+    title: "Practical AI & Prompt Engineering",
+    level: "Level 1 — AI Foundations",
+    milestones: [
+      {
+        id: "PAI-M1",
+        title: "Milestone 1 — Understanding AI",
+        lessons: [
+          {
+            id: "PAI-LES-1",
+            title: "Lesson 1 — What Is AI?",
+            activities: [
+              { id: "ACT-PAI-001", title: "Read: What Is Artificial Intelligence?", type: "Text", est: "5 min" },
+              { id: "ACT-PAI-002", title: "Video: How AI Systems Learn", type: "Video", est: "10 min" },
+              { id: "ACT-PAI-003", title: "Quick Knowledge Check", type: "Quiz", est: "5 min" }
+            ]
+          },
+          {
+            id: "PAI-LES-2",
+            title: "Lesson 2 — Generative AI Basics",
+            activities: [
+              { id: "ACT-PAI-004", title: "Introduction to Generative AI", type: "Text", est: "8 min" },
+              { id: "ACT-PAI-005", title: "Common Generative AI Tools", type: "Text", est: "6 min" },
+              { id: "ACT-PAI-006", title: "Generative AI Basics Quiz", type: "Quiz", est: "10 min" }
+            ]
+          }
+        ]
+      },
+      {
+        id: "PAI-M2",
+        title: "Milestone 2 — Prompting Fundamentals",
+        lessons: [
+          {
+            id: "PAI-LES-3",
+            title: "Lesson 3 — Writing Effective Prompts",
+            activities: [
+              { id: "ACT-PAI-007", title: "Prompt Structure Basics", type: "Video", est: "12 min" },
+              { id: "ACT-PAI-008", title: "Context and Constraints", type: "Text", est: "8 min" },
+              { id: "ACT-PAI-009", title: "Prompt Improvement Exercise", type: "Practice", est: "15 min" },
+              { id: "ACT-PAI-010", title: "Prompting Fundamentals Quiz", type: "Quiz", est: "15 min" }
+            ]
+          }
+        ]
+      },
+      {
+        id: "PAI-M3",
+        title: "Milestone 3 — Responsible AI Use",
+        lessons: [
+          {
+            id: "PAI-LES-4",
+            title: "Lesson 4 — AI Vocabulary Explained",
+            activities: [
+              { id: "ACT-PAI-011", title: "AI Vocabulary Explained", type: "Audio", est: "10 min" }
+            ]
+          },
+          {
+            id: "PAI-LES-5",
+            title: "Lesson 5 — Create an AI Use-Case Plan",
+            activities: [
+              { id: "ACT-PAI-012", title: "Create an AI Use-Case Plan", type: "Assignment", est: "30 min" }
+            ]
+          },
+          {
+            id: "PAI-LES-6",
+            title: "Lesson 6 — Explain an AI Concept",
+            activities: [
+              { id: "ACT-PAI-013", title: "Explain an AI Concept", type: "Speaking", est: "10 min" }
+            ]
+          }
+        ]
+      }
+    ]
+  };
+
+  // Compute completed lessons
+  PAI_COURSE.milestones.forEach(m => {
+    m.lessons.forEach(l => {
+      const allDone = l.activities.every(a => {
+        const actState = spState.activities[a.id];
+        return actState && (actState.status === "Completed" || actState.status === "Passed" || actState.status === "Submitted");
+      });
+      if (allDone) completedLessons++;
+    });
+  });
+
+  // Switcher, Header, Banners
+  const switcherHtml = `
+    <div style="background-color:var(--color-surface-low); border:1px solid var(--color-outline-variant); padding:10px 16px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:12.5px; font-weight:700; color:var(--color-tertiary);">Current Course Workspace:</span>
+        <select class="form-input" style="width:240px; height:34px; font-size:13px; font-weight:700; margin-bottom:0;" onchange="window.location.hash='#learner/courses/' + this.value">
+          <option value="ENR-001">Spoken English (Live Online)</option>
+          <option value="ENR-PAI-001" selected>Practical AI (Self-Paced)</option>
+        </select>
+      </div>
+
+      <!-- Dev Demo Controls -->
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:11.5px; font-weight:700; color:#ba1a1a;">Demo Self-Paced State:</span>
+        <select class="form-input" style="width:235px; height:34px; font-size:12px; margin-bottom:0; background:#fce8e6; border-color:#fad2cf; font-weight:700;" onchange="changeDemoSelfPacedState(this.value)">
+          <option value="35% — In Progress" ${demoCourseState === '35% — In Progress' ? 'selected' : ''}>35% — In Progress (Default)</option>
+          <option value="0% — New Learner" ${demoCourseState === '0% — New Learner' ? 'selected' : ''}>0% — New Learner</option>
+          <option value="Activity Completed / Next Unlocked" ${demoCourseState === 'Activity Completed / Next Unlocked' ? 'selected' : ''}>Activity Completed / Next Unlocked</option>
+          <option value="Failed Quiz" ${demoCourseState === 'Failed Quiz' ? 'selected' : ''}>Failed Quiz</option>
+          <option value="Awaiting Manual Review" ${demoCourseState === 'Awaiting Manual Review' ? 'selected' : ''}>Awaiting Manual Review</option>
+          <option value="Content Release Locked" ${demoCourseState === 'Content Release Locked' ? 'selected' : ''}>Content Release Locked</option>
+          <option value="Access Expired" ${demoCourseState === 'Access Expired' ? 'selected' : ''}>Access Expired</option>
+          <option value="Course Completed" ${demoCourseState === 'Course Completed' ? 'selected' : ''}>Course Completed</option>
+        </select>
+      </div>
+    </div>
+  `;
+
+  // Expiry notice banner
+  let accessNoticeHtml = "";
+  if (spState.accessState === "Expired") {
+    accessNoticeHtml = `
+      <div class="alarm-box animate-fade-in" style="background:#fce8e6; border-color:#fad2cf; color:#a50e0e; border-left:4px solid #ba1a1a; padding:16px; margin-bottom:16px; border-radius:6px;">
+        <h4 style="margin:0 0 4px 0; font-weight:800; font-size:14px; color:#a50e0e;">⚠️ Course Access Expired</h4>
+        <p style="margin:0 0 10px 0; font-size:13px; color:#7a0c0c;">Your academic learning history and progress (${progressPercent}%) remain preserved, but active course content and materials are locked.</p>
+        <button class="btn btn-secondary" style="height:28px; font-size:11.5px; border-color:#fad2cf; color:#a50e0e;" onclick="showToastAlert('Opening access renewal options...')">View Access Options</button>
+      </div>
+    `;
+  }
+
+  // Version update exception banner
+  let versionUpdateHtml = `
+    <div style="background-color:var(--color-surface-low); border:1px solid var(--color-outline-variant); padding:10px 14px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; font-size:12.5px;">
+      <span style="color:var(--color-tertiary);">ℹ️ Course content updated. A newer version exists (<strong>v1.1</strong>). <strong>Your current progress remains linked to v1.0.</strong></span>
+      <button class="btn btn-secondary" style="height:24px; font-size:10.5px; padding:0 8px;" onclick="showToastAlert('Content version locked to v1.0 to preserve progress.')">Version Policy</button>
+    </div>
+  `;
+
+  // Header Title
+  const headerHtml = `
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:var(--spacing-md); border-bottom:1px solid var(--color-outline-variant); padding-bottom:var(--spacing-md); flex-wrap:wrap; gap:16px;">
+      <div>
+        <h1 style="font-family:var(--font-family-headings); font-size:32px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:4px;">${courseTitle}</h1>
+        <p style="font-size:13.5px; color:var(--color-tertiary);">
+          Level: <strong>${courseLevel}</strong> &middot; Model: <strong>${deliveryModel}</strong> &middot; Enrolment Ref: <strong>ENR-PAI-001</strong>
+        </p>
+      </div>
+      <div style="text-align:right;">
+        <span class="badge-status status-ready" style="font-size:10.5px; background-color:#e6f4ea; color:#137333; border-color:#c2e7cc;">Active Workspace</span>
+        <div style="font-size:12px; color:var(--color-tertiary); margin-top:4px;">Coach / Reviewer: <strong>${spState.reviewer}</strong></div>
+      </div>
+    </div>
+  `;
+
+  // Workspace Tabs
+  const tabsList = [
+    { id: "overview", label: "Overview" },
+    { id: "learn", label: "Learn" },
+    { id: "progress", label: "Progress" },
+    { id: "assessments", label: "Assessments" },
+    { id: "resources", label: "Resources" },
+    { id: "messages", label: "Messages" },
+    { id: "access", label: "Access" }
+  ];
+
+  const tabsHtml = `
+    <div class="tabs-nav-bar" style="display:flex; gap:16px; border-bottom:1.5px solid var(--color-outline-variant); margin-bottom:20px; overflow-x:auto;">
+      ${tabsList.map(t => `
+        <button onclick="setTabSelectionState('ENR-PAI-001', '${t.id}')" style="background:none; border:none; padding:10px 4px; font-size:13.5px; font-weight:700; color:${activeTab === t.id ? 'var(--color-secondary)' : 'var(--color-tertiary)'}; border-bottom:3px solid ${activeTab === t.id ? 'var(--color-secondary)' : 'transparent'}; cursor:pointer; white-space:nowrap; transition:all 0.2s;">
+          ${t.label}
+        </button>
+      `).join("")}
+    </div>
+  `;
+
+  // Content Renderer
+  let tabBodyHtml = "";
+  if (activeTab === "overview") {
+    // Determine active position card contents
+    let currentLevelText = "Level 1 — AI Foundations";
+    let currentMilestoneText = "Milestone 2 — Prompting Fundamentals";
+    let currentLessonText = "Writing Effective Prompts";
+    let currentActivityText = "Prompt Structure Basics";
+    let currentActivityType = "Video / Learning Content";
+    let currentStatusText = "In Progress";
+    let progressDuration = "06:42 / 12:00";
+    let resumeCaption = "Resume from 06:42";
+    let activeActId = spState.activeActivityId;
+    
+    if (demoCourseState === "0% — New Learner") {
+      currentMilestoneText = "Milestone 1 — Understanding AI";
+      currentLessonText = "What Is AI?";
+      currentActivityText = "Read: What Is Artificial Intelligence?";
+      currentActivityType = "Reading Content";
+      currentStatusText = "Available";
+      progressDuration = "Estimated: 5 min";
+      resumeCaption = "Start Learning";
+      activeActId = "ACT-PAI-001";
+    } else if (demoCourseState === "Activity Completed / Next Unlocked") {
+      currentActivityText = "Prompt Improvement Exercise";
+      currentActivityType = "Practice Task";
+      currentStatusText = "Available";
+      progressDuration = "Estimated: 15 min";
+      resumeCaption = "Start Practice";
+      activeActId = "ACT-PAI-009";
+    } else if (demoCourseState === "Failed Quiz") {
+      currentActivityText = "Prompting Fundamentals Quiz";
+      currentActivityType = "Assessment";
+      currentStatusText = "Failed (Retry Available)";
+      progressDuration = "Score: 60% (Pass: 70%)";
+      resumeCaption = "Try Again";
+      activeActId = "ACT-PAI-010";
+    } else if (demoCourseState === "Awaiting Manual Review") {
+      currentActivityText = "Prompt Improvement Exercise";
+      currentActivityType = "Practice Task";
+      currentStatusText = "Submitted / Awaiting Review";
+      progressDuration = "Submitted 12 Aug";
+      resumeCaption = "Review Status";
+      activeActId = "ACT-PAI-009";
+    } else if (demoCourseState === "Course Completed") {
+      currentMilestoneText = "Milestone 3 — Responsible AI Use";
+      currentLessonText = "Explain an AI Concept";
+      currentActivityText = "Explain an AI Concept";
+      currentActivityType = "Speaking Practice";
+      currentStatusText = "Completed";
+      progressDuration = "Finished";
+      resumeCaption = "Review Completed Syllabus";
+      activeActId = "ACT-PAI-013";
+    }
+
+    // Intervention box if quiz failed
+    let interventionHtml = "";
+    if (demoCourseState === "Failed Quiz") {
+      interventionHtml = `
+        <div class="alarm-box animate-fade-in" style="background:#fffcf0; border-color:#f0d97a; color:#b06000; border-left:4px solid #f0b400; padding:16px; margin-bottom:16px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+          <div>
+            <h4 style="margin:0 0 4px 0; font-weight:800; font-size:14px; color:#b06000;">💡 Need Help Continuing?</h4>
+            <p style="margin:0; font-size:12.5px; color:#8a4d00;">You've used 1 quiz attempt without reaching the pass mark (70%). We recommend reviewing Lesson 3 notes before retrying.</p>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-secondary" onclick="selectSelfPacedActivity('ACT-PAI-008'); setTabSelectionState('ENR-PAI-001','learn');" style="height:30px; font-size:11.5px; border-color:#e0c350; background:transparent;">Review Lesson</button>
+            <button class="btn btn-secondary" onclick="setTabSelectionState('ENR-PAI-001','messages');" style="height:30px; font-size:11.5px; border-color:#e0c350; background:transparent;">Ask Reviewer</button>
+          </div>
+        </div>
+      `;
+    }
+
+    tabBodyHtml = `
+      ${interventionHtml}
+      
+      <div style="display:grid; grid-template-columns:1.8fr 1fr; gap:20px; align-items:flex-start;">
+        
+        <!-- Left Column -->
+        <div style="display:flex; flex-direction:column; gap:20px;">
+          
+          <!-- Continue Learning Card -->
+          <div class="form-card" style="border-top:4px solid var(--color-secondary); padding:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:12px;">
+              <span style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--color-tertiary); letter-spacing:0.05em;">Current Learning Position</span>
+              <span class="badge-status status-ready" style="font-size:10px; background-color:#e8f0fe; color:#1a73e8; border-color:#c2d7fa;">${currentStatusText}</span>
+            </div>
+            
+            <div style="margin-bottom:16px;">
+              <h2 style="font-family:var(--font-family-headings); font-size:22px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:4px;">${currentActivityText}</h2>
+              <div style="font-size:13px; color:var(--color-tertiary); line-height:1.6;">
+                <div>Level: <strong>${currentLevelText}</strong></div>
+                <div>Milestone: <strong>${currentMilestoneText}</strong></div>
+                <div>Lesson: <strong>${currentLessonText}</strong></div>
+                <div>Type: <strong>${currentActivityType}</strong></div>
+                <div style="margin-top:6px; font-weight:700; color:var(--color-secondary);">Progress: ${progressDuration}</div>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:12px;">
+              <button class="btn btn-primary" onclick="selectSelfPacedActivity('${activeActId}'); setTabSelectionState('ENR-PAI-001','learn');" style="height:40px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; padding:0 24px;">
+                ${resumeCaption}
+              </button>
+              <button class="btn btn-secondary" onclick="selectSelfPacedActivity('ACT-PAI-001'); setTabSelectionState('ENR-PAI-001','learn');" style="height:40px; font-size:13px;">
+                Start from Beginning
+              </button>
+            </div>
+          </div>
+
+          <!-- Current Milestone Details Card -->
+          <div class="form-card" style="padding:20px;">
+            <h3 class="form-section-title" style="margin-bottom:12px;">Active Milestone Breakdown</h3>
+            <p style="font-size:13px; color:var(--color-tertiary); margin-bottom:16px;">To complete <strong>Milestone 2 — Prompting Fundamentals</strong>, you must finish writing exercises and pass the prompt quiz.</p>
+            
+            <div style="display:flex; flex-direction:column; gap:12px; font-size:13px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--color-outline-variant);">
+                <span>1. Prompt Structure Basics (Video)</span>
+                <strong style="color:${spState.activities["ACT-PAI-007"].status === 'Completed' ? '#137333' : '#b06000'}">${spState.activities["ACT-PAI-007"].status}</strong>
+              </div>
+              <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--color-outline-variant);">
+                <span>2. Context and Constraints (Reading)</span>
+                <strong style="color:${spState.activities["ACT-PAI-008"].status === 'Completed' ? '#137333' : (spState.activities["ACT-PAI-008"].status === 'Locked' ? 'var(--color-tertiary)' : '#b06000')}">${spState.activities["ACT-PAI-008"].status}</strong>
+              </div>
+              <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--color-outline-variant);">
+                <span>3. Prompt Improvement Exercise (Practice)</span>
+                <strong style="color:${spState.activities["ACT-PAI-009"].status === 'Completed' ? '#137333' : (spState.activities["ACT-PAI-009"].status === 'Locked' ? 'var(--color-tertiary)' : '#b06000')}">${spState.activities["ACT-PAI-009"].status}</strong>
+              </div>
+              <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 0;">
+                <span>4. Prompting Fundamentals Quiz (Quiz)</span>
+                <strong style="color:${spState.activities["ACT-PAI-010"].status === 'Completed' ? '#137333' : (spState.activities["ACT-PAI-010"].status === 'Failed' ? '#ba1a1a' : (spState.activities["ACT-PAI-010"].status === 'Locked' ? 'var(--color-tertiary)' : '#b06000'))}">${spState.activities["ACT-PAI-010"].status}</strong>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column -->
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          
+          <!-- Overall Progress Card -->
+          <div class="form-card" style="padding:16px;">
+            <h4 style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--color-tertiary); margin-bottom:12px;">Course Progress</h4>
+            
+            <div style="display:flex; align-items:baseline; gap:6px; margin-bottom:8px;">
+              <span style="font-size:36px; font-weight:900; color:var(--color-secondary); line-height:1;">${progressPercent}%</span>
+              <span style="font-size:13px; color:var(--color-tertiary);">complete</span>
+            </div>
+            
+            <div style="width:100%; height:8px; background-color:var(--color-surface-variant); border-radius:4px; overflow:hidden; margin-bottom:16px;">
+              <div style="width:${progressPercent}%; height:100%; background-color:var(--color-secondary); border-radius:4px;"></div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:10px; font-size:12.5px; border-top:1px solid var(--color-outline-variant); padding-top:12px; line-height:1.6;">
+              <div style="display:flex; justify-content:space-between;">
+                <span style="color:var(--color-tertiary);">Current Level:</span>
+                <strong style="color:var(--color-on-tertiary-fixed);">Level 1</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between;">
+                <span style="color:var(--color-tertiary);">Current Milestone:</span>
+                <strong>Milestone 2</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between;">
+                <span style="color:var(--color-tertiary);">Lessons Completed:</span>
+                <strong>${completedLessons} / ${totalLessons}</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-top:4px; border-top:1px dashed var(--color-outline-variant); padding-top:8px;">
+                <span style="color:var(--color-tertiary);">Next Action:</span>
+                <span style="font-weight:700; color:var(--color-secondary); text-align:right;">${currentActivityText}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Coach review card -->
+          <div class="form-card" style="padding:16px;">
+            <h4 style="font-size:13px; font-weight:800; margin-bottom:8px; color:var(--color-on-surface-variant);">Assigned Coach</h4>
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+              <div style="width:36px; height:36px; background-color:var(--color-secondary-container); color:var(--color-on-secondary-container); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px;">
+                HS
+              </div>
+              <div>
+                <div style="font-weight:700; font-size:13px;">Hamza Siddiqui</div>
+                <div style="font-size:11px; color:var(--color-tertiary);">Self-Paced Reviewer / Coach</div>
+              </div>
+            </div>
+            <button class="btn btn-secondary" onclick="setTabSelectionState('ENR-PAI-001', 'messages')" style="width:100%; height:32px; font-size:11.5px; font-weight:700;">Message Coach</button>
+          </div>
+
+        </div>
+
+      </div>
+    `;
+
+  } else if (activeTab === "learn") {
+    const activeActId = spState.activeActivityId;
+    const activeActState = spState.activities[activeActId] || { status: "Locked" };
+
+    // Sidebar structure list
+    let sidebarHtml = "";
+    PAI_COURSE.milestones.forEach(m => {
+      // Check milestone status
+      let mStatus = "Locked";
+      if (m.id === "PAI-M1") mStatus = "Completed";
+      else if (m.id === "PAI-M2") mStatus = "Active";
+      
+      const isMLocked = mStatus === "Locked";
+      
+      sidebarHtml += `
+        <div style="margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <h4 style="font-size:12.5px; font-weight:800; color:${isMLocked ? 'var(--color-tertiary)' : 'var(--color-on-tertiary-fixed)'}; text-transform:uppercase;">${m.title}</h4>
+            <span style="font-size:11px; font-weight:700; color:${mStatus === 'Completed' ? '#137333' : (isMLocked ? 'var(--color-tertiary)' : 'var(--color-secondary)')};">
+              ${mStatus === 'Completed' ? '✓ Done' : (isMLocked ? '🔒 Locked' : '● Active')}
+            </span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:4px; padding-left:8px; border-left:1.5px solid ${isMLocked ? 'var(--color-outline-variant)' : 'var(--color-secondary)'};">
+      `;
+      
+      m.lessons.forEach(l => {
+        let isLReleaseLocked = false;
+        if (demoCourseState === "Content Release Locked" && l.id === "PAI-LES-4") {
+          isLReleaseLocked = true;
+        }
+
+        sidebarHtml += `
+          <div style="margin-top:4px;">
+            <div style="font-weight:700; font-size:12px; color:${isMLocked ? 'var(--color-tertiary)' : 'var(--color-on-surface-variant)'}; margin-bottom:2px;">
+              ${isLReleaseLocked ? '📅 ' : ''}${l.title}
+            </div>
+            <div style="display:flex; flex-direction:column; gap:2px; padding-left:8px;">
+        `;
+        
+        l.activities.forEach(a => {
+          const actState = spState.activities[a.id] || { status: "Locked" };
+          const isActive = a.id === activeActId;
+          
+          let actIcon = "🔒";
+          if (actState.status === "Completed") actIcon = "✓";
+          else if (actState.status === "Available") actIcon = "○";
+          else if (actState.status === "In Progress") actIcon = "●";
+          else if (actState.status === "Failed") actIcon = "⚠️";
+          else if (actState.status === "Submitted") actIcon = "⏳";
+          
+          let actColor = "var(--color-tertiary)";
+          if (isActive) actColor = "var(--color-secondary)";
+          else if (actState.status === "Completed") actColor = "#137333";
+          else if (actState.status === "Available" || actState.status === "In Progress") actColor = "var(--color-on-surface-variant)";
+          
+          sidebarHtml += `
+            <button onclick="selectSelfPacedActivity('${a.id}')" style="background:none; border:none; text-align:left; font-size:11.5px; color:${actColor}; padding:4px 0; cursor:pointer; font-weight:${isActive ? '800' : '500'}; display:flex; align-items:center; gap:6px;">
+              <span style="font-size:10px;">${actIcon}</span>
+              <span style="text-decoration:${isActive ? 'underline' : 'none'};">${a.title}</span>
+            </button>
+          `;
+        });
+        
+        sidebarHtml += `
+            </div>
+          </div>
+        `;
+      });
+      
+      sidebarHtml += `
+          </div>
+        </div>
+      `;
+    });
+
+    // Content area renderer
+    let contentHtml = "";
+    const activeAct = PAI_COURSE.milestones.flatMap(m => m.lessons.flatMap(l => l.activities)).find(a => a.id === activeActId);
+    
+    // Lock evaluation
+    const isActLocked = activeActState.status === "Locked";
+    const isReleaseLocked = (demoCourseState === "Content Release Locked" && (activeActId === "ACT-PAI-011" || activeActId === "ACT-PAI-012" || activeActId === "ACT-PAI-013"));
+    const isAccessLocked = spState.accessState === "Expired";
+    
+    if (isAccessLocked) {
+      contentHtml = `
+        <div class="form-card" style="padding:40px; text-align:center; display:flex; flex-direction:column; gap:16px; align-items:center;">
+          <div style="font-size:48px;">🔒</div>
+          <h2 style="color:#ba1a1a; font-weight:800; font-size:20px; margin:0;">Access Locked</h2>
+          <p style="font-size:13.5px; color:var(--color-tertiary); max-width:450px; margin:0;">Your course access has expired. While your academic history and progress is fully preserved, active course content is currently unavailable.</p>
+          <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:700; height:38px;" onclick="showToastAlert('Opening renewal checkout page...')">View Access Options</button>
+        </div>
+      `;
+    } else if (isReleaseLocked) {
+      contentHtml = `
+        <div class="form-card" style="padding:40px; text-align:center; display:flex; flex-direction:column; gap:16px; align-items:center;">
+          <div style="font-size:48px;">📅</div>
+          <h2 style="color:var(--color-secondary); font-weight:800; font-size:20px; margin:0;">Not Available Yet</h2>
+          <p style="font-size:13.5px; color:var(--color-tertiary); max-width:450px; margin:0;">This lesson and its activities will become available on <strong>20 August 2026</strong> as configured in your release schedule.</p>
+          <span class="badge-status status-submitted" style="font-size:11px; background:#fffcf0; color:#b06000;">Scheduled Release</span>
+        </div>
+      `;
+    } else if (isActLocked) {
+      let prereqText = "";
+      let targetPrereqId = "";
+      if (activeActId === "ACT-PAI-008") { prereqText = "Prompt Structure Basics"; targetPrereqId = "ACT-PAI-007"; }
+      else if (activeActId === "ACT-PAI-009") { prereqText = "Context and Constraints"; targetPrereqId = "ACT-PAI-008"; }
+      else if (activeActId === "ACT-PAI-010") { prereqText = "all activities in Writing Effective Prompts (Lesson 3)"; targetPrereqId = "ACT-PAI-007"; }
+      else { prereqText = "the previous milestones and lessons"; targetPrereqId = "ACT-PAI-007"; }
+      
+      contentHtml = `
+        <div class="form-card" style="padding:32px; text-align:center; display:flex; flex-direction:column; gap:12px; align-items:center;">
+          <div style="font-size:40px;">🔒</div>
+          <h2 style="font-weight:800; font-size:18px; margin:0; color:var(--color-on-surface-variant);">Activity Locked</h2>
+          <p style="font-size:13.5px; color:var(--color-tertiary); max-width:450px; margin:0;">Complete "${prereqText}" first to satisfy progress prerequisites.</p>
+          
+          <div style="background-color:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:8px; padding:12px; margin-top:8px; text-align:left; font-size:12.5px; width:100%; max-width:400px;">
+            <div style="font-weight:700; margin-bottom:4px;">Unmet Prerequisite:</div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="color:var(--color-tertiary);">${prereqText}</span>
+              <span style="color:#ba1a1a; font-weight:700;">Not Completed</span>
+            </div>
+          </div>
+
+          <button class="btn btn-secondary" onclick="selectSelfPacedActivity('${targetPrereqId}')" style="margin-top:12px; height:36px; font-weight:700;">
+            Go to Required Activity
+          </button>
+        </div>
+      `;
+    } else {
+      // Render active activity content
+      if (activeAct.type === "Video") {
+        const watchPos = activeActState.lastPositionSeconds || 0;
+        const watchDur = activeActState.durationSeconds || 720;
+        const watchPct = Math.round((watchPos / watchDur) * 100);
+        
+        contentHtml = `
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <div style="background-color:#fff3cd; border:1px solid #ffeeba; padding:12px; border-radius:6px; font-size:12.5px; color:#856404;">
+              <strong>Demo Completion Rule:</strong> Video watch threshold must reach at least 80% to unlock downstream tasks (Current: ${watchPct}%).
+              <button class="btn btn-secondary" onclick="simulateVideoWatched('${activeActId}', 85)" style="font-size:11px; padding:2px 8px; margin-left:12px; border-color:#e0c350; height:24px; color:#856404; background-color:#fff3cd; font-weight:700;">Simulate 85% Watched</button>
+            </div>
+            
+            <div class="form-card" style="padding:0; overflow:hidden; border-radius:8px;">
+              <!-- Mock Video Screen -->
+              <div style="width:100%; height:320px; background-color:#121212; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; color:#fff;">
+                <div style="font-size:48px; cursor:pointer;" onclick="simulateVideoWatched('${activeActId}', 85)">▶️</div>
+                <div style="font-size:13px; margin-top:8px; color:var(--color-tertiary);">Prompt Structure Basics Video Playback</div>
+                <div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.7); padding:10px; display:flex; align-items:center; gap:12px; font-size:11px;">
+                  <span>Play / Pause</span>
+                  <div style="flex:1; height:4px; background:#444; position:relative; border-radius:2px;">
+                    <div style="width:${watchPct}%; height:100%; background-color:var(--color-secondary); border-radius:2px;"></div>
+                  </div>
+                  <span>${Math.floor(watchPos/60).toString().padStart(2, '0')}:${(watchPos%60).toString().padStart(2, '0')} / ${Math.floor(watchDur/60).toString().padStart(2, '0')}:${(watchDur%60).toString().padStart(2, '0')}</span>
+                </div>
+              </div>
+              <div style="padding:16px;">
+                <h3 style="font-family:var(--font-family-headings); font-size:18px; font-weight:800; margin-bottom:6px;">${activeAct.title}</h3>
+                <p style="font-size:13px; color:var(--color-tertiary); margin:0;">In this video, learn the core structure of a prompt: Role, Goal, Context, and Output format. Apply these patterns to improve response accuracy.</p>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (activeAct.type === "Text") {
+        const isActCompleted = activeActState.status === "Completed";
+        contentHtml = `
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <div style="background-color:#fff3cd; border:1px solid #ffeeba; padding:12px; border-radius:6px; font-size:12.5px; color:#856404;">
+              <strong>Demo Completion Rule:</strong> Read content completely and manually click mark complete.
+            </div>
+            
+            <div class="form-card" style="padding:20px;">
+              <h2 style="font-family:var(--font-family-headings); font-size:22px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:12px;">${activeAct.title}</h2>
+              <div style="font-size:13.5px; line-height:1.6; color:var(--color-tertiary); display:flex; flex-direction:column; gap:12px;">
+                <p>When engineering prompts, providing <strong>Context</strong> and <strong>Constraints</strong> helps prevent the AI from fabricating information (hallucinating) and keeps responses within specific boundaries.</p>
+                <div style="background-color:var(--color-surface-low); padding:12px; border-radius:6px; border-left:3.5px solid var(--color-secondary);">
+                  <strong style="color:var(--color-on-surface-variant);">1. Context:</strong> Set the background, industry, target audience, and style reference.
+                </div>
+                <div style="background-color:var(--color-surface-low); padding:12px; border-radius:6px; border-left:3.5px solid var(--color-secondary);">
+                  <strong style="color:var(--color-on-surface-variant);">2. Constraints:</strong> Set limits on word count, list of forbidden terms, or formatting styles.
+                </div>
+                <p>Example prompt outline: "Act as a marketing copywriter. Rewrite this description. Do NOT use buzzwords. Keep it under 100 words."</p>
+              </div>
+              
+              <div style="margin-top:20px; border-top:1px solid var(--color-outline-variant); padding-top:16px; display:flex; justify-content:flex-end;">
+                ${isActCompleted ? `
+                  <button class="btn btn-secondary" style="height:36px; border-color:#137333; color:#137333; font-weight:700;" disabled>✓ Completed</button>
+                ` : `
+                  <button class="btn btn-primary" onclick="markSelfPacedActivityComplete('${activeActId}')" style="height:36px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; padding:0 20px;">Mark as Complete</button>
+                `}
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (activeAct.type === "Practice") {
+        const isActCompleted = activeActState.status === "Completed" || activeActState.status === "Submitted";
+        contentHtml = `
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <div style="background-color:#fff3cd; border:1px solid #ffeeba; padding:12px; border-radius:6px; font-size:12.5px; color:#856404;">
+              <strong>Demo Completion Rule:</strong> Formulate prompt rewrite and submit to complete activity.
+            </div>
+            
+            <div class="form-card" style="padding:20px;">
+              <h2 style="font-family:var(--font-family-headings); font-size:22px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:8px;">${activeAct.title}</h2>
+              <p style="font-size:13px; color:var(--color-tertiary); margin-bottom:16px;">Practice rewrite exercise. This will be visible to your coach Hamza Siddiqui.</p>
+              
+              <div style="background-color:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:6px; padding:12px; font-size:13px; margin-bottom:16px;">
+                <div style="font-weight:700; margin-bottom:4px; color:var(--color-on-surface-variant);">Original Prompt:</div>
+                <div style="font-family:monospace; color:var(--color-tertiary);">"Tell me about marketing."</div>
+              </div>
+
+              <div>
+                <label style="font-weight:700; font-size:13px; display:block; margin-bottom:6px;">Your Improved Prompt Rewrite:</label>
+                <textarea id="practice-text-input" class="form-input" style="height:100px; font-size:13px; line-height:1.5;" placeholder="Rewrite include: Role, Goal, Context and Constraint criteria...">${isActCompleted ? "Act as a Marketing Consultant. Summarize the top three digital marketing methodologies for a small retail shop. Keep your response bulleted and under 150 words." : ""}</textarea>
+              </div>
+
+              <div style="margin-top:16px; display:flex; justify-content:flex-end;">
+                ${isActCompleted ? `
+                  <button class="btn btn-secondary" style="height:36px; border-color:#137333; color:#137333; font-weight:700;" disabled>✓ Submitted & Completed</button>
+                ` : `
+                  <button class="btn btn-primary" onclick="submitPracticeExercise('${activeActId}')" style="height:36px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; padding:0 20px;">Save Practice</button>
+                `}
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (activeAct.type === "Quiz") {
+        const isFailed = activeActState.status === "Failed";
+        const isPassed = activeActState.status === "Completed" || activeActState.status === "Passed";
+        
+        contentHtml = `
+          <div class="form-card" style="padding:24px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+              <h2 style="font-family:var(--font-family-headings); font-size:22px; font-weight:800; color:var(--color-on-tertiary-fixed); margin:0;">${activeAct.title}</h2>
+              <span class="badge-status ${isPassed ? 'status-ready' : (isFailed ? 'status-cancelled' : 'status-submitted')}" style="font-size:11px;">
+                ${isPassed ? 'Passed' : (isFailed ? 'Failed' : 'Available')}
+              </span>
+            </div>
+
+            ${isFailed ? `
+              <div style="background-color:#fdf2f2; border:1px solid #fde8e8; color:#b81818; padding:14px; border-radius:8px; margin-bottom:20px; font-size:13px;">
+                <h4 style="margin:0 0 4px 0; font-weight:800;">⚠️ Quiz Not Passed</h4>
+                <div>Your Score: <strong>60%</strong> (Required Passing Grade: <strong>70%</strong>)</div>
+                <div style="margin-top:6px;">Status: <strong style="text-transform:uppercase;">Retry Available</strong> (Attempts Used: 1 / 3)</div>
+              </div>
+              <button class="btn btn-primary" onclick="retrySelfPacedQuiz('${activeActId}')" style="height:38px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:700;">Try Again</button>
+            ` : isPassed ? `
+              <div style="background-color:#f0fbf4; border:1px solid #e1f7ea; color:#137333; padding:14px; border-radius:8px; margin-bottom:20px; font-size:13px;">
+                <h4 style="margin:0 0 4px 0; font-weight:800;">🎉 Quiz Passed</h4>
+                <div>Your Score: <strong>90%</strong> (Required Passing Grade: <strong>70%</strong>)</div>
+                <div style="margin-top:6px;">All lesson requirements have been completed.</div>
+              </div>
+              <button class="btn btn-secondary" style="height:38px; border-color:#c2e7cc; color:#137333;" disabled>✓ Completed</button>
+            ` : `
+              <div style="font-size:13px; color:var(--color-tertiary); margin-bottom:20px; line-height:1.6;">
+                <p>Welcome to the Prompting Fundamentals Quiz. Review what you learned about Prompt Roles, Goals, Context, and Constraints before starting.</p>
+                <div style="background-color:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:6px; padding:12px; margin-top:8px;">
+                  <div>Pass Mark: <strong>70%</strong></div>
+                  <div>Attempts Allowed: <strong>3</strong></div>
+                  <div>Attempts Used: <strong>0</strong></div>
+                  <div>Attempts Remaining: <strong>3</strong></div>
+                </div>
+              </div>
+              <button class="btn btn-primary" onclick="window.location.hash='#learner/assessments/QUIZ-PAI-001'" style="height:40px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; padding:0 24px;">Start Quiz</button>
+            `}
+          </div>
+        `;
+      } else if (activeAct.type === "Audio") {
+        contentHtml = `
+          <div class="form-card" style="padding:24px; text-align:center;">
+            <h2 style="font-family:var(--font-family-headings); font-size:20px; font-weight:800; margin-bottom:12px;">🎧 ${activeAct.title}</h2>
+            <p style="font-size:13px; color:var(--color-tertiary); margin-bottom:20px;">Listen to this audio brief outlining technical AI vocabulary (NLP, LLM, Neural Networks).</p>
+            
+            <div style="background-color:#121212; border-radius:8px; padding:16px; color:#fff; display:flex; justify-content:center; align-items:center; gap:20px; margin-bottom:16px;">
+              <span style="font-size:24px; cursor:pointer;" onclick="showToastAlert('Audio playing...')">▶️</span>
+              <div style="flex:1; height:4px; background:#444; border-radius:2px; position:relative;">
+                <div style="width:30%; height:100%; background:var(--color-secondary); border-radius:2px;"></div>
+              </div>
+              <span style="font-size:11px;">03:00 / 10:00</span>
+            </div>
+            
+            <button class="btn btn-secondary" onclick="markSelfPacedActivityComplete('${activeActId}')" style="height:36px; font-weight:700;">Mark Audio Complete</button>
+          </div>
+        `;
+      } else if (activeAct.type === "Assignment") {
+        contentHtml = `
+          <div class="form-card" style="padding:24px;">
+            <h2 style="font-family:var(--font-family-headings); font-size:20px; font-weight:800; margin-bottom:6px;">📁 ${activeAct.title}</h2>
+            
+            <div style="background-color:#fffcf0; border:1px solid #f0d97a; color:#b06000; padding:14px; border-radius:8px; margin-bottom:20px; font-size:13px; line-height:1.6;">
+              <h4 style="margin:0 0 4px 0; font-weight:800;">⏳ Assignment Awaiting Review</h4>
+              <div>Submitted on: <strong>12 August 2026</strong></div>
+              <div>Assigned Reviewer / Coach: <strong>Hamza Siddiqui</strong></div>
+              <div style="margin-top:6px; font-style:italic;">"Your next activity will unlock after this submission is approved."</div>
+            </div>
+
+            <p style="font-size:13px; color:var(--color-tertiary); line-height:1.5;">You submitted your AI Use-Case plan outlining business automation options. You will be notified by email and internal messages when Hamza finalizes his grading verdict.</p>
+          </div>
+        `;
+      } else if (activeAct.type === "Speaking") {
+        contentHtml = `
+          <div class="form-card" style="padding:24px; text-align:center;">
+            <h2 style="font-family:var(--font-family-headings); font-size:20px; font-weight:800; margin-bottom:12px;">🎙️ ${activeAct.title}</h2>
+            <p style="font-size:13px; color:var(--color-tertiary); margin-bottom:20px;">Speaking exercise: Record a 60-second explanation of what a Transformer model does.</p>
+            
+            <div style="border:2px dashed var(--color-outline-variant); padding:24px; border-radius:8px; background:var(--color-surface-low); margin-bottom:20px;">
+              <span style="font-size:32px;">🎙️</span>
+              <div style="font-size:13px; font-weight:700; margin-top:8px;">Microphone Recording Mocked</div>
+              <div style="font-size:11px; color:var(--color-tertiary); margin-top:4px;">No audio hardware was initialized. Click below to simulate audio submission.</div>
+            </div>
+
+            <button class="btn btn-primary" onclick="markSelfPacedActivityComplete('${activeActId}')" style="height:38px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:700;">Simulate Submission</button>
+          </div>
+        `;
+      }
+    }
+
+    tabBodyHtml = `
+      <div style="display:grid; grid-template-columns:300px 1fr; gap:24px; align-items:flex-start;">
+        <!-- Left Sidebar Navigation -->
+        <div class="form-card" style="padding:16px;">
+          <h3 class="form-section-title" style="margin-bottom:12px; font-size:14px;">Course Syllabus Tree</h3>
+          ${sidebarHtml}
+        </div>
+
+        <!-- Right Detail Workspace Content Area -->
+        <div>
+          ${contentHtml}
+        </div>
+      </div>
+    `;
+
+  } else if (activeTab === "progress") {
+    // Generate progress events logs rows
+    let timelineHtml = "";
+    spState.progressEvents.forEach(e => {
+      // Lookup activity title
+      let title = "Activity event";
+      const act = PAI_COURSE.milestones.flatMap(m => m.lessons.flatMap(l => l.activities)).find(a => a.id === e.activityId);
+      if (act) title = act.title;
+      
+      const formattedDate = new Date(e.occurredAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+      
+      timelineHtml += `
+        <li class="timeline-evidence-item" style="border-left: 2px solid ${e.event === 'completed' ? '#137333' : 'var(--color-outline-variant)'}; padding-left:14px; padding-bottom:12px; font-size:12.5px; position:relative; list-style:none;">
+          <span style="font-weight:700; color:${e.event === 'completed' ? '#137333' : 'var(--color-tertiary)'};">${formattedDate}</span> - 
+          <strong>${title}</strong> marked <strong>${e.event}</strong>.
+        </li>
+      `;
+    });
+
+    tabBodyHtml = `
+      <div style="display:grid; grid-template-columns:1.5fr 1.2fr; gap:20px;">
+        
+        <!-- Left Column -->
+        <div class="form-card" style="padding:20px;">
+          <h3 class="form-section-title" style="margin-bottom:16px;">Activity Progress Audit Trail</h3>
+          <ul class="timeline-evidence" style="padding-left:0; margin-left:0;">
+            ${timelineHtml}
+            <li class="timeline-evidence-item" style="border-left: 2px solid var(--color-outline-variant); padding-left:14px; padding-bottom:12px; font-size:12.5px; list-style:none;">
+              <span style="font-weight:700; color:var(--color-tertiary);">8 Aug 2026</span> - Practical AI enrolment activated (ENR-PAI-001)
+            </li>
+          </ul>
+        </div>
+
+        <!-- Right Column -->
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <!-- Metrics -->
+          <div class="form-card" style="padding:16px;">
+            <h4 style="font-size:13px; font-weight:800; margin-bottom:12px; color:var(--color-on-surface-variant);">Completion Metrics</h4>
+            <table style="width:100%; font-size:13px; border-collapse:collapse; line-height:28px;">
+              <tr style="border-bottom:1px solid var(--color-outline-variant);">
+                <td style="color:var(--color-tertiary);">Milestone Progression:</td>
+                <td style="font-weight:700; text-align:right;">Milestone 2 Active</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--color-outline-variant);">
+                <td style="color:var(--color-tertiary);">Lessons Completed:</td>
+                <td style="font-weight:700; text-align:right;">${completedLessons} / ${totalLessons}</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--color-outline-variant);">
+                <td style="color:var(--color-tertiary);">Academic Access:</td>
+                <td style="font-weight:700; text-align:right; color:#137333;">${spState.accessState}</td>
+              </tr>
+              <tr>
+                <td style="color:var(--color-tertiary);">Current Version:</td>
+                <td style="font-weight:700; text-align:right; font-family:monospace; font-size:11.5px;">${spState.courseVersion}</td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- Milestones Progress card -->
+          <div class="form-card" style="padding:16px;">
+            <h4 style="font-size:13px; font-weight:800; margin-bottom:12px; color:var(--color-on-surface-variant);">Milestone Releases</h4>
+            <div style="display:flex; flex-direction:column; gap:10px; font-size:12.5px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span>Milestone 1 — Understanding AI</span>
+                <span class="badge-status status-ready" style="font-size:10px;">100% Done</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span>Milestone 2 — Prompting Fundamentals</span>
+                <span class="badge-status status-submitted" style="font-size:10px; background:#fffcf0; color:#b06000;">In Progress</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="color:var(--color-tertiary);">Milestone 3 — Responsible AI Use</span>
+                <span class="badge-status status-cancelled" style="font-size:10px; background:#f5f5f5; color:#666; border-color:#ccc;">Locked</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    `;
+
+  } else if (activeTab === "assessments") {
+    tabBodyHtml = `
+      <div class="form-card" style="padding:20px;">
+        <h3 class="form-section-title" style="margin-bottom:16px;">Course Assessments List</h3>
+        <table style="width:100%; border-collapse:collapse; font-size:13px; text-align:left; line-height:36px;">
+          <thead>
+            <tr style="border-bottom:1.5px solid var(--color-outline-variant); color:var(--color-tertiary); font-weight:700;">
+              <th>Assessment Name</th>
+              <th>Type</th>
+              <th>Pass Criteria</th>
+              <th>Attempts</th>
+              <th>Score / Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--color-outline-variant);">
+              <td><strong>Generative AI Basics Quiz</strong></td>
+              <td>Multiple Choice Quiz</td>
+              <td>70% Score</td>
+              <td>1 / 3 used</td>
+              <td style="color:#137333; font-weight:700;">Passed (90%)</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--color-outline-variant);">
+              <td><strong>Prompting Fundamentals Quiz</strong></td>
+              <td>Multiple Choice Quiz</td>
+              <td>70% Score</td>
+              <td>${spState.activities["ACT-PAI-010"].attemptsUsed || 0} / 3 used</td>
+              <td>
+                ${spState.activities["ACT-PAI-010"].status === 'Completed' ? '<span style="color:#137333; font-weight:700;">Passed (90%)</span>' : (spState.activities["ACT-PAI-010"].status === 'Failed' ? '<span style="color:#ba1a1a; font-weight:700;">Failed (60%)</span>' : '<span style="color:var(--color-tertiary);">Locked</span>')}
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Create an AI Use-Case Plan</strong></td>
+              <td>Manual Case Submission</td>
+              <td>Reviewer Verdict</td>
+              <td>1 Submission</td>
+              <td>
+                ${spState.activities["ACT-PAI-012"].status === 'Submitted' ? '<span style="color:#b06000; font-weight:700;">Awaiting Review</span>' : '<span style="color:var(--color-tertiary);">Locked</span>'}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    `;
+
+  } else if (activeTab === "resources") {
+    tabBodyHtml = `
+      <div class="form-card" style="padding:20px;">
+        <h3 class="form-section-title" style="margin-bottom:12px;">Course Specific PDF Worksheets</h3>
+        <p style="font-size:13.5px; color:var(--color-tertiary); margin-bottom:16px;">Download specific resources shared for the Practical AI learning modules.</p>
+        
+        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:16px;">
+          <div style="border:1px solid var(--color-outline-variant); border-radius:8px; padding:12px; background:var(--color-surface-low); text-align:center;">
+            <div style="font-size:32px; margin-bottom:6px;">📄</div>
+            <strong style="font-size:13px; display:block; margin-bottom:4px;">AI Fundamentals Glossary</strong>
+            <span style="font-size:11px; color:var(--color-tertiary); display:block; margin-bottom:8px;">PDF Booklet &middot; 1.2 MB</span>
+            <button class="btn btn-secondary" onclick="showToastAlert('Downloading AI Fundamentals Glossary...')" style="height:28px; font-size:11px; width:100%;">Download</button>
+          </div>
+          <div style="border:1px solid var(--color-outline-variant); border-radius:8px; padding:12px; background:var(--color-surface-low); text-align:center;">
+            <div style="font-size:32px; margin-bottom:6px;">📋</div>
+            <strong style="font-size:13px; display:block; margin-bottom:4px;">Prompt Checklist Sheet</strong>
+            <span style="font-size:11px; color:var(--color-tertiary); display:block; margin-bottom:8px;">PDF Cheat Sheet &middot; 450 KB</span>
+            <button class="btn btn-secondary" onclick="showToastAlert('Downloading Prompt Checklist Sheet...')" style="height:28px; font-size:11px; width:100%;">Download</button>
+          </div>
+          <div style="border:1px solid var(--color-outline-variant); border-radius:8px; padding:12px; background:var(--color-surface-low); text-align:center;">
+            <div style="font-size:32px; margin-bottom:6px;">🛡️</div>
+            <strong style="font-size:13px; display:block; margin-bottom:4px;">Responsible AI Guide</strong>
+            <span style="font-size:11px; color:var(--color-tertiary); display:block; margin-bottom:8px;">PDF Book &middot; 2.1 MB</span>
+            <button class="btn btn-secondary" onclick="showToastAlert('Downloading Responsible AI Guide...')" style="height:28px; font-size:11px; width:100%;">Download</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+  } else if (activeTab === "messages") {
+    // Render Coach Chat panel
+    let messagesHtml = spState.chatMessages.map(m => {
+      const isLearner = m.role === "Learner";
+      return `
+        <div style="display:flex; flex-direction:column; align-items:${isLearner ? 'flex-end' : 'flex-start'}; margin-bottom:12px;">
+          <div style="display:flex; align-items:center; gap:6px; margin-bottom:2px; font-size:11px; color:var(--color-tertiary);">
+            <strong>${m.sender}</strong> (${m.role}) &middot; <span>${m.time}</span>
+          </div>
+          <div style="background-color:${isLearner ? 'var(--color-secondary-container)' : 'var(--color-surface-low)'}; color:${isLearner ? 'var(--color-on-secondary-container)' : 'var(--color-on-surface-variant)'}; border:1px solid var(--color-outline-variant); padding:10px 14px; border-radius:8px; max-width:80%; font-size:13px; line-height:1.5;">
+            ${m.text}
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    tabBodyHtml = `
+      <div class="form-card" style="padding:20px; display:flex; flex-direction:column; height:450px;">
+        <h3 class="form-section-title" style="margin-bottom:12px;">Direct Message to Reviewer</h3>
+        
+        <!-- Chat History -->
+        <div id="sp-chat-history" style="flex:1; overflow-y:auto; padding:12px; border:1px solid var(--color-outline-variant); border-radius:8px; background:var(--color-surface-lowest); margin-bottom:12px; display:flex; flex-direction:column;">
+          ${messagesHtml}
+        </div>
+
+        <!-- Chat input -->
+        <div style="display:flex; gap:10px;">
+          <input type="text" id="sp-chat-input" class="form-input" style="flex:1; margin-bottom:0;" placeholder="Ask your reviewer a question..." onkeydown="if(event.key==='Enter') sendSelfPacedChatMessage()">
+          <button class="btn btn-primary" onclick="sendSelfPacedChatMessage()" style="height:40px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:700; padding:0 20px;">Send</button>
+        </div>
+      </div>
+    `;
+
+  } else if (activeTab === "access") {
+    // Access details
+    tabBodyHtml = `
+      <div class="form-card" style="padding:20px;">
+        <h3 class="form-section-title" style="margin-bottom:12px;">Academic Access Status</h3>
+        <p style="font-size:13px; color:var(--color-tertiary); margin-bottom:20px;">Academic status of enrolment <strong>ENR-PAI-001</strong>.</p>
+        
+        <table style="width:100%; max-width:500px; font-size:13px; border-collapse:collapse; line-height:36px;">
+          <tr style="border-bottom:1px solid var(--color-outline-variant);">
+            <td style="color:var(--color-tertiary);">Academic Enrolment:</td>
+            <td style="font-weight:700; font-family:monospace; text-align:right;">ENR-PAI-001</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);">
+            <td style="color:var(--color-tertiary);">Delivery Model:</td>
+            <td style="font-weight:700; text-align:right;">Self-Paced / Milestone-Based</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);">
+            <td style="color:var(--color-tertiary);">Active Course Version:</td>
+            <td style="font-weight:700; font-family:monospace; text-align:right;">practical-ai-v1.0</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);">
+            <td style="color:var(--color-tertiary);">Enrolment Status:</td>
+            <td style="font-weight:700; text-align:right; color:#137333;">Active</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);">
+            <td style="color:var(--color-tertiary);">Content Release Rule:</td>
+            <td style="font-weight:700; text-align:right;">Immediate Access</td>
+          </tr>
+          <tr>
+            <td style="color:var(--color-tertiary);">Current Access State:</td>
+            <td style="font-weight:700; text-align:right; color:${spState.accessState === 'Expired' ? '#ba1a1a' : '#137333'};">${spState.accessState}</td>
+          </tr>
+        </table>
+      </div>
+    `;
+  }
+
+  view.innerHTML = `
+    <!-- Switcher -->
+    ${switcherHtml}
+    
+    <!-- Expiry Banner -->
+    ${accessNoticeHtml}
+    
+    <!-- Content Version Banner -->
+    ${versionUpdateHtml}
+    
+    <!-- Header -->
+    ${headerHtml}
+    
+    <!-- Tabs Nav -->
+    ${tabsHtml}
+    
+    <!-- Tab Body -->
+    <div id="learner-workspace-body-container">
+      ${tabBodyHtml}
+    </div>
+  `;
+
+  // Auto-scroll chat history if on messages tab
+  if (activeTab === "messages") {
+    const chatHist = document.getElementById("sp-chat-history");
+    if (chatHist) chatHist.scrollTop = chatHist.scrollHeight;
+  }
+};
+
 
 
 
