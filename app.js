@@ -268,7 +268,12 @@ function handleRouting() {
         if (reviewDetailView) {
           reviewDetailView.style.display = "block";
           if (staffReviewsLink) staffReviewsLink.classList.add("active");
-          renderDeliveryReviewDetail(id);
+          // Branch: paid class review vs trial review
+          if (id.startsWith("CLASS-")) {
+            renderPaidClassDeliveryReview(id);
+          } else {
+            renderDeliveryReviewDetail(id);
+          }
         }
       }
     } else if (hash === "#staff/follow-ups") {
@@ -5440,50 +5445,63 @@ state.trainerReports = {
     duration: "45 min",
     format: "1-to-1",
     classType: "Regular Paid Class",
-    reportStatus: "Draft", // Draft | Submitted | Correction Requested
-    deliveryReviewStatus: "Pending", // Pending | Approved | Correction Requested
+    reportStatus: "Submitted", // Submitted (pre-seeded for Screen 18 demo)
+    deliveryReviewStatus: "Pending",
     version: 1,
     isEditingCorrection: false,
-    
-    // Core report fields
-    mainTopic: "",
-    topicsCovered: [],
+
+    // Core report fields (pre-filled for Screen 18 ops review)
+    mainTopic: "Greetings, introductions and simple everyday conversation",
+    topicsCovered: ["Greetings", "Introductions", "Everyday vocabulary", "Pronunciation"],
     syllabusCoverage: {
-      "Greetings & Introductions": "Not Covered",
-      "Basic Sentence Formation": "Not Covered",
-      "Everyday Vocabulary": "Not Covered",
-      "Pronunciation Practice": "Not Covered",
-      "Speaking Confidence": "Not Covered"
+      "Greetings & Introductions": "Covered",
+      "Basic Sentence Formation": "Partially Covered",
+      "Everyday Vocabulary": "Covered",
+      "Pronunciation Practice": "Covered",
+      "Speaking Confidence": "In Progress"
     },
-    progressNotes: "",
+    learningObjectives: {
+      "Introduce themselves clearly": "Achieved",
+      "Use greetings appropriately": "Achieved",
+      "Form basic sentences": "Partially Achieved",
+      "Speak without prompts": "Needs Practice"
+    },
+    progressNotes: "Ali participated actively and showed good understanding of greetings and simple introductions. He still hesitates when forming longer sentences without prompts.",
     learnerFeedback: {
-      strengths: "",
-      improvements: "",
-      recommendations: ""
+      strengths: "Good listening comprehension and willingness to speak.",
+      improvements: "Sentence fluency, pronunciation consistency and speaking without prompts.",
+      recommendations: "Good first class. Continue practising short introductions aloud and focus on speaking slowly and clearly."
     },
     homework: {
-      enabled: false,
-      title: "",
-      instructions: "",
-      dueDate: "",
-      type: "Practice"
+      enabled: true,
+      title: "Introduce Yourself Practice",
+      instructions: "Prepare a 60–90 second spoken introduction including your name, work/study background, interests and one personal goal.",
+      dueDate: "Before Class 2",
+      type: "Speaking Practice"
     },
     resources: [
-      { name: "Beginner Speaking Guide", type: "PDF", attached: false },
-      { name: "Pronunciation Basics", type: "Audio", attached: false },
-      { name: "Introduction Vocabulary Sheet", type: "Worksheet", attached: false }
+      { name: "Beginner Speaking Guide", type: "PDF", attached: true },
+      { name: "Pronunciation Basics", type: "Audio", attached: true },
+      { name: "Introduction Vocabulary Sheet", type: "Worksheet", attached: true }
     ],
-    generalNotes: "",
-    privateNotes: "",
-    sessionIssues: "No issues",
-    sessionIssuesDetails: "",
-    
+    generalNotes: "Learner is motivated and engaged. Recommend continuing with structured greetings exercises in Class 2.",
+    privateNotes: "Learner becomes less confident when asked unscripted questions. More guided speaking practice may help.",
+    nextClassPlan: "Basic sentence formation and common everyday phrases.",
+    sessionIssues: "Learner Connection Issue",
+    sessionIssuesDetails: "Learner disconnected for approximately three minutes and rejoined.",
+
     // Correction/attendance fields
     operationsNote: "",
     proposedAttendance: null,
     attendanceCorrectionReason: "",
+
+    // Publication flags (set true on delivery approval)
+    feedbackPublished: false,
+    homeworkPublished: false,
+
     history: [
-      { time: "18 Aug · 7:45 PM", text: "Class ended. Reconciled Attendance outcome: Present (40 minutes connected)" }
+      { time: "18 Aug · 7:45 PM", text: "Class ended. Reconciled Attendance outcome: Present (40 minutes connected)" },
+      { time: "18 Aug · 7:53 PM", text: "Report v1 submitted by Ayesha Rahman to Operations for review" }
     ],
     previousVersion: null
   }
@@ -6489,8 +6507,92 @@ state.deliveryReviews = [
       { time: "1:45 PM", text: "Learner left" }
     ],
     technicalIssues: "Trainer absence detected"
+  },
+  // ── Screen 18: Paid Class delivery review ──────────────────────────────
+  {
+    id: "DELIVERY-REVIEW-CLASS-001",
+    occurrenceId: "CLASS-001",
+    seriesId: "SERIES-001",
+    enrolmentId: "ENR-001",
+    membershipId: "MEM-TERM-001",
+    trialRequestId: null,
+    learner: "Ali Khan",
+    course: "Spoken English",
+    trainer: "Ayesha Rahman",
+    classType: "Regular",
+    classNumber: "1 of 12",
+    deliveredTime: "18 Aug · 7:00 PM",
+    attendanceStatus: "Present",
+    evidenceStatus: "Reconciled",
+    reviewStatus: "Pending",     // Pending | Approved | Correction Requested | Rejected
+    occurrenceStatus: "In Review", // In Review | Approved/Completed | Rejected for Correction
+    reportRef: "REPORT-CLASS-001",
+    reviewer: "Omar Farooq",
+    reviewerRole: "Operations Manager",
+    rejectionReason: "",
+    rejectionNotes: "",
+    operationsNotes: "",
+    hasCorrectionRequest: false,
+    correctionProposedOutcome: "Technical Issue",
+    correctionProposedReason: "Connection interruption materially affected participation.",
+    correctionDecision: null,    // null | "Approved" | "Rejected"
+    correctionDecisionNote: "",
+    correctionChangedBy: "",
+    correctionPreviousOutcome: "",
+    joinedTimes: {
+      trainerJoined: "6:58 PM",
+      learnerJoined: "7:01 PM",
+      learnerDisconnected: "7:18 PM",
+      learnerReconnected: "7:21 PM",
+      learnerLeft: "7:44 PM",
+      trainerLeft: "7:45 PM",
+      learnerDuration: 40,
+      trainerDuration: 47
+    },
+    timeline: [
+      { time: "6:58 PM", text: "Ayesha joined" },
+      { time: "7:01 PM", text: "Ali joined" },
+      { time: "7:18 PM", text: "Ali connection lost" },
+      { time: "7:21 PM", text: "Ali reconnected" },
+      { time: "7:44 PM", text: "Ali left" },
+      { time: "7:45 PM", text: "Ayesha left" }
+    ],
+    auditLog: [
+      { time: "7:45 PM", text: "Class ended" },
+      { time: "7:46 PM", text: "Attendance evidence reconciled" },
+      { time: "7:53 PM", text: "REPORT-CLASS-001 submitted by Ayesha Rahman" },
+      { time: "7:53 PM", text: "Delivery review DELIVERY-REVIEW-CLASS-001 created" },
+      { time: "8:05 PM", text: "Review opened by Omar Farooq · Operations Manager" },
+      { time: "8:09 PM", text: "Attendance evidence reviewed" }
+    ],
+    technicalIssues: "Learner Connection Issue",
+    technicalIssueDetails: "Learner disconnected for approximately three minutes and rejoined.",
+    // Downstream record IDs (null until created)
+    entitlementDebitId: null,
+    progressEventId: null,
+    trainerEarningId: null,
+    feedbackPublished: false,
+    homeworkPublished: false,
+    // Checklist state
+    verificationChecklist: {
+      trainerEvidenceSupports: false,
+      learnerParticipated: false,
+      reportSubmitted: false,
+      syllabusProvided: false,
+      progressRecorded: false,
+      homeworkReviewed: false,
+      attendanceReviewed: false,
+      technicalIssueReviewed: false
+    },
+    // Simulator override state
+    simState: "Pending"  // Pending | Approved | Correction Requested | Learner No-show | Trainer No-show | Partial Delivery | Technical Exception
   }
 ];
+
+// ── Screen 18: Downstream mock record containers ──────────────────────────
+if (!state.entitlementLedger) state.entitlementLedger = [];
+if (!state.progressEvents) state.progressEvents = [];
+if (!state.trainerEarnings) state.trainerEarnings = [];
 
 // Active filter state
 state.reviewFilters = {
@@ -7455,6 +7557,926 @@ window.sendReportReminder = function(trainerName) {
   showToastAlert(`Reminder queued for ${trainerName}.`);
 };
 
+
+// ==========================================================================
+// Screen 18 - Operations Paid-Class Delivery Review & Approval
+// ==========================================================================
+
+// Simulator state switcher
+window.setScreen18SimState = function(occurrenceId, simState) {
+  const review = state.deliveryReviews.find(r => r.occurrenceId === occurrenceId);
+  if (!review) return;
+  review.simState = simState;
+
+  // Reset to base state for each sim scenario
+  if (simState === "Pending") {
+    review.reviewStatus = "Pending";
+    review.occurrenceStatus = "In Review";
+    review.attendanceStatus = "Present";
+    review.hasCorrectionRequest = false;
+  } else if (simState === "Correction Requested") {
+    review.reviewStatus = "Correction Requested";
+    review.occurrenceStatus = "In Review";
+    review.operationsNotes = "Please clarify what was covered after the learner reconnected. Progress notes need more detail.";
+  } else if (simState === "Approved") {
+    // Only visually — real approval goes through confirmApproveClassDelivery
+    review.reviewStatus = "Approved";
+    review.occurrenceStatus = "Approved/Completed";
+  } else if (simState === "Learner No-show") {
+    review.reviewStatus = "Pending";
+    review.attendanceStatus = "Absent";
+    review.occurrenceStatus = "In Review";
+    review.hasCorrectionRequest = false;
+  } else if (simState === "Trainer No-show") {
+    review.reviewStatus = "Pending";
+    review.attendanceStatus = "Present";
+    review.occurrenceStatus = "In Review";
+    review.hasCorrectionRequest = false;
+  } else if (simState === "Partial Delivery") {
+    review.reviewStatus = "Pending";
+    review.attendanceStatus = "Present";
+    review.occurrenceStatus = "In Review";
+    review.joinedTimes.learnerDuration = 22;
+    review.hasCorrectionRequest = false;
+  } else if (simState === "Technical Exception") {
+    review.reviewStatus = "Pending";
+    review.attendanceStatus = "Present";
+    review.occurrenceStatus = "In Review";
+    review.joinedTimes.learnerDuration = 10;
+    review.hasCorrectionRequest = false;
+  }
+
+  renderPaidClassDeliveryReview(occurrenceId);
+};
+
+// Toggle checklist item
+window.toggleScreen18Checklist = function(occurrenceId, field) {
+  const review = state.deliveryReviews.find(r => r.occurrenceId === occurrenceId);
+  if (!review || review.reviewStatus === "Approved") return;
+  review.verificationChecklist[field] = !review.verificationChecklist[field];
+  renderPaidClassDeliveryReview(occurrenceId);
+};
+
+// Main renderer
+window.renderPaidClassDeliveryReview = function(occurrenceId) {
+  const view = document.getElementById("staff-delivery-detail-view");
+  if (!view) return;
+
+  const review = state.deliveryReviews.find(r => r.occurrenceId === occurrenceId);
+  if (!review) {
+    view.innerHTML = `<div class="form-card" style="text-align:center; padding:24px;"><h3>Review not found</h3><a href="#staff/delivery-reviews">← Back to Delivery Reviews</a></div>`;
+    return;
+  }
+
+  const report = state.trainerReports[occurrenceId];
+  const simState = review.simState || "Pending";
+  const isApproved = review.reviewStatus === "Approved";
+  const isCorrectionRequested = review.reviewStatus === "Correction Requested";
+  const isRejected = review.reviewStatus === "Rejected";
+
+  // Checklist completeness
+  const cl = review.verificationChecklist;
+  const allChecked = Object.values(cl).every(v => v === true);
+
+  // Attendance badge
+  let attColor = "#137333"; let attBg = "#e6f4ea"; let attBorder = "#c2e7cc";
+  if (review.attendanceStatus === "Absent") { attColor = "#ba1a1a"; attBg = "#ffdad6"; attBorder = "#f2b8b8"; }
+  else if (review.attendanceStatus === "Technical Issue") { attColor = "#856404"; attBg = "#fff3cd"; attBorder = "#ffd663"; }
+
+  // Review status badge
+  let revColor = "#856404"; let revBg = "#fff3cd"; let revBorder = "#ffd663";
+  if (isApproved) { revColor = "#137333"; revBg = "#e6f4ea"; revBorder = "#c2e7cc"; }
+  else if (isCorrectionRequested) { revColor = "#6b21a8"; revBg = "#f3e8ff"; revBorder = "#d8b4fe"; }
+  else if (isRejected) { revColor = "#ba1a1a"; revBg = "#ffdad6"; revBorder = "#f2b8b8"; }
+
+  // Occurrence badge
+  const occBadge = isApproved ? "Approved/Completed" : (isRejected ? "Rejected for Correction" : review.occurrenceStatus);
+
+  // Special scenario content
+  let specialBanner = "";
+  if (simState === "Learner No-show") {
+    specialBanner = `
+      <div style="background:#ffdad6; border:1.5px solid #f2b8b8; border-radius:8px; padding:16px; margin-bottom:var(--spacing-md);">
+        <h4 style="font-size:13px; font-weight:800; color:#ba1a1a; margin-bottom:6px;">⚠ Learner No-show — Policy Decision Required</h4>
+        <p style="font-size:12.5px; color:#ba1a1a; margin:0;">No learner join event detected in provider evidence. The trainer was present for the full scheduled duration. This does not automatically resolve the entitlement outcome. An explicit Operations decision is required before approving or rejecting delivery.</p>
+      </div>`;
+  } else if (simState === "Trainer No-show") {
+    specialBanner = `
+      <div style="background:#ffdad6; border:1.5px solid #f2b8b8; border-radius:8px; padding:16px; margin-bottom:var(--spacing-md);">
+        <h4 style="font-size:13px; font-weight:800; color:#ba1a1a; margin-bottom:6px;">🚫 Trainer No-show Exception</h4>
+        <p style="font-size:12.5px; color:#ba1a1a; margin-bottom:8px;">No valid trainer join evidence found. Learner was present and waiting. This delivery cannot be approved under standard policy.</p>
+        <p style="font-size:12px; font-weight:700; color:#ba1a1a;">Recommended action: Reject Delivery. Trainer earning must NOT be created.</p>
+      </div>`;
+  } else if (simState === "Partial Delivery") {
+    specialBanner = `
+      <div style="background:#fff3cd; border:1.5px solid #ffd663; border-radius:8px; padding:16px; margin-bottom:var(--spacing-md);">
+        <h4 style="font-size:13px; font-weight:800; color:#856404; margin-bottom:6px;">⚡ Partial Delivery — Explicit Decision Required</h4>
+        <p style="font-size:12.5px; color:#856404; margin-bottom:0;">Scheduled: 45 min &nbsp;|&nbsp; Delivered: 22 min connected. This does not qualify as a standard full class delivery. Approve partial, reject, or request correction explicitly.</p>
+      </div>`;
+  } else if (simState === "Technical Exception") {
+    specialBanner = `
+      <div style="background:#fff3cd; border:1.5px solid #ffd663; border-radius:8px; padding:16px; margin-bottom:var(--spacing-md);">
+        <h4 style="font-size:13px; font-weight:800; color:#856404; margin-bottom:6px;">⚡ Technical Exception — Platform Outage</h4>
+        <p style="font-size:12.5px; color:#856404; margin-bottom:0;">Only 10 minutes successfully delivered due to a confirmed meeting provider outage. Normal entitlement debit policy may not apply. Explicit Operations decision required.</p>
+      </div>`;
+  } else if (isCorrectionRequested && review.operationsNotes) {
+    specialBanner = `
+      <div style="background:#f3e8ff; border:1.5px solid #d8b4fe; border-radius:8px; padding:16px; margin-bottom:var(--spacing-md);">
+        <h4 style="font-size:13px; font-weight:800; color:#6b21a8; margin-bottom:6px;">📝 Report Correction Requested</h4>
+        <p style="font-size:12.5px; color:#6b21a8; margin:0;">${review.operationsNotes}</p>
+      </div>`;
+  }
+
+  // Checklist item renderer
+  const renderCheck = (key, label) => {
+    const checked = cl[key];
+    const disabled = isApproved || isRejected;
+    return `
+      <div onclick="${disabled ? '' : `toggleScreen18Checklist('${occurrenceId}', '${key}')`}"
+           style="display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:6px; cursor:${disabled ? 'default' : 'pointer'}; background:${checked ? 'rgba(19,115,51,0.06)' : 'var(--color-surface-low)'}; border:1px solid ${checked ? '#c2e7cc' : 'var(--color-outline-variant)'}; margin-bottom:6px; transition:all 0.2s;">
+        <div style="width:20px; height:20px; border-radius:4px; background:${checked ? '#137333' : 'var(--color-surface-lowest)'}; border:1.5px solid ${checked ? '#137333' : 'var(--color-outline-variant)'}; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+          ${checked ? '<svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>' : ''}
+        </div>
+        <span style="font-size:13px; font-weight:600; color:${checked ? '#137333' : 'var(--color-on-surface)'};">${label}</span>
+      </div>`;
+  };
+
+  // Syllabus coverage badge
+  const syllabusColors = { "Covered": "#137333", "Partially Covered": "#856404", "In Progress": "#1a73e8", "Not Covered": "#ba1a1a" };
+  const syllabusRow = (label, status) => {
+    const color = syllabusColors[status] || "#666";
+    return `<tr style="border-bottom:1px solid var(--color-outline-variant);">
+      <td style="padding:8px 10px; font-size:13px;">${label}</td>
+      <td style="padding:8px 10px; text-align:right;"><span style="font-size:11px; font-weight:700; padding:2px 8px; border-radius:12px; background:${color}22; color:${color}; border:1px solid ${color}44;">${status}</span></td>
+    </tr>`;
+  };
+
+  view.innerHTML = `
+    <!-- Dev Simulator Bar -->
+    <div class="dev-sim-panel animate-fade-in" style="margin-bottom:var(--spacing-md);">
+      <span style="color:#e2e8f0; margin-right:4px; font-size:11.5px; font-weight:700;">Screen 18 Simulator:</span>
+      <button class="dev-sim-btn ${simState === 'Pending' ? 'active' : ''}" onclick="setScreen18SimState('${occurrenceId}','Pending')">Pending</button>
+      <button class="dev-sim-btn ${simState === 'Correction Requested' ? 'active' : ''}" onclick="setScreen18SimState('${occurrenceId}','Correction Requested')">Correction Requested</button>
+      <button class="dev-sim-btn ${simState === 'Approved' ? 'active' : ''}" onclick="setScreen18SimState('${occurrenceId}','Approved')">Approved</button>
+      <button class="dev-sim-btn ${simState === 'Learner No-show' ? 'active' : ''}" onclick="setScreen18SimState('${occurrenceId}','Learner No-show')">Learner No-show</button>
+      <button class="dev-sim-btn ${simState === 'Trainer No-show' ? 'active' : ''}" onclick="setScreen18SimState('${occurrenceId}','Trainer No-show')">Trainer No-show</button>
+      <button class="dev-sim-btn ${simState === 'Partial Delivery' ? 'active' : ''}" onclick="setScreen18SimState('${occurrenceId}','Partial Delivery')">Partial Delivery</button>
+      <button class="dev-sim-btn ${simState === 'Technical Exception' ? 'active' : ''}" onclick="setScreen18SimState('${occurrenceId}','Technical Exception')">Technical Exception</button>
+    </div>
+
+    <!-- Back link -->
+    <div style="margin-bottom:var(--spacing-md);">
+      <a href="#staff/delivery-reviews" class="back-link" style="font-size:13px; font-weight:700; color:var(--color-secondary); display:inline-flex; align-items:center; gap:6px;">
+        ← Back to Delivery Reviews
+      </a>
+    </div>
+
+    ${specialBanner}
+
+    <!-- Page Header -->
+    <section class="catalogue-hero" aria-labelledby="s18-title" style="display:block; padding-bottom:var(--spacing-xs); margin-bottom:var(--spacing-lg); border-bottom:1px solid var(--color-outline-variant);">
+      <div class="hero-content">
+        <div style="font-size:13px; font-weight:700; color:var(--color-secondary); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:var(--spacing-xs);">Operations Workspace · Delivery Reviews</div>
+        <div style="display:flex; align-items:center; gap:var(--spacing-md); flex-wrap:wrap; margin-bottom:6px;">
+          <h2 class="hero-title" id="s18-title" style="margin-bottom:0;">Review Class Delivery</h2>
+          <span style="font-size:11.5px; font-weight:700; padding:3px 10px; border-radius:12px; background:#e8e2d7; color:var(--color-on-surface); border:1px solid var(--color-outline-variant);">Regular Paid Class</span>
+          <span style="font-size:11.5px; font-weight:700; padding:3px 10px; border-radius:12px; background:${revBg}; color:${revColor}; border:1px solid ${revBorder};">${review.reviewStatus}</span>
+        </div>
+        <p class="hero-subtitle" style="margin-top:0; margin-bottom:6px;">Spoken English &middot; ${occurrenceId} &middot; ${review.learner}</p>
+        <div style="font-size:12.5px; color:var(--color-tertiary);">Reviewer: <strong>${review.reviewer}</strong> &middot; ${review.reviewerRole}</div>
+      </div>
+    </section>
+
+    <div class="trial-request-container">
+      <!-- Left Column -->
+      <div class="trial-main-form" style="display:flex; flex-direction:column; gap:var(--spacing-md);">
+
+        <!-- 1. Class Details Card -->
+        <div class="form-card animate-fade-in" style="padding:var(--spacing-lg);">
+          <h3 style="font-family:var(--font-family-headings); font-size:16px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:var(--spacing-md); padding-bottom:10px; border-bottom:1px solid var(--color-outline-variant);">Class Details</h3>
+          <div class="drawer-grid">
+            <div class="drawer-meta-item"><span class="drawer-meta-label">Learner</span><span class="drawer-meta-value">${review.learner}</span></div>
+            <div class="drawer-meta-item"><span class="drawer-meta-label">Trainer</span><span class="drawer-meta-value">${review.trainer}</span></div>
+            <div class="drawer-meta-item"><span class="drawer-meta-label">Course</span><span class="drawer-meta-value">${review.course}</span></div>
+            <div class="drawer-meta-item"><span class="drawer-meta-label">Level</span><span class="drawer-meta-value">Beginner</span></div>
+            <div class="drawer-meta-item"><span class="drawer-meta-label">Class</span><span class="drawer-meta-value">${review.classNumber}</span></div>
+            <div class="drawer-meta-item"><span class="drawer-meta-label">Enrolment</span><span class="drawer-meta-value" style="font-family:monospace;">${review.enrolmentId}</span></div>
+            <div class="drawer-meta-item"><span class="drawer-meta-label">Membership</span><span class="drawer-meta-value" style="font-family:monospace;">${review.membershipId}</span></div>
+            <div class="drawer-meta-item"><span class="drawer-meta-label">Date</span><span class="drawer-meta-value">18 Aug 2026</span></div>
+            <div class="drawer-meta-item"><span class="drawer-meta-label">Time</span><span class="drawer-meta-value">7:00–7:45 PM PKT</span></div>
+            <div class="drawer-meta-item"><span class="drawer-meta-label">Duration</span><span class="drawer-meta-value">45 min</span></div>
+            <div class="drawer-meta-item"><span class="drawer-meta-label">Format</span><span class="drawer-meta-value">1-to-1</span></div>
+            <div class="drawer-meta-item"><span class="drawer-meta-label">Series</span><span class="drawer-meta-value" style="font-family:monospace;">${review.seriesId}</span></div>
+          </div>
+          <div style="font-size:11.5px; color:var(--color-tertiary); margin-top:12px; padding-top:10px; border-top:1px solid var(--color-outline-variant);">
+            ℹ️ Class details are read-only. Reviewer cannot alter these values during review.
+          </div>
+        </div>
+
+        <!-- 2. Domain Status Separation Card -->
+        <div class="form-card animate-fade-in" style="padding:var(--spacing-lg);">
+          <h3 style="font-family:var(--font-family-headings); font-size:16px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:var(--spacing-md); padding-bottom:10px; border-bottom:1px solid var(--color-outline-variant);">Domain Status Overview</h3>
+          <table style="width:100%; font-size:13px; border-collapse:collapse;">
+            <tr style="border-bottom:1px solid var(--color-outline-variant);">
+              <td style="padding:10px 0; color:var(--color-tertiary); font-weight:700;">Occurrence</td>
+              <td style="padding:10px 0; text-align:right;"><span style="font-size:11.5px; font-weight:700; padding:2px 10px; border-radius:12px; background:${isApproved ? '#e6f4ea' : '#fff3cd'}; color:${isApproved ? '#137333' : '#856404'}; border:1px solid ${isApproved ? '#c2e7cc' : '#ffd663'};">${occBadge}</span></td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--color-outline-variant);">
+              <td style="padding:10px 0; color:var(--color-tertiary); font-weight:700;">Attendance</td>
+              <td style="padding:10px 0; text-align:right;"><span style="font-size:11.5px; font-weight:700; padding:2px 10px; border-radius:12px; background:${attBg}; color:${attColor}; border:1px solid ${attBorder};">${review.attendanceStatus}</span></td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--color-outline-variant);">
+              <td style="padding:10px 0; color:var(--color-tertiary); font-weight:700;">Trainer Report</td>
+              <td style="padding:10px 0; text-align:right;"><span style="font-size:11.5px; font-weight:700; padding:2px 10px; border-radius:12px; background:${isApproved ? '#e6f4ea' : '#e8f0fe'}; color:${isApproved ? '#137333' : '#1a73e8'}; border:1px solid ${isApproved ? '#c2e7cc' : '#b4c8f8'};">${isApproved ? 'Accepted' : (isCorrectionRequested ? 'Correction Requested' : 'Submitted')}</span></td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--color-outline-variant);">
+              <td style="padding:10px 0; color:var(--color-tertiary); font-weight:700;">Delivery Review</td>
+              <td style="padding:10px 0; text-align:right;"><span style="font-size:11.5px; font-weight:700; padding:2px 10px; border-radius:12px; background:${revBg}; color:${revColor}; border:1px solid ${revBorder};">${review.reviewStatus}</span></td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--color-outline-variant);">
+              <td style="padding:10px 0; color:var(--color-tertiary); font-weight:700;">Entitlement</td>
+              <td style="padding:10px 0; text-align:right;"><span style="font-size:11.5px; font-weight:700; padding:2px 10px; border-radius:12px; background:${isApproved ? '#e6f4ea' : '#ffdad6'}; color:${isApproved ? '#137333' : '#ba1a1a'}; border:1px solid ${isApproved ? '#c2e7cc' : '#f2b8b8'};">${isApproved ? '1 Class Debited' : 'No Debit Yet'}</span></td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--color-outline-variant);">
+              <td style="padding:10px 0; color:var(--color-tertiary); font-weight:700;">Learning Progress</td>
+              <td style="padding:10px 0; text-align:right;"><span style="font-size:11.5px; font-weight:700; padding:2px 10px; border-radius:12px; background:${isApproved ? '#e6f4ea' : '#ffdad6'}; color:${isApproved ? '#137333' : '#ba1a1a'}; border:1px solid ${isApproved ? '#c2e7cc' : '#f2b8b8'};">${isApproved ? 'Class 1 Recorded' : 'Pending Approval'}</span></td>
+            </tr>
+            <tr>
+              <td style="padding:10px 0; color:var(--color-tertiary); font-weight:700;">Trainer Earning</td>
+              <td style="padding:10px 0; text-align:right;"><span style="font-size:11.5px; font-weight:700; padding:2px 10px; border-radius:12px; background:${isApproved ? '#fff3cd' : '#ffdad6'}; color:${isApproved ? '#856404' : '#ba1a1a'}; border:1px solid ${isApproved ? '#ffd663' : '#f2b8b8'};">${isApproved ? 'Created · Not Settled' : 'Not Created Yet'}</span></td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- 3. Attendance Evidence -->
+        <div class="form-card animate-fade-in" style="padding:var(--spacing-lg);">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:var(--spacing-md); padding-bottom:10px; border-bottom:1px solid var(--color-outline-variant);">
+            <h3 style="font-family:var(--font-family-headings); font-size:16px; font-weight:800; color:var(--color-on-tertiary-fixed); margin:0;">Attendance Evidence</h3>
+            <span style="font-size:11.5px; font-weight:700; padding:2px 10px; border-radius:12px; background:#e6f4ea; color:#137333; border:1px solid #c2e7cc;">Reconciled</span>
+          </div>
+          <div class="drawer-grid" style="margin-bottom:var(--spacing-md);">
+            <div class="drawer-meta-item"><span class="drawer-meta-label">Trainer Joined</span><span class="drawer-meta-value">${simState === 'Trainer No-show' ? '<span style="color:#ba1a1a; font-weight:700;">No join event</span>' : review.joinedTimes.trainerJoined}</span></div>
+            <div class="drawer-meta-item"><span class="drawer-meta-label">Learner Joined</span><span class="drawer-meta-value">${simState === 'Learner No-show' ? '<span style="color:#ba1a1a; font-weight:700;">No join event</span>' : review.joinedTimes.learnerJoined}</span></div>
+            <div class="drawer-meta-item"><span class="drawer-meta-label">Learner Disconnected</span><span class="drawer-meta-value">${simState === 'Learner No-show' ? '—' : '7:18 PM'}</span></div>
+            <div class="drawer-meta-item"><span class="drawer-meta-label">Learner Reconnected</span><span class="drawer-meta-value">${simState === 'Learner No-show' ? '—' : '7:21 PM'}</span></div>
+            <div class="drawer-meta-item"><span class="drawer-meta-label">Learner Left</span><span class="drawer-meta-value">${simState === 'Learner No-show' ? '—' : review.joinedTimes.learnerLeft}</span></div>
+            <div class="drawer-meta-item"><span class="drawer-meta-label">Trainer Left</span><span class="drawer-meta-value">${simState === 'Trainer No-show' ? '—' : review.joinedTimes.trainerLeft}</span></div>
+            <div class="drawer-meta-item"><span class="drawer-meta-label">Learner Connected</span><span class="drawer-meta-value" style="font-weight:800; color:${review.joinedTimes.learnerDuration < 20 ? '#ba1a1a' : 'var(--color-on-tertiary-fixed)'};">${simState === 'Learner No-show' ? '0 min' : review.joinedTimes.learnerDuration + ' min'}</span></div>
+            <div class="drawer-meta-item"><span class="drawer-meta-label">Trainer Connected</span><span class="drawer-meta-value" style="font-weight:800;">${simState === 'Trainer No-show' ? '0 min' : review.joinedTimes.trainerDuration + ' min'}</span></div>
+          </div>
+
+          <!-- Evidence Timeline -->
+          <h4 style="font-size:12.5px; font-weight:800; text-transform:uppercase; color:var(--color-secondary); letter-spacing:0.05em; margin-bottom:12px;">Event Timeline</h4>
+          <div style="position:relative; padding-left:24px;">
+            ${review.timeline.map((ev, i) => `
+              <div style="position:relative; padding-bottom:14px; ${i < review.timeline.length - 1 ? 'border-left:2px solid var(--color-outline-variant);' : ''} margin-left:-1px;">
+                <div style="position:absolute; left:-7px; top:3px; width:12px; height:12px; border-radius:50%; background:var(--color-secondary); border:2px solid var(--color-surface-lowest);"></div>
+                <div style="padding-left:16px;">
+                  <div style="font-size:11.5px; font-weight:700; color:var(--color-secondary);">${ev.time}</div>
+                  <div style="font-size:13px; color:var(--color-on-surface);">${ev.text}</div>
+                </div>
+              </div>`).join("")}
+          </div>
+        </div>
+
+        <!-- 4. Attendance Record Card -->
+        <div class="form-card animate-fade-in" style="padding:var(--spacing-lg);">
+          <h3 style="font-family:var(--font-family-headings); font-size:16px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:var(--spacing-md); padding-bottom:10px; border-bottom:1px solid var(--color-outline-variant);">Attendance Record</h3>
+          <div style="background:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:8px; padding:16px; margin-bottom:var(--spacing-md);">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
+              <div>
+                <div style="font-size:14px; font-weight:800; color:var(--color-on-tertiary-fixed);">${review.learner}</div>
+                <div style="font-size:12.5px; color:var(--color-tertiary); margin-top:2px;">Participant · ${review.enrolmentId}</div>
+              </div>
+              <span style="font-size:12px; font-weight:700; padding:3px 12px; border-radius:12px; background:${attBg}; color:${attColor}; border:1px solid ${attBorder};">${review.attendanceStatus}</span>
+            </div>
+            <table style="width:100%; font-size:12.5px; border-collapse:collapse; margin-top:12px;">
+              <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">Connected Duration</td><td style="padding:6px 0; font-weight:700; text-align:right;">${simState === 'Learner No-show' ? '0 min' : review.joinedTimes.learnerDuration + ' min'}</td></tr>
+              <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">Evidence Source</td><td style="padding:6px 0; font-weight:700; text-align:right;">Meeting Provider</td></tr>
+              <tr><td style="padding:6px 0; color:var(--color-tertiary);">Correction Request</td><td style="padding:6px 0; font-weight:700; text-align:right;">${review.hasCorrectionRequest ? '<span style="color:#856404;">Pending Review</span>' : (review.correctionDecision ? review.correctionDecision : 'None')}</td></tr>
+            </table>
+          </div>
+          ${!isApproved && !isRejected ? `<p style="font-size:11.5px; color:var(--color-tertiary);">ℹ️ Reviewer cannot silently alter attendance. Any correction must go through the Attendance Correction process.</p>` : ''}
+
+          ${review.hasCorrectionRequest ? `
+          <!-- Attendance Correction Panel -->
+          <div style="background:#fff3cd; border:1.5px solid #ffd663; border-radius:8px; padding:16px; margin-top:12px;">
+            <h4 style="font-size:13px; font-weight:800; color:#856404; margin-bottom:10px;">📋 Attendance Correction Requested by Trainer</h4>
+            <table style="width:100%; font-size:12.5px; border-collapse:collapse; margin-bottom:12px;">
+              <tr style="border-bottom:1px solid rgba(133,100,4,0.15);"><td style="padding:6px 0; color:#856404; font-weight:700;">Current Outcome</td><td style="padding:6px 0; font-weight:700; text-align:right;">${review.attendanceStatus}</td></tr>
+              <tr style="border-bottom:1px solid rgba(133,100,4,0.15);"><td style="padding:6px 0; color:#856404; font-weight:700;">Proposed Outcome</td><td style="padding:6px 0; font-weight:700; text-align:right;">${review.correctionProposedOutcome}</td></tr>
+              <tr><td style="padding:6px 0; color:#856404; font-weight:700;">Trainer Reason</td><td style="padding:6px 0; text-align:right; font-style:italic;">"${review.correctionProposedReason}"</td></tr>
+            </table>
+            <div style="display:flex; gap:10px;">
+              <button class="btn btn-primary" onclick="approveAttendanceCorrectionClass('${occurrenceId}')" style="flex:1; height:36px; font-size:12px; font-weight:800; background:#137333; border-color:#137333; color:white;">Approve Correction</button>
+              <button class="btn btn-secondary" onclick="rejectAttendanceCorrectionClass('${occurrenceId}')" style="flex:1; height:36px; font-size:12px; font-weight:700;">Reject Correction</button>
+            </div>
+          </div>` : ''}
+
+          ${review.correctionDecision ? `
+          <!-- Correction decision history -->
+          <div style="background:${review.correctionDecision === 'Approved' ? '#e6f4ea' : '#ffdad6'}; border:1px solid ${review.correctionDecision === 'Approved' ? '#c2e7cc' : '#f2b8b8'}; border-radius:6px; padding:12px; margin-top:12px; font-size:12.5px;">
+            <div style="font-weight:700; color:${review.correctionDecision === 'Approved' ? '#137333' : '#ba1a1a'}; margin-bottom:6px;">Correction ${review.correctionDecision}</div>
+            <div>Previous Outcome: <strong>${review.correctionPreviousOutcome}</strong></div>
+            ${review.correctionDecision === 'Approved' ? `<div>New Outcome: <strong>${review.attendanceStatus}</strong></div>` : ''}
+            <div>Changed By: ${review.correctionChangedBy || 'Omar Farooq'}</div>
+            ${review.correctionDecisionNote ? `<div>Note: "${review.correctionDecisionNote}"</div>` : ''}
+          </div>` : ''}
+        </div>
+
+        <!-- 5. Trainer Report (Read-Only) -->
+        ${report ? `
+        <div class="form-card animate-fade-in" style="padding:var(--spacing-lg);">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:var(--spacing-md); padding-bottom:10px; border-bottom:1px solid var(--color-outline-variant);">
+            <h3 style="font-family:var(--font-family-headings); font-size:16px; font-weight:800; color:var(--color-on-tertiary-fixed); margin:0;">Trainer Report</h3>
+            <span style="font-size:11px; font-weight:700; padding:3px 10px; border-radius:12px; background:#e8f0fe; color:#1a73e8; border:1px solid #b4c8f8;">Submitted · Version ${report.version}</span>
+          </div>
+
+          <div style="background:rgba(186,26,26,0.04); border:1px solid rgba(186,26,26,0.15); border-radius:6px; padding:12px; margin-bottom:var(--spacing-md); font-size:12px; color:var(--color-tertiary);">
+            ⚠️ This report is read-only. Reviewer cannot rewrite trainer report content. Use Request Correction to ask Ayesha Rahman to update specific sections.
+          </div>
+
+          <!-- Main Topic & Topics Covered -->
+          <div class="form-group" style="margin-bottom:var(--spacing-md);">
+            <label class="form-label" style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--color-tertiary);">Main Topic</label>
+            <div style="font-size:14px; font-weight:700; color:var(--color-on-tertiary-fixed);">${report.mainTopic}</div>
+          </div>
+          <div class="form-group" style="margin-bottom:var(--spacing-md);">
+            <label class="form-label" style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--color-tertiary);">Topics Covered</label>
+            <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:4px;">
+              ${(report.topicsCovered || []).map(t => `<span style="font-size:12px; padding:3px 10px; border-radius:12px; background:var(--color-secondary-container); color:var(--color-on-secondary-container); font-weight:600;">${t}</span>`).join('')}
+            </div>
+          </div>
+
+          <!-- Syllabus Coverage -->
+          <h4 style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--color-tertiary); margin-bottom:8px; letter-spacing:0.04em;">Syllabus Coverage</h4>
+          <table style="width:100%; border-collapse:collapse; margin-bottom:var(--spacing-md); background:var(--color-surface-low); border-radius:6px; overflow:hidden; border:1px solid var(--color-outline-variant);">
+            ${Object.entries(report.syllabusCoverage || {}).map(([k, v]) => syllabusRow(k, v)).join('')}
+          </table>
+
+          <!-- Learner Progress -->
+          <div class="form-group" style="margin-bottom:var(--spacing-md);">
+            <label class="form-label" style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--color-tertiary);">Learner Progress</label>
+            <div style="font-size:13.5px; color:var(--color-on-surface); line-height:1.6; padding:12px; background:var(--color-surface-low); border-radius:6px; border:1px solid var(--color-outline-variant);">${report.progressNotes}</div>
+          </div>
+
+          <!-- Strengths, Improvements, Feedback -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--spacing-md); margin-bottom:var(--spacing-md);">
+            <div>
+              <label class="form-label" style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--color-tertiary);">Strengths</label>
+              <div style="font-size:13px; padding:10px; background:var(--color-surface-low); border-radius:6px; border:1px solid var(--color-outline-variant);">${report.learnerFeedback?.strengths || '—'}</div>
+            </div>
+            <div>
+              <label class="form-label" style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--color-tertiary);">Areas to Improve</label>
+              <div style="font-size:13px; padding:10px; background:var(--color-surface-low); border-radius:6px; border:1px solid var(--color-outline-variant);">${report.learnerFeedback?.improvements || '—'}</div>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:var(--spacing-md);">
+            <label class="form-label" style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--color-tertiary);">Learner-Facing Feedback</label>
+            <div style="font-size:13.5px; padding:12px; background:var(--color-surface-low); border-radius:6px; border:1px solid var(--color-outline-variant);">"${report.learnerFeedback?.recommendations || '—'}"</div>
+          </div>
+
+          <!-- Homework -->
+          <h4 style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--color-tertiary); margin-bottom:8px; letter-spacing:0.04em;">Homework</h4>
+          ${report.homework?.enabled ? `
+          <div style="background:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:8px; padding:14px; margin-bottom:var(--spacing-md);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <div style="font-size:14px; font-weight:800; color:var(--color-on-tertiary-fixed);">${report.homework.title}</div>
+              <span style="font-size:11px; font-weight:700; padding:2px 8px; border-radius:12px; background:${isApproved ? '#e6f4ea' : '#fff3cd'}; color:${isApproved ? '#137333' : '#856404'}; border:1px solid ${isApproved ? '#c2e7cc' : '#ffd663'};">${isApproved ? 'Assigned' : 'Pending Review'}</span>
+            </div>
+            <div style="font-size:13px; color:var(--color-on-surface); margin-bottom:6px;">${report.homework.instructions}</div>
+            <div style="font-size:12px; color:var(--color-tertiary);">Due: ${report.homework.dueDate} &nbsp;|&nbsp; Type: ${report.homework.type}</div>
+          </div>` : '<p style="font-size:13px; color:var(--color-tertiary); font-style:italic;">No homework assigned.</p>'}
+
+          <!-- Resources -->
+          <h4 style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--color-tertiary); margin-bottom:8px; letter-spacing:0.04em;">Resources</h4>
+          <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:var(--spacing-md);">
+            ${(report.resources || []).filter(r => r.attached).map(r => `
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:var(--color-surface-low); border-radius:6px; border:1px solid var(--color-outline-variant);">
+                <span style="font-size:13px; font-weight:600;">${r.name} <span style="color:var(--color-tertiary);">(${r.type})</span></span>
+                <span style="font-size:11px; font-weight:700; padding:2px 8px; border-radius:12px; background:${isApproved ? '#e6f4ea' : '#fff3cd'}; color:${isApproved ? '#137333' : '#856404'};">${isApproved ? 'Available' : 'Pending Approval'}</span>
+              </div>`).join('')}
+          </div>
+
+          <!-- Internal Note (Staff Only) -->
+          <div style="background:rgba(15,23,42,0.04); border:1px solid var(--color-outline-variant); border-radius:8px; padding:14px; margin-bottom:var(--spacing-md);">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+              <h4 style="font-size:13px; font-weight:800; color:var(--color-on-tertiary-fixed); margin:0;">Internal Trainer Note</h4>
+              <span style="font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:4px; background:#1d1b15; color:white; letter-spacing:0.05em;">STAFF ONLY</span>
+            </div>
+            <div style="font-size:13.5px; color:var(--color-on-surface); font-style:italic;">"${report.privateNotes || '—'}"</div>
+            <div style="font-size:11px; color:var(--color-tertiary); margin-top:8px;">This note will never be published to the learner.</div>
+          </div>
+
+          <!-- Session Issues -->
+          <div style="background:#fff3cd; border:1px solid #ffd663; border-radius:8px; padding:14px;">
+            <h4 style="font-size:13px; font-weight:800; color:#856404; margin-bottom:6px;">Session Issues</h4>
+            <div style="font-size:13px; color:#856404; font-weight:700; margin-bottom:4px;">${report.sessionIssues}</div>
+            <div style="font-size:13px; color:var(--color-on-surface);">${report.sessionIssuesDetails}</div>
+            <div style="font-size:11.5px; color:var(--color-tertiary); margin-top:8px;">Note: A session issue does not automatically determine the attendance outcome.</div>
+          </div>
+        </div>` : '<div class="form-card" style="padding:24px; text-align:center; color:var(--color-tertiary);">Trainer report not yet submitted.</div>'}
+
+        <!-- 6. Delivery Verification Checklist -->
+        ${!isApproved && !isRejected ? `
+        <div class="form-card animate-fade-in" style="padding:var(--spacing-lg);">
+          <h3 style="font-family:var(--font-family-headings); font-size:16px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:4px;">Delivery Verification</h3>
+          <p style="font-size:13px; color:var(--color-tertiary); margin-bottom:var(--spacing-md);">Check all items before approving delivery. All boxes are required.</p>
+          ${renderCheck('trainerEvidenceSupports', 'Trainer evidence supports delivery')}
+          ${renderCheck('learnerParticipated', 'Learner participated')}
+          ${renderCheck('reportSubmitted', 'Report submitted')}
+          ${renderCheck('syllabusProvided', 'Syllabus information provided')}
+          ${renderCheck('progressRecorded', 'Learner progress recorded')}
+          ${renderCheck('homeworkReviewed', 'Homework reviewed')}
+          ${renderCheck('attendanceReviewed', 'Attendance reviewed')}
+          ${renderCheck('technicalIssueReviewed', 'Technical issue reviewed')}
+          ${!allChecked ? `<div style="margin-top:12px; padding:10px; background:#ffdad6; border-radius:6px; font-size:12.5px; color:#ba1a1a; font-weight:700;">⚠ Complete all checklist items to enable Approve Delivery.</div>` : `<div style="margin-top:12px; padding:10px; background:#e6f4ea; border-radius:6px; font-size:12.5px; color:#137333; font-weight:700;">✓ All items verified. Delivery can be approved.</div>`}
+        </div>` : ''}
+
+        <!-- 7. Operations Review Note -->
+        ${!isApproved && !isRejected ? `
+        <div class="form-card animate-fade-in" style="padding:var(--spacing-lg);">
+          <h3 style="font-family:var(--font-family-headings); font-size:16px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:var(--spacing-md); padding-bottom:10px; border-bottom:1px solid var(--color-outline-variant);">Operations Review Note</h3>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Internal note <span style="color:var(--color-tertiary); font-weight:400;">(optional for approval; required for rejection/correction)</span></label>
+            <textarea id="ops-review-note-s18" class="form-input" style="height:80px;" placeholder="Add an internal note about this delivery review...">${review.operationsNotes || ''}</textarea>
+          </div>
+        </div>` : ''}
+
+        <!-- 8. Decision Buttons -->
+        ${isApproved ? `
+        <div class="form-card animate-fade-in" style="padding:var(--spacing-lg); border:1.5px solid #c2e7cc; background:#e6f4ea;">
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+            <div style="width:40px; height:40px; background:#137333; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:18px; flex-shrink:0;">✓</div>
+            <div>
+              <div style="font-size:15px; font-weight:800; color:#137333;">Decision Already Recorded</div>
+              <div style="font-size:13px; color:#137333;">Delivery approved by ${review.reviewer}. Downstream records have been created.</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-primary" onclick="window.location.hash='#learner/courses/ENR-001'" style="flex:1; height:40px; background:#137333; border-color:#137333; color:white; font-weight:700;">View Updated Learner Course</button>
+            <button class="btn btn-secondary" onclick="window.location.hash='#staff/delivery-reviews'" style="flex:1; height:40px;">Back to Delivery Reviews</button>
+          </div>
+        </div>` : isRejected ? `
+        <div class="form-card animate-fade-in" style="padding:var(--spacing-lg); border:1.5px solid #f2b8b8; background:#ffdad6;">
+          <div style="font-size:14px; font-weight:800; color:#ba1a1a; margin-bottom:6px;">Delivery Rejected</div>
+          <div style="font-size:13px; color:#ba1a1a; margin-bottom:12px;">Reason: ${review.rejectionReason}</div>
+          <div style="font-size:13px; color:var(--color-on-surface);">Notes: ${review.rejectionNotes}</div>
+          <button class="btn btn-secondary" onclick="window.location.hash='#staff/delivery-reviews'" style="height:40px; margin-top:12px;">Back to Delivery Reviews</button>
+        </div>` : `
+        <div class="form-card animate-fade-in" style="padding:var(--spacing-lg);">
+          <h3 style="font-family:var(--font-family-headings); font-size:16px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:var(--spacing-md);">Review Decision</h3>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <button class="btn btn-primary" onclick="approveClassDelivery('${occurrenceId}')" style="width:100%; height:46px; font-size:14px; font-weight:800; background:var(--color-secondary); border-color:var(--color-secondary); color:var(--color-surface-lowest); ${!allChecked ? 'opacity:0.45; cursor:not-allowed;' : ''}" ${!allChecked ? 'disabled' : ''}>
+              ✓ Approve Delivery
+            </button>
+            <button class="btn btn-secondary" onclick="requestCorrectionClassDelivery('${occurrenceId}')" style="width:100%; height:42px; font-size:13.5px; font-weight:700;">
+              📝 Request Correction
+            </button>
+            <button class="btn btn-secondary" onclick="rejectClassDelivery('${occurrenceId}')" style="width:100%; height:42px; font-size:13.5px; font-weight:700; border-color:#c5221f; color:#c5221f;">
+              🚫 Reject Delivery
+            </button>
+          </div>
+        </div>`}
+
+      </div>
+
+      <!-- Right Column: Sidebar -->
+      <div class="trial-sidebar" style="display:flex; flex-direction:column; gap:var(--spacing-md);">
+
+        <!-- Report ID Card -->
+        <div class="form-card" style="padding:var(--spacing-md);">
+          <h4 style="font-family:var(--font-family-headings); font-size:14px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:var(--spacing-sm); padding-bottom:8px; border-bottom:1px solid var(--color-outline-variant);">Review References</h4>
+          <table style="width:100%; font-size:12px; border-collapse:collapse;">
+            <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">Review ID</td><td style="padding:6px 0; font-weight:700; text-align:right; font-family:monospace; font-size:11px;">DELIVERY-REVIEW-CLASS-001</td></tr>
+            <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">Report ID</td><td style="padding:6px 0; font-weight:700; text-align:right; font-family:monospace; font-size:11px;">REPORT-CLASS-001</td></tr>
+            <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">Occurrence</td><td style="padding:6px 0; font-weight:700; text-align:right; font-family:monospace; font-size:11px;">CLASS-001</td></tr>
+            <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">Series</td><td style="padding:6px 0; font-weight:700; text-align:right; font-family:monospace; font-size:11px;">SERIES-001</td></tr>
+            <tr><td style="padding:6px 0; color:var(--color-tertiary);">Enrolment</td><td style="padding:6px 0; font-weight:700; text-align:right; font-family:monospace; font-size:11px;">ENR-001</td></tr>
+          </table>
+        </div>
+
+        <!-- Membership Entitlement Card -->
+        <div class="form-card" style="padding:var(--spacing-md);">
+          <h4 style="font-family:var(--font-family-headings); font-size:14px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:var(--spacing-sm); padding-bottom:8px; border-bottom:1px solid var(--color-outline-variant);">Membership Entitlement</h4>
+          <table style="width:100%; font-size:12.5px; border-collapse:collapse; margin-bottom:10px;">
+            <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">Membership</td><td style="padding:6px 0; font-weight:700; text-align:right; font-family:monospace; font-size:11px;">MEM-TERM-001</td></tr>
+            <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">Included</td><td style="padding:6px 0; font-weight:700; text-align:right;">12</td></tr>
+            <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">Used</td><td style="padding:6px 0; font-weight:800; text-align:right; color:${isApproved ? '#137333' : 'var(--color-on-surface)'};">${isApproved ? '1' : '0'}</td></tr>
+            <tr><td style="padding:6px 0; color:var(--color-tertiary);">Remaining</td><td style="padding:6px 0; font-weight:800; text-align:right; color:${isApproved ? '#137333' : 'var(--color-on-surface)'};">${isApproved ? '11' : '12'}</td></tr>
+          </table>
+          <div style="font-size:11.5px; color:${isApproved ? '#137333' : '#ba1a1a'}; font-weight:700; padding:8px; background:${isApproved ? '#e6f4ea' : '#ffdad6'}; border-radius:6px; text-align:center;">
+            ${isApproved ? '1 class debited after approval' : 'Debit occurs only after delivery approval'}
+          </div>
+        </div>
+
+        <!-- Downstream Records (shown after approval) -->
+        ${isApproved ? `
+        <div class="form-card" style="padding:var(--spacing-md); border:1.5px solid #c2e7cc;">
+          <h4 style="font-family:var(--font-family-headings); font-size:14px; font-weight:800; color:#137333; margin-bottom:var(--spacing-sm); padding-bottom:8px; border-bottom:1px solid #c2e7cc;">Downstream Records Created</h4>
+          <table style="width:100%; font-size:12px; border-collapse:collapse;">
+            <tr style="border-bottom:1px solid #c2e7cc;"><td style="padding:6px 0; color:var(--color-tertiary);">Entitlement Debit</td><td style="padding:6px 0; font-weight:700; text-align:right; font-family:monospace; font-size:11px; color:#137333;">ENT-DEBIT-CLASS-001</td></tr>
+            <tr style="border-bottom:1px solid #c2e7cc;"><td style="padding:6px 0; color:var(--color-tertiary);">Progress Event</td><td style="padding:6px 0; font-weight:700; text-align:right; font-family:monospace; font-size:11px; color:#137333;">PROGRESS-CLASS-001</td></tr>
+            <tr><td style="padding:6px 0; color:var(--color-tertiary);">Trainer Earning</td><td style="padding:6px 0; font-weight:700; text-align:right; font-family:monospace; font-size:11px; color:#856404;">EARN-CLASS-001</td></tr>
+          </table>
+          <div style="font-size:11.5px; color:#856404; margin-top:10px; padding:8px; background:#fff3cd; border-radius:6px;">Trainer earning is Created · Not Settled. Payroll is a separate workflow.</div>
+        </div>` : ''}
+
+        <!-- Audit Timeline -->
+        <div class="form-card" style="padding:var(--spacing-md);">
+          <h4 style="font-family:var(--font-family-headings); font-size:14px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:var(--spacing-sm);">Audit Log</h4>
+          <div style="position:relative; padding-left:16px;">
+            ${review.auditLog.map((ev, i) => `
+              <div style="position:relative; padding-bottom:10px; ${i < review.auditLog.length - 1 ? 'border-left:1.5px solid var(--color-outline-variant);' : ''} margin-left:-1px;">
+                <div style="position:absolute; left:-5px; top:3px; width:8px; height:8px; border-radius:50%; background:var(--color-outline-variant); border:1.5px solid var(--color-surface-lowest);"></div>
+                <div style="padding-left:12px;">
+                  <div style="font-size:10.5px; font-weight:700; color:var(--color-secondary);">${ev.time}</div>
+                  <div style="font-size:12px; color:var(--color-on-surface);">${ev.text}</div>
+                </div>
+              </div>`).join("")}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  `;
+};
+
+// --- Screen 18 Action Handlers ---
+
+// Approve attendance correction (paid class)
+window.approveAttendanceCorrectionClass = function(occurrenceId) {
+  const review = state.deliveryReviews.find(r => r.occurrenceId === occurrenceId);
+  const content = `
+    <div style="text-align:left; padding:4px 0;">
+      <p class="modal-text" style="font-size:13.5px; margin-bottom:16px;">This will update the attendance outcome to match the trainer's proposed correction.</p>
+      <div style="background:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:6px; padding:12px; margin-bottom:16px; font-size:12.5px; display:flex; flex-direction:column; gap:4px;">
+        <div><strong>Current:</strong> ${review.attendanceStatus}</div>
+        <div><strong>Proposed:</strong> ${review.correctionProposedOutcome}</div>
+        <div><strong>Trainer Reason:</strong> "${review.correctionProposedReason}"</div>
+      </div>
+      <div class="form-group" style="margin-bottom:16px;">
+        <label class="form-label" style="font-size:12px; font-weight:700;">Reviewer Note <span style="color:var(--color-tertiary); font-weight:400;">(optional)</span></label>
+        <textarea id="correction-approve-note" class="form-input" style="height:60px;" placeholder="Correction accepted based on evidence review..."></textarea>
+      </div>
+      <div style="display:flex; gap:12px;">
+        <button class="btn btn-primary" onclick="confirmApproveAttendanceCorrectionClass('${occurrenceId}')" style="flex:1; height:44px; background:#137333; border-color:#137333; color:white; font-weight:800;">Confirm Correction</button>
+        <button class="btn btn-secondary" onclick="closeModal()" style="flex:1; height:44px;">Cancel</button>
+      </div>
+    </div>`;
+  openModal("Approve Attendance Correction?", content);
+};
+
+window.confirmApproveAttendanceCorrectionClass = function(occurrenceId) {
+  const review = state.deliveryReviews.find(r => r.occurrenceId === occurrenceId);
+  const note = document.getElementById("correction-approve-note")?.value.trim() || "";
+  closeModal();
+  review.correctionPreviousOutcome = review.attendanceStatus;
+  review.attendanceStatus = review.correctionProposedOutcome;
+  review.hasCorrectionRequest = false;
+  review.correctionDecision = "Approved";
+  review.correctionDecisionNote = note;
+  review.correctionChangedBy = "Omar Farooq";
+  review.auditLog.push({ time: "8:10 PM", text: `Attendance correction approved by Omar Farooq: ${review.correctionPreviousOutcome} → ${review.attendanceStatus}` });
+  renderPaidClassDeliveryReview(occurrenceId);
+  showToastAlert(`Attendance updated to ${review.attendanceStatus}.`);
+};
+
+// Reject attendance correction (paid class)
+window.rejectAttendanceCorrectionClass = function(occurrenceId) {
+  const content = `
+    <div style="text-align:left; padding:4px 0;">
+      <p style="font-size:12.5px; color:var(--color-tertiary); margin-bottom:12px;">Enter a reason to reject the trainer's attendance correction request.</p>
+      <div class="form-group">
+        <label class="form-label" style="font-weight:700; font-size:12px;">Rejection Reason <span style="color:red;">*</span></label>
+        <textarea id="class-reject-correction-reason" class="form-input" style="height:75px;" placeholder="e.g. Provider evidence confirms the learner connection duration was sufficient..."></textarea>
+      </div>
+      <div style="display:flex; gap:12px; margin-top:16px;">
+        <button class="btn btn-primary" onclick="confirmRejectAttendanceCorrectionClass('${occurrenceId}')" style="flex:1; height:40px; background:#c5221f; border-color:#c5221f; color:white; font-weight:800;">Reject Correction</button>
+        <button class="btn btn-secondary" onclick="closeModal()" style="flex:1; height:40px;">Cancel</button>
+      </div>
+    </div>`;
+  openModal("Reject Attendance Correction", content);
+};
+
+window.confirmRejectAttendanceCorrectionClass = function(occurrenceId) {
+  const reason = document.getElementById("class-reject-correction-reason")?.value.trim();
+  if (!reason) {
+    showToastAlert("A rejection reason is required.");
+    return;
+  }
+  const review = state.deliveryReviews.find(r => r.occurrenceId === occurrenceId);
+  closeModal();
+  review.correctionPreviousOutcome = review.attendanceStatus;
+  review.hasCorrectionRequest = false;
+  review.correctionDecision = "Rejected";
+  review.correctionDecisionNote = reason;
+  review.correctionChangedBy = "Omar Farooq";
+  review.auditLog.push({ time: "8:10 PM", text: `Attendance correction rejected by Omar Farooq: "${reason}"` });
+  renderPaidClassDeliveryReview(occurrenceId);
+  showToastAlert("Attendance correction request rejected. Attendance remains: " + review.attendanceStatus);
+};
+
+// Approve Class Delivery
+window.approveClassDelivery = function(occurrenceId) {
+  const review = state.deliveryReviews.find(r => r.occurrenceId === occurrenceId);
+  const noteEl = document.getElementById("ops-review-note-s18");
+  if (noteEl) review.operationsNotes = noteEl.value.trim();
+
+  const content = `
+    <div style="text-align:left; padding:4px 0;">
+      <h4 style="font-family:var(--font-family-headings); font-size:15px; font-weight:800; color:var(--color-on-tertiary-fixed); margin-bottom:12px;">Approve Class Delivery?</h4>
+      <div style="background:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:6px; padding:12px; margin-bottom:16px; font-size:12.5px; display:flex; flex-direction:column; gap:4px;">
+        <div><strong>Class:</strong> ${occurrenceId}</div>
+        <div><strong>Learner:</strong> ${review.learner}</div>
+        <div><strong>Trainer:</strong> ${review.trainer}</div>
+        <div><strong>Attendance:</strong> ${review.attendanceStatus}</div>
+        <div><strong>Connected Duration:</strong> ${review.joinedTimes.learnerDuration} min</div>
+        <div><strong>Report:</strong> ${review.reportRef}</div>
+        <div><strong>Membership:</strong> ${review.membershipId}</div>
+      </div>
+
+      <div style="background:#e6f4ea; border:1px solid #c2e7cc; border-radius:8px; padding:12px; margin-bottom:20px;">
+        <h5 style="font-size:12px; font-weight:800; text-transform:uppercase; color:#137333; margin-bottom:8px; letter-spacing:0.05em;">Approval Will Create</h5>
+        <table style="width:100%; font-size:12px; border-collapse:collapse;">
+          <tr style="border-bottom:1px solid #c2e7cc;"><td style="padding:4px 0; color:#137333;">Delivery Status</td><td style="padding:4px 0; font-weight:700; text-align:right; color:#137333;">Approved</td></tr>
+          <tr style="border-bottom:1px solid #c2e7cc;"><td style="padding:4px 0; color:#137333;">Class Entitlement</td><td style="padding:4px 0; font-weight:700; text-align:right; color:#137333;">1 class debit (demo policy)</td></tr>
+          <tr style="border-bottom:1px solid #c2e7cc;"><td style="padding:4px 0; color:#137333;">Approved Classes</td><td style="padding:4px 0; font-weight:700; text-align:right; color:#137333;">1 of 12</td></tr>
+          <tr style="border-bottom:1px solid #c2e7cc;"><td style="padding:4px 0; color:#137333;">Learner Progress</td><td style="padding:4px 0; font-weight:700; text-align:right; color:#137333;">Progress event created</td></tr>
+          <tr style="border-bottom:1px solid #c2e7cc;"><td style="padding:4px 0; color:#137333;">Homework</td><td style="padding:4px 0; font-weight:700; text-align:right; color:#137333;">Published to learner</td></tr>
+          <tr style="border-bottom:1px solid #c2e7cc;"><td style="padding:4px 0; color:#137333;">Feedback</td><td style="padding:4px 0; font-weight:700; text-align:right; color:#137333;">Approved feedback published</td></tr>
+          <tr style="border-bottom:1px solid #c2e7cc;"><td style="padding:4px 0; color:#856404;">Trainer Earning</td><td style="padding:4px 0; font-weight:700; text-align:right; color:#856404;">Created · Not Settled</td></tr>
+          <tr><td style="padding:4px 0; color:#137333;">Notification</td><td style="padding:4px 0; font-weight:700; text-align:right; color:#137333;">Class summary available</td></tr>
+        </table>
+      </div>
+
+      <div style="font-size:11.5px; color:var(--color-tertiary); margin-bottom:16px;">The 1-class debit is this prototype's configured happy-path demo policy. Actual policy may vary by attendance outcome and class type.</div>
+
+      <div style="display:flex; gap:12px;">
+        <button class="btn btn-primary" onclick="confirmApproveClassDelivery('${occurrenceId}')" style="flex:1; height:44px; background:#137333; border-color:#137333; color:white; font-weight:800;">Confirm Approval</button>
+        <button class="btn btn-secondary" onclick="closeModal()" style="flex:1; height:44px;">Cancel</button>
+      </div>
+    </div>`;
+  openModal("Confirm Class Delivery Approval", content);
+};
+
+window.confirmApproveClassDelivery = function(occurrenceId) {
+  closeModal();
+  const review = state.deliveryReviews.find(r => r.occurrenceId === occurrenceId);
+  const report = state.trainerReports[occurrenceId];
+
+  // Update statuses
+  review.reviewStatus = "Approved";
+  review.occurrenceStatus = "Approved/Completed";
+
+  if (report) {
+    report.reportStatus = "Accepted";
+    report.deliveryReviewStatus = "Approved";
+    report.feedbackPublished = true;
+    report.homeworkPublished = true;
+    report.history.push({ time: "18 Aug · 8:12 PM", text: "Delivery approved by Omar Farooq. Report accepted. Feedback and homework published." });
+  }
+
+  // Update class occurrence status
+  if (state.classOccurrences) {
+    const classOcc = state.classOccurrences.find(c => c.id === occurrenceId);
+    if (classOcc) classOcc.status = "Approved/Completed";
+  }
+
+  // Entitlement debit
+  if (!state.entitlementLedger.some(e => e.id === "ENT-DEBIT-CLASS-001")) {
+    state.entitlementLedger.push({
+      id: "ENT-DEBIT-CLASS-001",
+      membershipTermId: "MEM-TERM-001",
+      enrolmentId: "ENR-001",
+      occurrenceId: "CLASS-001",
+      participantId: "PART-LEARNER-001",
+      type: "Class Debit",
+      quantity: 1,
+      status: "Posted",
+      createdAt: "18 Aug 2026 · 8:12 PM",
+      note: "Approved class delivery — demo policy: 1 class debit"
+    });
+  }
+
+  // Update membership used/remaining on state
+  if (state.membershipTerms) {
+    const mem = state.membershipTerms.find(m => m.id === "MEM-TERM-001");
+    if (mem) {
+      mem.usedClasses = (mem.usedClasses || 0) + 1;
+      mem.remainingClasses = (mem.includedClasses || 12) - mem.usedClasses;
+    }
+  }
+
+  // Progress event
+  if (!state.progressEvents.some(p => p.id === "PROGRESS-CLASS-001")) {
+    state.progressEvents.push({
+      id: "PROGRESS-CLASS-001",
+      enrolmentId: "ENR-001",
+      occurrenceId: "CLASS-001",
+      type: "Approved Live Class",
+      status: "Completed",
+      classNumber: 1,
+      createdAt: "18 Aug 2026 · 8:12 PM"
+    });
+  }
+
+  // Trainer earning source
+  if (!state.trainerEarnings.some(e => e.id === "EARN-CLASS-001")) {
+    state.trainerEarnings.push({
+      id: "EARN-CLASS-001",
+      sourceType: "Approved Class Delivery",
+      sourceId: "CLASS-001",
+      trainerId: "trainer-ayesha",
+      trainerName: "Ayesha Rahman",
+      status: "Created",
+      settlementStatus: "Not Settled",
+      createdAt: "18 Aug 2026 · 8:12 PM",
+      note: "DO NOT mark as Paid. Payroll is a separate workflow."
+    });
+  }
+
+  // Downstream reference IDs on review
+  review.entitlementDebitId = "ENT-DEBIT-CLASS-001";
+  review.progressEventId = "PROGRESS-CLASS-001";
+  review.trainerEarningId = "EARN-CLASS-001";
+  review.feedbackPublished = true;
+  review.homeworkPublished = true;
+
+  // Audit log
+  const auditEntries = [
+    { time: "8:12 PM", text: "Delivery approved by Omar Farooq · Operations Manager" },
+    { time: "8:12 PM", text: "ENT-DEBIT-CLASS-001 created — 1 class debit posted to MEM-TERM-001" },
+    { time: "8:12 PM", text: "PROGRESS-CLASS-001 created — Class 1 approved and completed" },
+    { time: "8:12 PM", text: "EARN-CLASS-001 created for Ayesha Rahman — Not Settled" },
+    { time: "8:12 PM", text: "Learner feedback published. Homework 'Introduce Yourself Practice' assigned." }
+  ];
+  review.auditLog.push(...auditEntries);
+
+  renderClassApprovalSuccessScreen(occurrenceId);
+};
+
+function renderClassApprovalSuccessScreen(occurrenceId) {
+  const view = document.getElementById("staff-delivery-detail-view");
+  if (!view) return;
+  const review = state.deliveryReviews.find(r => r.occurrenceId === occurrenceId);
+
+  view.innerHTML = `
+    <div class="form-card animate-fade-in" style="width:100%; max-width:680px; padding:var(--spacing-xl); background-color:var(--color-surface-lowest); border:1.5px solid var(--color-outline-variant); border-top:5px solid #137333; margin:40px auto; color:var(--color-on-tertiary-fixed);">
+      <div style="text-align:center; margin-bottom:var(--spacing-lg);">
+        <div style="width:64px; height:64px; background:#e6f4ea; color:#137333; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 16px auto; font-size:28px; font-weight:800; border:2px solid #c2e7cc;">✓</div>
+        <h2 style="font-family:var(--font-family-headings); font-size:26px; font-weight:800; color:#137333; margin-bottom:6px;">Class Delivery Approved</h2>
+        <p style="font-size:14px; color:var(--color-tertiary);">All downstream records have been created successfully.</p>
+      </div>
+
+      <table class="receipt-table" style="text-align:left; font-size:13px; margin-bottom:24px;">
+        <tr class="receipt-row"><td class="receipt-label">Class</td><td class="receipt-value" style="font-family:monospace;">${occurrenceId}</td></tr>
+        <tr class="receipt-row"><td class="receipt-label">Learner</td><td class="receipt-value">${review.learner}</td></tr>
+        <tr class="receipt-row"><td class="receipt-label">Trainer</td><td class="receipt-value">${review.trainer}</td></tr>
+        <tr class="receipt-row"><td class="receipt-label">Attendance</td><td class="receipt-value"><span class="badge-status status-ready">${review.attendanceStatus}</span></td></tr>
+        <tr class="receipt-row"><td class="receipt-label">Delivery</td><td class="receipt-value"><span class="badge-status status-ready">Approved</span></td></tr>
+        <tr class="receipt-row"><td class="receipt-label">Entitlement</td><td class="receipt-value">1 Class Used &nbsp;·&nbsp; 11 Remaining</td></tr>
+        <tr class="receipt-row"><td class="receipt-label">Progress</td><td class="receipt-value">Class 1 Approved</td></tr>
+        <tr class="receipt-row"><td class="receipt-label">Homework</td><td class="receipt-value">Assigned</td></tr>
+        <tr class="receipt-row"><td class="receipt-label">Trainer Earning</td><td class="receipt-value"><span style="color:#856404; font-weight:700;">Created · Not Settled</span></td></tr>
+      </table>
+
+      <!-- Linked Records -->
+      <div style="background:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:8px; padding:16px; margin-bottom:24px;">
+        <h4 style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--color-secondary); margin-bottom:12px; letter-spacing:0.05em;">Linked Record IDs</h4>
+        <table style="width:100%; font-size:12px; border-collapse:collapse;">
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:5px 0; color:var(--color-tertiary);">Delivery Review</td><td style="padding:5px 0; font-weight:700; text-align:right; font-family:monospace;">DELIVERY-REVIEW-CLASS-001</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:5px 0; color:var(--color-tertiary);">Entitlement Entry</td><td style="padding:5px 0; font-weight:700; text-align:right; font-family:monospace; color:#137333;">ENT-DEBIT-CLASS-001</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:5px 0; color:var(--color-tertiary);">Progress Event</td><td style="padding:5px 0; font-weight:700; text-align:right; font-family:monospace; color:#137333;">PROGRESS-CLASS-001</td></tr>
+          <tr><td style="padding:5px 0; color:var(--color-tertiary);">Trainer Earning</td><td style="padding:5px 0; font-weight:700; text-align:right; font-family:monospace; color:#856404;">EARN-CLASS-001</td></tr>
+        </table>
+      </div>
+
+      <!-- Audit Log -->
+      <div style="background:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:8px; padding:16px; margin-bottom:24px;">
+        <h4 style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--color-secondary); margin-bottom:10px; letter-spacing:0.05em;">Audit Log</h4>
+        ${review.auditLog.slice(-5).map(ev => `
+          <div style="display:flex; gap:12px; font-size:12px; padding:4px 0; border-bottom:1px solid var(--color-outline-variant);">
+            <span style="color:var(--color-secondary); font-weight:700; white-space:nowrap;">${ev.time}</span>
+            <span>${ev.text}</span>
+          </div>`).join("")}
+      </div>
+
+      <div style="display:flex; gap:12px;">
+        <button class="btn btn-primary" onclick="window.location.hash='#learner/courses/ENR-001'" style="flex:1.2; height:44px; background:var(--color-secondary); border-color:var(--color-secondary); color:var(--color-surface-lowest); font-weight:700;">View Updated Learner Course</button>
+        <button class="btn btn-secondary" onclick="window.location.hash='#staff/delivery-reviews'" style="flex:1; height:44px;">Back to Delivery Reviews</button>
+      </div>
+    </div>
+  `;
+}
+
+// Request Correction (Paid Class)
+window.requestCorrectionClassDelivery = function(occurrenceId) {
+  const content = `
+    <div style="text-align:left; padding:4px 0;">
+      <p style="font-size:12.5px; color:var(--color-tertiary); margin-bottom:12px;">Select a correction reason category and provide clear instructions for the trainer.</p>
+      <div class="form-group">
+        <label class="form-label" style="font-weight:700; font-size:12px;">Reason <span style="color:red;">*</span></label>
+        <select id="class-correct-category" class="form-input" style="height:38px;">
+          <option value="Syllabus coverage unclear">Syllabus coverage unclear</option>
+          <option value="Progress note incomplete">Progress note incomplete</option>
+          <option value="Homework details incomplete">Homework details incomplete</option>
+          <option value="Attendance mismatch">Attendance mismatch</option>
+          <option value="Technical issue unclear">Technical issue unclear</option>
+          <option value="Learner feedback incomplete">Learner feedback incomplete</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-top:12px;">
+        <label class="form-label" style="font-weight:700; font-size:12px;">Instructions to Trainer <span style="color:red;">*</span></label>
+        <textarea id="class-correct-instructions" class="form-input" style="height:80px;" placeholder="Please clarify what was covered after the learner reconnected..."></textarea>
+      </div>
+      <div style="display:flex; gap:12px; margin-top:20px;">
+        <button class="btn btn-primary" onclick="confirmRequestCorrectionClass('${occurrenceId}')" style="flex:1; height:40px; background:var(--color-secondary); border-color:var(--color-secondary); color:var(--color-surface-lowest); font-weight:800;">Send Correction Request</button>
+        <button class="btn btn-secondary" onclick="closeModal()" style="flex:1; height:40px;">Cancel</button>
+      </div>
+    </div>`;
+  openModal("Request Report Correction", content);
+};
+
+window.confirmRequestCorrectionClass = function(occurrenceId) {
+  const category = document.getElementById("class-correct-category")?.value || "";
+  const instruct = document.getElementById("class-correct-instructions")?.value.trim();
+  if (!instruct) {
+    showToastAlert("Instructions are required to request a correction.");
+    return;
+  }
+  closeModal();
+  const review = state.deliveryReviews.find(r => r.occurrenceId === occurrenceId);
+  const report = state.trainerReports[occurrenceId];
+  review.reviewStatus = "Correction Requested";
+  review.operationsNotes = `${category}: "${instruct}"`;
+  review.auditLog.push({ time: "8:11 PM", text: `Correction requested from Ayesha Rahman: ${category}` });
+  if (report) {
+    report.reportStatus = "Correction Requested";
+    report.operationsNote = instruct;
+    report.history.push({ time: "18 Aug · 8:11 PM", text: `Report correction requested by Omar Farooq: ${category}. "${instruct}"` });
+  }
+  renderPaidClassDeliveryReview(occurrenceId);
+  showToastAlert(`Correction request sent: ${category}`);
+};
+
+// Reject Class Delivery
+window.rejectClassDelivery = function(occurrenceId) {
+  const content = `
+    <div style="text-align:left; padding:4px 0;">
+      <p style="font-size:12.5px; color:var(--color-tertiary); margin-bottom:12px;">Rejecting delivery requires a policy failure category and detailed review notes.</p>
+      <div class="form-group">
+        <label class="form-label" style="font-weight:700; font-size:12px;">Rejection Reason <span style="color:red;">*</span></label>
+        <select id="class-reject-reason" class="form-input" style="height:38px;">
+          <option value="Delivery not supported by evidence">Delivery not supported by evidence</option>
+          <option value="Trainer no-show">Trainer no-show</option>
+          <option value="Invalid report">Invalid report</option>
+          <option value="Class did not take place">Class did not take place</option>
+          <option value="Serious technical failure">Serious technical failure</option>
+          <option value="Duplicate occurrence">Duplicate occurrence</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-top:12px;">
+        <label class="form-label" style="font-weight:700; font-size:12px;">Review Note <span style="color:red;">*</span></label>
+        <textarea id="class-reject-note" class="form-input" style="height:80px;" placeholder="Provide detailed notes explaining the rejection decision..."></textarea>
+      </div>
+      <div style="display:flex; gap:12px; margin-top:20px;">
+        <button class="btn btn-primary" onclick="confirmRejectClassDelivery('${occurrenceId}')" style="flex:1; height:40px; background:#c5221f; border-color:#c5221f; color:white; font-weight:800;">Confirm Rejection</button>
+        <button class="btn btn-secondary" onclick="closeModal()" style="flex:1; height:40px;">Cancel</button>
+      </div>
+    </div>`;
+  openModal("Reject Class Delivery?", content);
+};
+
+window.confirmRejectClassDelivery = function(occurrenceId) {
+  const reason = document.getElementById("class-reject-reason")?.value || "";
+  const note = document.getElementById("class-reject-note")?.value.trim();
+  if (!note) {
+    showToastAlert("Detailed rejection notes are required.");
+    return;
+  }
+  closeModal();
+  const review = state.deliveryReviews.find(r => r.occurrenceId === occurrenceId);
+  const report = state.trainerReports[occurrenceId];
+  review.reviewStatus = "Rejected";
+  review.occurrenceStatus = "Rejected for Correction";
+  review.rejectionReason = reason;
+  review.rejectionNotes = note;
+  review.operationsNotes = `Rejected: ${reason}. "${note}"`;
+  review.auditLog.push({ time: "8:11 PM", text: `Delivery rejected by Omar Farooq: ${reason}` });
+  if (state.classOccurrences) {
+    const classOcc = state.classOccurrences.find(c => c.id === occurrenceId);
+    if (classOcc) classOcc.status = "Rejected for Correction";
+  }
+  if (report) {
+    report.history.push({ time: "18 Aug · 8:11 PM", text: `Delivery rejected by Omar Farooq: ${reason}. Notes: "${note}"` });
+  }
+  // No entitlement/progress/earning records created on rejection
+  renderPaidClassDeliveryReview(occurrenceId);
+  showToastAlert(`Delivery rejected: ${reason}`);
+};
 
 // ==========================================================================
 // Screen 10 - CSR Trial Follow-Up & Conversion Decision Database & Views
@@ -12483,14 +13505,24 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
     `).join("") : `<div style="font-style:italic; color:var(--color-tertiary); font-size:13px;">No live classes scheduled for self-paced courses.</div>`;
 
     // 3. Grid blocks: progress summary, credits counters
+    // Read approval state from downstream records (set by Screen 18)
+    const class1Approved = isEnglish && state.entitlementLedger && state.entitlementLedger.some(e => e.id === 'ENT-DEBIT-CLASS-001');
+    const class1Report = isEnglish && state.trainerReports && state.trainerReports['CLASS-001'];
+    const class1FeedbackPublished = class1Report && class1Report.feedbackPublished;
+    const class1HomeworkPublished = class1Report && class1Report.homeworkPublished;
+    const usedClasses = class1Approved ? 1 : 0;
+    const remainingClasses = 12 - usedClasses;
+    const completedClasses = usedClasses;
+    const progressPercent = isEnglish ? Math.round((completedClasses / 12) * 100) : 35;
+
     const creditsHtml = `
       <div class="form-card" style="padding:16px;">
         <h4 style="font-size:13.5px; font-weight:800; margin-bottom:10px; color:var(--color-on-tertiary-fixed);">Class Credits Balance</h4>
         <table style="width:100%; font-size:12.5px; border-collapse:collapse; line-height:22px;">
           <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Included Classes:</td><td style="font-weight:700; text-align:right;">12</td></tr>
           <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Scheduled:</td><td style="font-weight:700; text-align:right; color:var(--color-secondary);">${isEnglish ? 12 : 0}</td></tr>
-          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Used / Deducted:</td><td style="font-weight:700; text-align:right;">0</td></tr>
-          <tr><td style="color:var(--color-tertiary);">Credits Remaining:</td><td style="font-weight:700; text-align:right; color:#137333;">12 Classes</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Used / Approved:</td><td style="font-weight:700; text-align:right; color:${usedClasses > 0 ? '#137333' : 'var(--color-on-surface)'}">${usedClasses}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Credits Remaining:</td><td style="font-weight:700; text-align:right; color:#137333;">${remainingClasses} Classes</td></tr>
         </table>
       </div>
     `;
@@ -12498,10 +13530,10 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
     const progressCard = `
       <div class="form-card" style="padding:16px;">
         <h4 style="font-size:13.5px; font-weight:800; margin-bottom:10px; color:var(--color-on-tertiary-fixed);">Course Progress</h4>
-        <div style="font-size:32px; font-weight:800; color:var(--color-secondary); margin-bottom:4px;">${isEnglish ? '0%' : '35%'}</div>
-        <p style="font-size:12.5px; color:var(--color-tertiary); margin:0 0 10px 0;">Classes completed: <strong>${isEnglish ? '0 / 12' : 'Course modules open'}</strong></p>
+        <div style="font-size:32px; font-weight:800; color:var(--color-secondary); margin-bottom:4px;">${isEnglish ? progressPercent + '%' : '35%'}</div>
+        <p style="font-size:12.5px; color:var(--color-tertiary); margin:0 0 10px 0;">Classes completed: <strong>${isEnglish ? completedClasses + ' / 12' : 'Course modules open'}</strong></p>
         <div style="font-size:12px; color:var(--color-tertiary); font-style:italic;">
-          Next step: <strong>${isEnglish ? 'Attend Class 1 speaking guide' : 'Submit Module 3 assignment'}</strong>
+          Next step: <strong>${isEnglish ? (class1Approved ? 'Attend Class 2 — Basic Sentence Formation' : 'Attend Class 1 speaking guide') : 'Submit Module 3 assignment'}</strong>
         </div>
       </div>
     `;
@@ -12538,9 +13570,19 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
 
             <div class="form-card">
               <h3 class="form-section-title" style="margin-bottom:12px;">Recent Homework</h3>
+              ${(isEnglish && class1HomeworkPublished && class1Report) ? `
+              <div style="background:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:8px; padding:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                  <div style="font-size:14px; font-weight:800; color:var(--color-on-tertiary-fixed);">${class1Report.homework.title}</div>
+                  <span style="font-size:11px; font-weight:700; padding:2px 8px; border-radius:12px; background:#e8f0fe; color:#1a73e8; border:1px solid #b4c8f8;">To Do</span>
+                </div>
+                <div style="font-size:12.5px; color:var(--color-on-surface); margin-bottom:6px;">${class1Report.homework.instructions}</div>
+                <div style="font-size:11.5px; color:var(--color-tertiary);">Due: ${class1Report.homework.dueDate} &nbsp;|&nbsp; Class 1 &middot; Ayesha Rahman</div>
+              </div>
+              ` : `
               <div style="padding:16px; background-color:var(--color-surface-low); border:1px dashed var(--color-outline-variant); border-radius:6px; text-align:center; color:var(--color-tertiary); font-size:12.5px;">
                 No active homework yet. Homework links will display here after live sessions are completed.
-              </div>
+              </div>`}
             </div>
           </div>
 
@@ -12607,29 +13649,78 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
     `;
 
   } else if (activeTab === "attendance") {
-    // Attendance empty state
+    // Read approval state
+    const c1Approved = isEnglish && state.entitlementLedger && state.entitlementLedger.some(e => e.id === 'ENT-DEBIT-CLASS-001');
+    const c1Report = isEnglish && state.trainerReports && state.trainerReports['CLASS-001'];
     tabBodyHtml = `
       <div class="form-card">
         <h3 class="form-section-title" style="margin-bottom:12px;">Attendance History</h3>
         <p style="font-size:13.5px; color:var(--color-tertiary); margin-bottom:20px;">Your completed classes attendance marks will appear here. Note: trial classrooms are kept separate.</p>
+        ${c1Approved ? `
+        <div style="background:var(--color-surface-lowest); border:1px solid var(--color-outline-variant); border-radius:8px; overflow:hidden;">
+          <table style="width:100%; border-collapse:collapse; font-size:13px;">
+            <thead><tr style="background:var(--color-surface-low); border-bottom:1px solid var(--color-outline-variant);">
+              <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Class</th>
+              <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Date</th>
+              <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Duration</th>
+              <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Trainer</th>
+              <th style="padding:10px; font-weight:800; color:var(--color-tertiary);">Outcome</th>
+            </tr></thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--color-outline-variant);">
+                <td style="padding:10px; font-weight:700;">Class 1 of 12</td>
+                <td style="padding:10px; color:var(--color-tertiary);">18 Aug 2026</td>
+                <td style="padding:10px;">40 min connected</td>
+                <td style="padding:10px;">Ayesha Rahman</td>
+                <td style="padding:10px;"><span style="font-size:11px; font-weight:700; padding:3px 10px; border-radius:12px; background:#e6f4ea; color:#137333; border:1px solid #c2e7cc;">Present</span></td>
+              </tr>
+              ${upcoming.slice(1, 4).map((u, i) => `
+              <tr style="border-bottom:1px solid var(--color-outline-variant);">
+                <td style="padding:10px; font-weight:700; color:var(--color-tertiary);">Class ${i+2} of 12</td>
+                <td style="padding:10px; color:var(--color-tertiary);">${u.date}</td>
+                <td style="padding:10px; color:var(--color-tertiary);">—</td>
+                <td style="padding:10px; color:var(--color-tertiary);">${u.trainer}</td>
+                <td style="padding:10px;"><span style="font-size:11px; padding:3px 10px; border-radius:12px; background:var(--color-surface-low); color:var(--color-tertiary); border:1px solid var(--color-outline-variant);">Upcoming</span></td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+        ` : `
         <div style="padding:32px; background-color:var(--color-surface-low); border:1px dashed var(--color-outline-variant); border-radius:6px; text-align:center; color:var(--color-tertiary);">
           <div style="font-size:24px; margin-bottom:8px;">📅</div>
           <div style="font-weight:700; color:var(--color-on-tertiary-fixed); margin-bottom:4px;">No Attendance Records Yet</div>
-          <div>Completed live slots will display status tags (Present / Absent) after trainer reports are processed.</div>
-        </div>
+          <div>Completed live slots will display status tags (Present / Absent) after trainer reports are approved by Operations.</div>
+        </div>`}
       </div>
     `;
 
   } else if (activeTab === "homework") {
-    // Homework empty state
+    // Read approval state
+    const c1HomeworkPub = isEnglish && state.trainerReports && state.trainerReports['CLASS-001'] && state.trainerReports['CLASS-001'].homeworkPublished;
+    const c1Rpt = isEnglish && state.trainerReports && state.trainerReports['CLASS-001'];
     tabBodyHtml = `
       <div class="form-card">
         <h3 class="form-section-title" style="margin-bottom:12px;">Homework Assignments</h3>
+        ${(c1HomeworkPub && c1Rpt && c1Rpt.homework.enabled) ? `
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div style="background:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:8px; padding:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <div>
+                <div style="font-size:15px; font-weight:800; color:var(--color-on-tertiary-fixed);">${c1Rpt.homework.title}</div>
+                <div style="font-size:12px; color:var(--color-tertiary); margin-top:2px;">Class 1 &middot; Ayesha Rahman &middot; ${c1Rpt.homework.type}</div>
+              </div>
+              <span style="font-size:11.5px; font-weight:700; padding:3px 12px; border-radius:12px; background:#e8f0fe; color:#1a73e8; border:1px solid #b4c8f8;">To Do</span>
+            </div>
+            <div style="font-size:13.5px; color:var(--color-on-surface); line-height:1.6; margin-bottom:10px;">${c1Rpt.homework.instructions}</div>
+            <div style="font-size:12px; color:var(--color-tertiary);">Due: ${c1Rpt.homework.dueDate}</div>
+          </div>
+        </div>
+        ` : `
         <div style="padding:32px; background-color:var(--color-surface-low); border:1px dashed var(--color-outline-variant); border-radius:6px; text-align:center; color:var(--color-tertiary);">
           <div style="font-size:24px; margin-bottom:8px;">📝</div>
           <div style="font-weight:700; color:var(--color-on-tertiary-fixed); margin-bottom:4px;">No Homework Assigned Yet</div>
-          <div>Active exercises and speaking homework sheets will appear here once live class reports require them.</div>
-        </div>
+          <div>Active exercises and speaking homework sheets will appear here once live class reports are approved by Operations.</div>
+        </div>`}
       </div>
     `;
 
