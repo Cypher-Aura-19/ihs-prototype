@@ -220,6 +220,214 @@ function handleRouting() {
   if (opsClassChangeView) opsClassChangeView.style.display = "none";
   if (learnerAssessmentView) learnerAssessmentView.style.display = "none";
 
+  if (hash.includes("dashboard")) {
+    if (catalogueView) catalogueView.style.display = "none";
+    if (detailsView) detailsView.style.display = "none";
+    if (trialView) trialView.style.display = "none";
+    const detailsTrialView = document.getElementById("learner-trial-details-view");
+    const classroomView = document.getElementById("learner-classroom-view");
+    if (detailsTrialView) detailsTrialView.style.display = "none";
+    if (classroomView) classroomView.style.display = "none";
+    if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
+
+    // Handle sidebars based on dashboard type
+    const isStaffDash = hash.startsWith("#staff") || hash.startsWith("#operations") || hash.startsWith("#admin") || hash.startsWith("#finance") || hash.startsWith("#hr") || hash.startsWith("#media") || hash.startsWith("#development") || hash.startsWith("#csr") || hash.startsWith("#trainer");
+    if (isStaffDash) {
+      if (appSidebar) appSidebar.style.display = "none";
+      if (staffSidebar) staffSidebar.style.display = "block";
+      if (rolePill) rolePill.style.display = "flex";
+      if (switchBtn) switchBtn.innerText = "Learner View";
+    } else {
+      if (appSidebar) appSidebar.style.display = "block";
+      if (staffSidebar) staffSidebar.style.display = "none";
+      if (rolePill) rolePill.style.display = "none";
+      if (switchBtn) switchBtn.innerText = "Staff View";
+    }
+
+    const assessmentView = document.getElementById("learner-assessment-view");
+    if (assessmentView) {
+      assessmentView.style.display = "block";
+      renderDashboardRoute(hash);
+      return;
+    }
+  }
+
+  if (hash.startsWith("#finance")) {
+    if (catalogueView) catalogueView.style.display = "none";
+    if (detailsView) detailsView.style.display = "none";
+    if (trialView) trialView.style.display = "none";
+    const detailsTrialView = document.getElementById("learner-trial-details-view");
+    const classroomView = document.getElementById("learner-classroom-view");
+    if (detailsTrialView) detailsTrialView.style.display = "none";
+    if (classroomView) classroomView.style.display = "none";
+    if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
+
+    // Show staff sidebar for finance
+    if (appSidebar) appSidebar.style.display = "none";
+    if (staffSidebar) staffSidebar.style.display = "block";
+    if (rolePill) rolePill.style.display = "flex";
+    if (switchBtn) switchBtn.innerText = "Learner View";
+
+    const assessmentView = document.getElementById("learner-assessment-view");
+    if (assessmentView) {
+      assessmentView.style.display = "block";
+      renderFinanceWorkspace(hash);
+      return;
+    }
+  }
+
+  if (hash.startsWith("#payroll") || hash.startsWith("#trainer/pay")) {
+    if (catalogueView) catalogueView.style.display = "none";
+    if (detailsView) detailsView.style.display = "none";
+    if (trialView) trialView.style.display = "none";
+    const detailsTrialView = document.getElementById("learner-trial-details-view");
+    const classroomView = document.getElementById("learner-classroom-view");
+    if (detailsTrialView) detailsTrialView.style.display = "none";
+    if (classroomView) classroomView.style.display = "none";
+    if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
+
+    // Show staff sidebar for payroll, hide for trainer statement
+    const isTrainerStatement = hash.startsWith("#trainer/pay");
+    if (appSidebar) appSidebar.style.display = "none";
+    if (staffSidebar) {
+      staffSidebar.style.display = isTrainerStatement ? "none" : "block";
+    }
+    const tSidebar = document.getElementById("trainer-sidebar");
+    if (tSidebar) {
+      tSidebar.style.display = isTrainerStatement ? "block" : "none";
+    }
+
+    if (rolePill) rolePill.style.display = "flex";
+    if (switchBtn) switchBtn.innerText = "Learner View";
+
+    const assessmentView = document.getElementById("learner-assessment-view");
+    if (assessmentView) {
+      assessmentView.style.display = "block";
+      renderPayrollWorkspace(hash);
+      return;
+    }
+  }
+
+  if (hash.startsWith("#hr")) {
+    if (catalogueView) catalogueView.style.display = "none";
+    if (detailsView) detailsView.style.display = "none";
+    if (trialView) trialView.style.display = "none";
+    const detailsTrialView = document.getElementById("learner-trial-details-view");
+    const classroomView = document.getElementById("learner-classroom-view");
+    if (detailsTrialView) detailsTrialView.style.display = "none";
+    if (classroomView) classroomView.style.display = "none";
+    if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
+
+    // Show staff sidebar for HR
+    if (appSidebar) appSidebar.style.display = "none";
+    if (staffSidebar) staffSidebar.style.display = "block";
+    if (rolePill) rolePill.style.display = "flex";
+    if (switchBtn) switchBtn.innerText = "Learner View";
+
+    const assessmentView = document.getElementById("learner-assessment-view");
+    if (assessmentView) {
+      assessmentView.style.display = "block";
+      renderHRWorkspace(hash);
+      return;
+    }
+  }
+
+  if (hash.startsWith("#csr") || hash.startsWith("#operations/commissions")) {
+    if (catalogueView) catalogueView.style.display = "none";
+    if (detailsView) detailsView.style.display = "none";
+    if (trialView) trialView.style.display = "none";
+    const detailsTrialView = document.getElementById("learner-trial-details-view");
+    const classroomView = document.getElementById("learner-classroom-view");
+    if (detailsTrialView) detailsTrialView.style.display = "none";
+    if (classroomView) classroomView.style.display = "none";
+    if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
+
+    // Show staff sidebar for CSR
+    if (appSidebar) appSidebar.style.display = "none";
+    if (staffSidebar) staffSidebar.style.display = "block";
+    if (rolePill) rolePill.style.display = "flex";
+    if (switchBtn) switchBtn.innerText = "Learner View";
+
+    const assessmentView = document.getElementById("learner-assessment-view");
+    if (assessmentView) {
+      assessmentView.style.display = "block";
+      renderCSRWorkspace(hash);
+      return;
+    }
+  }
+
+  if (hash.startsWith("#media")) {
+    if (catalogueView) catalogueView.style.display = "none";
+    if (detailsView) detailsView.style.display = "none";
+    if (trialView) trialView.style.display = "none";
+    const detailsTrialView = document.getElementById("learner-trial-details-view");
+    const classroomView = document.getElementById("learner-classroom-view");
+    if (detailsTrialView) detailsTrialView.style.display = "none";
+    if (classroomView) classroomView.style.display = "none";
+    if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
+
+    // Show staff sidebar for Media
+    if (appSidebar) appSidebar.style.display = "none";
+    if (staffSidebar) staffSidebar.style.display = "block";
+    if (rolePill) rolePill.style.display = "flex";
+    if (switchBtn) switchBtn.innerText = "Learner View";
+
+    const assessmentView = document.getElementById("learner-assessment-view");
+    if (assessmentView) {
+      assessmentView.style.display = "block";
+      renderMediaWorkspace(hash);
+      return;
+    }
+  }
+
+  if (hash.startsWith("#development")) {
+    if (catalogueView) catalogueView.style.display = "none";
+    if (detailsView) detailsView.style.display = "none";
+    if (trialView) trialView.style.display = "none";
+    const detailsTrialView = document.getElementById("learner-trial-details-view");
+    const classroomView = document.getElementById("learner-classroom-view");
+    if (detailsTrialView) detailsTrialView.style.display = "none";
+    if (classroomView) classroomView.style.display = "none";
+    if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
+
+    // Show staff sidebar for Dev
+    if (appSidebar) appSidebar.style.display = "none";
+    if (staffSidebar) staffSidebar.style.display = "block";
+    if (rolePill) rolePill.style.display = "flex";
+    if (switchBtn) switchBtn.innerText = "Learner View";
+
+    const assessmentView = document.getElementById("learner-assessment-view");
+    if (assessmentView) {
+      assessmentView.style.display = "block";
+      renderDevWorkspace(hash);
+      return;
+    }
+  }
+
+  if (hash.startsWith("#admin")) {
+    if (catalogueView) catalogueView.style.display = "none";
+    if (detailsView) detailsView.style.display = "none";
+    if (trialView) trialView.style.display = "none";
+    const detailsTrialView = document.getElementById("learner-trial-details-view");
+    const classroomView = document.getElementById("learner-classroom-view");
+    if (detailsTrialView) detailsTrialView.style.display = "none";
+    if (classroomView) classroomView.style.display = "none";
+    if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
+
+    // Show staff sidebar for Admin
+    if (appSidebar) appSidebar.style.display = "none";
+    if (staffSidebar) staffSidebar.style.display = "block";
+    if (rolePill) rolePill.style.display = "flex";
+    if (switchBtn) switchBtn.innerText = "Learner View";
+
+    const assessmentView = document.getElementById("learner-assessment-view");
+    if (assessmentView) {
+      assessmentView.style.display = "block";
+      renderAdminWorkspace(hash);
+      return;
+    }
+  }
+
   if (hash.startsWith("#staff")) {
     // Hide learner sidebar & views
     if (catalogueView) catalogueView.style.display = "none";
@@ -256,15 +464,18 @@ function handleRouting() {
     const staffReviewsLink = document.getElementById("sidebar-staff-reviews");
     const staffFollowupsLink = document.getElementById("sidebar-staff-followups");
     const staffPaymentsLink = document.getElementById("sidebar-staff-payments");
-    const staffEnrolmentsLink = document.getElementById("sidebar-staff-enrolments");
+    const staffEnrolmentsLink = document.getElementById("sidebar-sidebar-staff-resources") ? document.getElementById("sidebar-staff-resources") : document.getElementById("sidebar-staff-resources"); // safe fallback
+    const staffResourcesLink = document.getElementById("sidebar-staff-resources");
     const staffLiveClassesLink = document.getElementById("sidebar-staff-live-classes");
 
     if (staffTrialsLink) staffTrialsLink.classList.remove("active");
     if (staffReviewsLink) staffReviewsLink.classList.remove("active");
     if (staffFollowupsLink) staffFollowupsLink.classList.remove("active");
     if (staffPaymentsLink) staffPaymentsLink.classList.remove("active");
-    if (staffEnrolmentsLink) staffEnrolmentsLink.classList.remove("active");
     if (staffLiveClassesLink) staffLiveClassesLink.classList.remove("active");
+    if (staffResourcesLink) staffResourcesLink.classList.remove("active");
+    if (document.getElementById("sidebar-staff-enrolments")) document.getElementById("sidebar-staff-enrolments").classList.remove("active");
+    if (document.getElementById("sidebar-staff-support")) document.getElementById("sidebar-staff-support").classList.remove("active");
 
     if (hash.startsWith("#staff/trials/") && hash.endsWith("/schedule")) {
       const id = hash.replace("#staff/trials/", "").replace("/schedule", "");
@@ -383,6 +594,74 @@ function handleRouting() {
         if (staffLiveClassesLink) staffLiveClassesLink.classList.add("active");
         renderStaffLiveSchedulingPage(id);
       }
+    } else if (hash.startsWith("#staff/resources")) {
+      if (staffView) staffView.style.display = "none";
+      if (schedulingView) {
+        schedulingView.style.display = "none";
+      }
+      const assessmentView = document.getElementById("learner-assessment-view");
+      if (assessmentView) {
+        assessmentView.style.display = "block";
+        const staffResourcesLink = document.getElementById("sidebar-staff-resources");
+        if (staffResourcesLink) staffResourcesLink.classList.add("active");
+        
+        if (hash.startsWith("#staff/resources/exceptions")) {
+          renderStaffResourcesPage("exceptions");
+        } else if (hash.startsWith("#staff/resources/detail/")) {
+          const resId = hash.replace("#staff/resources/detail/", "");
+          renderStaffResourceDetail(resId);
+        } else {
+          renderStaffResourcesPage("library");
+        }
+      }
+    } else if (hash.startsWith("#staff/support/cases")) {
+      if (staffView) staffView.style.display = "none";
+      if (schedulingView) {
+        schedulingView.style.display = "none";
+      }
+      const assessmentView = document.getElementById("learner-assessment-view");
+      if (assessmentView) {
+        assessmentView.style.display = "block";
+        const staffSupportLink = document.getElementById("sidebar-staff-support");
+        if (staffSupportLink) staffSupportLink.classList.add("active");
+
+        if (rolePill) {
+          rolePill.style.display = "flex";
+          rolePill.innerHTML = `<span style="background-color: var(--color-tertiary-fixed); color: var(--color-on-tertiary-fixed); padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px;">Operations</span>`;
+        }
+        if (switchBtn) switchBtn.innerText = "Learner View";
+
+        if (hash.startsWith("#staff/support/cases/")) {
+          const caseId = hash.replace("#staff/support/cases/", "");
+          renderStaffCaseDetail(caseId);
+        } else {
+          renderStaffCaseQueue();
+        }
+      }
+    } else if (hash.startsWith("#staff/notifications")) {
+      if (staffView) staffView.style.display = "none";
+      if (schedulingView) {
+        schedulingView.style.display = "none";
+      }
+      const assessmentView = document.getElementById("learner-assessment-view");
+      if (assessmentView) {
+        assessmentView.style.display = "block";
+        const staffNotifsLink = document.getElementById("sidebar-staff-notifications");
+        if (staffNotifsLink) staffNotifsLink.classList.add("active");
+
+        if (rolePill) {
+          rolePill.style.display = "flex";
+          rolePill.innerHTML = `<span style="background-color: var(--color-tertiary-fixed); color: var(--color-on-tertiary-fixed); padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px;">Operations</span>`;
+        }
+        if (switchBtn) switchBtn.innerText = "Learner View";
+
+        if (hash.startsWith("#staff/notifications/detail/")) {
+          const notifId = hash.replace("#staff/notifications/detail/", "");
+          renderStaffNotificationDetail(notifId);
+        } else {
+          renderStaffNotifications();
+        }
+      }
     } else {
       if (schedulingView) schedulingView.style.display = "none";
       if (staffView) {
@@ -418,6 +697,23 @@ function handleRouting() {
 
     const reportView = document.getElementById("trainer-report-view");
     if (hash.endsWith("/classroom")) {
+      if (state.offboarding && state.offboarding.selectedDemoState && (state.offboarding.selectedDemoState.includes("Revoked") || state.offboarding.selectedDemoState === "Closed") && hash.startsWith("#trainer/classes/")) {
+        const assessmentView = document.getElementById("learner-assessment-view");
+        if (assessmentView) {
+          assessmentView.style.display = "block";
+          if (classroomView) classroomView.style.display = "none";
+          if (reportView) reportView.style.display = "none";
+          assessmentView.innerHTML = `
+            <div class="form-card" style="padding: 40px; text-align: center; max-width: 580px; margin: 40px auto; border-top: 4px solid var(--color-error);">
+              <span style="font-size: 40px;">⛔</span>
+              <h3 style="font-family: var(--font-family-headings); font-weight:800; font-size:18px; margin-top:12px;">Access Not Available</h3>
+              <p style="font-size:13px; color:var(--color-tertiary);">Your staff employment access is no longer active. Active classroom sessions have been revoked.</p>
+              <button class="btn btn-secondary" onclick="window.location.hash='#hr/employees/EMP-AYESHA-001/offboarding'">Return to Offboarding</button>
+            </div>
+          `;
+          return;
+        }
+      }
       if (classroomView) classroomView.style.display = "block";
       if (reportView) reportView.style.display = "none";
       let occurrenceId = "";
@@ -568,6 +864,44 @@ function handleRouting() {
         if (paymentsLink) paymentsLink.classList.add("active");
         renderLearnerCheckout(reqId);
       }
+    } else if (hash.startsWith("#learner/courses/") && hash.includes("/assignments/")) {
+      const parts = hash.split("/assignments/");
+      const enrolmentId = parts[0].replace("#learner/courses/", "");
+      const assignmentId = parts[1];
+      if (catalogueView) catalogueView.style.display = "none";
+      if (detailsView) detailsView.style.display = "none";
+      if (trialView) trialView.style.display = "none";
+      const detailsTrialView = document.getElementById("learner-trial-details-view");
+      const classroomView = document.getElementById("learner-classroom-view");
+      if (detailsTrialView) detailsTrialView.style.display = "none";
+      if (classroomView) classroomView.style.display = "none";
+      if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
+
+      const assessmentView = document.getElementById("learner-assessment-view");
+      if (assessmentView) {
+        assessmentView.style.display = "block";
+        if (coursesLink) coursesLink.classList.add("active");
+        renderLearnerAssignmentWorkspace(enrolmentId, assignmentId);
+      }
+    } else if (hash.startsWith("#learner/courses/") && hash.includes("/voice/")) {
+      const parts = hash.split("/voice/");
+      const enrolmentId = parts[0].replace("#learner/courses/", "");
+      const voiceId = parts[1];
+      if (catalogueView) catalogueView.style.display = "none";
+      if (detailsView) detailsView.style.display = "none";
+      if (trialView) trialView.style.display = "none";
+      const detailsTrialView = document.getElementById("learner-trial-details-view");
+      const classroomView = document.getElementById("learner-classroom-view");
+      if (detailsTrialView) detailsTrialView.style.display = "none";
+      if (classroomView) classroomView.style.display = "none";
+      if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
+
+      const assessmentView = document.getElementById("learner-assessment-view");
+      if (assessmentView) {
+        assessmentView.style.display = "block";
+        if (coursesLink) coursesLink.classList.add("active");
+        renderLearnerVoiceWorkspace(enrolmentId, voiceId);
+      }
     } else if (hash.startsWith("#learner/courses/")) {
       const enrolmentId = hash.replace("#learner/courses/", "");
       if (catalogueView) catalogueView.style.display = "none";
@@ -577,11 +911,184 @@ function handleRouting() {
       const classroomView = document.getElementById("learner-classroom-view");
       if (detailsTrialView) detailsTrialView.style.display = "none";
       if (classroomView) classroomView.style.display = "none";
+      renderLearnerCourseWorkspace(enrolmentId);
+    } else if (hash.startsWith("#learner/resources/")) {
+      const resId = hash.replace("#learner/resources/", "");
+      if (catalogueView) catalogueView.style.display = "none";
+      if (detailsView) detailsView.style.display = "none";
+      if (trialView) trialView.style.display = "none";
+      const detailsTrialView = document.getElementById("learner-trial-details-view");
+      const classroomView = document.getElementById("learner-classroom-view");
+      if (detailsTrialView) detailsTrialView.style.display = "none";
+      if (classroomView) classroomView.style.display = "none";
+      if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
 
-      if (learnerCourseWorkspaceView) {
-        learnerCourseWorkspaceView.style.display = "block";
+      const assessmentView = document.getElementById("learner-assessment-view");
+      if (assessmentView) {
+        assessmentView.style.display = "block";
+        renderLearnerSecureViewer(resId);
+      }
+    } else if (hash.startsWith("#learner/support")) {
+      if (catalogueView) catalogueView.style.display = "none";
+      if (detailsView) detailsView.style.display = "none";
+      if (trialView) trialView.style.display = "none";
+      const detailsTrialView = document.getElementById("learner-trial-details-view");
+      const classroomView = document.getElementById("learner-classroom-view");
+      if (detailsTrialView) detailsTrialView.style.display = "none";
+      if (classroomView) classroomView.style.display = "none";
+      if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
+
+      const assessmentView = document.getElementById("learner-assessment-view");
+      if (assessmentView) {
+        assessmentView.style.display = "block";
         if (coursesLink) coursesLink.classList.add("active");
-        renderLearnerCourseWorkspace(enrolmentId);
+        
+        if (hash.startsWith("#learner/support/cases/")) {
+          const caseId = hash.replace("#learner/support/cases/", "");
+          renderLearnerCaseDetail(caseId);
+        } else {
+          renderLearnerSupportWorkspace();
+        }
+      }
+    } else if (hash.startsWith("#learner/settings/notifications")) {
+      if (catalogueView) catalogueView.style.display = "none";
+      if (detailsView) detailsView.style.display = "none";
+      if (trialView) trialView.style.display = "none";
+      const detailsTrialView = document.getElementById("learner-trial-details-view");
+      const classroomView = document.getElementById("learner-classroom-view");
+      if (detailsTrialView) detailsTrialView.style.display = "none";
+      if (classroomView) classroomView.style.display = "none";
+      if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
+
+      const assessmentView = document.getElementById("learner-assessment-view");
+      if (assessmentView) {
+        assessmentView.style.display = "block";
+        renderLearnerNotificationSettings();
+      }
+    } else if (hash.startsWith("#learner/notifications")) {
+      if (catalogueView) catalogueView.style.display = "none";
+      if (detailsView) detailsView.style.display = "none";
+      if (trialView) trialView.style.display = "none";
+      const detailsTrialView = document.getElementById("learner-trial-details-view");
+      const classroomView = document.getElementById("learner-classroom-view");
+      if (detailsTrialView) detailsTrialView.style.display = "none";
+      if (classroomView) classroomView.style.display = "none";
+      if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
+
+      const assessmentView = document.getElementById("learner-assessment-view");
+      if (assessmentView) {
+        assessmentView.style.display = "block";
+        renderLearnerNotificationCenter();
+      }
+    } else if (hash === "#learner/messages" || hash === "#guardian/messages" || hash === "#staff/messages") {
+      const role = hash.split("/")[0].replace("#", "");
+      if (catalogueView) catalogueView.style.display = "none";
+      if (detailsView) detailsView.style.display = "none";
+      if (trialView) trialView.style.display = "none";
+      const detailsTrialView = document.getElementById("learner-trial-details-view");
+      const classroomView = document.getElementById("learner-classroom-view");
+      if (detailsTrialView) detailsTrialView.style.display = "none";
+      if (classroomView) classroomView.style.display = "none";
+      if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
+
+      const assessmentView = document.getElementById("learner-assessment-view");
+      if (assessmentView) {
+        assessmentView.style.display = "block";
+        if (rolePill) {
+          rolePill.style.display = "flex";
+          rolePill.innerHTML = `<span style="background-color: var(--color-primary-container); color: var(--color-on-primary-container); padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px;">${role.toUpperCase()}</span>`;
+        }
+        renderCommunicationWorkspace(role);
+      }
+    } else if (hash.startsWith("#reviewer")) {
+      if (catalogueView) catalogueView.style.display = "none";
+      if (detailsView) detailsView.style.display = "none";
+      if (trialView) trialView.style.display = "none";
+      const detailsTrialView = document.getElementById("learner-trial-details-view");
+      const classroomView = document.getElementById("learner-classroom-view");
+      if (detailsTrialView) detailsTrialView.style.display = "none";
+      if (classroomView) classroomView.style.display = "none";
+      if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
+
+      const assessmentView = document.getElementById("learner-assessment-view");
+      if (assessmentView) {
+        assessmentView.style.display = "block";
+        if (rolePill) {
+          rolePill.style.display = "flex";
+          rolePill.innerHTML = `<span style="background-color: var(--color-tertiary-fixed); color: var(--color-on-tertiary-fixed); padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px;">Reviewer</span>`;
+        }
+        if (switchBtn) switchBtn.innerText = "Learner View";
+
+        if (hash.startsWith("#reviewer/submissions/")) {
+          const subId = hash.replace("#reviewer/submissions/", "");
+          renderReviewerDetail(subId);
+        } else {
+          renderReviewerQueue();
+        }
+      }
+    } else if (hash.startsWith("#learner/k12")) {
+      if (catalogueView) catalogueView.style.display = "none";
+      if (detailsView) detailsView.style.display = "none";
+      if (trialView) trialView.style.display = "none";
+      const detailsTrialView = document.getElementById("learner-trial-details-view");
+      const classroomView = document.getElementById("learner-classroom-view");
+      if (detailsTrialView) detailsTrialView.style.display = "none";
+      if (classroomView) classroomView.style.display = "none";
+      if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
+
+      const assessmentView = document.getElementById("learner-assessment-view");
+      if (assessmentView) {
+        assessmentView.style.display = "block";
+        if (coursesLink) coursesLink.classList.add("active");
+        renderK12LearnerWorkspace();
+      }
+    } else if (hash.startsWith("#guardian/learners/")) {
+      if (catalogueView) catalogueView.style.display = "none";
+      if (detailsView) detailsView.style.display = "none";
+      if (trialView) trialView.style.display = "none";
+      const detailsTrialView = document.getElementById("learner-trial-details-view");
+      const classroomView = document.getElementById("learner-classroom-view");
+      if (detailsTrialView) detailsTrialView.style.display = "none";
+      if (classroomView) classroomView.style.display = "none";
+      if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
+
+      const assessmentView = document.getElementById("learner-assessment-view");
+      if (assessmentView) {
+        assessmentView.style.display = "block";
+        if (coursesLink) coursesLink.classList.add("active");
+        if (rolePill) {
+          rolePill.style.display = "flex";
+          rolePill.innerHTML = `<span style="background-color: var(--color-primary-container); color: var(--color-on-primary-container); padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px;">Guardian</span>`;
+        }
+        if (switchBtn) switchBtn.innerText = "Learner View";
+
+        if (hash.includes("/reports/")) {
+          const reportId = hash.split("/reports/")[1];
+          renderK12ReportCardView(reportId);
+        } else {
+          renderK12GuardianWorkspace();
+        }
+      }
+    } else if (hash.startsWith("#operations/k12/report-cards/")) {
+      const reportId = hash.replace("#operations/k12/report-cards/", "");
+      if (catalogueView) catalogueView.style.display = "none";
+      if (detailsView) detailsView.style.display = "none";
+      if (trialView) trialView.style.display = "none";
+      const detailsTrialView = document.getElementById("learner-trial-details-view");
+      const classroomView = document.getElementById("learner-classroom-view");
+      if (detailsTrialView) detailsTrialView.style.display = "none";
+      if (classroomView) classroomView.style.display = "none";
+      if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
+
+      const assessmentView = document.getElementById("learner-assessment-view");
+      if (assessmentView) {
+        assessmentView.style.display = "block";
+        if (rolePill) {
+          rolePill.style.display = "flex";
+          rolePill.innerHTML = `<span style="background-color: var(--color-tertiary-fixed); color: var(--color-on-tertiary-fixed); padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px;">Operations</span>`;
+        }
+        if (switchBtn) switchBtn.innerText = "Learner View";
+        renderOperationsReportCardReview(reportId);
       }
     } else if (hash.startsWith("#learner/assessments/")) {
       const quizId = hash.replace("#learner/assessments/", "");
@@ -1984,12 +2491,11 @@ function renderTrialRequestForm(slug) {
               </label>
             </div>
 
-          </div>
+            <div style="display:flex; gap:var(--spacing-md); align-items:center; margin-top: var(--spacing-lg); padding-top: var(--spacing-md); border-top: 1px solid var(--color-outline-variant);">
+              <button type="submit" id="trial-submit-btn" class="btn btn-primary" style="height:46px; width:220px;" disabled>Submit Trial Request</button>
+              <a href="#courses/${course.slug}" class="btn btn-link" style="font-weight:700; color:var(--color-secondary); padding:0;">Cancel</a>
+            </div>
 
-          <!-- Actions -->
-          <div style="display:flex; gap:var(--spacing-md); align-items:center;">
-            <button type="submit" id="trial-submit-btn" class="btn btn-primary" style="height:46px; width:220px;" disabled>Submit Trial Request</button>
-            <a href="#courses/${course.slug}" class="btn btn-link" style="font-weight:700; color:var(--color-secondary); padding:0;">Cancel</a>
           </div>
 
         </form>
@@ -13695,7 +14201,8 @@ window.renderLearnerCourseWorkspace = function(enrolmentId) {
                 </div>
               </div>
 
-              <div style="margin-top:12px; border-top:1px solid var(--color-outline-variant); padding-top:12px; display:flex; justify-content:flex-end;">
+              <div style="margin-top:12px; border-top:1px solid var(--color-outline-variant); padding-top:12px; display:flex; justify-content:flex-end; gap:8px;">
+                <button class="btn btn-secondary" onclick="window.location.hash='#learner/support?draft=CASE-DRAFT-001'" style="height:32px; font-size:12px; font-weight:700; color:#ba1a1a; border-color:#ba1a1a;">Report a Class Issue</button>
                 <button class="btn btn-secondary" onclick="openLearnerRescheduleRequestModal('${enrolmentId}', 'CLASS-002')" style="height:32px; font-size:12px; font-weight:700;">Request Schedule Change</button>
               </div>
             </div>
@@ -19359,3 +19866,12738 @@ window.simulateResolveIntegrity = function(attemptId, allowPass) {
 
 
 
+// ==========================================================================
+// Centralized States & Seeding for Screens 23-26
+// ==========================================================================
+
+window.ensureK12State = function() {
+  if (!state.k12) {
+    state.k12 = {
+      selectedDemoState: "Active Term",
+      activeSubject: "Mathematics",
+      activeTab: "Overview",
+      learner: {
+        id: "LEARNER-K12-001",
+        name: "Zara Khan",
+        age: 13,
+        grade: "Grade 7",
+        accountStatus: "Active",
+        consent: "Verified"
+      },
+      guardians: [
+        {
+          id: "GUARDIAN-001",
+          name: "Nadia Khan",
+          relationship: "Mother",
+          verificationStatus: "Verified",
+          authorityStatus: "Active",
+          financialResponsibility: true,
+          academicVisibility: true,
+          permissions: {
+            schedule: true,
+            attendance: true,
+            grades: true,
+            reportCards: true,
+            payments: true,
+            privateLearnerNotes: false,
+            privateLearnerChat: false
+          }
+        },
+        {
+          id: "GUARDIAN-002",
+          name: "Imran Khan",
+          relationship: "Father",
+          verificationStatus: "Verified",
+          authorityStatus: "Active",
+          financialResponsibility: false,
+          academicVisibility: true,
+          permissions: {
+            schedule: true,
+            attendance: true,
+            grades: false,
+            reportCards: false,
+            payments: false,
+            privateLearnerNotes: false,
+            privateLearnerChat: false
+          }
+        }
+      ],
+      enrolments: [
+        { id: "ENR-K12-MATH-001", subject: "Mathematics", status: "Active", teacher: "Hira Siddiqui", section: "Grade 7 Mathematics — Section A", sectionId: "K12-SEC-MATH-7A", syllabus: "MATH-G7-SYL-v1", progress: { "Unit 1 — Numbers": 70, "Unit 2 — Algebra Basics": 20, "Unit 3 — Geometry": 0 } },
+        { id: "ENR-K12-ENG-001", subject: "English", status: "Active", teacher: "Farah Ahmed", section: "Grade 7 English — Section A", sectionId: "K12-SEC-ENG-7A", syllabus: "ENG-G7-SYL-v1", progress: { "Unit 1 — Reading": 80, "Unit 2 — Essay Writing": 30 } },
+        { id: "ENR-K12-SCI-001", subject: "General Science", status: "Active", teacher: "Usman Raza", section: "Grade 7 Science — Section A", sectionId: "K12-SEC-SCI-7A", syllabus: "SCI-G7-SYL-v1", progress: { "Unit 1 — Solar System": 50 } }
+      ],
+      attendance: {
+        "ENR-K12-MATH-001": [
+          { date: "10 Aug 2026", status: "Present", topic: "Understanding Integers" },
+          { date: "12 Aug 2026", status: "Present", topic: "Adding & Subtracting Integers" }
+        ],
+        "ENR-K12-ENG-001": [
+          { date: "11 Aug 2026", status: "Present", topic: "Sentence Structure" }
+        ],
+        "ENR-K12-SCI-001": [
+          { date: "13 Aug 2026", status: "Present", topic: "Planet Structures" }
+        ]
+      },
+      assessments: {
+        "ENR-K12-MATH-001": [
+          { id: "K12-MATH-ASS-001", title: "Integer Practice Worksheet", category: "Homework", score: 18, max: 20, status: "Published" },
+          { id: "K12-MATH-ASS-002", title: "Integers Quiz", category: "Quizzes", score: 16, max: 20, status: "Published" },
+          { id: "K12-MATH-ASS-003", title: "Unit 1 Class Test", category: "Class Tests", score: 22, max: 25, status: "Published" },
+          { id: "K12-MATH-ASS-004", title: "Term Exam", category: "Term Exam", score: null, max: 100, status: "Not Yet Available" }
+        ],
+        "ENR-K12-ENG-001": [
+          { id: "K12-ENG-ASS-001", title: "Reading Comprehension", category: "Class Tests", score: 85, max: 100, status: "Published" },
+          { id: "K12-ENG-ASS-002", title: "Spelling Quiz", category: "Quizzes", score: 80, max: 100, status: "Published" }
+        ],
+        "ENR-K12-SCI-001": [
+          { id: "K12-SCI-ASS-001", title: "Solar System Project", category: "Homework", score: 75, max: 100, status: "Published" },
+          { id: "K12-SCI-ASS-002", title: "Science Test 1", category: "Class Tests", score: 80, max: 100, status: "Published" }
+        ]
+      },
+      teacherComments: {
+        "ENR-K12-MATH-001": "Zara understands integer concepts well and participates consistently. She should practise multi-step word problems.",
+        "ENR-K12-ENG-001": "Zara shows a good grasp of composition and actively reads aloud in class.",
+        "ENR-K12-SCI-001": "Zara's work is thorough, but she should focus more on deadline submission guidelines."
+      },
+      reportCard: {
+        id: "REPORTCARD-K12-T1-001",
+        status: "Draft", // Draft, In Review, Published, Corrected
+        version: 1,
+        history: []
+      },
+      gradeExceptions: [],
+      holidays: ["2026-08-24"],
+      teacherHistory: {
+        "ENR-K12-MATH-001": [
+          { teacher: "Hira Siddiqui", start: "1 Aug 2026", end: "31 Aug 2026", current: false },
+          { teacher: "Sana Malik", start: "1 Sep 2026", end: "Present", current: true }
+        ]
+      }
+    };
+  }
+};
+
+window.ensureResourceState = function() {
+  if (!state.resources) {
+    state.resources = [
+      { id: "RES-PAI-PROMPT-001", title: "Prompt Engineering Checklist", type: "PDF", category: "Course Resource", status: "Published", currentVersionId: "RESVER-PAI-PROMPT-001-V1", owner: "Practical AI", size: "1.8 MB", uploader: "Hamza Siddiqui", updated: "12 Aug 2026" },
+      { id: "RES-SE-SPEAK-001", title: "Beginner Speaking Guide", type: "PDF", category: "Course Resource", status: "Published", currentVersionId: "RESVER-SE-SPEAK-V1", owner: "Spoken English", size: "2.4 MB", uploader: "Ayesha Rahman", updated: "08 Aug 2026" },
+      { id: "RES-K12-MATH-001", title: "Integer Practice Worksheet", type: "PDF", category: "Homework", status: "Published", currentVersionId: "RESVER-K12-MATH-V1", owner: "Grade 7 Mathematics", size: "1.2 MB", uploader: "Hira Siddiqui", updated: "10 Aug 2026" }
+    ];
+    state.resourceVersions = {
+      "RES-PAI-PROMPT-001": [
+        { id: "RESVER-PAI-PROMPT-001-V1", version: 1, filename: "prompt-engineering-checklist.pdf", status: "Published", size: "1.8 MB", uploadProgress: 100, scanStatus: "Passed", signatureStatus: "Passed", objectStatus: "Present" }
+      ],
+      "RES-SE-SPEAK-001": [
+        { id: "RESVER-SE-SPEAK-V1", version: 1, filename: "beginner-speaking-guide.pdf", status: "Published", size: "2.4 MB", uploadProgress: 100, scanStatus: "Passed", signatureStatus: "Passed", objectStatus: "Present" }
+      ],
+      "RES-K12-MATH-001": [
+        { id: "RESVER-K12-MATH-V1", version: 1, filename: "integer-practice-worksheet.pdf", status: "Published", size: "1.2 MB", uploadProgress: 100, scanStatus: "Passed", signatureStatus: "Passed", objectStatus: "Present" }
+      ]
+    };
+    state.resourceAssignments = [
+      { id: "RESASSIGN-PAI-001", resourceId: "RES-PAI-PROMPT-001", resourceVersionId: "RESVER-PAI-PROMPT-001-V1", targetType: "Milestone", targetId: "PAI-M2", status: "Active" },
+      { id: "RESASSIGN-K12-MATH-001", resourceId: "RES-K12-MATH-001", resourceVersionId: "RESVER-K12-MATH-V1", targetType: "Cohort", targetId: "K12-SEC-MATH-7A", status: "Active" }
+    ];
+    state.resourceAccessLogs = [
+      { id: "RESACCESS-001", resourceId: "RES-PAI-PROMPT-001", resourceVersionId: "RESVER-PAI-PROMPT-001-V1", actorId: "LEARNER-001", action: "View", contextId: "ENR-PAI-001", occurredAt: "13 Aug 2026, 6:00 PM" }
+    ];
+    state.resourceSelectedDemoState = "Published";
+    state.resourceDraftUpload = null;
+  }
+};
+
+window.ensureCommunicationState = function() {
+  if (!state.conversations) {
+    state.conversations = [
+      { id: "CONV-SE-001", title: "Spoken English · Ali Khan & Ayesha Rahman", type: "LearnerTrainer", contextType: "Enrolment", contextId: "ENR-001", status: "Open", unreadCount: 1 },
+      { id: "CONV-PAI-SUPPORT-001", title: "Practical AI Support", type: "LearnerSupport", contextType: "Enrolment", contextId: "ENR-PAI-001", status: "Open", unreadCount: 0 },
+      { id: "CONV-K12-MATH-001", title: "Grade 7 Mathematics - Section A Support", type: "K12ApprovedCommunication", contextType: "SubjectSection", contextId: "K12-SEC-MATH-7A", status: "Open", unreadCount: 0 },
+      { id: "CONV-OPS-CLASS002-001", title: "CLASS-002-R1 · Schedule Exception Room", type: "TrainerOperations", contextType: "ClassOccurrence", contextId: "CLASS-002-R1", status: "Open", unreadCount: 0 }
+    ];
+    state.conversationParticipants = {
+      "CONV-SE-001": [
+        { id: "CONVPART-ALI-001", actorId: "LEARNER-001", role: "Learner", status: "Active" },
+        { id: "CONVPART-AYESHA-001", actorId: "trainer-ayesha", role: "Trainer", status: "Active" }
+      ],
+      "CONV-PAI-SUPPORT-001": [
+        { id: "CONVPART-ALI-PAI", actorId: "LEARNER-001", role: "Learner", status: "Active" },
+        { id: "CONVPART-HAMZA-PAI", actorId: "Hamza Siddiqui", role: "Support", status: "Active" }
+      ],
+      "CONV-K12-MATH-001": [
+        { id: "CONVPART-ZARA", actorId: "LEARNER-K12-001", role: "Learner", status: "Active" },
+        { id: "CONVPART-NADIA", actorId: "GUARDIAN-001", role: "Guardian", status: "Active" },
+        { id: "CONVPART-HIRA", actorId: "Hira Siddiqui", role: "Teacher", status: "Active" }
+      ],
+      "CONV-OPS-CLASS002-001": [
+        { id: "CONVPART-AYESHA-OPS", actorId: "trainer-ayesha", role: "Trainer", status: "Active" },
+        { id: "CONVPART-CSR-OPS", actorId: "Hamza Siddiqui", role: "Operations", status: "Active" }
+      ]
+    };
+    state.messages = {
+      "CONV-SE-001": [
+        { id: "MSG-SE-001", authorId: "trainer-ayesha", authorName: "Ayesha Rahman", body: "Great work today. Please practise your introduction before our next class.", sentAt: "18 Aug 2026, 7:55 PM", status: "Read" },
+        { id: "MSG-SE-002", authorId: "LEARNER-001", authorName: "Ali Khan", body: "Thank you. Should I practise the same introduction from the homework?", sentAt: "18 Aug 2026, 8:03 PM", status: "Read" },
+        { id: "MSG-SE-003", authorId: "trainer-ayesha", authorName: "Ayesha Rahman", body: "Yes. Try it once with notes and once without notes.", sentAt: "18 Aug 2026, 8:05 PM", status: "Read" }
+      ],
+      "CONV-PAI-SUPPORT-001": [
+        { id: "MSG-PAI-001", authorId: "Hamza Siddiqui", authorName: "Hamza Siddiqui", body: "Welcome to Practical AI Support. Your assignment feedback is now available.", sentAt: "12 Aug 2026, 3:00 PM", status: "Read" }
+      ],
+      "CONV-K12-MATH-001": [
+        { id: "MSG-K12-001", authorId: "Hira Siddiqui", authorName: "Hira Siddiqui", body: "Please complete the Integer Practice Worksheet before Wednesday's class.", sentAt: "10 Aug 2026, 2:00 PM", status: "Read" }
+      ],
+      "CONV-OPS-CLASS002-001": [
+        { id: "MSG-OPS-001", authorId: "trainer-ayesha", authorName: "Ayesha Rahman", body: "The replacement classroom is still showing Provisioning.", sentAt: "19 Aug 2026, 11:05 AM", status: "Read" },
+        { id: "MSG-OPS-002", authorId: "Hamza Siddiqui", authorName: "Operations Support", body: "We're checking the classroom setup. The schedule itself is confirmed.", sentAt: "19 Aug 2026, 11:10 AM", status: "Read" }
+      ]
+    };
+    state.messageAttachments = {};
+    state.moderationEvents = [];
+    state.communicationSelectedDemoState = "Normal Learner–Trainer";
+  }
+};
+
+// Unified dev control bar rendering helper
+function getDevSandboxNavbarHTML(activeRoute) {
+  return `
+    <div class="form-card" style="margin-bottom: 20px; padding: 12px; background: var(--color-surface-container); border: 2px solid var(--color-outline-variant); border-radius: 8px;">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-weight: 800; font-size: 13px; color: var(--color-primary);">⚙️ Visual Prototype Sandbox Controllers:</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px; font-weight: 700; background: ${activeRoute === 'assignment' ? 'var(--color-primary-container)' : 'var(--color-surface-container-highest)'};" onclick="window.location.hash='#learner/courses/ENR-PAI-001/assignments/ASSIGN-PAI-001'">Ali Khan: Assignment Workspace</button>
+          <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px; font-weight: 700; background: ${activeRoute === 'voice' ? 'var(--color-primary-container)' : 'var(--color-surface-container-highest)'};" onclick="window.location.hash='#learner/courses/ENR-PAI-001/voice/ACT-PAI-VOICE-001'">Ali Khan: Voice Activity</button>
+          <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px; font-weight: 700; background: ${activeRoute === 'reviewer' ? 'var(--color-primary-container)' : 'var(--color-surface-container-highest)'};" onclick="window.location.hash='#reviewer/submissions'">Hamza: Reviewer Portal</button>
+          <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px; font-weight: 700; background: ${activeRoute === 'k12-student' ? 'var(--color-primary-container)' : 'var(--color-surface-container-highest)'};" onclick="window.location.hash='#learner/k12'">Zara Khan: K-12 Student</button>
+          <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px; font-weight: 700; background: ${activeRoute === 'k12-guardian' ? 'var(--color-primary-container)' : 'var(--color-surface-container-highest)'};" onclick="window.location.hash='#guardian/learners/LEARNER-K12-001/academics'">Nadia Khan: Guardian Portal</button>
+          <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px; font-weight: 700; background: ${activeRoute === 'operations-report' ? 'var(--color-primary-container)' : 'var(--color-surface-container-highest)'};" onclick="window.location.hash='#operations/k12/report-cards/REPORTCARD-K12-T1-001'">Ops: Report Card Review</button>
+          <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px; font-weight: 700; background: ${activeRoute === 'staff-resources' ? 'var(--color-primary-container)' : 'var(--color-surface-container-highest)'};" onclick="window.location.hash='#staff/resources'">Ops: Resource Library</button>
+          <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px; font-weight: 700; background: ${activeRoute === 'messages' ? 'var(--color-primary-container)' : 'var(--color-surface-container-highest)'};" onclick="window.location.hash='#learner/messages'">Isolated Context Chat</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Ensure basic self paced structures are set
+if (state.selfPaced) {
+  if (!state.selfPaced.submissions) {
+    state.selfPaced.submissions = [
+      {
+        id: "SUB-PAI-001",
+        assignmentId: "ASSIGN-PAI-001",
+        enrolmentId: "ENR-PAI-001",
+        version: 1,
+        status: "Draft",
+        submittedAt: null,
+        answers: {
+          useCaseTitle: "AI Business Automation Plan",
+          goal: "Automate repetitive email queries and customer support routing.",
+          context: "The customer support team spends 15 hours a week manually answering basic questions.",
+          inputs: "Inbound client emails, previous resolution FAQs.",
+          constraints: "Must comply with GDPR data protection laws and not share PII.",
+          expectedOutput: "A drafted reply categorised by urgency, waiting for agent approval.",
+          promptExample: "SYSTEM: You are a helpful support agent. GDPR rules apply. Respond to the customer query..."
+        },
+        link: "https://github.com/alikhani/practical-ai-usecase",
+        attachments: []
+      }
+    ];
+  }
+  if (!state.selfPaced.voiceState) {
+    state.selfPaced.voiceState = {
+      selectedDemoState: "Ready to Record",
+      timerSeconds: 0,
+      durationSeconds: 74,
+      status: "Ready",
+      answers: {},
+      attachments: []
+    };
+  }
+}
+
+// ==========================================================================
+// Screen 23 UI Workspace Renderers
+// ==========================================================================
+
+window.renderLearnerAssignmentWorkspace = function(enrolmentId, assignmentId) {
+  ensureSelfPacedState();
+  const assessmentView = document.getElementById("learner-assessment-view");
+  if (!assessmentView) return;
+
+  const currentSub = state.selfPaced.submissions[state.selfPaced.submissions.length - 1];
+  const isReadOnly = currentSub.status !== "Draft";
+
+  // Simulate file upload progress details
+  let uploadSectionHtml = "";
+  if (state.selfPaced.mockUpload) {
+    const up = state.selfPaced.mockUpload;
+    uploadSectionHtml = `
+      <div style="background-color: var(--color-surface-low); border: 1px solid var(--color-outline-variant); border-radius: 6px; padding: 12px; margin-top: 8px;">
+        <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 12px; margin-bottom: 4px;">
+          <span>Uploading: ${up.filename}</span>
+          <span>${up.progress}%</span>
+        </div>
+        <div style="height: 6px; background: #ddd; border-radius: 3px; position: relative; margin-bottom: 6px;">
+          <div style="width: ${up.progress}%; height: 100%; background: var(--color-secondary); border-radius: 3px;"></div>
+        </div>
+        <div style="font-size: 11px; color: var(--color-tertiary);">Status: ${up.status}</div>
+      </div>
+    `;
+  } else if (currentSub.attachments.length > 0) {
+    const file = currentSub.attachments[0];
+    const isFailed = file.status === "ScanFailed";
+    uploadSectionHtml = `
+      <div style="background-color: ${isFailed ? '#fce8e6' : '#e6f4ea'}; border: 1px solid ${isFailed ? '#fad2cf' : '#c2e7cc'}; border-radius: 6px; padding: 12px; margin-top: 8px; display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <strong style="font-size: 12px; color: ${isFailed ? '#ba1a1a' : '#137333'};">📎 ${file.filename} (${file.size})</strong>
+          <div style="font-size: 11px; color: var(--color-tertiary);">Validation: ${file.status}</div>
+        </div>
+        ${!isReadOnly ? `<button class="btn btn-secondary" style="padding: 2px 6px; font-size: 10px;" onclick="removeAttachedMockFile()">Remove</button>` : ''}
+      </div>
+    `;
+  } else {
+    uploadSectionHtml = `
+      <div style="margin-top: 8px; display: flex; flex-direction: column; gap: 8px;">
+        <span style="font-size: 11px; color: var(--color-tertiary);">Choose upload file context to test validations:</span>
+        <div style="display: flex; gap: 6px;">
+          <button class="btn btn-secondary" style="font-size: 11px; padding: 4px 8px;" onclick="startMockFileUpload('ai-usecase.pdf')">Mock Valid PDF</button>
+          <button class="btn btn-secondary" style="font-size: 11px; padding: 4px 8px;" onclick="startMockFileUpload('large-video.mp4', 'TooLarge')">Too Large File</button>
+          <button class="btn btn-secondary" style="font-size: 11px; padding: 4px 8px;" onclick="startMockFileUpload('virus.exe', 'ScanFailed')">Executable Virus</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // Version history sidebar html
+  let versionsHtml = "";
+  state.selfPaced.submissions.forEach(sub => {
+    versionsHtml += `
+      <div style="padding: 10px; border-bottom: 1px solid var(--color-outline-variant); background: ${sub.version === currentSub.version ? '#fffcf0' : 'transparent'};">
+        <div style="font-weight: 700; font-size: 12.5px;">Version ${sub.version} (${sub.status})</div>
+        <div style="font-size: 11px; color: var(--color-tertiary);">Submitted: ${sub.submittedAt || "Draft / In Progress"}</div>
+      </div>
+    `;
+  });
+
+  assessmentView.innerHTML = `
+    ${getDevSandboxNavbarHTML('assignment')}
+    
+    <div style="margin-bottom: 16px;">
+      <a href="#learner/courses/ENR-PAI-001" style="font-weight: 700; color: var(--color-secondary); font-size: 13px;">&larr; Back to Course Workspace</a>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 280px 1fr; gap: 24px; align-items: flex-start;">
+      <!-- Left side panel tracking progress checklist -->
+      <div class="form-card" style="padding: 16px;">
+        <h4 style="font-family: var(--font-family-headings); font-size: 14px; font-weight: 800; margin-bottom: 12px; text-transform: uppercase;">Submission Details</h4>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+          <div>
+            <span style="font-size: 11px; text-transform: uppercase; color: var(--color-tertiary); display: block;">Status</span>
+            <span class="status-badge status-badge-${currentSub.status.toLowerCase().replace(' ', '-')}" style="font-size: 12px; font-weight: 800; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-top: 4px;">
+              ${currentSub.status}
+            </span>
+          </div>
+          <div>
+            <span style="font-size: 11px; text-transform: uppercase; color: var(--color-tertiary); display: block;">Reviewer / Coach</span>
+            <strong style="font-size: 13px;">Hamza Siddiqui</strong>
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--color-outline-variant); padding-top: 12px; margin-bottom: 20px;">
+          <h5 style="font-weight: 700; font-size: 12.5px; margin-bottom: 8px;">Requirements Checklist</h5>
+          <ul style="list-style: none; padding: 0; margin: 0; font-size: 12px; display: flex; flex-direction: column; gap: 6px;">
+            <li>${currentSub.answers.useCaseTitle ? '✅' : '❌'} Title Entered</li>
+            <li>${currentSub.answers.goal ? '✅' : '❌'} Goal Stated</li>
+            <li>${currentSub.answers.constraints ? '✅' : '❌'} Constraints Checked</li>
+            <li>${currentSub.answers.promptExample ? '✅' : '❌'} Prompt Example Written</li>
+            <li>${currentSub.attachments.length > 0 && currentSub.attachments[0].status === 'Validated' ? '✅' : '❌'} PDF Attached (Validated)</li>
+          </ul>
+        </div>
+
+        <div style="border-top: 1px solid var(--color-outline-variant); padding-top: 12px;">
+          <h5 style="font-weight: 700; font-size: 12.5px; margin-bottom: 8px;">Submission History</h5>
+          ${versionsHtml}
+        </div>
+      </div>
+
+      <!-- Right Form Workspace -->
+      <div class="form-card" style="padding: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--color-outline-variant); padding-bottom: 12px; margin-bottom: 20px;">
+          <div>
+            <h2 style="font-family: var(--font-family-headings); font-size: 20px; font-weight: 800;">📁 Create an AI Use-Case Plan (Milestone 2)</h2>
+            <p style="font-size: 12.5px; color: var(--color-tertiary); margin-top: 4px;">Submit your automation proposal. Hamza Siddiqui will grade it using the technical rubric details.</p>
+          </div>
+          <div id="autosave-indicator" style="font-size: 12px; color: var(--color-secondary); font-weight: 700;">
+            ${isReadOnly ? 'Read-Only Submission' : 'Draft Autosaved Just Now'}
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div>
+            <label style="font-weight: 700; display: block; margin-bottom: 4px; font-size: 13px;">Use Case Title</label>
+            <input type="text" id="sub-title" class="form-input" style="margin-bottom:0;" value="${currentSub.answers.useCaseTitle}" ${isReadOnly ? 'disabled' : ''} onkeyup="autosaveSubField('useCaseTitle', this.value)">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div>
+              <label style="font-weight: 700; display: block; margin-bottom: 4px; font-size: 13px;">Goal / Objective</label>
+              <textarea id="sub-goal" class="form-input" style="height: 80px; margin-bottom:0;" ${isReadOnly ? 'disabled' : ''} onkeyup="autosaveSubField('goal', this.value)">${currentSub.answers.goal}</textarea>
+            </div>
+            <div>
+              <label style="font-weight: 700; display: block; margin-bottom: 4px; font-size: 13px;">Operational Context</label>
+              <textarea id="sub-context" class="form-input" style="height: 80px; margin-bottom:0;" ${isReadOnly ? 'disabled' : ''} onkeyup="autosaveSubField('context', this.value)">${currentSub.answers.context}</textarea>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div>
+              <label style="font-weight: 700; display: block; margin-bottom: 4px; font-size: 13px;">Inputs</label>
+              <textarea id="sub-inputs" class="form-input" style="height: 80px; margin-bottom:0;" ${isReadOnly ? 'disabled' : ''} onkeyup="autosaveSubField('inputs', this.value)">${currentSub.answers.inputs}</textarea>
+            </div>
+            <div>
+              <label style="font-weight: 700; display: block; margin-bottom: 4px; font-size: 13px;">Constraints (e.g. GDPR compliance)</label>
+              <textarea id="sub-constraints" class="form-input" style="height: 80px; margin-bottom:0;" ${isReadOnly ? 'disabled' : ''} onkeyup="autosaveSubField('constraints', this.value)">${currentSub.answers.constraints}</textarea>
+            </div>
+          </div>
+
+          <div>
+            <label style="font-weight: 700; display: block; margin-bottom: 4px; font-size: 13px;">Expected Output Format</label>
+            <textarea id="sub-output" class="form-input" style="height: 80px; margin-bottom:0;" ${isReadOnly ? 'disabled' : ''} onkeyup="autosaveSubField('expectedOutput', this.value)">${currentSub.answers.expectedOutput}</textarea>
+          </div>
+
+          <div>
+            <label style="font-weight: 700; display: block; margin-bottom: 4px; font-size: 13px;">Full Prompt Example Template</label>
+            <textarea id="sub-prompt" class="form-input" style="height: 120px; font-family: monospace; font-size: 12px; margin-bottom:0;" ${isReadOnly ? 'disabled' : ''} onkeyup="autosaveSubField('promptExample', this.value)">${currentSub.answers.promptExample}</textarea>
+          </div>
+
+          <div>
+            <label style="font-weight: 700; display: block; margin-bottom: 4px; font-size: 13px;">Supporting Repository Link</label>
+            <input type="text" id="sub-link" class="form-input" style="margin-bottom:0;" value="${currentSub.link}" ${isReadOnly ? 'disabled' : ''} onkeyup="autosaveSubLink(this.value)">
+          </div>
+
+          <div style="border-top: 1px solid var(--color-outline-variant); padding-top: 16px;">
+            <label style="font-weight: 700; display: block; margin-bottom: 4px; font-size: 13px;">Attach Document (PDF only)</label>
+            ${uploadSectionHtml}
+          </div>
+
+          ${!isReadOnly ? `
+            <div style="display: flex; gap: 12px; border-top: 1px solid var(--color-outline-variant); padding-top: 16px; margin-top: 8px;">
+              <button class="btn btn-primary" style="background-color: var(--color-secondary); border-color: var(--color-secondary); color: #000; font-weight: 800; height: 44px; padding: 0 24px;" onclick="confirmAssignmentSubmitModal()">Submit Assignment</button>
+            </div>
+          ` : `
+            <div style="background-color: #fff8e1; border: 1px solid #ffe082; border-radius: 8px; padding: 12px; font-size: 12.5px; margin-top: 12px; color: #b78103;">
+              🔒 <strong>Submission Locked.</strong> You cannot edit this draft because it is currently ${currentSub.status}.
+            </div>
+          `}
+        </div>
+      </div>
+    </div>
+  `;
+};
+
+window.autosaveSubField = function(field, val) {
+  ensureSelfPacedState();
+  const currentSub = state.selfPaced.submissions[state.selfPaced.submissions.length - 1];
+  currentSub.answers[field] = val;
+  const indicator = document.getElementById("autosave-indicator");
+  if (indicator) {
+    indicator.innerHTML = "Saving Draft...";
+    setTimeout(() => {
+      indicator.innerHTML = "Draft Autosaved Just Now";
+    }, 400);
+  }
+};
+
+window.autosaveSubLink = function(val) {
+  ensureSelfPacedState();
+  const currentSub = state.selfPaced.submissions[state.selfPaced.submissions.length - 1];
+  currentSub.link = val;
+};
+
+window.startMockFileUpload = function(filename, statusOption) {
+  ensureSelfPacedState();
+  state.selfPaced.mockUpload = {
+    filename: filename,
+    progress: 0,
+    status: "Preparing..."
+  };
+  window.renderLearnerAssignmentWorkspace("ENR-PAI-001", "ASSIGN-PAI-001");
+
+  const interval = setInterval(() => {
+    if (!state.selfPaced.mockUpload) {
+      clearInterval(interval);
+      return;
+    }
+    state.selfPaced.mockUpload.progress += 25;
+    if (state.selfPaced.mockUpload.progress === 50) {
+      state.selfPaced.mockUpload.status = "Uploading byte blocks...";
+    } else if (state.selfPaced.mockUpload.progress === 100) {
+      clearInterval(interval);
+      state.selfPaced.mockUpload.status = "Uploaded. Performing security scans...";
+      setTimeout(() => {
+        const currentSub = state.selfPaced.submissions[state.selfPaced.submissions.length - 1];
+        const status = statusOption || "Validated";
+        currentSub.attachments = [{
+          filename: filename,
+          size: "1.8 MB",
+          status: status
+        }];
+        state.selfPaced.mockUpload = null;
+        if (status === "ScanFailed") {
+          showToastAlert("⚠️ Warning: File failed antivirus scanning. Document quarantined.");
+        } else {
+          showToastAlert("✓ File successfully validated and ready.");
+        }
+        window.renderLearnerAssignmentWorkspace("ENR-PAI-001", "ASSIGN-PAI-001");
+      }, 800);
+    }
+    window.renderLearnerAssignmentWorkspace("ENR-PAI-001", "ASSIGN-PAI-001");
+  }, 300);
+};
+
+window.removeAttachedMockFile = function() {
+  ensureSelfPacedState();
+  const currentSub = state.selfPaced.submissions[state.selfPaced.submissions.length - 1];
+  currentSub.attachments = [];
+  window.renderLearnerAssignmentWorkspace("ENR-PAI-001", "ASSIGN-PAI-001");
+  showToastAlert("Attachment removed.");
+};
+
+window.confirmAssignmentSubmitModal = function() {
+  const content = `
+    <div style="text-align: left; font-size: 13px;">
+      <p style="margin-bottom: 12px; color: var(--color-tertiary);">Are you sure you want to submit your AI Use-case plan? This will submit Version ${state.selfPaced.submissions.length} for review by Hamza Siddiqui.</p>
+      <div style="background-color: #fffcf0; padding: 10px; border-radius: 4px; border: 1px solid #f0d97a; font-weight: bold; margin-bottom: 16px;">
+        ⚠️ You will not be able to edit this workspace while it is awaiting review.
+      </div>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn btn-primary" style="background-color: var(--color-secondary); border-color: var(--color-secondary); color: #000; font-weight: 800; flex: 1.2;" onclick="executeAssignmentSubmit()">Yes, Submit</button>
+        <button class="btn btn-secondary" style="flex: 1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Submit Assignment Plan", content);
+};
+
+window.executeAssignmentSubmit = function() {
+  ensureSelfPacedState();
+  closeModal();
+  const currentSub = state.selfPaced.submissions[state.selfPaced.submissions.length - 1];
+  currentSub.status = "Submitted";
+  currentSub.submittedAt = new Date().toLocaleString();
+  
+  state.selfPaced.progressEvents.push({
+    id: `PROG-PAI-SUB-${Date.now()}`,
+    enrolmentId: "ENR-PAI-001",
+    activityId: "ACT-PAI-012",
+    event: "submitted",
+    occurredAt: new Date().toISOString()
+  });
+
+  state.selfPaced.activities["ACT-PAI-012"].status = "Submitted";
+
+  showToastAlert("✓ Assignment successfully submitted for manual review!");
+  window.renderLearnerAssignmentWorkspace("ENR-PAI-001", "ASSIGN-PAI-001");
+};
+
+// ==========================================================================
+// Reviewer Submissions Queue & Rubric Grading (Hamza Siddiqui Portal)
+// ==========================================================================
+
+window.renderReviewerQueue = function() {
+  ensureSelfPacedState();
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  let rowsHtml = "";
+  // Pull all submissions
+  state.selfPaced.submissions.forEach(sub => {
+    rowsHtml += `
+      <tr style="border-bottom: 1px solid var(--color-outline-variant); font-size: 13px;">
+        <td style="padding: 12px; font-weight: 700;">Ali Khan</td>
+        <td style="padding: 12px;">Practical AI & Prompt Engineering</td>
+        <td style="padding: 12px; font-weight: bold; color: var(--color-primary);">Version ${sub.version}</td>
+        <td style="padding: 12px; color: var(--color-tertiary);">${sub.submittedAt || 'Not Submitted'}</td>
+        <td style="padding: 12px;">
+          <span class="status-badge status-badge-${sub.status.toLowerCase().replace(' ', '-')}" style="padding: 3px 6px; border-radius: 4px; font-weight: 700; font-size: 11px;">
+            ${sub.status}
+          </span>
+        </td>
+        <td style="padding: 12px;">
+          <a href="#reviewer/submissions/${sub.id}" class="btn btn-primary" style="padding: 4px 10px; font-size: 11.5px; font-weight: 700; height: 28px; display: inline-flex; align-items: center; background-color: var(--color-secondary); border-color: var(--color-secondary); color: #000;">
+            Review
+          </a>
+        </td>
+      </tr>
+    `;
+  });
+
+  view.innerHTML = `
+    ${getDevSandboxNavbarHTML('reviewer')}
+    
+    <div class="form-card" style="padding: 24px;">
+      <h2 style="font-family: var(--font-family-headings); font-size: 20px; font-weight: 800; margin-bottom: 6px;">📋 Reviewer Evaluation Queue</h2>
+      <p style="font-size: 12.5px; color: var(--color-tertiary); margin-bottom: 20px;">Welcome back, <strong>Hamza Siddiqui</strong>. Evaluate assignments and speak tasks using versioned rubrics.</p>
+
+      <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+            <th style="padding: 12px;">Student</th>
+            <th style="padding: 12px;">Course</th>
+            <th style="padding: 12px;">Submission</th>
+            <th style="padding: 12px;">Submitted At</th>
+            <th style="padding: 12px;">Status</th>
+            <th style="padding: 12px;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowsHtml}
+        </tbody>
+      </table>
+    </div>
+  `;
+};
+
+window.renderReviewerDetail = function(subId) {
+  ensureSelfPacedState();
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  const currentSub = state.selfPaced.submissions.find(s => s.id === subId) || state.selfPaced.submissions[0];
+  
+  // Set default rubric scores if not set
+  if (!state.selfPaced.activeReviewScores) {
+    state.selfPaced.activeReviewScores = {
+      problem: 20,
+      context: 16,
+      prompt: 20,
+      constraints: 16,
+      clarity: 8
+    };
+    state.selfPaced.activeReviewComments = "Strong prompt structure. Suggest clarifying human validation steps for final constraints.";
+    state.selfPaced.activeReviewInternalNotes = "Student completed this promptly. No signs of plagiarism.";
+  }
+
+  const scores = state.selfPaced.activeReviewScores;
+  const totalScore = scores.problem + scores.context + scores.prompt + scores.constraints + scores.clarity;
+
+  // Build rubric selector rows
+  function getRubricRowHTML(title, key, maxScore) {
+    const currentVal = scores[key];
+    const levels = [
+      { name: "Excellent", pct: 1.0 },
+      { name: "Good", pct: 0.8 },
+      { name: "Developing", pct: 0.6 },
+      { name: "Needs Revision", pct: 0.3 }
+    ];
+
+    let cellsHtml = "";
+    levels.forEach(lvl => {
+      const val = Math.round(maxScore * lvl.pct);
+      const isSelected = currentVal === val;
+      cellsHtml += `
+        <td style="padding: 8px; border: 1px solid var(--color-outline-variant); text-align: center; background: ${isSelected ? 'var(--color-primary-container)' : 'transparent'}; cursor: pointer;" onclick="selectRubricScore('${key}', ${val})">
+          <div style="font-weight: bold; font-size: 11px;">${lvl.name}</div>
+          <div style="font-size: 11px; color: var(--color-tertiary);">${val}/${maxScore} pts</div>
+        </td>
+      `;
+    });
+
+    return `
+      <tr style="border-bottom: 1px solid var(--color-outline-variant);">
+        <td style="padding: 10px; font-weight: bold; font-size: 12px; width: 140px;">${title}</td>
+        ${cellsHtml}
+      </tr>
+    `;
+  }
+
+  view.innerHTML = `
+    ${getDevSandboxNavbarHTML('reviewer')}
+
+    <div style="margin-bottom: 16px;">
+      <a href="#reviewer/submissions" style="font-weight: 700; color: var(--color-secondary); font-size: 13px;">&larr; Back to Evaluation Queue</a>
+    </div>
+
+    <!-- Review concurrency warning mock if simulated -->
+    ${state.selfPaced.concurrencyConflict ? `
+      <div style="background-color: #fce8e6; border: 2px solid #fad2cf; color: #ba1a1a; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 13px; font-weight: bold;">
+        ⚠️ CONCURRENCY WARNING: Second reviewer (Sana Malik) is currently editing this submission! Your changes may overwrite theirs.
+      </div>
+    ` : ''}
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: flex-start;">
+      
+      <!-- Left side: Immutable student answers -->
+      <div class="form-card" style="padding: 20px;">
+        <h3 style="font-family: var(--font-family-headings); font-size: 16px; font-weight: 800; border-bottom: 1px solid var(--color-outline-variant); padding-bottom: 8px; margin-bottom: 12px;">📁 Learner Submission Details</h3>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px; font-size: 12.5px;">
+          <div>
+            <strong style="color: var(--color-tertiary);">Student:</strong> Ali Khan (LEARNER-001)
+          </div>
+          <div>
+            <strong style="color: var(--color-tertiary);">Submission Type:</strong> Written AI Use-Case (ASSIGN-PAI-001 v${currentSub.version})
+          </div>
+          <div>
+            <strong style="color: var(--color-tertiary);">Use Case Title:</strong>
+            <div style="background: var(--color-surface-low); padding: 8px; border-radius: 4px; margin-top: 4px; font-weight: 600;">${currentSub.answers.useCaseTitle}</div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+              <strong style="color: var(--color-tertiary);">Goal:</strong>
+              <div style="background: var(--color-surface-low); padding: 8px; border-radius: 4px; margin-top: 4px; height: 70px; overflow-y: auto;">${currentSub.answers.goal}</div>
+            </div>
+            <div>
+              <strong style="color: var(--color-tertiary);">Context:</strong>
+              <div style="background: var(--color-surface-low); padding: 8px; border-radius: 4px; margin-top: 4px; height: 70px; overflow-y: auto;">${currentSub.answers.context}</div>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+              <strong style="color: var(--color-tertiary);">Inputs:</strong>
+              <div style="background: var(--color-surface-low); padding: 8px; border-radius: 4px; margin-top: 4px; height: 70px; overflow-y: auto;">${currentSub.answers.inputs}</div>
+            </div>
+            <div>
+              <strong style="color: var(--color-tertiary);">Constraints:</strong>
+              <div style="background: var(--color-surface-low); padding: 8px; border-radius: 4px; margin-top: 4px; height: 70px; overflow-y: auto;">${currentSub.answers.constraints}</div>
+            </div>
+          </div>
+          <div>
+            <strong style="color: var(--color-tertiary);">Expected Output:</strong>
+            <div style="background: var(--color-surface-low); padding: 8px; border-radius: 4px; margin-top: 4px;">${currentSub.answers.expectedOutput}</div>
+          </div>
+          <div>
+            <strong style="color: var(--color-tertiary);">Prompt Template:</strong>
+            <pre style="background: #2b2b2b; color: #a9b7c6; padding: 10px; border-radius: 4px; font-size: 11.5px; margin-top: 4px; white-space: pre-wrap; font-family: monospace;">${currentSub.answers.promptExample}</pre>
+          </div>
+          <div>
+            <strong style="color: var(--color-tertiary);">Supporting Link:</strong>
+            <a href="${currentSub.link}" target="_blank" style="color: var(--color-secondary); font-weight: bold; text-decoration: underline; display: block; margin-top: 4px;">${currentSub.link}</a>
+          </div>
+          <div>
+            <strong style="color: var(--color-tertiary);">File Attachment:</strong>
+            ${currentSub.attachments.length > 0 ? `
+              <div style="background: #e6f4ea; border: 1px solid #c2e7cc; border-radius: 4px; padding: 8px; display: inline-flex; align-items: center; gap: 8px; margin-top: 4px;">
+                <span style="font-weight: 700; color: #137333;">📎 ${currentSub.attachments[0].filename} (${currentSub.attachments[0].size})</span>
+                <span style="font-size: 11px; background: #c2e7cc; padding: 2px 4px; border-radius: 3px; font-weight: bold;">Validated</span>
+              </div>
+            ` : '<div style="color: var(--color-tertiary); font-style: italic; margin-top: 4px;">No attached document</div>'}
+          </div>
+        </div>
+      </div>
+
+      <!-- Right side: Grading Rubric -->
+      <div class="form-card" style="padding: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--color-outline-variant); padding-bottom: 8px; margin-bottom: 12px;">
+          <h3 style="font-family: var(--font-family-headings); font-size: 16px; font-weight: 800;">📝 Assessment Rubric v1</h3>
+          <div style="font-size: 16px; font-weight: 800; color: var(--color-primary);">Score: ${totalScore}%</div>
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px;">
+          <tbody>
+            ${getRubricRowHTML("Problem Definition", "problem", 25)}
+            ${getRubricRowHTML("Context & Inputs", "context", 20)}
+            ${getRubricRowHTML("Prompt Quality", "prompt", 25)}
+            ${getRubricRowHTML("Constraints / Safety", "constraints", 20)}
+            ${getRubricRowHTML("Clarity & Grammar", "clarity", 10)}
+          </tbody>
+        </table>
+
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;">
+          <div>
+            <label style="font-weight: 700; display: block; margin-bottom: 4px; font-size: 12.5px;">Written Feedback Comments</label>
+            <textarea id="review-feedback" class="form-input" style="height: 60px; margin-bottom:0;" onkeyup="state.selfPaced.activeReviewComments = this.value">${state.selfPaced.activeReviewComments}</textarea>
+          </div>
+          <div>
+            <label style="font-weight: 700; display: block; margin-bottom: 4px; font-size: 12.5px;">Internal Notes (Staff Only - Hidden from Learner)</label>
+            <textarea id="review-internal" class="form-input" style="height: 50px; margin-bottom:0;" onkeyup="state.selfPaced.activeReviewInternalNotes = this.value">${state.selfPaced.activeReviewInternalNotes}</textarea>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; border-top: 1px solid var(--color-outline-variant); padding-top: 16px;">
+          <button class="btn btn-primary" style="flex: 1.2; height: 40px; font-weight: 800; background-color: #137333; border-color: #137333;" onclick="executePublishGrade('${subId}', ${totalScore})">Publish Grade</button>
+          <button class="btn btn-secondary" style="flex: 1; height: 40px; font-weight: 700;" onclick="executeReturnRevision('${subId}')">Return for Revision</button>
+        </div>
+      </div>
+
+    </div>
+  `;
+};
+
+window.selectRubricScore = function(key, val) {
+  ensureSelfPacedState();
+  state.selfPaced.activeReviewScores[key] = val;
+  const hash = window.location.hash;
+  const subId = hash.replace("#reviewer/submissions/", "");
+  window.renderReviewerDetail(subId);
+};
+
+window.executePublishGrade = function(subId, finalScore) {
+  ensureSelfPacedState();
+  
+  // Set submission to Graded
+  const sub = state.selfPaced.submissions.find(s => s.id === subId);
+  if (sub) {
+    sub.status = "Graded";
+  }
+
+  // Push progress gradebook result
+  state.selfPaced.gradebook.push({
+    id: `GRADE-${subId}`,
+    submissionId: subId,
+    score: finalScore,
+    status: "Published",
+    feedback: state.selfPaced.activeReviewComments
+  });
+
+  // Unlock downstream voice speaking activity
+  state.selfPaced.activities["ACT-PAI-012"].status = "Completed";
+  state.selfPaced.activities["ACT-PAI-012"].score = finalScore;
+  state.selfPaced.activities["ACT-PAI-013"].status = "Available"; // Speak Activity
+
+  // Fire timeline log
+  state.selfPaced.progressEvents.push({
+    id: `PROG-PAI-GRADE-${Date.now()}`,
+    enrolmentId: "ENR-PAI-001",
+    activityId: "ACT-PAI-012",
+    event: "graded",
+    occurredAt: new Date().toISOString()
+  });
+
+  showToastAlert(`✓ Grade published: ${finalScore}% score assigned to Ali Khan.`);
+  window.location.hash = "#reviewer/submissions";
+};
+
+window.executeReturnRevision = function(subId) {
+  ensureSelfPacedState();
+  
+  // Set submission to Revision Requested
+  const sub = state.selfPaced.submissions.find(s => s.id === subId);
+  if (sub) {
+    sub.status = "Revision Requested";
+  }
+
+  // Set activity status in tree to Revision Requested
+  state.selfPaced.activities["ACT-PAI-012"].status = "Revision Requested";
+
+  // Create Version 2 draft prefilled with V1 answers
+  const newV = state.selfPaced.submissions.length + 1;
+  state.selfPaced.submissions.push({
+    id: `SUB-PAI-002`,
+    assignmentId: "ASSIGN-PAI-001",
+    enrolmentId: "ENR-PAI-001",
+    version: newV,
+    status: "Draft",
+    submittedAt: null,
+    answers: { ...sub.answers },
+    link: sub.link,
+    attachments: []
+  });
+
+  showToastAlert(`✓ Returned to student for revision. Version ${newV} draft initialized.`);
+  window.location.hash = "#reviewer/submissions";
+};
+
+// ==========================================================================
+// Screen 23 Speaking / Voice Recorder Simulation View
+// ==========================================================================
+
+window.renderLearnerVoiceWorkspace = function(enrolmentId, voiceId) {
+  ensureSelfPacedState();
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  const vState = state.selfPaced.voiceState;
+
+  let centerWidgetHtml = "";
+  if (vState.selectedDemoState === "Ready to Record") {
+    centerWidgetHtml = `
+      <div style="border: 2px dashed var(--color-outline-variant); padding: 32px 24px; border-radius: 8px; background: var(--color-surface-low); margin-bottom: 20px;">
+        <span style="font-size: 40px; display: block; margin-bottom: 12px;">🎙️</span>
+        <strong style="font-size: 14px;">Microphone Access: Ready</strong>
+        <p style="font-size: 11.5px; color: var(--color-tertiary); margin-top: 4px;">Click the button below to start recording your 60-second explanation of AI Transformer models.</p>
+        <button class="btn btn-primary" style="margin-top: 12px; height: 38px; padding: 0 16px; background-color: var(--color-secondary); border-color: var(--color-secondary); color: #000; font-weight: 800;" onclick="startVoiceRecordingSim()">Start Recording</button>
+      </div>
+    `;
+  } else if (vState.selectedDemoState === "Recording") {
+    centerWidgetHtml = `
+      <div style="border: 2px solid #ba1a1a; padding: 32px 24px; border-radius: 8px; background: #fff8f7; margin-bottom: 20px; animation: pulseRed 1.5s infinite;">
+        <span style="font-size: 40px; display: block; margin-bottom: 12px; color: #ba1a1a;">🔴</span>
+        <strong style="font-size: 15px; color: #ba1a1a;">Simulating Recording In Progress...</strong>
+        <div style="font-size: 24px; font-weight: 800; font-family: monospace; margin-top: 8px;" id="voice-timer">00:00</div>
+        <p style="font-size: 11px; color: #ba1a1a; margin-top: 4px;">Speak clearly into your device microphone.</p>
+        <button class="btn btn-primary" style="margin-top: 12px; height: 38px; padding: 0 16px; background-color: #ba1a1a; border-color: #ba1a1a; color: #fff; font-weight: 800;" onclick="stopVoiceRecordingSim()">Stop Recording</button>
+      </div>
+    `;
+  } else if (vState.selectedDemoState === "Playback Review") {
+    centerWidgetHtml = `
+      <div style="border: 2px solid var(--color-secondary); padding: 32px 24px; border-radius: 8px; background: var(--color-surface-low); margin-bottom: 20px;">
+        <span style="font-size: 40px; display: block; margin-bottom: 12px;">🎧</span>
+        <strong style="font-size: 14px;">Recording Saved (Duration: 01:14)</strong>
+        <div style="display: flex; align-items: center; gap: 12px; justify-content: center; margin: 16px 0; background: #121212; padding: 12px; border-radius: 6px; color: #fff;">
+          <button style="background: transparent; border: none; font-size: 20px; color: var(--color-secondary); cursor: pointer;" onclick="showToastAlert('Playing back mock audio...')">▶️ Play</button>
+          <div style="flex: 1; height: 8px; background: #444; border-radius: 4px; position: relative;">
+            <div style="width: 35%; height: 100%; background: var(--color-secondary); border-radius: 4px;"></div>
+          </div>
+          <span style="font-size: 11px; font-family: monospace;">00:26 / 01:14</span>
+        </div>
+        <div style="display: flex; gap: 8px; justify-content: center;">
+          <button class="btn btn-secondary" style="font-size: 11.5px; height: 34px;" onclick="setVoiceDemoState('Ready to Record')">Record Again</button>
+          <button class="btn btn-primary" style="font-size: 11.5px; height: 34px; background-color: var(--color-secondary); border-color: var(--color-secondary); color: #000; font-weight: 800;" onclick="submitVoiceActivitySim()">Submit Audio File</button>
+        </div>
+      </div>
+    `;
+  } else if (vState.selectedDemoState === "Uploading") {
+    centerWidgetHtml = `
+      <div style="border: 2px solid var(--color-outline-variant); padding: 32px 24px; border-radius: 8px; background: var(--color-surface-low); margin-bottom: 20px;">
+        <span style="font-size: 40px; display: block; margin-bottom: 12px;">📤</span>
+        <strong style="font-size: 14px;">Uploading Audio brief to secure container...</strong>
+        <div style="height: 6px; background: #ddd; border-radius: 3px; position: relative; margin: 12px auto; max-width: 300px;">
+          <div style="width: 60%; height: 100%; background: var(--color-secondary); border-radius: 3px;"></div>
+        </div>
+        <div style="font-size: 11px; color: var(--color-tertiary);">Status: finalising checksum verification and antiviral scan...</div>
+      </div>
+    `;
+  } else if (vState.selectedDemoState === "Submitted") {
+    centerWidgetHtml = `
+      <div style="border: 2px solid #137333; padding: 32px 24px; border-radius: 8px; background: #e6f4ea; margin-bottom: 20px;">
+        <span style="font-size: 40px; display: block; margin-bottom: 12px;">✅</span>
+        <strong style="font-size: 14px; color: #137333;">Audio Brief Submitted Successfully!</strong>
+        <p style="font-size: 12px; color: var(--color-tertiary); margin-top: 4px;">Submitted on: <strong>Just Now</strong>. Evaluation will be compiled shortly by coach Siddiqui.</p>
+        <button class="btn btn-secondary" style="margin-top: 12px;" onclick="setVoiceDemoState('Ready to Record')">Record Another Attempt</button>
+      </div>
+    `;
+  }
+
+  view.innerHTML = `
+    ${getDevSandboxNavbarHTML('voice')}
+
+    <div style="margin-bottom: 16px;">
+      <a href="#learner/courses/ENR-PAI-001" style="font-weight: 700; color: var(--color-secondary); font-size: 13px;">&larr; Back to Course Workspace</a>
+    </div>
+
+    <div class="form-card" style="padding: 24px; max-width: 600px; margin: 0 auto; text-align: center;">
+      <h2 style="font-family: var(--font-family-headings); font-size: 20px; font-weight: 800; margin-bottom: 6px;">🎙️ Explain an AI Concept (Voice Activity)</h2>
+      <p style="font-size: 12.5px; color: var(--color-tertiary); margin-bottom: 24px;">Practice explaining a complex technical topic. Speaking exercises are analyzed for clarity, pace, and domain accuracy.</p>
+
+      ${centerWidgetHtml}
+
+      <div style="border-top: 1px solid var(--color-outline-variant); padding-top: 16px; text-align: left; font-size: 12px; line-height: 1.5; color: var(--color-tertiary);">
+        <strong style="color: var(--color-on-surface); display: block; margin-bottom: 4px;">Task Instructions:</strong>
+        Explain the difference between a Transformer model's Self-Attention mechanism and traditional Recurrent neural networks (RNNs). Your speech should be 1-2 minutes long.
+      </div>
+    </div>
+  `;
+};
+
+window.setVoiceDemoState = function(stateName) {
+  ensureSelfPacedState();
+  state.selfPaced.voiceState.selectedDemoState = stateName;
+  window.renderLearnerVoiceWorkspace("ENR-PAI-001", "ACT-PAI-VOICE-001");
+};
+
+window.startVoiceRecordingSim = function() {
+  ensureSelfPacedState();
+  state.selfPaced.voiceState.selectedDemoState = "Recording";
+  window.renderLearnerVoiceWorkspace("ENR-PAI-001", "ACT-PAI-VOICE-001");
+  
+  let secs = 0;
+  window.voiceTimerInterval = setInterval(() => {
+    const timerEl = document.getElementById("voice-timer");
+    if (!timerEl) {
+      clearInterval(window.voiceTimerInterval);
+      return;
+    }
+    secs++;
+    const m = Math.floor(secs / 60).toString().padStart(2, '0');
+    const s = (secs % 60).toString().padStart(2, '0');
+    timerEl.innerHTML = `${m}:${s}`;
+  }, 1000);
+};
+
+window.stopVoiceRecordingSim = function() {
+  if (window.voiceTimerInterval) clearInterval(window.voiceTimerInterval);
+  ensureSelfPacedState();
+  state.selfPaced.voiceState.selectedDemoState = "Playback Review";
+  window.renderLearnerVoiceWorkspace("ENR-PAI-001", "ACT-PAI-VOICE-001");
+};
+
+window.submitVoiceActivitySim = function() {
+  ensureSelfPacedState();
+  state.selfPaced.voiceState.selectedDemoState = "Uploading";
+  window.renderLearnerVoiceWorkspace("ENR-PAI-001", "ACT-PAI-VOICE-001");
+  
+  setTimeout(() => {
+    state.selfPaced.voiceState.selectedDemoState = "Submitted";
+    state.selfPaced.activities["ACT-PAI-013"].status = "Completed";
+    
+    state.selfPaced.progressEvents.push({
+      id: `PROG-PAI-VOICE-${Date.now()}`,
+      enrolmentId: "ENR-PAI-001",
+      activityId: "ACT-PAI-013",
+      event: "completed",
+      occurredAt: new Date().toISOString()
+    });
+
+    window.renderLearnerVoiceWorkspace("ENR-PAI-001", "ACT-PAI-VOICE-001");
+    showToastAlert("✓ Voice recording successfully submitted!");
+  }, 1200);
+};
+
+// ==========================================================================
+// Screen 24 K-12 Student Portal
+// ==========================================================================
+
+window.renderK12LearnerWorkspace = function() {
+  ensureK12State();
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  const k = state.k12;
+  const activeSub = k.activeSubject;
+  const enrolment = k.enrolments.find(e => e.subject === activeSub);
+  const activeTab = k.activeTab;
+
+  // Safeguarding banner
+  const safeguardingBanner = `
+    <div style="background-color: #fff9e6; border: 1px solid #ffe082; color: #b78103; padding: 10px 16px; border-radius: 8px; font-size: 12.5px; font-weight: bold; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+      🛡️ Minor Learner · Safeguarding Rules Active (Zara Khan, 13)
+    </div>
+  `;
+
+  // Student details header
+  const headerHtml = `
+    <div class="form-card" style="padding: 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border-left: 6px solid var(--color-primary);">
+      <div>
+        <h2 style="font-family: var(--font-family-headings); font-size: 20px; font-weight: 800;">🎓 K-12 Workspace: ${k.learner.name}</h2>
+        <div style="font-size: 12.5px; color: var(--color-tertiary); margin-top: 4px;">
+          ${k.learner.grade} &middot; Academic Year 2026–2027 &middot; Bundle Status: <strong style="color: #137333;">Active</strong>
+        </div>
+      </div>
+      <div style="text-align: right; font-size: 12.5px;">
+        <div>Guardian: <strong>Nadia Khan</strong> (Verified Mother)</div>
+        <div style="color: var(--color-tertiary); font-size: 11px; margin-top: 2px;">Consent: Verified</div>
+      </div>
+    </div>
+  `;
+
+  // Dev K12 demo controller dropdown
+  const demoControllerHtml = `
+    <div class="form-card" style="margin-bottom: 20px; padding: 12px; background: #fff8f7; border: 1.5px solid #fad2cf; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <span style="font-weight: 800; font-size: 12.5px; color: #ba1a1a;">🎛️ Demo K-12 Lifecycle Status:</span>
+        <select class="form-input" style="width:220px; height:32px; font-size:12px; margin-bottom:0; background:#fff; border-color:#fad2cf; font-weight:700;" onchange="changeK12DemoState(this.value)">
+          <option value="Active Term" ${k.selectedDemoState === 'Active Term' ? 'selected' : ''}>Active Term</option>
+          <option value="Homework Due" ${k.selectedDemoState === 'Homework Due' ? 'selected' : ''}>Homework Due</option>
+          <option value="Report Draft" ${k.selectedDemoState === 'Report Draft' ? 'selected' : ''}>Report Card Draft</option>
+          <option value="Report In Review" ${k.selectedDemoState === 'Report In Review' ? 'selected' : ''}>Report Card In Review</option>
+          <option value="Report Published" ${k.selectedDemoState === 'Report Published' ? 'selected' : ''}>Report Card Published</option>
+          <option value="Report Corrected" ${k.selectedDemoState === 'Report Corrected' ? 'selected' : ''}>Report Card Corrected</option>
+          <option value="Guardian Permission Restricted" ${k.selectedDemoState === 'Guardian Permission Restricted' ? 'selected' : ''}>Guardian Permission Restricted</option>
+          <option value="Guardian Consent Required" ${k.selectedDemoState === 'Guardian Consent Required' ? 'selected' : ''}>Guardian Consent Required</option>
+          <option value="Teacher Changed" ${k.selectedDemoState === 'Teacher Changed' ? 'selected' : ''}>Teacher Changed (Hira -> Sana)</option>
+        </select>
+      </div>
+      <div style="font-size: 11px; color: var(--color-tertiary);">Current active state determines workspace locks.</div>
+    </div>
+  `;
+
+  // Consent blocker state
+  if (k.selectedDemoState === "Guardian Consent Required") {
+    view.innerHTML = `
+      ${getDevSandboxNavbarHTML('k12-student')}
+      ${demoControllerHtml}
+      <div class="form-card" style="padding: 40px 24px; text-align: center; max-width: 600px; margin: 20px auto; border-top: 6px solid #ba1a1a;">
+        <span style="font-size: 48px; display: block; margin-bottom: 16px;">🛑</span>
+        <h3 style="font-family: var(--font-family-headings); font-size: 18px; font-weight: 800; margin-bottom: 8px;">Guardian Consent Required</h3>
+        <p style="font-size: 13px; color: var(--color-tertiary); line-height: 1.5; margin-bottom: 20px;">
+          Access to K-12 Student services has been blocked. Nadia Khan (Mother) must sign the electronic safeguarding consent form inside the guardian portal to resume classes.
+        </p>
+        <button class="btn btn-primary" onclick="simulateSignConsentParent()" style="background-color: var(--color-secondary); border-color: var(--color-secondary); color:#000; font-weight:800;">Simulate Sign Consent (Parent)</button>
+      </div>
+    `;
+    return;
+  }
+
+  // Sidebar subject list
+  let subjectsSidebarHtml = "";
+  k.enrolments.forEach(e => {
+    subjectsSidebarHtml += `
+      <div style="padding: 12px 16px; cursor: pointer; border-left: 4px solid ${activeSub === e.subject ? 'var(--color-primary)' : 'transparent'}; background: ${activeSub === e.subject ? 'var(--color-surface-container-high)' : 'transparent'};" onclick="selectK12Subject('${e.subject}')">
+        <strong style="font-size: 13.5px; display: block;">${e.subject}</strong>
+        <span style="font-size: 11px; color: var(--color-tertiary);">Teacher: ${e.teacher} &middot; ${e.status}</span>
+      </div>
+    `;
+  });
+
+  // Tab controls html
+  const tabsList = ["Overview", "Schedule", "Syllabus", "Attendance", "Homework", "Assessments", "Grades"];
+  let tabsHtml = "";
+  tabsList.forEach(t => {
+    tabsHtml += `
+      <button style="padding: 8px 16px; border: none; border-bottom: 3px solid ${activeTab === t ? 'var(--color-secondary)' : 'transparent'}; background: transparent; font-weight: bold; font-size: 12.5px; color: ${activeTab === t ? 'var(--color-on-surface)' : 'var(--color-tertiary)'}; cursor: pointer;" onclick="selectK12Tab('${t}')">
+        ${t}
+      </button>
+    `;
+  });
+
+  // Body tab layout based on active tab
+  let tabBodyHtml = "";
+  if (activeTab === "Overview") {
+    tabBodyHtml = `
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div class="form-card" style="padding: 16px;">
+          <h4 style="font-weight: 800; font-size: 14px; margin-bottom: 12px;">👨‍🏫 Subject Details</h4>
+          <table style="font-size: 12.5px; width: 100%; border-collapse: collapse;">
+            <tr style="border-bottom: 1px solid var(--color-outline-variant);"><td style="padding: 8px 0; color: var(--color-tertiary);">Course Subject:</td><td style="padding: 8px 0; font-weight: bold; text-align: right;">${enrolment.subject}</td></tr>
+            <tr style="border-bottom: 1px solid var(--color-outline-variant);"><td style="padding: 8px 0; color: var(--color-tertiary);">Section Name:</td><td style="padding: 8px 0; font-weight: bold; text-align: right;">${enrolment.section}</td></tr>
+            <tr style="border-bottom: 1px solid var(--color-outline-variant);"><td style="padding: 8px 0; color: var(--color-tertiary);">Syllabus Version:</td><td style="padding: 8px 0; font-weight: bold; text-align: right;">${enrolment.syllabus}</td></tr>
+            <tr><td style="padding: 8px 0; color: var(--color-tertiary);">Enrolled Status:</td><td style="padding: 8px 0; font-weight: bold; text-align: right; color: #137333;">${enrolment.status}</td></tr>
+          </table>
+        </div>
+        <div class="form-card" style="padding: 16px;">
+          <h4 style="font-weight: 800; font-size: 14px; margin-bottom: 12px;">🏫 Class Teacher</h4>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 48px; height: 48px; border-radius: 50%; background-color: var(--color-primary-container); color: var(--color-on-primary-container); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px;">
+              ${enrolment.teacher.charAt(0)}
+            </div>
+            <div>
+              <strong style="font-size: 14px; display: block;">Teacher: ${enrolment.teacher}</strong>
+              <span style="font-size: 11px; color: var(--color-tertiary);">IHS Grade 7 Certified Instructor</span>
+              <button class="btn btn-secondary" style="font-size: 10px; padding: 2px 6px; margin-top: 4px; height: 22px; display: block;" onclick="window.location.hash='#learner/messages'">Message Teacher</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Timeline Class card -->
+      <div class="form-card" style="padding: 16px; margin-top: 16px; border-left: 4px solid var(--color-secondary);">
+        <span style="font-size: 11px; font-weight: 800; color: var(--color-secondary); text-transform: uppercase;">Upcoming K-12 Live Online Class</span>
+        <h4 style="font-family: var(--font-family-headings); font-weight: 800; font-size: 15px; margin: 4px 0 8px 0;">Topic: Adding & Subtracting Integers</h4>
+        <div style="font-size: 12.5px; display: flex; flex-wrap: wrap; gap: 16px; color: var(--color-tertiary);">
+          <span>📅 Monday, configured upcoming mock date</span>
+          <span>⏰ 5:00 PM – 5:45 PM PKT (Asia/Karachi)</span>
+          <span>👨‍🏫 Teacher: ${enrolment.teacher}</span>
+        </div>
+        <button class="btn btn-primary" style="margin-top: 12px; height: 34px; padding: 0 16px; background-color: var(--color-secondary); border-color: var(--color-secondary); color:#000; font-weight: 800;" onclick="showToastAlert('Class has not started yet. Ready 5 mins before.')">View Class Room</button>
+      </div>
+    `;
+  } else if (activeTab === "Schedule") {
+    tabBodyHtml = `
+      <div class="form-card" style="padding: 16px;">
+        <h4 style="font-weight: 800; font-size: 14px; margin-bottom: 12px;">⏰ Weekly Live-Class Roster</h4>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid var(--color-outline-variant); font-size: 12.5px;">
+            <span><strong>Mondays</strong> &middot; Live Group Class</span>
+            <span>5:00 PM – 5:45 PM PKT</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid var(--color-outline-variant); font-size: 12.5px;">
+            <span><strong>Wednesdays</strong> &middot; Live Group Class</span>
+            <span>5:00 PM – 5:45 PM PKT</span>
+          </div>
+          <div style="background-color: #fff9e6; padding: 8px; border-radius: 4px; font-size: 11.5px; color: #b78103; margin-top: 12px;">
+            ❄️ <strong>Holiday Rescheduling:</strong> Monday 24 Aug class is canceled for Academic Calendar Holiday. Tuesday rescheduled replacement class will trigger.
+          </div>
+        </div>
+      </div>
+    `;
+  } else if (activeTab === "Syllabus") {
+    let listHtml = "";
+    Object.keys(enrolment.progress).forEach(unit => {
+      const pct = enrolment.progress[unit];
+      listHtml += `
+        <div style="padding: 12px; border-bottom: 1px solid var(--color-outline-variant);">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong style="font-size: 13px;">${unit}</strong>
+            <span style="font-size: 11.5px; font-weight: bold; color: var(--color-primary);">${pct}% Done</span>
+          </div>
+          <div style="height: 6px; background: #eee; border-radius: 3px; margin-top: 6px; position: relative;">
+            <div style="width: ${pct}%; height: 100%; background: var(--color-primary); border-radius: 3px;"></div>
+          </div>
+        </div>
+      `;
+    });
+    tabBodyHtml = `
+      <div class="form-card" style="padding: 16px;">
+        <h4 style="font-weight: 800; font-size: 14px; margin-bottom: 12px;">📖 Syllabus Structure (${enrolment.syllabus})</h4>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          ${listHtml}
+        </div>
+      </div>
+    `;
+  } else if (activeTab === "Attendance") {
+    let rowsHtml = "";
+    k.attendance[enrolment.id].forEach(att => {
+      rowsHtml += `
+        <tr style="border-bottom: 1px solid var(--color-outline-variant); font-size: 12.5px;">
+          <td style="padding: 8px;">${att.date}</td>
+          <td style="padding: 8px;">${att.topic}</td>
+          <td style="padding: 8px; font-weight: bold; color: #137333;">✓ ${att.status}</td>
+        </tr>
+      `;
+    });
+    tabBodyHtml = `
+      <div class="form-card" style="padding: 16px;">
+        <h4 style="font-weight: 800; font-size: 14px; margin-bottom: 12px;">📊 Subject Attendance</h4>
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+          <thead>
+            <tr style="border-bottom: 2px solid var(--color-outline-variant); font-size: 11px; text-transform: uppercase; color: var(--color-tertiary);">
+              <th style="padding: 8px;">Date</th>
+              <th style="padding: 8px;">Topic Covered</th>
+              <th style="padding: 8px;">Attendance</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+          </tbody>
+        </table>
+      </div>
+    `;
+  } else if (activeTab === "Homework") {
+    tabBodyHtml = `
+      <div class="form-card" style="padding: 16px; border-left: 4px solid var(--color-secondary);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="font-size: 11px; font-weight: 800; color: var(--color-secondary); text-transform: uppercase;">Integer Practice Worksheet</span>
+          <span style="font-size: 11px; background: #fff3cd; color: #856404; padding: 2px 6px; border-radius: 4px; font-weight: bold;">To Do</span>
+        </div>
+        <p style="font-size: 12.5px; margin: 0 0 10px 0;">Solve addition/subtraction questions 1-15 in Unit 1 Integers chapter.</p>
+        <div style="font-size: 11px; color: var(--color-tertiary); margin-bottom: 12px;">Due Date: 18 Aug 2026 &middot; Graded: Homework (20% Weight)</div>
+        <button class="btn btn-primary" style="height: 32px; font-size: 12px; background-color: var(--color-secondary); border-color: var(--color-secondary); color:#000; font-weight:700;" onclick="showToastAlert('Document workspace opened.')">Solve Homework</button>
+      </div>
+    `;
+  } else if (activeTab === "Assessments") {
+    let rowsHtml = "";
+    k.assessments[enrolment.id].forEach(ass => {
+      rowsHtml += `
+        <tr style="border-bottom: 1px solid var(--color-outline-variant); font-size: 12.5px;">
+          <td style="padding: 10px;">${ass.title}</td>
+          <td style="padding: 10px; color: var(--color-tertiary);">${ass.category}</td>
+          <td style="padding: 10px; font-weight: bold;">${ass.score !== null ? `${ass.score} / ${ass.max}` : 'Pending'}</td>
+          <td style="padding: 10px;">
+            <span class="status-badge status-badge-${ass.status.toLowerCase().replace(' ', '-')}" style="padding: 3px 6px; border-radius: 4px; font-size: 10.5px; font-weight: bold;">
+              ${ass.status}
+            </span>
+          </td>
+        </tr>
+      `;
+    });
+    tabBodyHtml = `
+      <div class="form-card" style="padding: 16px;">
+        <h4 style="font-weight: 800; font-size: 14px; margin-bottom: 12px;">📝 Graded Homework & Quiz Assessments</h4>
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+          <thead>
+            <tr style="border-bottom: 2px solid var(--color-outline-variant); font-size: 11px; text-transform: uppercase; color: var(--color-tertiary);">
+              <th style="padding: 10px;">Assessment</th>
+              <th style="padding: 10px;">Category</th>
+              <th style="padding: 10px;">Score</th>
+              <th style="padding: 10px;">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+          </tbody>
+        </table>
+      </div>
+    `;
+  } else if (activeTab === "Grades") {
+    tabBodyHtml = `
+      <div class="form-card" style="padding: 16px;">
+        <h4 style="font-weight: 800; font-size: 14px; margin-bottom: 4px;">📊 Mathematics Weighted Gradebook (Term 1)</h4>
+        <p style="font-size: 11.5px; color: var(--color-tertiary); margin-bottom: 16px;">Configured Scheme: Homework (20%), Quizzes (20%), Class Tests (25%), Term Exam (35%). Total: 100%</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 12.5px; font-weight: bold; margin-bottom: 4px;">
+              <span>Homework Category (20% Weight)</span>
+              <span>90% (18/20)</span>
+            </div>
+            <div style="height: 6px; background: #eee; border-radius: 3px; position: relative;">
+              <div style="width: 90%; height: 100%; background: var(--color-primary); border-radius: 3px;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 12.5px; font-weight: bold; margin-bottom: 4px;">
+              <span>Quizzes Category (20% Weight)</span>
+              <span>80% (16/20)</span>
+            </div>
+            <div style="height: 6px; background: #eee; border-radius: 3px; position: relative;">
+              <div style="width: 80%; height: 100%; background: var(--color-primary); border-radius: 3px;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 12.5px; font-weight: bold; margin-bottom: 4px;">
+              <span>Class Tests Category (25% Weight)</span>
+              <span>88% (22/25)</span>
+            </div>
+            <div style="height: 6px; background: #eee; border-radius: 3px; position: relative;">
+              <div style="width: 88%; height: 100%; background: var(--color-primary); border-radius: 3px;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 12.5px; font-weight: bold; margin-bottom: 4px;">
+              <span>Term Exam Category (35% Weight)</span>
+              <span style="color: var(--color-tertiary);">No grade yet</span>
+            </div>
+            <div style="height: 6px; background: #eee; border-radius: 3px; position: relative;">
+              <div style="width: 0%; height: 100%; background: var(--color-primary); border-radius: 3px;"></div>
+            </div>
+          </div>
+          <div style="margin-top: 12px; border-top: 1px solid var(--color-outline-variant); padding-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 800;">
+            <span>Current Term Standing:</span>
+            <span style="color: var(--color-secondary);">In Progress (86.4% weighted avg)</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  view.innerHTML = `
+    ${getDevSandboxNavbarHTML('k12-student')}
+    ${safeguardingBanner}
+    ${demoControllerHtml}
+    ${headerHtml}
+
+    <div style="display: grid; grid-template-columns: 240px 1fr; gap: 24px; align-items: flex-start;">
+      <!-- Left side subjects navigation switcher -->
+      <div class="form-card" style="padding: 0; overflow: hidden;">
+        <div style="padding: 12px 16px; border-bottom: 1px solid var(--color-outline-variant); background-color: var(--color-surface-container);">
+          <strong style="font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">Zara's Bundle Subjects</strong>
+        </div>
+        <div style="display: flex; flex-direction: column;">
+          ${subjectsSidebarHtml}
+        </div>
+      </div>
+
+      <!-- Right side tabs workspace area -->
+      <div>
+        <div style="display: flex; gap: 6px; border-bottom: 1px solid var(--color-outline-variant); margin-bottom: 16px;">
+          ${tabsHtml}
+        </div>
+        <div>
+          ${tabBodyHtml}
+        </div>
+      </div>
+    </div>
+  `;
+};
+
+window.selectK12Subject = function(subjectName) {
+  ensureK12State();
+  state.k12.activeSubject = subjectName;
+  window.renderK12LearnerWorkspace();
+};
+
+window.selectK12Tab = function(tabName) {
+  ensureK12State();
+  state.k12.activeTab = tabName;
+  window.renderK12LearnerWorkspace();
+};
+
+window.changeK12DemoState = function(val) {
+  ensureK12State();
+  state.k12.selectedDemoState = val;
+  
+  if (val === "Teacher Changed") {
+    // Switch math instructor
+    state.k12.enrolments[0].teacher = "Sana Malik";
+  } else {
+    state.k12.enrolments[0].teacher = "Hira Siddiqui";
+  }
+
+  if (val === "Report Published") {
+    state.k12.reportCard.status = "Published";
+  } else if (val === "Report Corrected") {
+    state.k12.reportCard.status = "Corrected";
+  } else if (val === "Report In Review") {
+    state.k12.reportCard.status = "In Review";
+  } else {
+    state.k12.reportCard.status = "Draft";
+  }
+
+  showToastAlert(`K-12 State simulated: ${val}`);
+  window.renderK12LearnerWorkspace();
+};
+
+// ==========================================================================
+// Screen 24 Guardian Portal (Nadia Khan)
+// ==========================================================================
+
+window.renderK12GuardianWorkspace = function() {
+  ensureK12State();
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  const k = state.k12;
+  const activeSub = k.activeSubject;
+  const enrolment = k.enrolments.find(e => e.subject === activeSub);
+  const guardian = k.guardians[0]; // Nadia Khan
+
+  // Header info
+  const headerHtml = `
+    <div class="form-card" style="padding: 16px; margin-bottom: 20px; border-left: 6px solid var(--color-secondary);">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <span style="font-size: 11px; font-weight: 800; color: var(--color-secondary); text-transform: uppercase;">Guardian Parent Dashboard</span>
+          <h2 style="font-family: var(--font-family-headings); font-size: 20px; font-weight: 800; margin-top: 4px;">Mother: Nadia Khan</h2>
+          <div style="font-size: 12.5px; color: var(--color-tertiary); margin-top: 2px;">
+            Student: <strong>Zara Khan</strong> (Grade 7 &middot; Bundle Activated) &middot; Relationship Verification: <strong style="color: #137333;">Verified</strong>
+          </div>
+        </div>
+        <div style="text-align: right;">
+          <button class="btn btn-secondary" style="font-size: 11px; font-weight: 800;" onclick="toggleGuardianGradesPermission()">
+            Toggle Permissions: Grades visibility is ${guardian.permissions.grades ? 'ON' : 'OFF'}
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Summary Metrics Cards
+  const summaryCardsHtml = `
+    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px;">
+      <div class="form-card" style="padding: 12px; text-align: center;">
+        <span style="font-size: 11px; color: var(--color-tertiary); text-transform: uppercase;">Active Subjects</span>
+        <div style="font-size: 20px; font-weight: 800; margin-top: 4px;">3</div>
+      </div>
+      <div class="form-card" style="padding: 12px; text-align: center;">
+        <span style="font-size: 11px; color: var(--color-tertiary); text-transform: uppercase;">Next Class</span>
+        <div style="font-size: 13px; font-weight: 800; margin-top: 8px; color: var(--color-primary);">Math (5:00 PM)</div>
+      </div>
+      <div class="form-card" style="padding: 12px; text-align: center;">
+        <span style="font-size: 11px; color: var(--color-tertiary); text-transform: uppercase;">Attendance</span>
+        <div style="font-size: 20px; font-weight: 800; margin-top: 4px; color: #137333;">94%</div>
+      </div>
+      <div class="form-card" style="padding: 12px; text-align: center;">
+        <span style="font-size: 11px; color: var(--color-tertiary); text-transform: uppercase;">Pending Homework</span>
+        <div style="font-size: 20px; font-weight: 800; margin-top: 4px; color: #b78103;">1</div>
+      </div>
+      <div class="form-card" style="padding: 12px; text-align: center; cursor: pointer; background-color: #fff9e6; border: 1.5px solid #ffe082;" onclick="selectK12ReportLink()">
+        <span style="font-size: 11px; color: var(--color-tertiary); text-transform: uppercase;">Term 1 Report</span>
+        <div style="font-size: 13px; font-weight: 800; margin-top: 8px; text-decoration: underline;">
+          ${k.reportCard.status} &rarr;
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Subject details tabs and selectors
+  let subjectsSelectHtml = "";
+  k.enrolments.forEach(e => {
+    subjectsSelectHtml += `
+      <option value="${e.subject}" ${activeSub === e.subject ? 'selected' : ''}>${e.subject} (Teacher: ${e.teacher})</option>
+    `;
+  });
+
+  // If grades visibility is disabled
+  let contentHtml = "";
+  if (!guardian.permissions.grades) {
+    contentHtml = `
+      <div class="form-card" style="padding: 24px; text-align: center; border-top: 4px solid #ba1a1a;">
+        <span style="font-size: 32px;">🔒</span>
+        <h4 style="font-weight: 800; margin-top: 8px;">Grade Details Restricted</h4>
+        <p style="font-size: 12.5px; color: var(--color-tertiary); margin-top: 4px;">Grade details aren't available for your current access level (grades: false). Contact main account holder to modify credentials.</p>
+      </div>
+    `;
+  } else {
+    // Generate Grade history & Attendance
+    let rowsHtml = "";
+    k.assessments[enrolment.id].forEach(ass => {
+      rowsHtml += `
+        <tr style="border-bottom: 1px solid var(--color-outline-variant);">
+          <td style="padding: 8px; font-weight: bold;">${ass.title}</td>
+          <td style="padding: 8px; color: var(--color-tertiary);">${ass.category}</td>
+          <td style="padding: 8px;">${ass.score !== null ? `${ass.score} / ${ass.max}` : 'Pending'}</td>
+        </tr>
+      `;
+    });
+
+    contentHtml = `
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div class="form-card" style="padding: 16px;">
+          <h4 style="font-weight: 800; font-size: 14px; margin-bottom: 12px;">📊 Subject Assessments (Parent View)</h4>
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 12.5px;">
+            <thead>
+              <tr style="border-bottom: 2px solid var(--color-outline-variant); color: var(--color-tertiary);">
+                <th style="padding: 8px;">Title</th>
+                <th style="padding: 8px;">Category</th>
+                <th style="padding: 8px;">Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>
+        </div>
+        <div class="form-card" style="padding: 16px;">
+          <h4 style="font-weight: 800; font-size: 14px; margin-bottom: 12px;">💬 Teacher Academic Commentary</h4>
+          <div style="background-color: var(--color-surface-container); padding: 12px; border-radius: 6px; font-size: 13px; line-height: 1.5; font-style: italic;">
+            "${k.teacherComments[enrolment.id]}"
+          </div>
+          <span style="font-size: 11px; color: var(--color-tertiary); display: block; margin-top: 6px; text-align: right;">Written by: ${enrolment.teacher}</span>
+          
+          <div style="border-top: 1px solid var(--color-outline-variant); margin-top: 12px; padding-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 12px; font-weight: bold;">Dispute recorded grade?</span>
+            <button class="btn btn-secondary" style="font-size: 11px; padding: 4px 8px;" onclick="simulateDisputeGrade('${enrolment.id}')">Submit Query</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  view.innerHTML = `
+    ${getDevSandboxNavbarHTML('k12-guardian')}
+    ${headerHtml}
+    ${summaryCardsHtml}
+
+    <div class="form-card" style="padding: 16px; margin-bottom: 16px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-weight: 700; font-size: 13px;">Selected Subject:</span>
+          <select class="form-input" style="width: 250px; height: 34px; margin-bottom: 0; font-weight: bold;" onchange="selectK12Subject(this.value)">
+            ${subjectsSelectHtml}
+          </select>
+        </div>
+        <div style="font-size: 12.5px; color: var(--color-tertiary);">
+          Weekly Schedule: <strong>Mon & Wed, 5:00 PM – 5:45 PM PKT</strong>
+        </div>
+      </div>
+    </div>
+
+    ${contentHtml}
+  `;
+};
+
+window.toggleGuardianGradesPermission = function() {
+  ensureK12State();
+  const perm = state.k12.guardians[0].permissions;
+  perm.grades = !perm.grades;
+  perm.reportCards = !perm.reportCards;
+  showToastAlert(`Guardian permissions updated: Grades visibility is now ${perm.grades ? 'Allowed' : 'Restricted'}.`);
+  window.renderK12GuardianWorkspace();
+};
+
+window.selectK12ReportLink = function() {
+  ensureK12State();
+  const k = state.k12;
+  const perm = k.guardians[0].permissions;
+  if (!perm.reportCards) {
+    showToastAlert("🔒 Access Restricted: You do not have permission to view report cards.");
+    return;
+  }
+  
+  if (k.reportCard.status === "Draft" || k.reportCard.status === "In Review") {
+    showToastAlert("⏳ Report Card is still under internal review/drafting phase. Not published to parents yet.");
+  } else {
+    window.location.hash = "#guardian/learners/LEARNER-K12-001/reports/REPORTCARD-K12-T1-001";
+  }
+};
+
+window.simulateDisputeGrade = function(enrolmentId) {
+  const content = `
+    <div style="text-align: left; font-size: 13px;">
+      <p style="margin-bottom: 12px; color: var(--color-tertiary);">Submit a query to Operations and subject teacher regarding the recorded grades. This will open a review inquiry.</p>
+      <label style="font-weight: bold; display: block; margin-bottom: 4px;">Inquiry Note:</label>
+      <textarea id="dispute-note" class="form-input" style="height: 60px;" placeholder="e.g. My child submitted the project work but it shows failed. Please verify."></textarea>
+      <div style="display: flex; gap: 12px; margin-top: 12px;">
+        <button class="btn btn-primary" style="background-color: var(--color-secondary); border-color: var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="executeDisputeGradeSubmit('${enrolmentId}')">Submit Query</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Dispute Graded Mark", content);
+};
+
+window.executeDisputeGradeSubmit = function(enrolmentId) {
+  ensureK12State();
+  closeModal();
+  state.k12.gradeExceptions.push({
+    enrolmentId: enrolmentId,
+    note: document.getElementById("dispute-note").value || "Grade questioned",
+    status: "Under Review"
+  });
+  showToastAlert("✓ Grade dispute query submitted. Operations will evaluate the marking log.");
+  window.renderK12GuardianWorkspace();
+};
+
+// ==========================================================================
+// Screen 24 Parent Report Card View
+// ==========================================================================
+
+window.renderK12ReportCardView = function(reportId) {
+  ensureK12State();
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  const k = state.k12;
+  
+  // Safeguarding / private notes check: exclude internal operations comments
+  view.innerHTML = `
+    ${getDevSandboxNavbarHTML('k12-guardian')}
+
+    <div style="margin-bottom: 16px;">
+      <a href="#guardian/learners/LEARNER-K12-001/academics" style="font-weight: 700; color: var(--color-secondary); font-size: 13px;">&larr; Back to Academics Dashboard</a>
+    </div>
+
+    <div class="form-card" style="padding: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--color-outline-variant); padding-bottom: 12px; margin-bottom: 20px;">
+        <div>
+          <span style="font-size: 11px; font-weight: 800; color: var(--color-primary); text-transform: uppercase;">Official Progress Report</span>
+          <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 800; margin-top: 4px;">Term 1 Report Card</h2>
+          <div style="font-size: 12.5px; color: var(--color-tertiary); margin-top: 2px;">Student: Zara Khan &middot; Grade: Grade 7 &middot; Year: 2026–2027</div>
+        </div>
+        <div style="text-align: right;">
+          <span class="status-badge status-badge-graded" style="font-size: 13px; font-weight: 800; padding: 6px 12px; border-radius: 4px;">
+            ${k.reportCard.status}
+          </span>
+          <div style="font-size: 11px; color: var(--color-tertiary); margin-top: 4px;">Released: 18 Dec 2026</div>
+        </div>
+      </div>
+
+      <!-- Report Card table showing subject results -->
+      <table style="width: 100%; border-collapse: collapse; text-align: left; margin-bottom: 24px;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 12px; text-transform: uppercase; color: var(--color-tertiary);">
+            <th style="padding: 12px;">Subject</th>
+            <th style="padding: 12px;">Teacher</th>
+            <th style="padding: 12px;">Attendance</th>
+            <th style="padding: 12px;">Weighted Average</th>
+            <th style="padding: 12px;">Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid var(--color-outline-variant); font-size: 13px;">
+            <td style="padding: 12px; font-weight: bold;">Mathematics</td>
+            <td style="padding: 12px;">Hira Siddiqui</td>
+            <td style="padding: 12px;">100%</td>
+            <td style="padding: 12px; font-weight: bold; color: var(--color-primary);">86.4%</td>
+            <td style="padding: 12px; font-style: italic;">"${k.teacherComments["ENR-K12-MATH-001"]}"</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--color-outline-variant); font-size: 13px;">
+            <td style="padding: 12px; font-weight: bold;">English</td>
+            <td style="padding: 12px;">Farah Ahmed</td>
+            <td style="padding: 12px;">92%</td>
+            <td style="padding: 12px; font-weight: bold; color: var(--color-primary);">84%</td>
+            <td style="padding: 12px; font-style: italic;">"${k.teacherComments["ENR-K12-ENG-001"]}"</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--color-outline-variant); font-size: 13px;">
+            <td style="padding: 12px; font-weight: bold;">General Science</td>
+            <td style="padding: 12px;">Usman Raza</td>
+            <td style="padding: 12px;">88%</td>
+            <td style="padding: 12px; font-weight: bold; color: var(--color-primary);">${k.selectedDemoState === 'Report Corrected' ? '82%' : '78%'}</td>
+            <td style="padding: 12px; font-style: italic;">"${k.teacherComments["ENR-K12-SCI-001"]}"</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Corrected Version comparisons -->
+      ${k.selectedDemoState === 'Report Corrected' ? `
+        <div style="background-color: #f0f4f8; border: 1.5px solid #d0e0f0; border-radius: 8px; padding: 16px; font-size: 12.5px;">
+          <h4 style="font-weight: 800; margin-bottom: 4px; color: var(--color-primary);">📝 Correction History Log</h4>
+          <p style="margin: 0; color: var(--color-tertiary);">This report card was corrected on 20 Dec 2026. Reason: "Incorrect lab marking workbook rectified by Usman Raza."</p>
+          <div style="margin-top: 8px;">
+            <button class="btn btn-secondary" style="font-size: 11px; padding: 4px 8px;" onclick="showReportPreviousVersion()">View Original v1 Snapshot (Science: 78%)</button>
+          </div>
+        </div>
+      ` : ''}
+
+    </div>
+  `;
+};
+
+window.showReportPreviousVersion = function() {
+  const content = `
+    <div style="text-align: left; font-size: 13px;">
+      <h4 style="font-weight: 800; margin-bottom: 8px;">Report Card v1 Snapshot</h4>
+      <table style="width: 100%; border-collapse: collapse; font-size: 12.5px; text-align: left;">
+        <tr style="border-bottom: 1px solid #ddd;"><th style="padding: 6px;">Subject</th><th style="padding: 6px;">Grade</th></tr>
+        <tr style="border-bottom: 1px solid #ddd;"><td style="padding: 6px;">Mathematics</td><td style="padding: 6px;">86.4%</td></tr>
+        <tr style="border-bottom: 1px solid #ddd;"><td style="padding: 6px;">English</td><td style="padding: 6px;">84%</td></tr>
+        <tr style="border-bottom: 1px solid #ddd;"><td style="padding: 6px;">General Science</td><td style="padding: 6px; font-weight: bold; color: #ba1a1a;">78% (Original)</td></tr>
+      </table>
+      <button class="btn btn-secondary" style="margin-top: 12px; width: 100%;" onclick="closeModal()">Close Snapshot</button>
+    </div>
+  `;
+  openModal("Original Snapshot Version 1", content);
+};
+
+// ==========================================================================
+// Screen 24 Operations Review Report Card Workspace
+// ==========================================================================
+
+window.renderOperationsReportCardReview = function(reportId) {
+  ensureK12State();
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  const k = state.k12;
+  const status = k.reportCard.status;
+
+  view.innerHTML = `
+    ${getDevSandboxNavbarHTML('operations-report')}
+
+    <div class="form-card" style="padding: 24px;">
+      <h2 style="font-family: var(--font-family-headings); font-size: 20px; font-weight: 800; margin-bottom: 6px;">📋 Operations: K-12 Report-Card Review</h2>
+      <p style="font-size: 12.5px; color: var(--color-tertiary); margin-bottom: 20px;">Review, verify completeness, and publish official academic report cards for Grade 7 tuition cohorts.</p>
+
+      <div style="background-color: var(--color-surface-container); border: 1px solid var(--color-outline-variant); border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <strong style="font-size: 14px;">Term 1 Progress Report Card (Zara Khan)</strong>
+            <div style="font-size: 11.5px; color: var(--color-tertiary); margin-top: 2px;">ID: ${reportId} &middot; Current State: <strong>${status}</strong></div>
+          </div>
+          <span class="status-badge status-badge-${status.toLowerCase().replace(' ', '-')}" style="padding: 4px 8px; border-radius: 4px; font-weight: 800; font-size: 12px;">
+            ${status}
+          </span>
+        </div>
+      </div>
+
+      <h3 style="font-weight: 800; font-size: 14px; margin-bottom: 12px;">Report Card Verification Checklist</h3>
+      <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px; margin-bottom: 24px;">
+        <div>✅ <strong>Mathematics Grades:</strong> Confirmed complete (avg: 86.4%).</div>
+        <div>✅ <strong>English Grades:</strong> Confirmed complete (avg: 84%).</div>
+        <div>✅ <strong>General Science Grades:</strong> Confirmed complete (avg: 78%).</div>
+        <div>✅ <strong>Attendance Data:</strong> Parsed and logged successfully.</div>
+        <div>✅ <strong>Teacher Comments:</strong> Draft remark fields prefilled.</div>
+        <div>✅ <strong>Financial Clearance:</strong> Bundle fee payment cleared.</div>
+      </div>
+
+      <div style="display: flex; gap: 12px; border-top: 1px solid var(--color-outline-variant); padding-top: 16px;">
+        ${status !== 'Published' && status !== 'Corrected' ? `
+          <button class="btn btn-primary" style="background-color: #137333; border-color: #137333; height: 40px; font-weight: 800;" onclick="executePublishReportCard()">Approve & Publish to Guardian</button>
+        ` : `
+          <button class="btn btn-secondary" style="height: 40px;" disabled>✓ Report Already Published</button>
+          ${status === 'Published' ? `
+            <button class="btn btn-primary" style="background-color: #ba1a1a; border-color: #ba1a1a; height: 40px; font-weight: 800;" onclick="executeGradeCorrectionSim()">Simulate Grade Correction (78% -> 82%)</button>
+          ` : ''}
+        `}
+      </div>
+    </div>
+  `;
+};
+
+window.executePublishReportCard = function() {
+  ensureK12State();
+  state.k12.reportCard.status = "Published";
+  state.k12.selectedDemoState = "Report Published";
+  showToastAlert("✓ K-12 Report Card published! Nadia Khan notified via dashboard alerts.");
+  window.renderOperationsReportCardReview("REPORTCARD-K12-T1-001");
+};
+
+window.executeGradeCorrectionSim = function() {
+  ensureK12State();
+  state.k12.reportCard.status = "Corrected";
+  state.k12.selectedDemoState = "Report Corrected";
+  showToastAlert("✓ Grade corrected successfully. Snapshot Version 1 history preserved.");
+  window.renderOperationsReportCardReview("REPORTCARD-K12-T1-001");
+};
+
+// ==========================================================================
+// Screen 25 Shared Resources Management Portal (Library, Uploads, Exceptions)
+// ==========================================================================
+
+window.renderStaffResourcesPage = function(activeTab) {
+  ensureResourceState();
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  // Render top headers and counts
+  let libraryRowsHtml = "";
+  let listToRender = state.resources;
+  if (activeTab === "exceptions") {
+    listToRender = [
+      { id: "RES-ERR-001", title: "Pronunciation Basics", type: "MP3", category: "Course Resource", status: "Failed", currentVersionId: "RESVER-SE-PRON-FAIL", owner: "Spoken English", size: "3.2 MB", uploader: "Ayesha Rahman", updated: "13 Aug 2026" }
+    ];
+  }
+
+  listToRender.forEach(res => {
+    libraryRowsHtml += `
+      <tr style="border-bottom: 1px solid var(--color-outline-variant); font-size: 13px;">
+        <td style="padding: 12px; font-weight: bold;">📄 ${res.title}</td>
+        <td style="padding: 12px; color: var(--color-tertiary);">${res.type}</td>
+        <td style="padding: 12px;">${res.uploader}</td>
+        <td style="padding: 12px; font-weight: bold; color: var(--color-primary);">${res.owner}</td>
+        <td style="padding: 12px;">
+          <span class="status-badge status-badge-${res.status.toLowerCase().replace(' ', '-')}" style="padding: 3px 6px; border-radius: 4px; font-size: 11px; font-weight: bold;">
+            ${res.status}
+          </span>
+        </td>
+        <td style="padding: 12px;">
+          <a href="#staff/resources/detail/${res.id}" class="btn btn-secondary" style="padding: 4px 8px; font-size: 11.5px; font-weight: 700; height: 28px; display: inline-flex; align-items: center;">
+            Manage
+          </a>
+        </td>
+      </tr>
+    `;
+  });
+
+  const tabList = [
+    { key: "library", label: "Library" },
+    { key: "exceptions", label: "Exceptions Queue" },
+    { key: "archived", label: "Archived" }
+  ];
+
+  let tabsHtml = "";
+  tabList.forEach(t => {
+    const isActive = activeTab === t.key;
+    tabsHtml += `
+      <button style="padding: 8px 16px; border: none; border-bottom: 3px solid ${isActive ? 'var(--color-secondary)' : 'transparent'}; background: transparent; font-weight: bold; font-size: 12.5px; color: ${isActive ? 'var(--color-on-surface)' : 'var(--color-tertiary)'}; cursor: pointer;" onclick="window.location.hash='#staff/resources${t.key === 'library' ? '' : '/' + t.key}'">
+        ${t.label}
+      </button>
+    `;
+  });
+
+  view.innerHTML = `
+    ${getDevSandboxNavbarHTML('staff-resources')}
+
+    <div class="form-card" style="padding: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--color-outline-variant); padding-bottom: 12px; margin-bottom: 20px;">
+        <div>
+          <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 800;">📚 Shared Resource & Media Assets Library</h2>
+          <p style="font-size: 12.5px; color: var(--color-tertiary); margin-top: 4px;">Upload, review, assign, and audit shared resources and curriculum attachments.</p>
+        </div>
+        <button class="btn btn-primary" style="background-color: var(--color-secondary); border-color: var(--color-secondary); color:#000; font-weight:800;" onclick="openResourceUploadModal()">
+          + Upload Resource
+        </button>
+      </div>
+
+      <!-- Summary metrics count cards -->
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px;">
+        <div class="form-card" style="padding: 12px; text-align: center; border-left: 4px solid #137333;">
+          <span style="font-size: 11px; color: var(--color-tertiary); text-transform: uppercase;">Published</span>
+          <div style="font-size: 20px; font-weight: 800; margin-top: 4px;">24</div>
+        </div>
+        <div class="form-card" style="padding: 12px; text-align: center; border-left: 4px solid #b78103;">
+          <span style="font-size: 11px; color: var(--color-tertiary); text-transform: uppercase;">In Review</span>
+          <div style="font-size: 20px; font-weight: 800; margin-top: 4px;">3</div>
+        </div>
+        <div class="form-card" style="padding: 12px; text-align: center; border-left: 4px solid #1a73e8;">
+          <span style="font-size: 11px; color: var(--color-tertiary); text-transform: uppercase;">Processing</span>
+          <div style="font-size: 20px; font-weight: 800; margin-top: 4px;">2</div>
+        </div>
+        <div class="form-card" style="padding: 12px; text-align: center; border-left: 4px solid #ba1a1a;" onclick="window.location.hash='#staff/resources/exceptions'">
+          <span style="font-size: 11px; color: var(--color-tertiary); text-transform: uppercase; cursor: pointer;">Exceptions Queue</span>
+          <div style="font-size: 20px; font-weight: 800; margin-top: 4px; color: #ba1a1a; cursor: pointer;">1</div>
+        </div>
+      </div>
+
+      <!-- Tab selectors -->
+      <div style="display: flex; gap: 8px; border-bottom: 1px solid var(--color-outline-variant); margin-bottom: 16px;">
+        ${tabsHtml}
+      </div>
+
+      <!-- Resources List Table -->
+      <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+            <th style="padding: 12px;">Resource Name</th>
+            <th style="padding: 12px;">Type</th>
+            <th style="padding: 12px;">Uploaded By</th>
+            <th style="padding: 12px;">Owner / Subject</th>
+            <th style="padding: 12px;">Status</th>
+            <th style="padding: 12px;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${libraryRowsHtml}
+        </tbody>
+      </table>
+
+    </div>
+  `;
+};
+
+window.openResourceUploadModal = function() {
+  const content = `
+    <div style="text-align: left; font-size: 13px; display: flex; flex-direction: column; gap: 12px;">
+      <div>
+        <label style="font-weight: bold; display: block; margin-bottom: 4px;">Resource Title:</label>
+        <input type="text" id="upload-res-title" class="form-input" style="margin-bottom:0;" value="Prompt Engineering Checklist">
+      </div>
+      <div>
+        <label style="font-weight: bold; display: block; margin-bottom: 4px;">Description:</label>
+        <textarea id="upload-res-desc" class="form-input" style="height: 50px; margin-bottom:0;">Quick reference for building structured prompts using goal, context, constraints.</textarea>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div>
+          <label style="font-weight: bold; display: block; margin-bottom: 4px;">Owner Course:</label>
+          <select id="upload-res-owner" class="form-input" style="margin-bottom:0;">
+            <option value="practical-ai">Practical AI</option>
+            <option value="spoken-english">Spoken English</option>
+            <option value="k12-math">Grade 7 Mathematics</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-weight: bold; display: block; margin-bottom: 4px;">Allowed Types Policy:</label>
+          <div style="font-size: 11px; color: var(--color-tertiary); margin-top: 6px;">Allowed: PDF, DOCX, PNG, MP3, MP4</div>
+        </div>
+      </div>
+      <div>
+        <label style="font-weight: bold; display: block; margin-bottom: 4px;">Upload Document (Simulate file selection):</label>
+        <div style="background-color: var(--color-surface-container); border: 2px dashed var(--color-outline-variant); border-radius: 6px; padding: 20px; text-align: center; cursor: pointer;" onclick="showToastAlert('File prompt engineering checklist.pdf selected.')">
+          📎 prompt-engineering-checklist.pdf (1.8 MB)
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; margin-top: 12px; border-top: 1px solid var(--color-outline-variant); padding-top: 12px;">
+        <button class="btn btn-primary" style="background-color: var(--color-secondary); border-color: var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="executeResourceUploadSim()">Start Upload & Scan</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Upload New Resource", content);
+};
+
+window.executeResourceUploadSim = function() {
+  closeModal();
+  showToastAlert("✓ Upload Initiated... Finalizing object checksum and antiviral scanning.");
+  ensureResourceState();
+  
+  // Add to library
+  const newId = `RES-PAI-PROMPT-001`;
+  const exist = state.resources.find(r => r.id === newId);
+  if (!exist) {
+    state.resources.push({
+      id: newId,
+      title: document.getElementById("upload-res-title").value || "Prompt Engineering Checklist",
+      type: "PDF",
+      category: "Course Resource",
+      status: "In Review",
+      currentVersionId: "RESVER-PAI-PROMPT-001-V1",
+      owner: "Practical AI",
+      uploader: "Hamza Siddiqui",
+      updated: new Date().toLocaleDateString()
+    });
+  } else {
+    exist.status = "In Review";
+  }
+
+  window.renderStaffResourcesPage("library");
+};
+
+// ==========================================================================
+// Screen 25 Resource Detail Management Workspace
+// ==========================================================================
+
+window.renderStaffResourceDetail = function(resId) {
+  ensureResourceState();
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  const res = state.resources.find(r => r.id === resId) || state.resources[0];
+  const versions = state.resourceVersions[res.id] || [];
+
+  if (!state.selfPaced.resourceDetailActiveTab) {
+    state.selfPaced.resourceDetailActiveTab = "overview";
+  }
+  const tab = state.selfPaced.resourceDetailActiveTab;
+
+  let bodyHtml = "";
+  if (tab === "overview") {
+    bodyHtml = `
+      <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+        <tr style="border-bottom: 1px solid var(--color-outline-variant);"><td style="padding: 10px 0; color: var(--color-tertiary);">Stable Resource ID:</td><td style="padding: 10px 0; font-weight: bold; text-align: right;">${res.id}</td></tr>
+        <tr style="border-bottom: 1px solid var(--color-outline-variant);"><td style="padding: 10px 0; color: var(--color-tertiary);">Declared Category:</td><td style="padding: 10px 0; font-weight: bold; text-align: right;">${res.category}</td></tr>
+        <tr style="border-bottom: 1px solid var(--color-outline-variant);"><td style="padding: 10px 0; color: var(--color-tertiary);">Owner Context:</td><td style="padding: 10px 0; font-weight: bold; text-align: right;">${res.owner}</td></tr>
+        <tr style="border-bottom: 1px solid var(--color-outline-variant);"><td style="padding: 10px 0; color: var(--color-tertiary);">File Type/Ext:</td><td style="padding: 10px 0; font-weight: bold; text-align: right;">${res.type}</td></tr>
+        <tr style="border-bottom: 1px solid var(--color-outline-variant);"><td style="padding: 10px 0; color: var(--color-tertiary);">Security Scan Status:</td><td style="padding: 10px 0; font-weight: bold; text-align: right; color: #137333;">✓ Passed (Validated)</td></tr>
+        <tr><td style="padding: 10px 0; color: var(--color-tertiary);">Uploader Account:</td><td style="padding: 10px 0; font-weight: bold; text-align: right;">${res.uploader}</td></tr>
+      </table>
+    `;
+  } else if (tab === "versions") {
+    let rows = "";
+    versions.forEach(v => {
+      rows += `
+        <tr style="border-bottom: 1px solid var(--color-outline-variant); font-size: 12.5px;">
+          <td style="padding: 10px; font-weight: bold;">Version ${v.version}</td>
+          <td style="padding: 10px;">${v.filename}</td>
+          <td style="padding: 10px; color: var(--color-tertiary);">${v.size}</td>
+          <td style="padding: 10px; font-weight: bold; color: #137333;">✓ Passed</td>
+          <td style="padding: 10px;">
+            <span class="status-badge status-badge-graded" style="padding: 2px 6px; border-radius: 4px;">${v.status}</span>
+          </td>
+        </tr>
+      `;
+    });
+    bodyHtml = `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h4 style="font-weight: bold; font-size: 13.5px;">Resource Version History</h4>
+        <button class="btn btn-secondary" style="font-size: 11px; padding: 4px 8px;" onclick="simulateUploadNewVersion()">+ Upload New Version</button>
+      </div>
+      <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--color-outline-variant); color: var(--color-tertiary); font-size: 11px; text-transform: uppercase;">
+            <th style="padding: 10px;">Ver</th>
+            <th style="padding: 10px;">Filename</th>
+            <th style="padding: 10px;">Size</th>
+            <th style="padding: 10px;">Antiviral Scan</th>
+            <th style="padding: 10px;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows}
+        </tbody>
+      </table>
+    `;
+  } else if (tab === "assignments") {
+    bodyHtml = `
+      <h4 style="font-weight: bold; font-size: 13.5px; margin-bottom: 12px;">Active Course & Milestone Assignments</h4>
+      <div style="display: flex; flex-direction: column; gap: 12px; font-size: 12.5px;">
+        <div style="background-color: var(--color-surface-low); border: 1.5px solid var(--color-outline-variant); border-radius: 6px; padding: 12px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <strong>Assigned to: Practical AI (Milestone 2)</strong>
+            <div style="font-size: 11px; color: var(--color-tertiary); margin-top: 2px;">Target ID: PAI-M2 &middot; Status: <strong style="color:#137333;">Active</strong></div>
+          </div>
+          <button class="btn btn-secondary" style="font-size: 10.5px; padding: 2px 6px;" onclick="showToastAlert('Assignment revoked.')">Revoke</button>
+        </div>
+
+        <div style="border-top: 1px solid var(--color-outline-variant); padding-top: 12px; margin-top: 8px;">
+          <h5 style="font-weight: bold; font-size: 12.5px; margin-bottom: 8px;">Assign to New Scope</h5>
+          <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 12px;">
+            <div>
+              <label style="display:block; font-size:11px; font-weight:bold; margin-bottom:2px;">Target Scope:</label>
+              <select id="assign-target" class="form-input" style="height:34px; margin-bottom:0;">
+                <option value="PAI-M3">Practical AI Milestone 3</option>
+                <option value="K12-SEC-MATH-7A">Grade 7 Mathematics Section A</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block; font-size:11px; font-weight:bold; margin-bottom:2px;">Assignment Version Policy:</label>
+              <select id="assign-policy" class="form-input" style="height:34px; margin-bottom:0;">
+                <option value="pin">Pin to current Version (v1)</option>
+                <option value="follow">Follow Current/Latest version changes</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary" style="margin-top: 12px; height: 34px; background-color: var(--color-secondary); border-color: var(--color-secondary); color:#000; font-weight:800;" onclick="executeResourceAssignSim()">Create Assignment</button>
+        </div>
+      </div>
+    `;
+  }
+
+  const tabsList = [
+    { key: "overview", label: "Overview" },
+    { key: "versions", label: "Versions History" },
+    { key: "assignments", label: "Assignments" }
+  ];
+
+  let detailTabsHtml = "";
+  tabsList.forEach(t => {
+    detailTabsHtml += `
+      <button style="padding: 6px 12px; border: none; border-bottom: 2.5px solid ${tab === t.key ? 'var(--color-secondary)' : 'transparent'}; background: transparent; font-weight: bold; font-size: 12px; color: ${tab === t.key ? 'var(--color-on-surface)' : 'var(--color-tertiary)'}; cursor: pointer;" onclick="setResourceDetailTab('${res.id}', '${t.key}')">
+        ${t.label}
+      </button>
+    `;
+  });
+
+  view.innerHTML = `
+    ${getDevSandboxNavbarHTML('staff-resources')}
+
+    <div style="margin-bottom: 16px;">
+      <a href="#staff/resources" style="font-weight: 700; color: var(--color-secondary); font-size: 13px;">&larr; Back to Resources library</a>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 320px 1fr; gap: 24px; align-items: flex-start;">
+      <!-- Left Resource Card -->
+      <div class="form-card" style="padding: 16px;">
+        <h4 style="font-weight: 800; font-size: 14px; margin-bottom: 12px;">📁 Resource Overview</h4>
+        <div style="background-color: var(--color-surface-container); padding: 12px; border-radius: 6px; text-align: center; margin-bottom: 16px;">
+          <span style="font-size: 32px; display: block; margin-bottom: 6px;">📄</span>
+          <strong style="font-size: 13.5px; display: block;">${res.title}</strong>
+          <span style="font-size: 11px; color: var(--color-tertiary); display: block; margin-top: 4px;">Status: ${res.status}</span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <button class="btn btn-primary" style="height: 36px; font-weight: 800; font-size: 12px; background-color: var(--color-secondary); border-color: var(--color-secondary); color:#000;" onclick="window.location.hash='#learner/resources/' + '${res.id}'">View Secure Preview</button>
+          <button class="btn btn-secondary" style="height: 36px; font-weight: 800; font-size: 12px; color: #ba1a1a;" onclick="confirmArchiveResourceModal('${res.id}')">Archive Resource</button>
+        </div>
+      </div>
+
+      <!-- Right Tab Details -->
+      <div class="form-card" style="padding: 20px;">
+        <div style="display: flex; gap: 8px; border-bottom: 1px solid var(--color-outline-variant); margin-bottom: 16px;">
+          ${detailTabsHtml}
+        </div>
+        <div>
+          ${bodyHtml}
+        </div>
+      </div>
+    </div>
+  `;
+};
+
+window.setResourceDetailTab = function(resId, tabKey) {
+  ensureResourceState();
+  state.selfPaced.resourceDetailActiveTab = tabKey;
+  window.renderStaffResourceDetail(resId);
+};
+
+window.simulateUploadNewVersion = function() {
+  showToastAlert("✓ Version 2 successfully uploaded. Checksum V2 mapped. Review decision pending.");
+  ensureResourceState();
+  const res = state.resources[0];
+  state.resourceVersions[res.id].push({
+    id: "RESVER-PAI-PROMPT-001-V2",
+    version: 2,
+    filename: "prompt-engineering-checklist-v2.pdf",
+    status: "Published",
+    size: "1.9 MB",
+    uploadProgress: 100,
+    scanStatus: "Passed",
+    signatureStatus: "Passed",
+    objectStatus: "Present"
+  });
+  window.renderStaffResourceDetail(res.id);
+};
+
+window.executeResourceAssignSim = function() {
+  showToastAlert("✓ Resource assigned successfully to target scope.");
+  ensureResourceState();
+  const hash = window.location.hash;
+  const resId = hash.replace("#staff/resources/detail/", "");
+  window.renderStaffResourceDetail(resId);
+};
+
+window.confirmArchiveResourceModal = function(resId) {
+  const content = `
+    <div style="text-align: left; font-size: 13px;">
+      <p style="margin-bottom: 12px; color: var(--color-tertiary);">Are you sure you want to archive this resource? Archiving disables future student assignments, but preserves historical logs.</p>
+      <div style="background-color: #fff8e1; border: 1.5px solid #ffe082; color: #b78103; padding: 10px; border-radius: 6px; font-weight: bold; margin-bottom: 16px;">
+        ⚠️ Active Learning Impact: Currently assigned to 18 active enrolments.
+      </div>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn btn-primary" style="background-color: #ba1a1a; border-color: #ba1a1a; font-weight: 800; flex: 1.2;" onclick="executeArchiveResource('${resId}')">Archive & Preserve Existing</button>
+        <button class="btn btn-secondary" style="flex: 1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Archive Resource", content);
+};
+
+window.executeArchiveResource = function(resId) {
+  closeModal();
+  ensureResourceState();
+  const res = state.resources.find(r => r.id === resId);
+  if (res) {
+    res.status = "Archived";
+  }
+  showToastAlert("✓ Resource status changed to Archived.");
+  window.renderStaffResourceDetail(resId);
+};
+
+// ==========================================================================
+// Screen 25 Secure Learner Document Viewer
+// ==========================================================================
+
+window.renderLearnerSecureViewer = function(resId) {
+  ensureResourceState();
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  const res = state.resources.find(r => r.id === resId) || state.resources[0];
+
+  view.innerHTML = `
+    ${getDevSandboxNavbarHTML('staff-resources')}
+
+    <div style="margin-bottom: 16px;">
+      <a href="#learner/courses/ENR-PAI-001" style="font-weight: 700; color: var(--color-secondary); font-size: 13px;">&larr; Back to Practical AI Workspace</a>
+    </div>
+
+    <div class="form-card" style="padding: 24px; max-width: 700px; margin: 0 auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--color-outline-variant); padding-bottom: 12px; margin-bottom: 20px;">
+        <div>
+          <span style="font-size: 11px; font-weight: bold; color: #137333; text-transform: uppercase;">🛡️ Secure Viewer Session Active</span>
+          <h2 style="font-family: var(--font-family-headings); font-size: 20px; font-weight: 800; margin-top: 4px;">${res.title}</h2>
+          <div style="font-size: 11.5px; color: var(--color-tertiary); margin-top: 2px;">Stable ID: ${res.id} &middot; Version presented: v1</div>
+        </div>
+        <div style="text-align: right;">
+          <span style="font-size: 11.5px; font-weight: bold; background-color: #e8f0fe; color: #1a73e8; padding: 4px 8px; border-radius: 4px;">
+            Session Expiry: 05:00
+          </span>
+        </div>
+      </div>
+
+      <!-- Private CDN protection banner -->
+      <div style="background-color: var(--color-surface-container); border-radius: 8px; padding: 12px; font-size: 11.5px; color: var(--color-tertiary); margin-bottom: 16px; border: 1.5px solid var(--color-outline-variant);">
+        🔒 <strong>Private Bucket Protection:</strong> Raw public object URLs and service buckets remain hidden. Download permissions depend on your milestone enrolment access rights.
+      </div>
+
+      <!-- Mock Document Page layout -->
+      <div style="background-color: #525659; border-radius: 6px; padding: 24px; min-height: 400px; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);">
+        <div style="background-color: #fff; width: 100%; max-width: 500px; min-height: 360px; padding: 40px; box-shadow: 0 4px 8px rgba(0,0,0,0.3); font-family: sans-serif; position: relative;">
+          <h3 style="font-size: 18px; font-weight: bold; border-bottom: 2px solid #555; padding-bottom: 8px; margin-bottom: 12px;">Prompting Fundamentals Checklist</h3>
+          <ol style="font-size: 12px; line-height: 1.6; padding-left: 20px;">
+            <li><strong>Define clear Goals:</strong> Tell the model exactly what persona and target objective you want.</li>
+            <li><strong>Provide Context:</strong> Input relevant operational settings and files in the prompt.</li>
+            <li><strong>Enforce Constraints:</strong> Specify limitations (PII protection, formatting limits).</li>
+            <li><strong>Specify Output:</strong> Request JSON table or bullets to ensure readability.</li>
+          </ol>
+          <div style="position: absolute; bottom: 20px; right: 20px; font-size: 10px; color: #999;">Page 1 of 1 &middot; IHS LMS Secure Viewer</div></div></div><div style="margin-top: 16px; display: flex; justify-content: space-between; align-items: center;"><button class="btn btn-secondary" onclick="window.location.hash='#learner/support?draft=CASE-DRAFT-001'" style="font-size: 12.5px; height: 36px; color: #ba1a1a; border-color: #ba1a1a;">⚠️ Report Resource Problem</button><span style="font-size:12px; color: var(--color-tertiary);">Securely hosted in private bucket</span></div><div style="display:none;"><div><div>
+        </div>
+      </div>
+
+    </div>
+  `;
+};
+
+// ==========================================================================
+// Screen 26 Contextual Chat & Moderated Messaging Workspace
+// ==========================================================================
+
+window.renderCommunicationWorkspace = function(role) {
+  ensureCommunicationState();
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  const activeRoomId = state.conversations.activeRoomId;
+  const activeRoom = state.conversations.rooms.find(r => r.id === activeRoomId) || state.conversations.rooms[0];
+  const activeMessages = state.conversations.messages[activeRoom.id] || [];
+
+  // Generate rooms list
+  let roomsListHtml = "";
+  state.conversations.rooms.forEach(r => {
+    // If room is internal department but user role is learner, hide it!
+    if (r.scope === "Internal Department" && (role === "learner" || role === "guardian")) {
+      return;
+    }
+    const isSel = r.id === activeRoomId;
+    roomsListHtml += `
+      <div style="padding: 10px 12px; cursor: pointer; border-bottom: 1px solid var(--color-outline-variant); background: ${isSel ? 'var(--color-surface-container-high)' : 'transparent'};" onclick="selectCommunicationRoom('${r.id}', '${role}')">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+          <strong style="font-size: 13px;">${r.title}</strong>
+          <span style="font-size: 9.5px; padding: 2px 4px; border-radius: 3px; background: #e0e0e0; font-weight: bold;">${r.scope}</span>
+        </div>
+        <div style="font-size: 11px; color: var(--color-tertiary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+          ${r.context}
+        </div>
+      </div>
+    `;
+  });
+
+  // Generate messages list
+  let messagesListHtml = "";
+  activeMessages.forEach(msg => {
+    const isMe = msg.sender === "Ali Khan" || msg.sender === "Nadia Khan" || msg.sender === "Hamza Siddiqui";
+    messagesListHtml += `
+      <div style="margin-bottom: 12px; display: flex; flex-direction: column; align-items: ${isMe ? 'flex-end' : 'flex-start'};">
+        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px; font-size: 11px; color: var(--color-tertiary);">
+          <strong>${msg.sender}</strong> &middot; <span>${msg.timestamp}</span>
+          ${msg.isEdited ? '<span style="font-style:italic;">(Edited)</span>' : ''}
+        </div>
+        <div style="background: ${isMe ? 'var(--color-primary-container)' : 'var(--color-surface-container)'}; padding: 10px 12px; border-radius: 8px; font-size: 12.5px; max-width: 80%; line-height: 1.4; color: var(--color-on-surface);">
+          ${msg.text}
+        </div>
+        <div style="display: flex; gap: 8px; margin-top: 2px; font-size: 10px;">
+          ${isMe ? `
+            <span style="color: var(--color-secondary); cursor: pointer;" onclick="editMessagePrompt('${activeRoom.id}', '${msg.id}', '${role}')">Edit</span>
+            <span style="color: #ba1a1a; cursor: pointer;" onclick="deleteMessage('${activeRoom.id}', '${msg.id}', '${role}')">Delete</span>
+          ` : `
+            <span style="color: #b78103; cursor: pointer;" onclick="reportMessageSim('${msg.id}')">⚠️ Report</span>
+          `}
+        </div>
+      </div>
+    `;
+  });
+
+  // Composer attachments select list
+  let attachmentsSelectHtml = `<option value="">No Attachment</option>`;
+  ensureResourceState();
+  state.resources.forEach(res => {
+    attachmentsSelectHtml += `<option value="${res.id}">[Resource] ${res.title}</option>`;
+  });
+
+  view.innerHTML = `
+    ${getDevSandboxNavbarHTML('chat')}
+
+    <!-- Minor safeguarding indicator warning if conversation involves Zara -->
+    ${activeRoom.title.includes("Zara") ? `
+      <div style="background-color: #fff9e6; border: 1.5px solid #ffe082; color: #b78103; padding: 10px 16px; border-radius: 8px; font-size: 12.5px; font-weight: bold; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+        🛡️ safeguarding warning: Minor contact context (Zara Khan, 13). Thread reviewable by guardian Nadia Khan. Direct unsupervised message restrictions apply.
+      </div>
+    ` : ''}
+
+    <div style="display: grid; grid-template-columns: 280px 1fr 240px; gap: 16px; align-items: stretch; height: 600px;">
+      
+      <!-- Left List Panel -->
+      <div class="form-card" style="padding: 0; display: flex; flex-direction: column; overflow: hidden;">
+        <div style="padding: 12px; background-color: var(--color-surface-container); border-bottom: 1px solid var(--color-outline-variant);">
+          <strong style="font-size: 12px; text-transform: uppercase; color: var(--color-tertiary);">Relations-Bound Inbox</strong>
+        </div>
+        <div style="flex: 1; overflow-y: auto;">
+          ${roomsListHtml}
+        </div>
+      </div>
+
+      <!-- Middle Message Log Panel -->
+      <div class="form-card" style="padding: 0; display: flex; flex-direction: column; overflow: hidden; border-top: 4px solid var(--color-primary);">
+        <div style="padding: 12px; border-bottom: 1px solid var(--color-outline-variant); background: var(--color-surface-low); display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h3 style="font-weight: 800; font-size: 14.5px; margin: 0;">${activeRoom.title}</h3>
+            <span style="font-size: 11px; color: var(--color-tertiary);">${activeRoom.context}</span>
+          </div>
+          <div>
+            <button class="btn btn-secondary" style="font-size: 10.5px; padding: 4px 8px;" onclick="openComplaintCaseDraftModal('${activeRoom.id}')">Handoff Case</button>
+          </div>
+        </div>
+        
+        <!-- Active Chat Scroll area -->
+        <div style="flex: 1; padding: 16px; overflow-y: auto; background: var(--color-surface-container-low);" id="chat-scroller">
+          ${messagesListHtml}
+        </div>
+
+        <!-- Composer area -->
+        <div style="padding: 12px; border-top: 1px solid var(--color-outline-variant); background: var(--color-surface-low);">
+          <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+            <select id="chat-attachment" class="form-input" style="height:30px; font-size:11.5px; width:220px; margin-bottom:0;">
+              ${attachmentsSelectHtml}
+            </select>
+            <span style="font-size: 11px; color: var(--color-tertiary); align-self: center;">Attach resource file to message thread.</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="chat-input" class="form-input" style="margin-bottom:0; flex:1;" placeholder="Type your message..." onkeyup="handleComposerKey(event, '${activeRoom.id}', '${role}')">
+            <button class="btn btn-primary" style="background-color: var(--color-secondary); border-color: var(--color-secondary); color:#000; font-weight:800; height:38px; padding: 0 16px;" onclick="sendCommunicationMessage('${activeRoom.id}', '${role}')">Send</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side Context Panel -->
+      <div class="form-card" style="padding: 16px; font-size: 12.5px; overflow-y: auto;">
+        <h4 style="font-weight: 800; font-size: 13px; margin-bottom: 12px; border-bottom: 1px solid var(--color-outline-variant); padding-bottom: 6px;">📌 Context Panel</h4>
+        
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div>
+            <strong style="color: var(--color-tertiary);">Enrolment Context:</strong>
+            <div style="font-weight: bold; margin-top: 2px;">${activeRoom.context}</div>
+          </div>
+          <div>
+            <strong style="color: var(--color-tertiary);">Privacy Scope:</strong>
+            <div>${activeRoom.scope}</div>
+          </div>
+          <div>
+            <strong style="color: var(--color-tertiary);">Active Participants:</strong>
+            <ul style="padding-left: 16px; margin: 4px 0 0 0; font-size: 11.5px;">
+              <li>Ali Khan (Student)</li>
+              <li>Ayesha Rahman (Trainer)</li>
+              <li>Hamza Siddiqui (Operations/Coach)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  `;
+
+  // Auto-scroll chat area
+  const scroller = document.getElementById("chat-scroller");
+  if (scroller) {
+    scroller.scrollTop = scroller.scrollHeight;
+  }
+};
+
+window.selectCommunicationRoom = function(roomId, role) {
+  ensureCommunicationState();
+  state.conversations.activeRoomId = roomId;
+  window.renderCommunicationWorkspace(role);
+};
+
+window.sendCommunicationMessage = function(roomId, role) {
+  ensureCommunicationState();
+  const txtInput = document.getElementById("chat-input");
+  const attSelect = document.getElementById("chat-attachment");
+  if (!txtInput || !txtInput.value.trim()) return;
+
+  const txtVal = txtInput.value.trim();
+  const attVal = attSelect ? attSelect.value : "";
+
+  // Append attachment title to message string if selected
+  let finalMsg = txtVal;
+  if (attVal) {
+    ensureResourceState();
+    const res = state.resources.find(r => r.id === attVal);
+    if (res) {
+      finalMsg += ` <br/><a href="#learner/resources/${res.id}" style="color: var(--color-secondary); font-weight: bold; text-decoration: underline;">📎 Resource Attachment: ${res.title}</a>`;
+    }
+  }
+
+  // Create mock message
+  state.conversations.messages[roomId].push({
+    id: `MSG-${Date.now()}`,
+    sender: role === "learner" ? "Ali Khan" : (role === "guardian" ? "Nadia Khan" : "Hamza Siddiqui"),
+    text: finalMsg,
+    timestamp: new Date().toLocaleTimeString(),
+    isEdited: false
+  });
+
+  txtInput.value = "";
+  if (attSelect) attSelect.selectedIndex = 0;
+
+  window.renderCommunicationWorkspace(role);
+};
+
+window.handleComposerKey = function(ev, roomId, role) {
+  if (ev.key === "Enter") {
+    sendCommunicationMessage(roomId, role);
+  }
+};
+
+window.editMessagePrompt = function(roomId, msgId, role) {
+  ensureCommunicationState();
+  const msgList = state.conversations.messages[roomId];
+  const msg = msgList.find(m => m.id === msgId);
+  if (!msg) return;
+
+  const content = `
+    <div style="text-align: left; font-size: 13px;">
+      <label style="font-weight: bold; display: block; margin-bottom: 4px;">Edit Message Text:</label>
+      <input type="text" id="edit-msg-input" class="form-input" style="width: 100%;" value="${msg.text.replace(/<br\/>.*/, '')}">
+      <div style="display: flex; gap: 12px; margin-top: 12px;">
+        <button class="btn btn-primary" style="background-color: var(--color-secondary); border-color: var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="executeEditMessage('${roomId}', '${msgId}', '${role}')">Save changes</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Edit Message", content);
+};
+
+window.executeEditMessage = function(roomId, msgId, role) {
+  closeModal();
+  ensureCommunicationState();
+  const msgList = state.conversations.messages[roomId];
+  const msg = msgList.find(m => m.id === msgId);
+  if (msg) {
+    msg.text = document.getElementById("edit-msg-input").value;
+    msg.isEdited = true;
+  }
+  showToastAlert("✓ Message edited successfully.");
+  window.renderCommunicationWorkspace(role);
+};
+
+window.deleteMessage = function(roomId, msgId, role) {
+  ensureCommunicationState();
+  const index = state.conversations.messages[roomId].findIndex(m => m.id === msgId);
+  if (index !== -1) {
+    state.conversations.messages[roomId].splice(index, 1);
+  }
+  showToastAlert("✓ Message deleted successfully.");
+  window.renderCommunicationWorkspace(role);
+};
+
+window.reportMessageSim = function(msgId) {
+  showToastAlert("✓ Message reported. Moderation team has been alerted.");
+};
+
+window.executeComplaintCaseSubmit = function() {
+  closeModal();
+  showToastAlert("✓ Support Case Draft initialized (CASE-DRAFT-001) in Operations center.");
+  window.location.hash = "#learner/support?draft=CASE-DRAFT-001";
+};
+
+window.openComplaintCaseDraftModal = function(roomId) {
+  const content = `
+    <div style="text-align: left; font-size: 13px;">
+      <p style="margin-bottom: 12px; color: var(--color-tertiary);">Escalate this thread context as an official safeguarding or quality complaint Case Draft (CASE-DRAFT-001).</p>
+      <label style="font-weight: bold; display: block; margin-bottom: 4px;">Select Complaint Category:</label>
+      <select id="case-category" class="form-input" style="height:34px;">
+        <option value="Academic Integrity">Academic Integrity dispute</option>
+        <option value="Safeguarding Minor">Safeguarding Minor notification</option>
+        <option value="Trainer Quality Review">Trainer Quality review issue</option>
+      </select>
+      <div style="display: flex; gap: 12px; margin-top: 12px;">
+        <button class="btn btn-primary" style="background-color: var(--color-secondary); border-color: var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="executeComplaintCaseSubmit()">Create Case Draft</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Handoff to Support Case", content);
+};
+
+window.executeComplaintCaseSubmitOld = function() {
+  closeModal();
+  showToastAlert("✓ Support Case Draft initialized (CASE-DRAFT-001) in Operations center.");
+};
+
+
+
+
+// ==========================================================================
+// Screen 27 Support Case & Technical Issue Resolution State & Layouts
+// ==========================================================================
+
+window.ensureSupportCaseState = function() {
+  if (!state.support) {
+    state.support = {
+      selectedDemoState: "Open", // Default selector
+      activeCaseId: "CASE-001",
+      categories: [
+        { id: "CASECAT-TECH-001", name: "Technical Issue", department: "Operations / Support", active: true },
+        { id: "CASECAT-COMP-001", name: "Complaint", department: "Quality Assurance", active: true },
+        { id: "CASECAT-SUGG-001", name: "Suggestion", department: "Product Team", active: true },
+        { id: "CASECAT-FEED-001", name: "Feedback", department: "Academic Support", active: true },
+        { id: "CASECAT-PAY-001", name: "Payment Issue", department: "Finance / Accounts", active: true },
+        { id: "CASECAT-CLASS-001", name: "Class Issue", department: "Live Operations", active: true }
+      ],
+      cases: [
+        {
+          id: "CASE-001",
+          categoryId: "CASECAT-TECH-001",
+          title: "Classroom not opening for my rescheduled class",
+          submitterId: "LEARNER-001",
+          status: "Open",
+          priority: "Normal",
+          sourceConversationId: "CONV-SUPPORT-ALI-001",
+          description: "I can see the new Class 2 date in my course, but the classroom still shows a setup issue when I open the class.",
+          createdAt: "2026-08-13T18:25:00+05:00",
+          relatedRecords: [
+            { type: "Enrolment", id: "ENR-001" },
+            { type: "ClassOccurrence", id: "CLASS-002-R1" },
+            { type: "Conversation", id: "CONV-SUPPORT-ALI-001" }
+          ],
+          participants: [
+            { id: "CASEPART-ALI-001", actorId: "LEARNER-001", role: "Submitter" },
+            { id: "CASEPART-SUPPORT-001", actorId: "support-team", role: "Support" }
+          ],
+          assignments: [
+            { id: "CASEASSIGN-001", queue: "Operations Support", owner: "Sarah Ahmed", status: "Active" }
+          ],
+          sla: {
+            id: "SLA-CASE-001",
+            status: "Running",
+            firstResponseTarget: "4 business hours (Demo Configured)",
+            resolutionTarget: "1 day (Demo Configured)",
+            firstResponseMet: false,
+            resolutionMet: false
+          },
+          messages: [
+            { id: "CASEMSG-001", authorId: "LEARNER-001", sender: "Ali Khan", visibility: "Participant", body: "I can see the new Class 2 date in my course, but the classroom still shows a setup issue when I open the class.", sentAt: "6:25 PM" }
+          ],
+          internalNotes: [
+            { id: "CASEINT-001", authorId: "support-sarah", sender: "Sarah Ahmed", body: "Replacement occurrence exists; classroom provisioning should be checked before modifying schedule.", sentAt: "6:27 PM" }
+          ],
+          attachments: [
+            { id: "CASEATT-001", filename: "screenshot-classroom-error.png", size: "1.2 MB", status: "Ready", visibility: "Participant" }
+          ],
+          timeline: [
+            { time: "6:25 PM", text: "Ali submitted case CASE-001" },
+            { time: "6:25 PM", text: "Routed to Operations Support" }
+          ]
+        },
+        {
+          id: "CASE-PAY-001",
+          categoryId: "CASECAT-PAY-001",
+          title: "Payment question on membership upgrade",
+          submitterId: "LEARNER-001",
+          status: "Closed",
+          priority: "Normal",
+          description: "I have a question about the payment shown on my membership invoice PAY-TXN-001.",
+          createdAt: "2026-08-13T16:10:00+05:00",
+          relatedRecords: [
+            { type: "PaymentTransaction", id: "PAY-TXN-001" }
+          ],
+          participants: [
+            { id: "CASEPART-ALI-002", actorId: "LEARNER-001", role: "Submitter" }
+          ],
+          assignments: [
+            { id: "CASEASSIGN-002", queue: "Finance Team", owner: "Sarah Ahmed", status: "Active" }
+          ],
+          sla: {
+            id: "SLA-CASE-PAY-001",
+            status: "Met",
+            firstResponseTarget: "24 business hours",
+            resolutionTarget: "3 business days"
+          },
+          messages: [
+            { id: "CASEMSG-PAY-001", authorId: "LEARNER-001", sender: "Ali Khan", visibility: "Participant", body: "I have a question about the payment shown on my membership invoice PAY-TXN-001.", sentAt: "4:10 PM" }
+          ],
+          internalNotes: [],
+          attachments: [],
+          timeline: [
+            { time: "4:10 PM", text: "Ali submitted payment case" }
+          ]
+        },
+        {
+          id: "CASE-SAFE-001",
+          categoryId: "CASECAT-COMP-001",
+          title: "Safeguarding notification Grade 7",
+          submitterId: "LEARNER-K12-001",
+          status: "Open",
+          priority: "Urgent",
+          description: "A safeguarding concern was reported in a Grade 7 communication context.",
+          createdAt: "2026-08-13T17:40:00+05:00",
+          relatedRecords: [
+            { type: "Enrolment", id: "ENR-K12-MATH-001" }
+          ],
+          participants: [
+            { id: "CASEPART-SAFE-001", actorId: "safeguarding-officer", role: "Safeguarding Lead" }
+          ],
+          assignments: [
+            { id: "CASEASSIGN-SAFE-001", queue: "Safeguarding Queue", owner: "Aisha Rahman", status: "Active" }
+          ],
+          sla: {
+            id: "SLA-SAFE-001",
+            status: "Running",
+            firstResponseTarget: "1 hour urgent",
+            resolutionTarget: "4 hours"
+          },
+          messages: [],
+          internalNotes: [],
+          attachments: [],
+          timeline: [],
+          isRestricted: true // Safeguarding flag
+        },
+        {
+          id: "CASE-HR-001",
+          categoryId: "CASECAT-COMP-001",
+          title: "HR employee policy query",
+          submitterId: "support-sarah",
+          status: "Open",
+          priority: "High",
+          description: "Internal staff dispute case regarding roster shifts.",
+          createdAt: "2026-08-13T15:20:00+05:00",
+          relatedRecords: [],
+          participants: [],
+          assignments: [],
+          sla: {
+            id: "SLA-HR-001",
+            status: "Running",
+            firstResponseTarget: "48 hours",
+            resolutionTarget: "5 business days"
+          },
+          messages: [],
+          internalNotes: [],
+          attachments: [],
+          timeline: [],
+          isHRRestricted: true // HR flag
+        }
+      ],
+      drafts: {
+        "CASE-DRAFT-001": {
+          sourceConversationId: "CONV-SUPPORT-ALI-001",
+          sourceMessage: "I can see my rescheduled Class 2, but the classroom is not opening correctly.",
+          proposedCategory: "Technical Issue",
+          status: "Draft",
+          relatedTo: "Spoken English · CLASS-002-R1"
+        }
+      },
+      mockUpload: null
+    };
+  }
+};
+
+// ==========================================================================
+// Custom navbar helper for case support
+// ==========================================================================
+
+function getSupportCaseSandboxNavbarHTML(activeRole, activeDemoState) {
+  return `
+    <div style="background-color: var(--color-surface-container-highest); border-bottom: 2px solid var(--color-outline-variant); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; border-radius: 8px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="font-weight: 900; font-size: 13.5px; color: var(--color-secondary);">🎛️ Support Case Sandbox:</span>
+        
+        <div style="display: flex; gap: 4px; background-color: var(--color-surface-container-low); padding: 3px; border-radius: 6px; border: 1px solid var(--color-outline-variant);">
+          <button style="border: none; padding: 4px 10px; font-size: 11.5px; font-weight: 700; border-radius: 4px; cursor: pointer; background: ${activeRole === 'learner' ? 'var(--color-primary-container)' : 'transparent'}; color: ${activeRole === 'learner' ? 'var(--color-on-primary-container)' : 'var(--color-tertiary)'};" onclick="window.location.hash='#learner/support'">Learner View</button>
+          <button style="border: none; padding: 4px 10px; font-size: 11.5px; font-weight: 700; border-radius: 4px; cursor: pointer; background: ${activeRole === 'staff' ? 'var(--color-primary-container)' : 'transparent'}; color: ${activeRole === 'staff' ? 'var(--color-on-primary-container)' : 'var(--color-tertiary)'};" onclick="window.location.hash='#staff/support/cases'">Staff Queue</button>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 12px; font-weight: 700; color: var(--color-tertiary);">Demo Status Trigger:</span>
+        <select class="form-input" style="width: 200px; height: 32px; font-size: 12px; margin-bottom: 0; font-weight: bold; background: #fff;" onchange="changeSupportDemoState(this.value, '${activeRole}')">
+          <option value="Open" ${activeDemoState === 'Open' ? 'selected' : ''}>Open (CASE-001)</option>
+          <option value="Draft Intake" ${activeDemoState === 'Draft Intake' ? 'selected' : ''}>Draft Intake Form</option>
+          <option value="Unassigned" ${activeDemoState === 'Unassigned' ? 'selected' : ''}>Unassigned Claimable</option>
+          <option value="In Review" ${activeDemoState === 'In Review' ? 'selected' : ''}>In Review</option>
+          <option value="Waiting on User" ${activeDemoState === 'Waiting on User' ? 'selected' : ''}>Waiting on User (Reply Required)</option>
+          <option value="Waiting Internally" ${activeDemoState === 'Waiting Internally' ? 'selected' : ''}>Waiting Internally</option>
+          <option value="SLA At Risk" ${activeDemoState === 'SLA At Risk' ? 'selected' : ''}>SLA At Risk</option>
+          <option value="SLA Breached" ${activeDemoState === 'SLA Breached' ? 'selected' : ''}>SLA Breached</option>
+          <option value="Escalated" ${activeDemoState === 'Escalated' ? 'selected' : ''}>Escalated Mode</option>
+          <option value="Resolved" ${activeDemoState === 'Resolved' ? 'selected' : ''}>Resolved Page</option>
+          <option value="Closed" ${activeDemoState === 'Closed' ? 'selected' : ''}>Closed State</option>
+          <option value="Reopened" ${activeDemoState === 'Reopened' ? 'selected' : ''}>Reopened State</option>
+          <option value="Payment Dispute" ${activeDemoState === 'Payment Dispute' ? 'selected' : ''}>Payment Dispute (Disputed amount)</option>
+          <option value="Class Issue" ${activeDemoState === 'Class Issue' ? 'selected' : ''}>Class Attendance Issue</option>
+          <option value="User Non-Response" ${activeDemoState === 'User Non-Response' ? 'selected' : ''}>User Non-Response Closure</option>
+          <option value="Restricted Safeguarding" ${activeDemoState === 'Restricted Safeguarding' ? 'selected' : ''}>K-12 Safeguarding Block</option>
+          <option value="Restricted HR" ${activeDemoState === 'Restricted HR' ? 'selected' : ''}>Restricted Staff HR Case</option>
+          <option value="Permission Denied" ${activeDemoState === 'Permission Denied' ? 'selected' : ''}>Simulate Access Denied (403)</option>
+        </select>
+      </div>
+    </div>
+  `;
+}
+
+window.changeSupportDemoState = function(val, role) {
+  ensureSupportCaseState();
+  state.support.selectedDemoState = val;
+
+  const case001 = state.support.cases.find(c => c.id === "CASE-001");
+
+  // Apply state modifications based on selection
+  if (val === "Open") {
+    case001.status = "Open";
+    case001.sla.status = "Running";
+    case001.assignments[0].owner = "Sarah Ahmed";
+  } else if (val === "Unassigned") {
+    case001.status = "Open";
+    case001.assignments[0].owner = "Unassigned";
+    case001.sla.status = "Running";
+  } else if (val === "In Review") {
+    case001.status = "In Review";
+    case001.sla.status = "Running";
+    case001.assignments[0].owner = "Sarah Ahmed";
+  } else if (val === "Waiting on User") {
+    case001.status = "Waiting on User";
+    case001.sla.status = "Paused";
+  } else if (val === "Waiting Internally") {
+    case001.status = "Waiting Internally";
+    case001.sla.status = "Running";
+  } else if (val === "SLA At Risk") {
+    case001.status = "In Review";
+    case001.sla.status = "Running";
+    case001.sla.resolutionTarget = "Approaching Breach (10 mins left)";
+  } else if (val === "SLA Breached") {
+    case001.status = "In Review";
+    case001.sla.status = "Breached";
+  } else if (val === "Escalated") {
+    case001.status = "In Review";
+    case001.priority = "Urgent";
+  } else if (val === "Resolved") {
+    case001.status = "Resolved";
+    case001.sla.status = "Met";
+    case001.resolutionId = "CASERES-001";
+  } else if (val === "Closed") {
+    case001.status = "Closed";
+    case001.sla.status = "Met";
+  } else if (val === "Reopened") {
+    case001.status = "Reopened";
+    case001.timeline.push({ time: "9:12 AM", text: "Ali reopened case. Reason: Classroom setup failed again." });
+  } else if (val === "User Non-Response") {
+    case001.status = "Closed";
+    case001.resolutionId = "CASERES-NO-RESP";
+  }
+
+  showToastAlert(`Sandbox state changed: ${val}`);
+
+  // Route redirection based on selection
+  if (role === "learner") {
+    if (val === "Draft Intake") {
+      window.location.hash = "#learner/support?draft=CASE-DRAFT-001";
+    } else if (val === "Payment Dispute") {
+      window.location.hash = "#learner/support/cases/CASE-PAY-001";
+    } else {
+      window.location.hash = "#learner/support/cases/CASE-001";
+    }
+  } else {
+    if (val === "Restricted Safeguarding") {
+      window.location.hash = "#staff/support/cases/CASE-SAFE-001";
+    } else if (val === "Restricted HR") {
+      window.location.hash = "#staff/support/cases/CASE-HR-001";
+    } else if (val === "Permission Denied") {
+      window.location.hash = "#staff/support/cases/CASE-HR-001"; // Forces HR check which simulates deny
+    } else if (val === "Payment Dispute") {
+      window.location.hash = "#staff/support/cases/CASE-PAY-001";
+    } else {
+      window.location.hash = "#staff/support/cases/CASE-001";
+    }
+  }
+};
+
+// ==========================================================================
+// Screen 27 — Learner Support Workspace
+// ==========================================================================
+
+window.renderLearnerSupportWorkspace = function() {
+  ensureSupportCaseState();
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  const s = state.support;
+  const hash = window.location.hash;
+  const isDraftIntake = hash.includes("draft=CASE-DRAFT-001");
+
+  // Left/Right split if normal list, otherwise intake form
+  if (isDraftIntake || s.selectedDemoState === "Draft Intake") {
+    // Intake Form View
+    view.innerHTML = `
+      ${getSupportCaseSandboxNavbarHTML('learner', s.selectedDemoState)}
+      
+      <div style="margin-bottom: 16px;">
+        <a href="#learner/support" style="font-weight: 700; color: var(--color-secondary); font-size: 13px;">&larr; Back to My Cases</a>
+      </div>
+
+      <div class="form-card" style="padding: 24px; max-width: 650px; margin: 0 auto;">
+        <h2 style="font-family: var(--font-family-headings); font-size: 20px; font-weight: 800; margin-bottom: 4px;">🙋 How can we help?</h2>
+        <p style="font-size: 12.5px; color: var(--color-tertiary); margin-bottom: 20px;">Submit a technical issue, billing query, or complaint. Our operations team reviews all submissions.</p>
+
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div>
+            <label style="font-weight: bold; display: block; margin-bottom: 4px; font-size: 12.5px;">Case Category</label>
+            <select id="intake-category" class="form-input" style="margin-bottom:0; font-weight: bold;" onchange="validateIntakeSubmit()">
+              <option value="CASECAT-TECH-001" selected>Technical Issue (LMS / Classroom)</option>
+              <option value="CASECAT-PAY-001">Payment / Billing Issue</option>
+              <option value="CASECAT-COMP-001">Complaint</option>
+              <option value="CASECAT-SUGG-001">Suggestion / Feedback</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="font-weight: bold; display: block; margin-bottom: 4px; font-size: 12.5px;">Related Course / Class Context</label>
+            <div style="background-color: var(--color-surface-container); border: 1.5px solid var(--color-outline-variant); padding: 10px 12px; border-radius: 6px; font-size: 13px; font-weight: bold;">
+              📖 Spoken English &middot; CLASS-002-R1 (21 Aug Rescheduled Class)
+            </div>
+            <div style="font-size: 11px; color: var(--color-tertiary); margin-top: 4px;">Context auto-filled from conversation handoff.</div>
+          </div>
+
+          <div>
+            <label style="font-weight: bold; display: block; margin-bottom: 4px; font-size: 12.5px;">Subject Title</label>
+            <input type="text" id="intake-subject" class="form-input" style="margin-bottom:0;" value="Classroom not opening for my rescheduled class" onkeyup="validateIntakeSubmit()">
+          </div>
+
+          <div>
+            <label style="font-weight: bold; display: block; margin-bottom: 4px; font-size: 12.5px;">Detailed Description</label>
+            <textarea id="intake-desc" class="form-input" style="height: 100px; margin-bottom:0;" onkeyup="validateIntakeSubmit()">I can see the new Class 2 date in my course, but the classroom still shows a setup issue when I open the class.</textarea>
+          </div>
+
+          <div>
+            <label style="font-weight: bold; display: block; margin-bottom: 4px; font-size: 12.5px;">Attach Evidence (Screenshot/PDF)</label>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <button class="btn btn-secondary" style="height: 38px; font-size: 12.5px;" onclick="simulateIntakeAttachment()">📎 Select File</button>
+              <span id="intake-file-status" style="font-size: 12px; color: var(--color-tertiary);">No file attached (Optional)</span>
+            </div>
+          </div>
+
+          <div style="border-top: 1px solid var(--color-outline-variant); padding-top: 16px; display: flex; gap: 12px; margin-top: 12px;">
+            <button class="btn btn-primary" id="intake-submit-btn" style="background-color: var(--color-secondary); border-color: var(--color-secondary); color:#000; font-weight:800; height: 42px; padding: 0 24px;" onclick="executeLearnerCaseSubmit()">Submit Case</button>
+            <button class="btn btn-secondary" style="height: 42px;" onclick="window.location.hash='#learner/support'">Cancel</button>
+          </div>
+        </div>
+      </div>
+    `;
+    validateIntakeSubmit();
+  } else {
+    // My Cases List View
+    let casesRows = "";
+    // Ali's visible cases
+    const filteredCases = s.cases.filter(c => c.submitterId === "LEARNER-001" && !c.isRestricted && !c.isHRRestricted);
+    filteredCases.forEach(c => {
+      casesRows += `
+        <tr style="border-bottom: 1px solid var(--color-outline-variant); font-size: 13px;">
+          <td style="padding: 12px; font-weight: bold; color: var(--color-primary);">${c.id}</td>
+          <td style="padding: 12px; font-weight: 700;">${c.title}</td>
+          <td style="padding: 12px;">Technical Issue</td>
+          <td style="padding: 12px;">
+            <span class="status-badge status-badge-${c.status.toLowerCase().replace(/ /g, '-')}" style="padding: 3px 6px; border-radius: 4px; font-weight: bold; font-size: 11px;">
+              ${c.status}
+            </span>
+          </td>
+          <td style="padding: 12px; color: var(--color-tertiary);">${new Date(c.createdAt).toLocaleDateString()}</td>
+          <td style="padding: 12px;">
+            <a href="#learner/support/cases/${c.id}" class="btn btn-secondary" style="padding: 4px 8px; font-size: 11.5px; font-weight: bold; height: 28px; display: inline-flex; align-items: center;">
+              View Case
+            </a>
+          </td>
+        </tr>
+      `;
+    });
+
+    view.innerHTML = `
+      ${getSupportCaseSandboxNavbarHTML('learner', s.selectedDemoState)}
+
+      <div class="form-card" style="padding: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--color-outline-variant); padding-bottom: 12px; margin-bottom: 20px;">
+          <div>
+            <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 800;">🙋 My Support Cases & Queries</h2>
+            <p style="font-size: 12.5px; color: var(--color-tertiary); margin-top: 4px;">View status, communicate with investigators, and verify resolutions.</p>
+          </div>
+          <button class="btn btn-primary" style="background-color: var(--color-secondary); border-color: var(--color-secondary); color:#000; font-weight:800;" onclick="window.location.hash='#learner/support?draft=CASE-DRAFT-001'">
+            Create Support Case
+          </button>
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+          <thead>
+            <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+              <th style="padding: 12px;">Ref ID</th>
+              <th style="padding: 12px;">Subject</th>
+              <th style="padding: 12px;">Category</th>
+              <th style="padding: 12px;">Status</th>
+              <th style="padding: 12px;">Created</th>
+              <th style="padding: 12px;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${casesRows}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+};
+
+window.validateIntakeSubmit = function() {
+  const subject = document.getElementById("intake-subject");
+  const desc = document.getElementById("intake-desc");
+  const btn = document.getElementById("intake-submit-btn");
+  if (!btn) return;
+
+  const isValid = subject && subject.value.trim() && desc && desc.value.trim();
+  btn.disabled = !isValid;
+  btn.style.opacity = isValid ? "1" : "0.5";
+  btn.style.cursor = isValid ? "pointer" : "not-allowed";
+};
+
+window.simulateIntakeAttachment = function() {
+  const statusEl = document.getElementById("intake-file-status");
+  if (!statusEl) return;
+
+  statusEl.innerHTML = `⏳ Uploading screenshot-classroom-error.png (0%)...`;
+  let progress = 0;
+  
+  const int = setInterval(() => {
+    progress += 25;
+    statusEl.innerHTML = `⏳ Uploading screenshot-classroom-error.png (${progress}%)...`;
+    if (progress === 100) {
+      clearInterval(int);
+      statusEl.innerHTML = `🛡️ Scanning attachment...`;
+      setTimeout(() => {
+        statusEl.innerHTML = `✅ screenshot-classroom-error.png (1.2 MB) &middot; Ready`;
+        showToastAlert("✓ File scanned and attached to case draft.");
+      }, 600);
+    }
+  }, 200);
+};
+
+window.executeLearnerCaseSubmit = function() {
+  ensureSupportCaseState();
+  const subVal = document.getElementById("intake-subject").value;
+  const descVal = document.getElementById("intake-desc").value;
+
+  const content = `
+    <div style="text-align: center; padding: 12px 0;">
+      <div style="width: 56px; height: 56px; background-color: #e6f4ea; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; color: #137333;">
+        ✅
+      </div>
+      <h3 style="font-family: var(--font-family-headings); font-weight:800; font-size:18px;">Support Case Submitted</h3>
+      <p style="font-size:13.5px; color: var(--color-tertiary); margin: 8px 0 16px 0;">Reference ID: <strong>CASE-001</strong> &middot; Technical Issue</p>
+      
+      <div style="background-color: var(--color-surface-container); padding:12px; border-radius:6px; font-size:12.5px; text-align:left; margin-bottom: 20px;">
+        Your case has been received and will be reviewed by the appropriate operations team.
+      </div>
+
+      <div style="display: flex; gap: 12px;">
+        <button class="btn btn-primary" style="background-color: var(--color-secondary); border-color: var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="closeModal(); window.location.hash='#learner/support/cases/CASE-001'">View Case</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal(); window.location.hash='#learner/courses/ENR-001'">Back to Course</button>
+      </div>
+    </div>
+  `;
+
+  // Actually switch status to Open in mock
+  const case001 = state.support.cases.find(c => c.id === "CASE-001");
+  case001.status = "Open";
+  case001.title = subVal;
+  case001.description = descVal;
+
+  openModal("Case Submitted", content);
+};
+
+// ==========================================================================
+// Screen 27 — Learner Case Details View
+// ==========================================================================
+
+window.renderLearnerCaseDetail = function(caseId) {
+  ensureSupportCaseState();
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  const s = state.support;
+  const c = s.cases.find(x => x.id === caseId) || s.cases[0];
+
+  // If status is resolved
+  let resolvedAlertHtml = "";
+  if (c.status === "Resolved") {
+    resolvedAlertHtml = `
+      <div style="background-color: #e6f4ea; border: 1.5px solid #c2e7cc; padding: 16px; border-radius: 8px; margin-bottom: 20px; font-size:13px; color:#137333;">
+        <h4 style="font-weight: 800; margin-bottom: 4px;">🏆 Resolution Recorded</h4>
+        <p style="margin:0 0 10px 0;"><strong>Sarah Ahmed:</strong> Your rescheduled class classroom is now ready. The setup error has been fixed.</p>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-primary" style="height:30px; font-size:11.5px; font-weight:800; background:#137333; border-color:#137333;" onclick="closeLearnerCase('${c.id}')">This solved my issue (Close)</button>
+          <button class="btn btn-secondary" style="height:30px; font-size:11.5px; color:#ba1a1a;" onclick="reopenLearnerCaseModal('${c.id}')">Still Need Help (Reopen)</button>
+        </div>
+      </div>
+    `;
+  } else if (c.status === "Closed") {
+    resolvedAlertHtml = `
+      <div style="background-color: var(--color-surface-container); border: 1.5px solid var(--color-outline-variant); padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 12.5px; color: var(--color-tertiary);">
+        🔒 <strong>Case Closed.</strong> This support query has been completed.
+        <button class="btn btn-secondary" style="height:26px; font-size:10.5px; margin-left: 12px;" onclick="reopenLearnerCaseModal('${c.id}')">Reopen Query</button>
+      </div>
+    `;
+  }
+
+  // Conversation history
+  let chatHtml = "";
+  c.messages.forEach(m => {
+    const isMe = m.authorId === "LEARNER-001";
+    chatHtml += `
+      <div style="margin-bottom:12px; text-align: ${isMe ? 'right' : 'left'};">
+        <span style="font-size:10.5px; color: var(--color-tertiary); display:block; margin-bottom:2px;">${m.sender} &middot; ${m.sentAt}</span>
+        <div style="background-color: ${isMe ? 'var(--color-primary-container)' : 'var(--color-surface-container)'}; color: var(--color-on-surface); display:inline-block; padding:8px 12px; border-radius:8px; font-size: 13px; max-width:80%; text-align:left;">
+          ${m.body}
+        </div>
+      </div>
+    `;
+  });
+
+  // Action reply block
+  let replyBlockHtml = "";
+  if (c.status === "Waiting on User") {
+    replyBlockHtml = `
+      <div style="background-color: #fff9e6; border: 1.5px solid #ffe082; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size:12.5px;">
+        <strong style="color: #b78103;">⚠️ We Need Your Reply:</strong> Please share the error message you see.
+      </div>
+    `;
+  }
+
+  view.innerHTML = `
+    ${getSupportCaseSandboxNavbarHTML('learner', s.selectedDemoState)}
+
+    <div style="margin-bottom: 16px;">
+      <a href="#learner/support" style="font-weight: 700; color: var(--color-secondary); font-size: 13px;">&larr; Back to Support Cases</a>
+    </div>
+
+    ${resolvedAlertHtml}
+
+    <div style="display: grid; grid-template-columns: 1fr 280px; gap: 20px; align-items: flex-start;">
+      <!-- Main Case thread panel -->
+      <div class="form-card" style="padding: 20px;">
+        <div style="border-bottom: 1px solid var(--color-outline-variant); padding-bottom: 8px; margin-bottom: 16px; display:flex; justify-content:space-between; align-items:center;">
+          <h3 style="font-family: var(--font-family-headings); font-weight:800; font-size:16px;">${c.title}</h3>
+          <span style="font-size:11px; color: var(--color-tertiary);">Ref: <strong>${c.id}</strong></span>
+        </div>
+
+        <div style="font-size:13px; background-color: var(--color-surface-low); padding:12px; border-radius:6px; margin-bottom:20px; border-left:4px solid var(--color-secondary);">
+          <strong>Original Submitter Details:</strong>
+          <p style="margin: 4px 0 0 0; font-style:italic;">"${c.description}"</p>
+        </div>
+
+        <h4 style="font-weight:800; font-size:13.5px; margin-bottom:12px;">Participant Message History</h4>
+        <div style="min-height: 180px; max-height:300px; overflow-y:auto; border:1px solid var(--color-outline-variant); border-radius:6px; padding:12px; margin-bottom:16px; background:#fff;">
+          ${chatHtml}
+        </div>
+
+        ${replyBlockHtml}
+
+        ${c.status !== "Closed" ? `
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="learner-reply-input" class="form-input" style="margin-bottom:0; flex:1;" placeholder="Type reply message to Support investigator...">
+            <button class="btn btn-primary" style="background-color: var(--color-secondary); border-color: var(--color-secondary); color:#000; font-weight:800;" onclick="sendLearnerCaseReply('${c.id}')">Reply</button>
+          </div>
+        ` : ''}
+      </div>
+
+      <!-- Right Side case details panel -->
+      <div class="form-card" style="padding: 16px; font-size:12.5px;">
+        <h4 style="font-weight:800; font-size:13px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:10px;">🏷️ Case Status</h4>
+        <table style="width:100%; border-collapse:collapse;">
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">Status:</td><td style="padding:6px 0; font-weight:bold; text-align:right;">${c.status}</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">Priority:</td><td style="padding:6px 0; font-weight:bold; text-align:right;">${c.priority}</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">Owner:</td><td style="padding:6px 0; font-weight:bold; text-align:right;">${c.assignments[0] ? c.assignments[0].owner : 'Unassigned'}</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">Category:</td><td style="padding:6px 0; font-weight:bold; text-align:right;">Technical Issue</td></tr>
+          <tr><td style="padding:6px 0; color:var(--color-tertiary);">Related To:</td><td style="padding:6px 0; font-weight:bold; text-align:right; font-size:11px;">Spoken English (Class 2)</td></tr>
+        </table>
+        
+        <div style="border-top:1px solid var(--color-outline-variant); margin-top:12px; padding-top:12px;">
+          <strong>Linked Attachment:</strong>
+          ${c.attachments.length > 0 ? `
+            <div style="background-color:#e8f0fe; color:#1a73e8; padding:6px; border-radius:4px; margin-top:4px; font-weight:bold; font-size:11.5px;">
+              📎 ${c.attachments[0].filename}
+            </div>
+          ` : '<div style="font-style:italic; color:var(--color-tertiary);">None</div>'}
+        </div>
+      </div>
+    </div>
+  `;
+};
+
+window.sendLearnerCaseReply = function(caseId) {
+  ensureSupportCaseState();
+  const input = document.getElementById("learner-reply-input");
+  if (!input || !input.value.trim()) return;
+
+  const c = state.support.cases.find(x => x.id === caseId);
+  c.messages.push({
+    id: `CASEMSG-${Date.now()}`,
+    authorId: "LEARNER-001",
+    sender: "Ali Khan",
+    visibility: "Participant",
+    body: input.value.trim(),
+    sentAt: new Date().toLocaleTimeString()
+  });
+
+  // Switch status back from Waiting to In Review
+  if (c.status === "Waiting on User") {
+    c.status = "In Review";
+    c.sla.status = "Running";
+  }
+
+  showToastAlert("✓ Message sent successfully to Support investigator.");
+  input.value = "";
+  window.renderLearnerCaseDetail(caseId);
+};
+
+window.closeLearnerCase = function(caseId) {
+  ensureSupportCaseState();
+  const c = state.support.cases.find(x => x.id === caseId);
+  c.status = "Closed";
+  c.timeline.push({ time: new Date().toLocaleTimeString(), text: "Ali Khan closed case." });
+  showToastAlert("✓ Case closed successfully.");
+  window.renderLearnerCaseDetail(caseId);
+};
+
+window.reopenLearnerCaseModal = function(caseId) {
+  const content = `
+    <div style="text-align: left; font-size: 13px;">
+      <p style="margin-bottom: 12px; color: var(--color-tertiary);">Reopen this ticket to request additional support. Please describe what is still wrong.</p>
+      <label style="font-weight: bold; display: block; margin-bottom: 4px;">What is still wrong?</label>
+      <textarea id="reopen-reason" class="form-input" style="height: 60px; margin-bottom: 12px;"></textarea>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn btn-primary" style="background-color: var(--color-secondary); border-color: var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="executeReopenLearnerCase('${caseId}')">Reopen Case</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Reopen Support Case", content);
+};
+
+window.executeReopenLearnerCase = function(caseId) {
+  ensureSupportCaseState();
+  const reason = document.getElementById("reopen-reason").value || "Issue re-reported";
+  closeModal();
+
+  const c = state.support.cases.find(x => x.id === caseId);
+  c.status = "Reopened";
+  c.sla.status = "Running";
+  c.timeline.push({
+    time: new Date().toLocaleTimeString(),
+    text: `Ali Khan reopened CASE-001. Reason: ${reason}`
+  });
+
+  showToastAlert("✓ Support Case reopened and assigned back to Sarah Ahmed.");
+  window.renderLearnerCaseDetail(caseId);
+};
+
+// ==========================================================================
+// Screen 27 — Staff Support Case Queue
+// ==========================================================================
+
+window.renderStaffCaseQueue = function() {
+  ensureSupportCaseState();
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  const s = state.support;
+
+  // Filter cases counts
+  let openCount = 0;
+  let reviewCount = 0;
+  let waitingCount = 0;
+  let escalatedCount = 0;
+  let riskCount = 0;
+
+  s.cases.forEach(c => {
+    if (c.status === "Open") openCount++;
+    if (c.status === "In Review" || c.status === "Reopened") reviewCount++;
+    if (c.status.startsWith("Waiting")) waitingCount++;
+    if (c.priority === "Urgent") escalatedCount++;
+    if (c.sla && c.sla.status === "Running" && c.sla.resolutionTarget.includes("Approaching")) riskCount++;
+  });
+
+  // Rows logic
+  let rowsHtml = "";
+  s.cases.forEach(c => {
+    // Hide safeguarding / HR cases if not authorized
+    if (c.isRestricted || c.isHRRestricted) {
+      return;
+    }
+
+    rowsHtml += `
+      <tr style="border-bottom: 1px solid var(--color-outline-variant); font-size: 13px;">
+        <td style="padding: 12px; font-weight: bold; color: var(--color-primary);">${c.id}</td>
+        <td style="padding: 12px; font-weight: 700;">Ali Khan</td>
+        <td style="padding: 12px;">Technical Issue</td>
+        <td style="padding: 12px; font-size:11.5px; color: var(--color-tertiary);">Spoken English &middot; CLASS-002-R1</td>
+        <td style="padding: 12px; font-weight: bold;">${c.priority}</td>
+        <td style="padding: 12px;">${c.assignments[0] ? c.assignments[0].owner : 'Unassigned'}</td>
+        <td style="padding: 12px;">
+          <span class="status-badge status-badge-${c.status.toLowerCase().replace(/ /g, '-')}" style="padding: 3px 6px; border-radius: 4px; font-weight: bold; font-size: 11px;">
+            ${c.status}
+          </span>
+        </td>
+        <td style="padding: 12px; font-weight: bold; color: ${c.sla.status === 'Breached' ? 'var(--color-error)' : 'green'};">${c.sla.status}</td>
+        <td style="padding: 12px;">
+          <a href="#staff/support/cases/${c.id}" class="btn btn-secondary" style="padding: 4px 8px; font-size: 11.5px; font-weight: bold; height: 28px; display: inline-flex; align-items: center;">
+            Open
+          </a>
+        </td>
+      </tr>
+    `;
+  });
+
+  view.innerHTML = `
+    ${getSupportCaseSandboxNavbarHTML('staff', s.selectedDemoState)}
+
+    <div class="form-card" style="padding: 24px;">
+      <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 800; margin-bottom: 4px;">📋 Operations Support Ticket Queue</h2>
+      <p style="font-size: 12.5px; color: var(--color-tertiary); margin-bottom: 20px;">Manage, prioritize, and investigate official complaints, suggestions, and technical classroom disputes.</p>
+
+      <!-- Dashboard Filter Count Cards -->
+      <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px;">
+        <div class="form-card" style="padding: 12px; text-align: center; border-left: 4px solid #1a73e8; cursor:pointer;" onclick="showToastAlert('Filtering by Open status')">
+          <span style="font-size: 11px; color: var(--color-tertiary); text-transform: uppercase;">Open</span>
+          <div style="font-size: 22px; font-weight: 800; margin-top: 4px; color:#1a73e8;">${openCount}</div>
+        </div>
+        <div class="form-card" style="padding: 12px; text-align: center; border-left: 4px solid #f0d97a; cursor:pointer;" onclick="showToastAlert('Filtering by In Review status')">
+          <span style="font-size: 11px; color: var(--color-tertiary); text-transform: uppercase;">In Review</span>
+          <div style="font-size: 22px; font-weight: 800; margin-top: 4px; color:#c79d02;">${reviewCount}</div>
+        </div>
+        <div class="form-card" style="padding: 12px; text-align: center; border-left: 4px solid #77583a; cursor:pointer;" onclick="showToastAlert('Filtering by Waiting status')">
+          <span style="font-size: 11px; color: var(--color-tertiary); text-transform: uppercase;">Waiting</span>
+          <div style="font-size: 22px; font-weight: 800; margin-top: 4px; color:#77583a;">${waitingCount}</div>
+        </div>
+        <div class="form-card" style="padding: 12px; text-align: center; border-left: 4px solid #ba1a1a; cursor:pointer;" onclick="showToastAlert('Filtering by Urgent priority')">
+          <span style="font-size: 11px; color: var(--color-tertiary); text-transform: uppercase;">Escalated</span>
+          <div style="font-size: 22px; font-weight: 800; margin-top: 4px; color:#ba1a1a;">${escalatedCount}</div>
+        </div>
+        <div class="form-card" style="padding: 12px; text-align: center; border-left: 4px solid #ea4335; cursor:pointer;" onclick="showToastAlert('Filtering by At Risk status')">
+          <span style="font-size: 11px; color: var(--color-tertiary); text-transform: uppercase;">SLA Risk</span>
+          <div style="font-size: 22px; font-weight: 800; margin-top: 4px; color:#ea4335;">${riskCount}</div>
+        </div>
+      </div>
+
+      <!-- Main Cases Table -->
+      <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+            <th style="padding: 12px;">Ref ID</th>
+            <th style="padding: 12px;">Submitter</th>
+            <th style="padding: 12px;">Category</th>
+            <th style="padding: 12px;">Related Context</th>
+            <th style="padding: 12px;">Priority</th>
+            <th style="padding: 12px;">Owner</th>
+            <th style="padding: 12px;">Status</th>
+            <th style="padding: 12px;">SLA State</th>
+            <th style="padding: 12px;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowsHtml}
+        </tbody>
+      </table>
+    </div>
+  `;
+};
+
+// ==========================================================================
+// Screen 27 — Staff Support Case Detail & Resolution
+// ==========================================================================
+
+window.renderStaffCaseDetail = function(caseId) {
+  ensureSupportCaseState();
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  const s = state.support;
+
+  // 1. Permission verification checks (Safeguarding & HR isolation)
+  if (caseId === "CASE-SAFE-001" && s.selectedDemoState !== "Restricted Safeguarding") {
+    // Render restricted unauthorized view to prevent metadata leak
+    view.innerHTML = `
+      ${getSupportCaseSandboxNavbarHTML('staff', s.selectedDemoState)}
+      <div style="margin-bottom: 16px;">
+        <a href="#staff/support/cases" style="font-weight: 700; color: var(--color-secondary); font-size: 13px;">&larr; Back to Queue</a>
+      </div>
+      <div class="form-card" style="padding: 40px 24px; text-align: center; max-width: 580px; margin: 0 auto; border-top: 4px solid #ba1a1a;">
+        <span style="font-size: 40px; display: block; margin-bottom: 12px;">🔒</span>
+        <h3 style="font-family: var(--font-family-headings); font-weight:800; font-size:18px;">Case Not Available</h3>
+        <p style="font-size: 12.5px; color: var(--color-tertiary); line-height: 1.5;">Access Restricted. This is a high-sensitivity safeguarding case. Metadata and attachments have been hidden.</p>
+      </div>
+    `;
+    return;
+  }
+
+  if (caseId === "CASE-HR-001" && s.selectedDemoState !== "Restricted HR") {
+    view.innerHTML = `
+      ${getSupportCaseSandboxNavbarHTML('staff', s.selectedDemoState)}
+      <div style="margin-bottom: 16px;">
+        <a href="#staff/support/cases" style="font-weight: 700; color: var(--color-secondary); font-size: 13px;">&larr; Back to Queue</a>
+      </div>
+      <div class="form-card" style="padding: 40px 24px; text-align: center; max-width: 580px; margin: 0 auto; border-top: 4px solid #ba1a1a;">
+        <span style="font-size: 40px; display: block; margin-bottom: 12px;">🔒</span>
+        <h3 style="font-family: var(--font-family-headings); font-weight:800; font-size:18px;">Case Not Available</h3>
+        <p style="font-size: 12.5px; color: var(--color-tertiary); line-height: 1.5;">Access Restricted. Internal HR cases are not visible inside learner/CSR program channels.</p>
+      </div>
+    `;
+    return;
+  }
+
+  const c = s.cases.find(x => x.id === caseId) || s.cases[0];
+
+  // SLA visual presentation
+  let slaBadgeColor = "green";
+  if (c.sla.status === "Breached") slaBadgeColor = "red";
+  else if (c.sla.status === "Paused") slaBadgeColor = "#77583a";
+  else if (c.sla.resolutionTarget.includes("Approaching")) slaBadgeColor = "#ba1a1a";
+
+  // Build message items
+  let messagesHtml = "";
+  c.messages.forEach(m => {
+    messagesHtml += `
+      <div style="border-bottom: 1px solid var(--color-outline-variant); padding-bottom: 8px; margin-bottom: 8px; font-size: 12.5px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+          <strong>${m.sender}</strong>
+          <span style="font-size: 11px; color: var(--color-tertiary);">${m.sentAt}</span>
+        </div>
+        <p style="margin: 0; color: var(--color-on-surface);">${m.body}</p>
+      </div>
+    `;
+  });
+
+  // Build internal notes
+  let internalNotesHtml = "";
+  c.internalNotes.forEach(n => {
+    internalNotesHtml += `
+      <div style="background-color: #fdf5e6; border: 1px solid #f5deb3; padding: 8px 10px; border-radius: 4px; margin-bottom: 8px; font-size: 12.5px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+          <strong>🔒 ${n.sender} (Internal Note)</strong>
+          <span style="font-size: 10.5px; color: var(--color-tertiary);">${n.sentAt}</span>
+        </div>
+        <p style="margin: 0; font-family: monospace; font-size:12px;">${n.body}</p>
+      </div>
+    `;
+  });
+
+  // Build timeline
+  let timelineHtml = "";
+  c.timeline.forEach(t => {
+    timelineHtml += `
+      <div style="display: flex; gap: 8px; font-size: 11.5px; color: var(--color-tertiary); margin-bottom: 6px;">
+        <span style="font-weight: bold; width: 60px;">${t.time}</span>
+        <span>&bull;</span>
+        <span>${t.text}</span>
+      </div>
+    `;
+  });
+
+  // Resolution record banner
+  let resolutionRecordHtml = "";
+  if (c.status === "Resolved") {
+    resolutionRecordHtml = `
+      <div style="background-color:#e6f4ea; border:1.5px solid #c2e7cc; padding: 12px; border-radius:6px; margin-bottom:16px; font-size: 12.5px; color:#137333;">
+        🏆 <strong>Resolution Record Active:</strong> Case resolved by Sarah Ahmed. Outcome: Fixed. Summary: classroom Prepared.
+      </div>
+    `;
+  }
+
+  // Linked Class state
+  let isClassroomReady = state.support.simClassroomReady || false;
+
+  // Render detail template
+  view.innerHTML = `
+    ${getSupportCaseSandboxNavbarHTML('staff', s.selectedDemoState)}
+
+    <div style="margin-bottom: 16px;">
+      <a href="#staff/support/cases" style="font-weight: 700; color: var(--color-secondary); font-size: 13px;">&larr; Back to Case Queue</a>
+    </div>
+
+    ${resolutionRecordHtml}
+
+    <div style="display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: flex-start;">
+      
+      <!-- Left Area: Case Context details & Threads -->
+      <div>
+        <div class="form-card" style="padding: 20px; margin-bottom: 16px;">
+          <h2 style="font-family: var(--font-family-headings); font-size: 18px; font-weight: 800; border-bottom: 1px solid var(--color-outline-variant); padding-bottom: 8px; margin-bottom: 12px;">
+            ${c.title}
+          </h2>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 12.5px; margin-bottom: 16px;">
+            <div>
+              <span style="color: var(--color-tertiary);">Submitter:</span>
+              <strong>Ali Khan (LEARNER-001)</strong>
+            </div>
+            <div>
+              <span style="color: var(--color-tertiary);">Submit Date:</span>
+              <strong>13 Aug 2026, 6:25 PM</strong>
+            </div>
+          </div>
+
+          <div style="background-color: var(--color-surface-low); padding: 12px; border-radius: 6px; font-size: 13px; line-height: 1.5; margin-bottom: 16px;">
+            <strong>Original Submitter Description:</strong>
+            <p style="margin: 4px 0 0 0; font-style: italic;">"${c.description}"</p>
+          </div>
+
+          <!-- Attachments -->
+          <div>
+            <strong>Case Attachments:</strong>
+            ${c.attachments.length > 0 ? `
+              <div style="display: inline-flex; align-items: center; gap: 8px; background: #e8f0fe; border: 1px solid #c2e7cc; border-radius: 4px; padding: 6px 10px; font-size: 12px; margin-top: 6px; font-weight: bold; color: #1a73e8;">
+                📎 ${c.attachments[0].filename} (${c.attachments[0].size}) &middot; Ready
+              </div>
+            ` : '<div style="font-style:italic; color: var(--color-tertiary); font-size:11.5px;">No files attached</div>'}
+          </div>
+        </div>
+
+        <!-- Message Thread Tabs: Participant Messages vs Staff Internal Notes -->
+        <div class="form-card" style="padding: 20px; margin-bottom: 16px;">
+          <h3 style="font-family: var(--font-family-headings); font-weight: 800; font-size: 14.5px; border-bottom: 1px solid var(--color-outline-variant); padding-bottom: 8px; margin-bottom: 12px;">✉️ Support Correspondence</h3>
+          
+          <div style="min-height: 150px; max-height: 250px; overflow-y: auto; border: 1px solid var(--color-outline-variant); border-radius: 6px; padding: 12px; background: #fff; margin-bottom: 12px;">
+            ${messagesHtml}
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <textarea id="staff-participant-msg-input" class="form-input" style="height: 50px; margin-bottom: 0;" placeholder="Type reply visible to learner Ali Khan..."></textarea>
+            <button class="btn btn-primary" style="align-self: flex-end; background-color: var(--color-secondary); border-color: var(--color-secondary); color:#000; font-weight:800;" onclick="sendStaffParticipantMessage('${c.id}')">Send Reply</button>
+          </div>
+        </div>
+
+        <div class="form-card" style="padding: 20px; margin-bottom: 16px;">
+          <h3 style="font-family: var(--font-family-headings); font-weight: 800; font-size: 14.5px; border-bottom: 1px solid var(--color-outline-variant); padding-bottom: 8px; margin-bottom: 12px; color: var(--color-secondary);">🔒 Staff Private Internal Notes</h3>
+          
+          <div style="min-height: 100px; max-height: 200px; overflow-y: auto; border: 1px solid var(--color-outline-variant); border-radius: 6px; padding: 12px; background: #fff; margin-bottom: 12px;">
+            ${internalNotesHtml}
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <textarea id="staff-internal-note-input" class="form-input" style="height: 44px; margin-bottom: 0;" placeholder="Type note visible ONLY to staff..."></textarea>
+            <button class="btn btn-secondary" style="align-self: flex-end;" onclick="saveStaffInternalNote('${c.id}')">Save Private Note</button>
+          </div>
+        </div>
+
+        <!-- Activity Timeline -->
+        <div class="form-card" style="padding: 20px;">
+          <h3 style="font-family: var(--font-family-headings); font-weight: 800; font-size: 14.5px; border-bottom: 1px solid var(--color-outline-variant); padding-bottom: 8px; margin-bottom: 12px;">📜 Audit & Event Activity Timeline</h3>
+          <div style="background-color: var(--color-surface-container); padding: 12px; border-radius: 6px;">
+            ${timelineHtml}
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Area: Status Panel & Actions -->
+      <div>
+        
+        <!-- Live SLA Monitor -->
+        <div class="form-card" style="padding: 16px; margin-bottom: 16px; border-top: 4px solid ${slaBadgeColor};">
+          <h4 style="font-weight: 800; font-size: 13px; margin-bottom: 10px;">⏰ SLA Service Monitor</h4>
+          <table style="width: 100%; border-collapse: collapse; font-size: 12.5px;">
+            <tr style="border-bottom: 1px solid var(--color-outline-variant);"><td style="padding: 6px 0; color: var(--color-tertiary);">SLA State:</td><td style="padding: 6px 0; font-weight: bold; text-align: right; color:${slaBadgeColor};">${c.sla.status}</td></tr>
+            <tr style="border-bottom: 1px solid var(--color-outline-variant);"><td style="padding: 6px 0; color: var(--color-tertiary);">First Response:</td><td style="padding: 6px 0; font-weight: bold; text-align: right;">${c.sla.firstResponseTarget}</td></tr>
+            <tr><td style="padding: 6px 0; color: var(--color-tertiary);">Resolution Target:</td><td style="padding: 6px 0; font-weight: bold; text-align: right; font-size: 11px;">${c.sla.resolutionTarget}</td></tr>
+          </table>
+          <span style="font-size: 10.5px; color: var(--color-tertiary); display: block; margin-top: 8px; text-align: center; background: #f0f4f8; padding: 4px; border-radius: 3px;">
+            ${c.status === 'Waiting on User' ? 'SLA Paused while waiting on user' : 'SLA Target Timer Running'}
+          </span>
+        </div>
+
+        <!-- Investigation checklist -->
+        <div class="form-card" style="padding: 16px; margin-bottom: 16px; font-size:12.5px;">
+          <h4 style="font-weight: 800; font-size: 13px; margin-bottom: 8px;">🔍 Troubleshooting Check</h4>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <div>✅ Related class exists</div>
+            <div>✅ Replacement schedule valid</div>
+            <div>✅ Learner access active</div>
+            <div>
+              ${isClassroomReady ? '✅ Classroom state: Ready' : '❌ Classroom state: Needs Attention'}
+            </div>
+            <div>✅ Duplicate class issue: None</div>
+            <div>✅ Learner Entitlement: Unaffected (11 left)</div>
+          </div>
+        </div>
+
+        <!-- Related Class Occurrence Card -->
+        <div class="form-card" style="padding: 16px; margin-bottom: 16px; font-size: 12.5px;">
+          <h4 style="font-weight: 800; font-size: 13px; margin-bottom: 8px;">📖 Linked Course Record</h4>
+          <div style="background-color: var(--color-surface-container); padding: 10px; border-radius: 4px; margin-bottom: 8px;">
+            <strong>Spoken English</strong> &middot; CLASS-002-R1
+            <div style="font-size: 11px; color: var(--color-tertiary); margin-top: 2px;">Friday, 21 Aug &bull; 7:00 PM</div>
+            <div style="font-size: 11.5px; font-weight: bold; margin-top: 4px; color: ${isClassroomReady ? 'green' : 'red'};">
+              Classroom: ${isClassroomReady ? 'Ready' : 'Provisioning (Error Code 409)'}
+            </div>
+          </div>
+          
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            ${!isClassroomReady ? `
+              <button class="btn btn-primary" style="font-size: 11px; height: 32px; background-color:#1a73e8; border-color:#1a73e8;" onclick="simulateStaffClassroomProvision('${c.id}')">Retry Classroom Setup</button>
+            ` : `
+              <span style="color: green; font-weight: bold; text-align: center;">✓ Setup Restored Successfully</span>
+            `}
+          </div>
+        </div>
+
+        <!-- Case Actions Side Panel -->
+        <div class="form-card" style="padding: 16px;">
+          <h4 style="font-weight: 800; font-size: 13px; margin-bottom: 10px; border-bottom: 1px solid var(--color-outline-variant); padding-bottom: 6px;">⚙️ Status Transitions</h4>
+          
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            
+            ${c.assignments[0] && c.assignments[0].owner === "Unassigned" ? `
+              <button class="btn btn-primary" style="height: 34px; font-size: 12px;" onclick="executeClaimCase('${c.id}')">Claim Case</button>
+            ` : ''}
+
+            ${c.status === "Open" ? `
+              <button class="btn btn-primary" style="height: 34px; font-size: 12px;" onclick="executeStartReview('${c.id}')">Start Review</button>
+            ` : ''}
+
+            ${c.status === "In Review" || c.status === "Reopened" ? `
+              <button class="btn btn-secondary" style="height: 34px; font-size: 12px;" onclick="executeWaitingOnUser('${c.id}')">Wait on User</button>
+              <button class="btn btn-secondary" style="height: 34px; font-size: 12px;" onclick="executeWaitingInternally('${c.id}')">Wait Internally</button>
+              <button class="btn btn-primary" style="height: 34px; font-size: 12px; background-color: var(--color-secondary); border-color: var(--color-secondary); color:#000; font-weight:800;" onclick="openResolveCaseModal('${c.id}')">Record Resolution</button>
+            ` : ''}
+
+            ${c.status === "Resolved" ? `
+              <button class="btn btn-primary" style="height: 34px; font-size: 12px; background-color:#137333; border-color:#137333;" onclick="executeCloseCase('${c.id}')">Close Case</button>
+            ` : ''}
+
+            <button class="btn btn-secondary" style="height: 34px; font-size: 12px;" onclick="openReassignModal('${c.id}')">Reassign Case</button>
+            <button class="btn btn-secondary" style="height: 34px; font-size: 12px; color: #ba1a1a;" onclick="openEscalateModal('${c.id}')">Escalate Case</button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  `;
+};
+
+window.executeClaimCase = function(caseId) {
+  ensureSupportCaseState();
+  const c = state.support.cases.find(x => x.id === caseId);
+  c.assignments[0].owner = "Sarah Ahmed";
+  c.timeline.push({ time: new Date().toLocaleTimeString(), text: "Sarah Ahmed claimed case." });
+  showToastAlert("✓ Case claimed. Sarah Ahmed assigned as Owner.");
+  window.renderStaffCaseDetail(caseId);
+};
+
+window.executeStartReview = function(caseId) {
+  ensureSupportCaseState();
+  const c = state.support.cases.find(x => x.id === caseId);
+  c.status = "In Review";
+  c.timeline.push({ time: new Date().toLocaleTimeString(), text: "Status changed to In Review (Sarah Ahmed)" });
+  showToastAlert("✓ Case status transitioned to In Review.");
+  window.renderStaffCaseDetail(caseId);
+};
+
+window.executeWaitingOnUser = function(caseId) {
+  ensureSupportCaseState();
+  const c = state.support.cases.find(x => x.id === caseId);
+  c.status = "Waiting on User";
+  c.sla.status = "Paused";
+  c.timeline.push({ time: new Date().toLocaleTimeString(), text: "Status changed to Waiting on User. SLA Paused." });
+  showToastAlert("✓ Waiting on User. SLA timer paused.");
+  window.renderStaffCaseDetail(caseId);
+};
+
+window.executeWaitingInternally = function(caseId) {
+  ensureSupportCaseState();
+  const c = state.support.cases.find(x => x.id === caseId);
+  c.status = "Waiting Internally";
+  c.timeline.push({ time: new Date().toLocaleTimeString(), text: "Status changed to Waiting Internally." });
+  showToastAlert("✓ Waiting Internally. Operations coordinating.");
+  window.renderStaffCaseDetail(caseId);
+};
+
+window.openReassignModal = function(caseId) {
+  const content = `
+    <div style="text-align: left; font-size: 13px; display: flex; flex-direction: column; gap: 12px;">
+      <div>
+        <label style="font-weight: bold; display: block; margin-bottom: 4px;">Assignee Specialist:</label>
+        <select id="reassign-owner" class="form-input">
+          <option value="Omar Farooq">Omar Farooq (Live Operations)</option>
+          <option value="Sarah Ahmed">Sarah Ahmed (Support Team)</option>
+          <option value="Ayesha Rahman">Ayesha Rahman (Trainer QA)</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-weight: bold; display: block; margin-bottom: 4px;">Reassignment Reason:</label>
+        <input type="text" id="reassign-reason" class="form-input" placeholder="e.g. Requires classroom provisioning expertise">
+      </div>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn btn-primary" style="background-color: var(--color-secondary); border-color: var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="executeReassignCase('${caseId}')">Reassign</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Reassign Case Specialist", content);
+};
+
+window.executeReassignCase = function(caseId) {
+  ensureSupportCaseState();
+  const newOwner = document.getElementById("reassign-owner").value;
+  const reason = document.getElementById("reassign-reason").value || "Escalation to specialist";
+  closeModal();
+
+  const c = state.support.cases.find(x => x.id === caseId);
+  c.assignments[0].owner = newOwner;
+  c.timeline.push({
+    time: new Date().toLocaleTimeString(),
+    text: `Reassigned to ${newOwner}. Reason: ${reason}`
+  });
+
+  showToastAlert(`✓ Case reassigned to ${newOwner}.`);
+  window.renderStaffCaseDetail(caseId);
+};
+
+window.openEscalateModal = function(caseId) {
+  const content = `
+    <div style="text-align: left; font-size: 13px; display: flex; flex-direction: column; gap: 12px;">
+      <div>
+        <label style="font-weight: bold; display: block; margin-bottom: 4px;">Escalation Level:</label>
+        <select id="escalate-priority" class="form-input">
+          <option value="Urgent">Urgent (Tier 3 Review)</option>
+          <option value="High">High (Supervisor escalation)</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-weight: bold; display: block; margin-bottom: 4px;">Escalation Reason:</label>
+        <input type="text" id="escalate-reason" class="form-input" placeholder="e.g. Class reschedules approaching SLA breach limit">
+      </div>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn btn-primary" style="background-color: var(--color-secondary); border-color: var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="executeEscalateCase('${caseId}')">Escalate Case</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Escalate Support Case", content);
+};
+
+window.executeEscalateCase = function(caseId) {
+  ensureSupportCaseState();
+  const prio = document.getElementById("escalate-priority").value;
+  const reason = document.getElementById("escalate-reason").value || "Sla risk escalation";
+  closeModal();
+
+  const c = state.support.cases.find(x => x.id === caseId);
+  c.priority = prio;
+  c.timeline.push({
+    time: new Date().toLocaleTimeString(),
+    text: `Escalated case. Priority changed to ${prio}. Reason: ${reason}`
+  });
+
+  showToastAlert(`✓ Support case successfully escalated to ${prio}.`);
+  window.renderStaffCaseDetail(caseId);
+};
+
+window.simulateStaffClassroomProvision = function(caseId) {
+  showToastAlert("⏳ Initiating container provisioning check... preparing classroom CLASS-002-R1");
+  ensureSupportCaseState();
+  setTimeout(() => {
+    state.support.simClassroomReady = true;
+    const c = state.support.cases.find(x => x.id === caseId);
+    c.timeline.push({ time: new Date().toLocaleTimeString(), text: "CLASS-002-R1 classroom state set to Ready (restored provisioning)" });
+    showToastAlert("✅ Classroom provision successfully restored!");
+    window.renderStaffCaseDetail(caseId);
+  }, 1000);
+};
+
+window.openResolveCaseModal = function(caseId) {
+  const content = `
+    <div style="text-align: left; font-size: 13px; display: flex; flex-direction: column; gap: 12px;">
+      <div>
+        <label style="font-weight: bold; display: block; margin-bottom: 4px;">Outcome Type:</label>
+        <select id="resolve-outcome" class="form-input">
+          <option value="Fixed">Fixed (Rectified classroom issue)</option>
+          <option value="Information Provided">Information Provided</option>
+          <option value="Adjustment Completed">Adjustment Completed</option>
+          <option value="Duplicate">Duplicate of CASE-001</option>
+          <option value="No Issue Found">No Issue Found</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-weight: bold; display: block; margin-bottom: 4px;">Resolution Summary:</label>
+        <textarea id="resolve-summary" class="form-input" style="height: 50px;" placeholder="Describe what fixed the issue..."></textarea>
+      </div>
+      <div>
+        <label style="font-weight: bold; display: block; margin-bottom: 4px;">Learner-Safe Message:</label>
+        <textarea id="resolve-learner-msg" class="form-input" style="height: 50px;">Your rescheduled class classroom is now ready.</textarea>
+      </div>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn btn-primary" style="background-color: var(--color-secondary); border-color: var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="executeResolveCase('${caseId}')">Resolve Case</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Resolve Case", content);
+};
+
+window.executeResolveCase = function(caseId) {
+  ensureSupportCaseState();
+  const summary = document.getElementById("resolve-summary").value;
+  const outcome = document.getElementById("resolve-outcome").value;
+  const msg = document.getElementById("resolve-learner-msg").value;
+
+  if (!summary.trim()) {
+    showToastAlert("❌ Error: Resolution summary is required.");
+    return;
+  }
+
+  // Deduplicate resolution records checks
+  const c = state.support.cases.find(x => x.id === caseId);
+  if (c.status === "Resolved") {
+    showToastAlert("⚠️ Resolution already recorded for this case.");
+    closeModal();
+    return;
+  }
+
+  closeModal();
+  c.status = "Resolved";
+  c.sla.status = "Met";
+  c.resolutionId = `CASERES-${Date.now()}`;
+  c.messages.push({
+    id: `CASEMSG-${Date.now()}`,
+    authorId: "support-sarah",
+    sender: "Sarah Ahmed",
+    visibility: "Participant",
+    body: msg,
+    sentAt: new Date().toLocaleTimeString()
+  });
+
+  c.timeline.push({ time: new Date().toLocaleTimeString(), text: `Resolution recorded: ${outcome}` });
+  showToastAlert(`✓ Support Case CASE-001 resolved (Outcome: ${outcome}).`);
+  window.renderStaffCaseDetail(caseId);
+};
+
+window.executeCloseCase = function(caseId) {
+  ensureSupportCaseState();
+  const c = state.support.cases.find(x => x.id === caseId);
+  if (!c.resolutionId) {
+    showToastAlert("❌ Error: Cannot close case without a recorded resolution outcome.");
+    return;
+  }
+
+  c.status = "Closed";
+  c.timeline.push({ time: new Date().toLocaleTimeString(), text: "Closed support ticket." });
+  showToastAlert("✓ Case closed successfully. Resolution log archived.");
+  window.renderStaffCaseDetail(caseId);
+};
+
+window.sendStaffParticipantMessage = function(caseId) {
+  ensureSupportCaseState();
+  const input = document.getElementById("staff-participant-msg-input");
+  if (!input || !input.value.trim()) return;
+
+  const c = state.support.cases.find(x => x.id === caseId);
+  c.messages.push({
+    id: `CASEMSG-${Date.now()}`,
+    authorId: "support-sarah",
+    sender: "Sarah Ahmed",
+    visibility: "Participant",
+    body: input.value.trim(),
+    sentAt: new Date().toLocaleTimeString()
+  });
+
+  // Trigger first response milestone met
+  if (c.sla && !c.sla.firstResponseMet) {
+    c.sla.firstResponseMet = true;
+    c.timeline.push({ time: new Date().toLocaleTimeString(), text: "First response target met." });
+  }
+
+  showToastAlert("✓ Reply sent to learner Ali Khan.");
+  input.value = "";
+  window.renderStaffCaseDetail(caseId);
+};
+
+window.saveStaffInternalNote = function(caseId) {
+  ensureSupportCaseState();
+  const input = document.getElementById("staff-internal-note-input");
+  if (!input || !input.value.trim()) return;
+
+  const c = state.support.cases.find(x => x.id === caseId);
+  c.internalNotes.push({
+    id: `CASEINT-${Date.now()}`,
+    authorId: "support-sarah",
+    sender: "Sarah Ahmed",
+    body: input.value.trim(),
+    sentAt: new Date().toLocaleTimeString()
+  });
+
+  showToastAlert("✓ Internal note saved. Visible to staff ONLY.");
+  input.value = "";
+  window.renderStaffCaseDetail(caseId);
+};
+// ==========================================================================
+// Screen 28 Support Notification & Reminder Pipeline State & Layouts
+// ==========================================================================
+
+window.ensureNotificationState = function() {
+  if (!state.notifications) {
+    state.notifications = {
+      selectedDemoState: "Scheduled Reminder",
+      activeTab: "Overview",
+      preferences: [
+        { id: "PREF-COURSE-MSG", category: "Course Messages", inApp: true, email: true, isEssential: false },
+        { id: "PREF-CLASS-REM", category: "Class Reminders", inApp: true, email: true, isEssential: false },
+        { id: "PREF-HW-FEED", category: "Homework & Feedback", inApp: true, email: true, isEssential: false },
+        { id: "PREF-RESOURCES", category: "Resources", inApp: true, email: false, isEssential: false }, // Disables email
+        { id: "PREF-SECURITY", category: "Security & Account", inApp: true, email: true, isEssential: true } // Locked Essential
+      ],
+      preferenceAudits: [
+        { time: "11 Aug, 9:02 AM", text: "Resource Email notification changed: On &rarr; Off by Ali Khan" }
+      ],
+      templates: [
+        { id: "TPL-CLASS-REMINDER-v3", key: "class-reminder", version: 3, channel: "Email", status: "Published", subject: "Your Spoken English class is tomorrow", body: "Hi {{learnerName}}, your {{courseName}} class with {{trainerName}} is scheduled for {{classDate}} at {{classTime}} {{timezone}}.", requiredVars: ["learnerName", "courseName", "trainerName", "classDate", "classTime", "timezone", "deepLink"] },
+        { id: "TPL-CLASS-REMINDER-v4", key: "class-reminder", version: 4, channel: "Email", status: "Draft", subject: "Reminder: Spoken English class with {{trainerName}} tomorrow", body: "Hello {{learnerName}}, tomorrow is your {{courseName}} live session at {{classTime}}.", requiredVars: ["learnerName", "courseName", "trainerName", "classTime"] },
+        { id: "TPL-CLASS-RESCHEDULED-v2", key: "class-rescheduled", version: 2, channel: "Email", status: "Published", subject: "Class Rescheduled: {{courseName}}", body: "Hi {{learnerName}}, your class has been rescheduled to {{classDate}} at {{classTime}}.", requiredVars: ["learnerName", "courseName", "classDate", "classTime"] },
+        { id: "TPL-PAYMENT-APPROVED-v2", key: "payment-approved", version: 2, channel: "Email", status: "Published", subject: "Invoice Approved: {{invoiceId}}", body: "Hi {{learnerName}}, payment of {{amount}} for {{invoiceId}} has been approved.", requiredVars: ["learnerName", "amount", "invoiceId"] },
+        { id: "TPL-HOMEWORK-ASSIGNED-v1", key: "homework-assigned", version: 1, channel: "Email", status: "Published", subject: "New Homework Assigned: {{homeworkTitle}}", body: "Hi {{learnerName}}, please complete the homework '{{homeworkTitle}}' by the due date.", requiredVars: ["learnerName", "homeworkTitle"] },
+        { id: "TPL-CASE-RESOLVED-v1", key: "case-resolved", version: 1, channel: "Email", status: "Published", subject: "Support Case Resolved: {{caseId}}", body: "Hi {{learnerName}}, your support case {{caseId}} has been resolved.", requiredVars: ["learnerName", "caseId"] }
+      ],
+      jobs: [
+        {
+          id: "JOB-REMINDER-CLASS002-24H",
+          sourceType: "ClassOccurrence",
+          sourceId: "CLASS-002",
+          recipientId: "LEARNER-001",
+          notificationType: "CLASS_REMINDER_24H",
+          scheduledFor: "2026-08-19T19:00:00+05:00",
+          timezone: "Asia/Karachi",
+          scheduleVersion: 1,
+          status: "Invalidated",
+          invalidationReason: "Class rescheduled"
+        },
+        {
+          id: "JOB-REMINDER-CLASS002R1-24H",
+          sourceType: "ClassOccurrence",
+          sourceId: "CLASS-002-R1",
+          recipientId: "LEARNER-001",
+          notificationType: "CLASS_REMINDER_24H",
+          scheduledFor: "2026-08-20T19:00:00+05:00",
+          timezone: "Asia/Karachi",
+          scheduleVersion: 2,
+          status: "Scheduled"
+        },
+        {
+          id: "JOB-REMINDER-CLASS002R1-1H",
+          sourceType: "ClassOccurrence",
+          sourceId: "CLASS-002-R1",
+          recipientId: "LEARNER-001",
+          notificationType: "CLASS_REMINDER_1H",
+          scheduledFor: "2026-08-21T18:00:00+05:00",
+          timezone: "Asia/Karachi",
+          scheduleVersion: 2,
+          status: "Scheduled"
+        }
+      ],
+      events: [
+        {
+          id: "NOTIF-CLASS002R1-24H-001",
+          sourceType: "ClassOccurrence",
+          sourceId: "CLASS-002-R1",
+          recipientId: "LEARNER-001",
+          category: "Class Reminder",
+          status: "Created",
+          createdAt: "2026-08-20T19:00:00+05:00",
+          idempotencyKey: "notify:CLASS-002-R1:CLASS_REMINDER_24H:LEARNER-001:v2"
+        }
+      ],
+      attempts: [
+        {
+          id: "DELIV-EMAIL-CLASS002R1-001",
+          notificationEventId: "NOTIF-CLASS002R1-24H-001",
+          recipientId: "LEARNER-001",
+          channel: "Email",
+          provider: "Email Provider · Mock Resend",
+          status: "Pending",
+          retryCount: 0,
+          templateVersionId: "TPL-CLASS-REMINDER-v3",
+          history: []
+        }
+      ],
+      inAppNotifications: [
+        {
+          id: "INAPP-CLASS002R1-001",
+          notificationEventId: "NOTIF-CLASS002R1-24H-001",
+          recipientId: "LEARNER-001",
+          courseName: "Spoken English",
+          title: "Class Tomorrow",
+          body: "Spoken English &middot; Class 2 of 12 &middot; 21 Aug, 7:00 PM PKT",
+          status: "Unread",
+          createdAt: "2026-08-20T19:00:00+05:00",
+          deepLink: "#learner/courses/ENR-001"
+        },
+        {
+          id: "INAPP-PAY-001",
+          notificationEventId: "NOTIF-PAY-001",
+          recipientId: "LEARNER-001",
+          courseName: "Spoken English",
+          title: "Payment Invoice Approved",
+          body: "Your membership invoice PAY-TXN-001 has been approved.",
+          status: "Read",
+          createdAt: "2026-08-13T16:15:00+05:00",
+          deepLink: "#learner/payments"
+        },
+        {
+          id: "INAPP-CASE-001",
+          notificationEventId: "NOTIF-CASE-001",
+          recipientId: "LEARNER-001",
+          courseName: "Spoken English",
+          title: "Support Case Resolved",
+          body: "Support Case CASE-001 resolution is ready. The rescheduled class container is prepared.",
+          status: "Unread",
+          createdAt: "2026-08-13T18:31:00+05:00",
+          deepLink: "#learner/support/cases/CASE-001"
+        }
+      ],
+      deadLetterQueue: [
+        {
+          id: "DLQ-NOTIF-001",
+          notificationEventId: "NOTIF-CASE-RESOLVED-001",
+          channel: "Email",
+          reason: "Delivery retries exhausted",
+          status: "Open",
+          lastAttempt: "13 Aug, 4:12 PM",
+          retryCount: 3,
+          recipientId: "LEARNER-001"
+        }
+      ]
+    };
+  }
+};
+
+// ==========================================================================
+// Custom navbar helper for notifications sandbox
+// ==========================================================================
+
+function getNotificationSandboxNavbarHTML(activeRole, activeDemoState) {
+  return `
+    <div style="background-color: var(--color-surface-container-highest); border-bottom: 2px solid var(--color-outline-variant); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; border-radius: 8px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="font-weight: 900; font-size: 13.5px; color: var(--color-secondary);">🎛️ Notification Sandbox:</span>
+        
+        <div style="display: flex; gap: 4px; background-color: var(--color-surface-container-low); padding: 3px; border-radius: 6px; border: 1px solid var(--color-outline-variant);">
+          <button style="border: none; padding: 4px 10px; font-size: 11.5px; font-weight: 700; border-radius: 4px; cursor: pointer; background: ${activeRole === 'learner-inbox' ? 'var(--color-primary-container)' : 'transparent'}; color: ${activeRole === 'learner-inbox' ? 'var(--color-on-primary-container)' : 'var(--color-tertiary)'};" onclick="window.location.hash='#learner/notifications'">Learner Inbox</button>
+          <button style="border: none; padding: 4px 10px; font-size: 11.5px; font-weight: 700; border-radius: 4px; cursor: pointer; background: ${activeRole === 'learner-settings' ? 'var(--color-primary-container)' : 'transparent'}; color: ${activeRole === 'learner-settings' ? 'var(--color-on-primary-container)' : 'var(--color-tertiary)'};" onclick="window.location.hash='#learner/settings/notifications'">Learner Settings</button>
+          <button style="border: none; padding: 4px 10px; font-size: 11.5px; font-weight: 700; border-radius: 4px; cursor: pointer; background: ${activeRole === 'staff' ? 'var(--color-primary-container)' : 'transparent'}; color: ${activeRole === 'staff' ? 'var(--color-on-primary-container)' : 'var(--color-tertiary)'};" onclick="window.location.hash='#staff/notifications'">Operations delivery</button>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 12px; font-weight: 700; color: var(--color-tertiary);">Demo Scenario:</span>
+        <select class="form-input" style="width: 250px; height: 32px; font-size: 12px; margin-bottom: 0; font-weight: bold; background: #fff;" onchange="changeNotificationDemoState(this.value, '${activeRole}')">
+          <option value="Scheduled Reminder" ${activeDemoState === 'Scheduled Reminder' ? 'selected' : ''}>Scheduled Reminder (CLASS-002-R1)</option>
+          <option value="Reminder Due" ${activeDemoState === 'Reminder Due' ? 'selected' : ''}>Simulate Reminder Due (Triggers Delivery)</option>
+          <option value="Preference Suppressed" ${activeDemoState === 'Preference Suppressed' ? 'selected' : ''}>Preference Suppressed (Opt-Out)</option>
+          <option value="Stale Reminder Invalidated" ${activeDemoState === 'Stale Reminder Invalidated' ? 'selected' : ''}>Stale Reminder Invalidated (CLASS-002)</option>
+          <option value="Duplicate Prevented" ${activeDemoState === 'Duplicate Prevented' ? 'selected' : ''}>Duplicate Prevented (Idempotency Key)</option>
+          <option value="Template Error" ${activeDemoState === 'Template Error' ? 'selected' : ''}>Template Error (Missing variables)</option>
+          <option value="Email Bounced" ${activeDemoState === 'Email Bounced' ? 'selected' : ''}>Email Bounced Event</option>
+          <option value="Dead Letter" ${activeDemoState === 'Dead Letter' ? 'selected' : ''}>Dead Letter (Max Retries Exhausted)</option>
+          <option value="Dead Letter Resolved" ${activeDemoState === 'Dead Letter Resolved' ? 'selected' : ''}>Dead Letter Resolved (Retry Success)</option>
+          <option value="Essential Service Message" ${activeDemoState === 'Essential Service Message' ? 'selected' : ''}>Essential Service Message (Override)</option>
+        </select>
+      </div>
+    </div>
+  `;
+}
+
+window.changeNotificationDemoState = function(val, role) {
+  ensureNotificationState();
+  state.notifications.selectedDemoState = val;
+
+  const notif = state.notifications.events[0];
+  const attempt = state.notifications.attempts[0];
+  const job = state.notifications.jobs.find(j => j.id === "JOB-REMINDER-CLASS002R1-24H");
+
+  if (val === "Scheduled Reminder") {
+    job.status = "Scheduled";
+    notif.status = "Created";
+    attempt.status = "Pending";
+    attempt.retryCount = 0;
+  } else if (val === "Reminder Due") {
+    // Triggers full processing
+    job.status = "Completed";
+    notif.status = "Queued";
+    attempt.status = "Delivered";
+    attempt.history = [
+      { time: new Date().toLocaleTimeString(), status: "Delivered", notes: "Mock Resend confirmation delivered successfully." }
+    ];
+  } else if (val === "Preference Suppressed") {
+    notif.status = "Suppressed";
+    attempt.status = "Failed";
+    attempt.history = [
+      { time: new Date().toLocaleTimeString(), status: "Suppressed", notes: "Email suppressed due to Recipient Opt-Out preferences." }
+    ];
+  } else if (val === "Stale Reminder Invalidated") {
+    // Show old invalidated class reminder details
+    window.location.hash = `#staff/notifications`;
+    state.notifications.activeTab = "Scheduled Reminders";
+  } else if (val === "Duplicate Prevented") {
+    notif.status = "Created";
+    showToastAlert("✓ Duplicate prevented. Event rejected due to active Idempotency key match.");
+  } else if (val === "Template Error") {
+    notif.status = "Failed";
+    attempt.status = "Failed";
+    attempt.history = [
+      { time: new Date().toLocaleTimeString(), status: "Failed", notes: "Template rendering failed. Required variable 'classTime' is missing." }
+    ];
+  } else if (val === "Email Bounced") {
+    attempt.status = "Bounced";
+    attempt.history = [
+      { time: new Date().toLocaleTimeString(), status: "Bounced", notes: "Email Bounced: Permanent bounce reported by Mock provider." }
+    ];
+  } else if (val === "Dead Letter") {
+    notif.status = "Failed";
+    attempt.status = "Failed";
+    attempt.retryCount = 3;
+    attempt.history = [
+      { time: "7:00 PM", status: "Failed", notes: "Attempt 1 failed: provider unavailable." },
+      { time: "7:05 PM", status: "Failed", notes: "Attempt 2 failed: provider unavailable." },
+      { time: "7:10 PM", status: "Failed", notes: "Attempt 3 failed: provider unavailable. Escalating to DLQ." }
+    ];
+    state.notifications.deadLetterQueue[0].status = "Open";
+  } else if (val === "Dead Letter Resolved") {
+    state.notifications.deadLetterQueue[0].status = "Resolved";
+    attempt.status = "Delivered";
+    attempt.history.push({ time: new Date().toLocaleTimeString(), status: "Delivered", notes: "Manual retry from DLQ successful." });
+  }
+
+  showToastAlert(`✓ Demo Scenario: ${val}`);
+
+  // Route updates
+  if (role === "learner-inbox") {
+    window.location.hash = "#learner/notifications";
+  } else if (role === "learner-settings") {
+    window.location.hash = "#learner/settings/notifications";
+  } else {
+    window.location.hash = "#staff/notifications";
+  }
+};
+
+// ==========================================================================
+// Screen 28 — Operations Notifications & Delivery Dashboard
+// ==========================================================================
+
+window.renderStaffNotifications = function() {
+  ensureNotificationState();
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  const n = state.notifications;
+  const activeTab = n.activeTab;
+
+  // Build Tab Header Navigation HTML
+  let tabsHtml = "";
+  ["Overview", "Notification Events", "Scheduled Reminders", "Delivery Attempts", "Templates", "Exceptions & Dead Letter"].forEach(t => {
+    const isSel = t === activeTab;
+    tabsHtml += `
+      <button style="border:none; padding:10px 16px; font-weight:bold; font-size:13px; cursor:pointer; background: ${isSel ? 'var(--color-primary-container)' : 'transparent'}; border-bottom: ${isSel ? '3px solid var(--color-secondary)' : 'none'}; color: ${isSel ? 'var(--color-on-primary-container)' : 'var(--color-tertiary)'};" onclick="switchNotificationsTab('${t}')">
+        ${t}
+      </button>
+    `;
+  });
+
+  // Render Inner Content Template
+  let bodyHtml = "";
+  if (activeTab === "Overview") {
+    bodyHtml = renderNotificationsOverviewTab();
+  } else if (activeTab === "Notification Events") {
+    bodyHtml = renderNotificationEventsTab();
+  } else if (activeTab === "Scheduled Reminders") {
+    bodyHtml = renderScheduledRemindersTab();
+  } else if (activeTab === "Delivery Attempts") {
+    bodyHtml = renderDeliveryAttemptsTab();
+  } else if (activeTab === "Templates") {
+    bodyHtml = renderTemplatesTab();
+  } else {
+    bodyHtml = renderExceptionsTab();
+  }
+
+  view.innerHTML = `
+    ${getNotificationSandboxNavbarHTML('staff', n.selectedDemoState)}
+
+    <div class="form-card" style="padding: 24px;">
+      <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 800; margin-bottom: 4px;">📢 Notifications & Delivery Infrastructure</h2>
+      <p style="font-size: 12.5px; color: var(--color-tertiary); margin-bottom: 20px;">Monitor background reminder jobs, template variable validations, preference suppressions, and Resend delivery health metrics.</p>
+
+      <div style="display: flex; gap: 8px; border-bottom: 2px solid var(--color-outline-variant); margin-bottom: 20px;">
+        ${tabsHtml}
+      </div>
+
+      ${bodyHtml}
+    </div>
+  `;
+};
+
+window.switchNotificationsTab = function(tabName) {
+  ensureNotificationState();
+  state.notifications.activeTab = tabName;
+  window.renderStaffNotifications();
+};
+
+// --------------------------------------------------------------------------
+// Overview Tab
+// --------------------------------------------------------------------------
+function renderNotificationsOverviewTab() {
+  const n = state.notifications;
+  const isHealthy = n.selectedDemoState !== "Dead Letter";
+
+  return `
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+      <div class="form-card" style="padding: 16px; border-left:4px solid var(--color-secondary); text-align:center;">
+        <span style="font-size: 11px; text-transform:uppercase; color: var(--color-tertiary);">Delivered Today</span>
+        <div style="font-size: 24px; font-weight:800; margin-top:4px;">148</div>
+      </div>
+      <div class="form-card" style="padding: 16px; border-left:4px solid ${isHealthy ? 'green' : 'red'}; text-align:center;">
+        <span style="font-size: 11px; text-transform:uppercase; color: var(--color-tertiary);">SLA Health</span>
+        <div style="font-size: 24px; font-weight:800; margin-top:4px; color:${isHealthy ? 'green' : 'red'};">${isHealthy ? '100% Healthy' : 'Degraded (1 DLQ)'}</div>
+      </div>
+      <div class="form-card" style="padding: 16px; border-left:4px solid #ba1a1a; text-align:center;">
+        <span style="font-size: 11px; text-transform:uppercase; color: var(--color-tertiary);">Dead Letter</span>
+        <div style="font-size: 24px; font-weight:800; margin-top:4px; color:#ba1a1a;">${n.deadLetterQueue.filter(q => q.status === 'Open').length}</div>
+      </div>
+      <div class="form-card" style="padding: 16px; border-left:4px solid #77583a; text-align:center;">
+        <span style="font-size: 11px; text-transform:uppercase; color: var(--color-tertiary);">Scheduled Reminders</span>
+        <div style="font-size: 24px; font-weight:800; margin-top:4px;">${n.jobs.filter(j => j.status === 'Scheduled').length}</div>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 320px; gap: 20px; align-items: flex-start;">
+      <!-- Main Status Check -->
+      <div class="form-card" style="padding: 20px;">
+        <h3 style="font-family: var(--font-family-headings); font-weight: 800; font-size: 15px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">🔍 Main Stakeholder Scenario: CLASS-002-R1 24h Reminder</h3>
+        
+        <table style="width:100%; border-collapse:collapse; font-size:13px; line-height:22px;">
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">Source Class:</td><td style="padding:6px 0; font-weight:bold; text-align:right;">CLASS-002-R1 &middot; Rescheduled &middot; <span style="color:green;">Scheduled</span></td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">Occurrence Version:</td><td style="padding:6px 0; font-weight:bold; text-align:right;">Schedule Version 2 (Stale V1 invalidated)</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">Recipient Recipient:</td><td style="padding:6px 0; font-weight:bold; text-align:right;">Ali Khan (LEARNER-001) &middot; PKT Timezone</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">In-App Delivery Status:</td><td style="padding:6px 0; font-weight:bold; text-align:right; color:green;">Delivered (Read-model: Unread)</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">Email Provider Delivery:</td><td style="padding:6px 0; font-weight:bold; text-align:right; color: ${n.attempts[0].status === 'Delivered' ? 'green' : (n.attempts[0].status === 'Failed' ? 'red' : 'orange')}">${n.attempts[0].status}</td></tr>
+        </table>
+
+        <!-- Dev Control Trigger simulation -->
+        <div style="background-color: var(--color-surface-container); border:1.5px solid var(--color-outline-variant); padding:12px; border-radius:6px; margin-top:20px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <strong style="font-size:12.5px;">Trigger Background Worker:</strong>
+            <p style="font-size:11.5px; color:var(--color-tertiary); margin:2px 0 0 0;">Simulates running reminder job checking eligibility variables before Resend delivery attempt.</p>
+          </div>
+          <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; font-size:12px; height:34px;" onclick="simulateReminderExecution()">Simulate Reminder Due</button>
+        </div>
+      </div>
+
+      <!-- Infrastructure health metrics panel -->
+      <div class="form-card" style="padding: 16px; font-size:12.5px;">
+        <h4 style="font-weight:800; font-size:13px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:10px;">📋 Health Summary</h4>
+        <table style="width:100%; border-collapse:collapse;">
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">Provider:</td><td style="padding:6px 0; font-weight:bold; text-align:right; color:green;">Mock Resend / Online</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">Queue Daemon:</td><td style="padding:6px 0; font-weight:bold; text-align:right; color:green;">Mock Worker / Running</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">Concurrency:</td><td style="padding:6px 0; font-weight:bold; text-align:right;">2 Mock Nodes</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">Adapters:</td><td style="padding:6px 0; font-weight:bold; text-align:right;">Email, In-App</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">WhatsApp:</td><td style="padding:6px 0; font-style:italic; color:var(--color-tertiary); text-align:right;">Not Enabled</td></tr>
+          <tr><td style="padding:6px 0; color:var(--color-tertiary);">SMS:</td><td style="padding:6px 0; font-style:italic; color:var(--color-tertiary); text-align:right;">Not Enabled</td></tr>
+        </table>
+        
+        <div style="border-top:1px solid var(--color-outline-variant); margin-top:12px; padding-top:12px; background:#fff9ee; padding:10px; border-radius:4px; font-size:11.5px; color:var(--color-tertiary);">
+          ⚠️ <strong>Channel Separation Rule:</strong> In-App and Email remain isolated delivery pipelines. Email provider failures do NOT rollback in-app states or mutate source payment/class records.
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+window.simulateReminderExecution = function() {
+  ensureNotificationState();
+  const job = state.notifications.jobs.find(j => j.id === "JOB-REMINDER-CLASS002R1-24H");
+  const event = state.notifications.events[0];
+  const attempt = state.notifications.attempts[0];
+
+  // Pre-validate
+  const variablesPassed = true; // Simulating variable validations
+  const preferenceEvaluated = true; // Simulating pref evaluations
+
+  job.status = "Completed";
+  event.status = "Queued";
+  attempt.status = "Delivered";
+  attempt.history = [
+    { time: new Date().toLocaleTimeString(), status: "Completed", notes: "Job processed. Variables validation: Ready. Preference: In-App+Email enabled." },
+    { time: new Date().toLocaleTimeString(), status: "Queued", notes: "In-App delivery created. Email delivery attempt queued." },
+    { time: new Date().toLocaleTimeString(), status: "Delivered", notes: "Email successfully delivered to Mock Resend gateway." }
+  ];
+
+  showToastAlert("✓ Background worker ran: Job validated, pref checked, variable verified, and notification sent!");
+  window.renderStaffNotifications();
+};
+
+// --------------------------------------------------------------------------
+// Notification Events Tab
+// --------------------------------------------------------------------------
+function renderNotificationEventsTab() {
+  const n = state.notifications;
+  let rows = "";
+
+  n.events.forEach(e => {
+    rows += `
+      <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:13px;">
+        <td style="padding:12px; font-weight:bold; color:var(--color-primary);">${e.id}</td>
+        <td style="padding:12px; font-weight:700;">${e.category}</td>
+        <td style="padding:12px; font-family:monospace; font-size:11.5px;">${e.sourceType} (${e.sourceId})</td>
+        <td style="padding:12px;">Ali Khan (LEARNER-001)</td>
+        <td style="padding:12px;">
+          <span class="status-badge status-badge-${e.status.toLowerCase()}" style="padding:3px 6px; border-radius:4px; font-weight:bold; font-size:11px;">
+            ${e.status}
+          </span>
+        </td>
+        <td style="padding:12px; font-family:monospace; font-size:11px;">${e.idempotencyKey.substring(0, 30)}...</td>
+        <td style="padding:12px; color:var(--color-tertiary);">${new Date(e.createdAt).toLocaleTimeString()}</td>
+        <td style="padding:12px;">
+          <a href="#staff/notifications/detail/${e.id}" class="btn btn-secondary" style="padding:4px 8px; font-size:11.5px; height:28px; display:inline-flex; align-items:center;">
+            Inspect
+          </a>
+        </td>
+      </tr>
+    `;
+  });
+
+  return `
+    <h3 style="font-family: var(--font-family-headings); font-weight: 800; font-size: 16px; margin-bottom:12px;">Notification Intents & Events Log</h3>
+    <table style="width:100%; border-collapse:collapse; text-align:left;">
+      <thead>
+        <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+          <th style="padding: 12px;">Event ID</th>
+          <th style="padding: 12px;">Category</th>
+          <th style="padding: 12px;">Source Record</th>
+          <th style="padding: 12px;">Recipient</th>
+          <th style="padding: 12px;">Event Status</th>
+          <th style="padding: 12px;">Idempotency Key</th>
+          <th style="padding: 12px;">Created At</th>
+          <th style="padding: 12px;">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+    </table>
+  `;
+}
+
+// --------------------------------------------------------------------------
+// Scheduled Reminders Tab
+// --------------------------------------------------------------------------
+function renderScheduledRemindersTab() {
+  const n = state.notifications;
+  let rows = "";
+
+  n.jobs.forEach(j => {
+    rows += `
+      <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:13px; opacity: ${j.status === 'Invalidated' ? '0.6' : '1'};">
+        <td style="padding:12px; font-weight:bold; color:var(--color-primary);">${j.id}</td>
+        <td style="padding:12px; font-family:monospace; font-size:11.5px;">${j.sourceType} (${j.sourceId})</td>
+        <td style="padding:12px; font-weight:700;">${j.notificationType}</td>
+        <td style="padding:12px;">V${j.scheduleVersion}</td>
+        <td style="padding:12px; color:var(--color-tertiary);">${new Date(j.scheduledFor).toLocaleDateString()} &middot; ${new Date(j.scheduledFor).toLocaleTimeString()}</td>
+        <td style="padding:12px;">
+          <span class="status-badge status-badge-${j.status.toLowerCase()}" style="padding:3px 6px; border-radius:4px; font-weight:bold; font-size:11px;">
+            ${j.status}
+          </span>
+        </td>
+        <td style="padding:12px; font-style:italic; color:var(--color-tertiary); font-size:12px;">${j.invalidationReason || 'Active Job'}</td>
+      </tr>
+    `;
+  });
+
+  return `
+    <div style="background-color:#f0f4f8; padding:12px; border-radius:6px; font-size:12.5px; border-left:4px solid #1a73e8; margin-bottom:20px;">
+      🔒 <strong>Schedule Versioning Protection:</strong> Rescheduling a class automatically invalidates outdated reminder jobs by verifying the source schedule version. Stale jobs are archived without execution, ensuring learners are never sent obsolete class reminders.
+    </div>
+
+    <h3 style="font-family: var(--font-family-headings); font-weight: 800; font-size: 16px; margin-bottom:12px;">Scheduled Reminder Jobs Queue</h3>
+    <table style="width:100%; border-collapse:collapse; text-align:left;">
+      <thead>
+        <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+          <th style="padding: 12px;">Job ID</th>
+          <th style="padding: 12px;">Source Record</th>
+          <th style="padding: 12px;">Reminder Type</th>
+          <th style="padding: 12px;">Version</th>
+          <th style="padding: 12px;">Scheduled Due Time</th>
+          <th style="padding: 12px;">Job Status</th>
+          <th style="padding: 12px;">Notes / Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+    </table>
+  `;
+}
+
+// --------------------------------------------------------------------------
+// Delivery Attempts Tab
+// --------------------------------------------------------------------------
+function renderDeliveryAttemptsTab() {
+  const n = state.notifications;
+  let rows = "";
+
+  n.attempts.forEach(a => {
+    rows += `
+      <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:13px;">
+        <td style="padding:12px; font-weight:bold; color:var(--color-primary);">${a.id}</td>
+        <td style="padding:12px; font-weight:bold;">${a.channel}</td>
+        <td style="padding:12px; color:var(--color-tertiary);">${a.provider}</td>
+        <td style="padding:12px; font-weight:bold;">Retry Count: ${a.retryCount}</td>
+        <td style="padding:12px; font-family:monospace; font-size:11.5px;">${a.templateVersionId}</td>
+        <td style="padding:12px;">
+          <span class="status-badge status-badge-${a.status.toLowerCase()}" style="padding:3px 6px; border-radius:4px; font-weight:bold; font-size:11px;">
+            ${a.status}
+          </span>
+        </td>
+      </tr>
+    `;
+  });
+
+  // History timeline details
+  let attemptsLogHtml = "";
+  n.attempts[0].history.forEach(h => {
+    attemptsLogHtml += `
+      <div style="display:flex; gap:12px; font-size:12px; color:var(--color-tertiary); margin-bottom:8px;">
+        <span style="font-weight:bold; min-width:80px;">${h.time}</span>
+        <span style="font-weight:bold; color:${h.status === 'Delivered' ? 'green' : 'red'};">[${h.status}]</span>
+        <span>${h.notes}</span>
+      </div>
+    `;
+  });
+
+  return `
+    <h3 style="font-family: var(--font-family-headings); font-weight: 800; font-size: 16px; margin-bottom:12px;">Provider Delivery Attempts</h3>
+    <table style="width:100%; border-collapse:collapse; text-align:left; margin-bottom:30px;">
+      <thead>
+        <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+          <th style="padding: 12px;">Attempt ID</th>
+          <th style="padding: 12px;">Channel</th>
+          <th style="padding: 12px;">Provider</th>
+          <th style="padding: 12px;">Stats</th>
+          <th style="padding: 12px;">Template Code</th>
+          <th style="padding: 12px;">Attempt Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+    </table>
+
+    <div class="form-card" style="padding:16px;">
+      <h4 style="font-weight:800; font-size:13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">📜 Attempt Dispatch Activity Log (DELIV-EMAIL-CLASS002R1-001)</h4>
+      <div style="background-color: var(--color-surface-container); padding:12px; border-radius:6px;">
+        ${attemptsLogHtml ? attemptsLogHtml : '<div style="font-style:italic; color:var(--color-tertiary);">No dispatch logs recorded for this attempt.</div>'}
+      </div>
+    </div>
+  `;
+}
+
+// --------------------------------------------------------------------------
+// Templates Tab
+// --------------------------------------------------------------------------
+function renderTemplatesTab() {
+  const n = state.notifications;
+  let rows = "";
+
+  n.templates.forEach(t => {
+    rows += `
+      <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:13px;">
+        <td style="padding:12px; font-weight:bold; color:var(--color-primary);">${t.id}</td>
+        <td style="padding:12px; font-weight:700;">${t.key}</td>
+        <td style="padding:12px;">Version ${t.version}</td>
+        <td style="padding:12px; font-weight:bold;">${t.channel}</td>
+        <td style="padding:12px;">
+          <span class="status-badge status-badge-${t.status.toLowerCase()}" style="padding:3px 6px; border-radius:4px; font-weight:bold; font-size:11px;">
+            ${t.status}
+          </span>
+        </td>
+        <td style="padding:12px; font-family:monospace; font-size:11.5px; color:var(--color-tertiary);">${t.requiredVars.join(", ")}</td>
+        <td style="padding:12px;">
+          <button class="btn btn-secondary" style="padding:4px 8px; font-size:11.5px; height:28px;" onclick="openTemplatePreviewModal('${t.id}')">Preview</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  return `
+    <h3 style="font-family: var(--font-family-headings); font-weight: 800; font-size: 16px; margin-bottom:12px;">Transactional Template Version Library</h3>
+    <table style="width:100%; border-collapse:collapse; text-align:left;">
+      <thead>
+        <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+          <th style="padding: 12px;">Template ID</th>
+          <th style="padding: 12px;">Key</th>
+          <th style="padding: 12px;">Version</th>
+          <th style="padding: 12px;">Channel</th>
+          <th style="padding: 12px;">Status</th>
+          <th style="padding: 12px;">Required Variables</th>
+          <th style="padding: 12px;">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+    </table>
+  `;
+}
+
+window.openTemplatePreviewModal = function(templateId) {
+  ensureNotificationState();
+  const t = state.notifications.templates.find(x => x.id === templateId);
+  if (!t) return;
+
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <div style="background-color: var(--color-surface-container); padding:10px; border-radius:4px; margin-bottom:12px;">
+        <strong>Subject:</strong> ${t.subject}
+      </div>
+      <label style="font-weight:bold; display:block; margin-bottom:4px;">Body Template (Raw):</label>
+      <div style="font-family:monospace; background:#fff; border:1px solid var(--color-outline-variant); padding:12px; border-radius:6px; white-space:pre-wrap; font-size:12px; line-height:1.6; margin-bottom:12px;">
+        ${t.body}
+      </div>
+
+      <!-- Variable Validation status checks -->
+      <div style="background:#e6f4ea; color:#137333; padding:8px 10px; border-radius:4px; font-weight:bold; font-size:12px; display:flex; justify-content:space-between; align-items:center;">
+        <span>✓ Variables Check: Ready</span>
+        <span>${t.requiredVars.length} / ${t.requiredVars.length} Provided</span>
+      </div>
+
+      <div style="margin-top:16px; text-align:right;">
+        <button class="btn btn-secondary" onclick="closeModal()">Close Preview</button>
+      </div>
+    </div>
+  `;
+  openModal(`Template Preview: ${t.key} (Version ${t.version})`, content);
+};
+
+// --------------------------------------------------------------------------
+// Exceptions & Dead Letter Tab
+// --------------------------------------------------------------------------
+function renderExceptionsTab() {
+  const n = state.notifications;
+  let dlRows = "";
+
+  n.deadLetterQueue.forEach(d => {
+    dlRows += `
+      <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:13px; background-color: ${d.status === 'Open' ? '#fff0f0' : 'transparent'};">
+        <td style="padding:12px; font-weight:bold; color:#ba1a1a;">${d.id}</td>
+        <td style="padding:12px; font-weight:bold;">${d.notificationEventId}</td>
+        <td style="padding:12px;">${d.channel}</td>
+        <td style="padding:12px; font-weight:bold; color:#ba1a1a;">${d.reason}</td>
+        <td style="padding:12px; color:var(--color-tertiary);">${d.lastAttempt}</td>
+        <td style="padding:12px; font-weight:bold;">${d.retryCount} attempts</td>
+        <td style="padding:12px;">
+          <span class="status-badge status-badge-${d.status.toLowerCase()}" style="padding:3px 6px; border-radius:4px; font-weight:bold; font-size:11px;">
+            ${d.status}
+          </span>
+        </td>
+        <td style="padding:12px;">
+          ${d.status === 'Open' ? `
+            <div style="display:flex; gap:6px;">
+              <button class="btn btn-primary" style="padding:4px 8px; font-size:11px; height:26px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="executeDeadLetterRetry('${d.id}')">Retry</button>
+              <button class="btn btn-secondary" style="padding:4px 8px; font-size:11px; height:26px; color:#ba1a1a; border-color:#ba1a1a;" onclick="executeDeadLetterSuppress('${d.id}')">Suppress</button>
+            </div>
+          ` : '<span style="color:green; font-weight:bold;">✓ Resolved</span>'}
+        </td>
+      </tr>
+    `;
+  });
+
+  return `
+    <div style="background-color:#fff0f0; border:1px solid #fecdd3; border-radius:6px; padding:12px; font-size:12.5px; color:#9d174d; margin-bottom:20px; display:flex; align-items:center; gap:8px;">
+      <span>⚠️</span>
+      <span><strong>Dead Letter Queue (DLQ):</strong> Delivery attempts failing consistently due to temporary network issues or template errors populate the DLQ. Resolving these alerts preserves retry logs.</span>
+    </div>
+
+    <h3 style="font-family: var(--font-family-headings); font-weight: 800; font-size: 16px; margin-bottom:12px;">Dead Letter Items Log</h3>
+    <table style="width:100%; border-collapse:collapse; text-align:left;">
+      <thead>
+        <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+          <th style="padding: 12px;">DLQ ID</th>
+          <th style="padding: 12px;">Event Ref</th>
+          <th style="padding: 12px;">Channel</th>
+          <th style="padding: 12px;">Failure Reason</th>
+          <th style="padding: 12px;">Last Failure Time</th>
+          <th style="padding: 12px;">Retries Count</th>
+          <th style="padding: 12px;">Exception State</th>
+          <th style="padding: 12px;">Manual Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${dlRows}
+      </tbody>
+    </table>
+  `;
+}
+
+window.executeDeadLetterRetry = function(dlqId) {
+  ensureNotificationState();
+  const dlq = state.notifications.deadLetterQueue.find(q => q.id === dlqId);
+  dlq.status = "Resolved";
+
+  // Mutate delivery attempt to delivered
+  const attempt = state.notifications.attempts[0];
+  attempt.status = "Delivered";
+  attempt.history.push({ time: new Date().toLocaleTimeString(), status: "Delivered", notes: "Manual retry from DLQ successful. Provider confirmed delivery." });
+
+  showToastAlert("✓ DLQ Case resolved. Manual retry successful. Email delivered.");
+  window.renderStaffNotifications();
+};
+
+window.executeDeadLetterSuppress = function(dlqId) {
+  ensureNotificationState();
+  const dlq = state.notifications.deadLetterQueue.find(q => q.id === dlqId);
+  dlq.status = "Resolved";
+
+  const event = state.notifications.events[0];
+  event.status = "Suppressed";
+
+  showToastAlert("✓ DLQ Exception resolved. Notification event suppressed by operations policy.");
+  window.renderStaffNotifications();
+};
+
+// ==========================================================================
+// Screen 28 — Operations Staff Notification Details Inspect View
+// ==========================================================================
+
+window.renderStaffNotificationDetail = function(notifId) {
+  ensureNotificationState();
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  const n = state.notifications;
+  const e = n.events.find(x => x.id === notifId) || n.events[0];
+
+  view.innerHTML = `
+    ${getNotificationSandboxNavbarHTML('staff', n.selectedDemoState)}
+
+    <div style="margin-bottom:16px;">
+      <a href="#staff/notifications" style="font-weight:700; color:var(--color-secondary); font-size:13px;">&larr; Back to Dashboard</a>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 300px; gap:20px; align-items:flex-start;">
+      <!-- Left: Inspect detail cards -->
+      <div class="form-card" style="padding:20px;">
+        <h3 style="font-family:var(--font-family-headings); font-weight:800; font-size:16px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">Notification Dispatch Details</h3>
+        
+        <table style="width:100%; border-collapse:collapse; font-size:13px; line-height:24px; margin-bottom:20px;">
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Event ID:</td><td style="font-weight:bold; text-align:right;">${e.id}</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Category Topic:</td><td style="font-weight:bold; text-align:right;">${e.category}</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Source Entity ID:</td><td style="font-weight:bold; text-align:right; font-family:monospace;">${e.sourceType} (${e.sourceId})</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Idempotency Key:</td><td style="font-weight:bold; text-align:right; font-family:monospace; font-size:11px;">${e.idempotencyKey}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Aggregate Status:</td><td style="font-weight:bold; text-align:right;">${e.status}</td></tr>
+        </table>
+
+        <!-- Source Business Record card -->
+        <h4 style="font-weight:800; font-size:13.5px; margin-bottom:8px;">Authoritative Source business record</h4>
+        <div style="background-color: var(--color-surface-container); border:1.5px solid var(--color-outline-variant); padding:12px; border-radius:6px; font-size:13px;">
+          <strong>Spoken English &bull; CLASS-002-R1</strong>
+          <div style="font-size:12px; color:var(--color-tertiary); margin-top:2px;">Scheduled: Friday, 21 Aug &bull; 7:00 PM PKT</div>
+          <div style="font-weight:bold; margin-top:6px; color:#137333;">✓ Source Status: Scheduled</div>
+          <div style="font-size:11px; color:var(--color-tertiary); margin-top:6px; border-top:1px solid var(--color-outline-variant); padding-top:6px;">
+            ⚠️ <strong>Isolation Note:</strong> Delivery failures in the Resend attempt pipeline do not alter this Scheduled class state.
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Delivery targets detail -->
+      <div class="form-card" style="padding:16px; font-size:12.5px;">
+        <h4 style="font-weight:800; font-size:13px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:10px;">Recipient Target Info</h4>
+        <table style="width:100%; border-collapse:collapse; margin-bottom:12px;">
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">User ID:</td><td style="padding:6px 0; font-weight:bold; text-align:right;">LEARNER-001</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="padding:6px 0; color:var(--color-tertiary);">Email Target:</td><td style="padding:6px 0; font-weight:bold; text-align:right; font-family:monospace;">ali***@gmail.com</td></tr>
+          <tr><td style="padding:6px 0; color:var(--color-tertiary);">Timezone:</td><td style="padding:6px 0; font-weight:bold; text-align:right;">Asia/Karachi</td></tr>
+        </table>
+
+        <div style="background-color:#e8f0fe; color:#1a73e8; border-radius:4px; padding:10px; font-weight:bold; font-size:11.5px;">
+          Template Key: class-reminder (v3)<br/>
+          Channel: In-App, Email
+        </div>
+      </div>
+    </div>
+  `;
+};
+
+// ==========================================================================
+// Screen 28 — Learner Personal Notification Settings Workspace
+// ==========================================================================
+
+window.renderLearnerNotificationSettings = function() {
+  ensureNotificationState();
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  const n = state.notifications;
+
+  let listHtml = "";
+  n.preferences.forEach(p => {
+    listHtml += `
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--color-outline-variant); padding:12px 0;">
+        <div>
+          <strong style="font-size:14px; color:var(--color-on-surface);">${p.category}</strong>
+          <p style="font-size:12px; color:var(--color-tertiary); margin:2px 0 0 0;">
+            ${p.isEssential ? '🔒 Required Service Message. Cannot be disabled.' : 'Optional course and program updates.'}
+          </p>
+        </div>
+
+        <div style="display:flex; gap:16px; align-items:center;">
+          <!-- In-App Toggle -->
+          <label style="display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:bold; cursor: ${p.isEssential ? 'not-allowed' : 'pointer'};">
+            <input type="checkbox" ${p.inApp ? 'checked' : ''} ${p.isEssential ? 'disabled' : ''} onchange="togglePrefChannel('${p.id}', 'inApp', this.checked)">
+            In-App
+          </label>
+
+          <!-- Email Toggle -->
+          <label style="display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:bold; cursor: ${p.isEssential ? 'not-allowed' : 'pointer'};">
+            <input type="checkbox" ${p.email ? 'checked' : ''} ${p.isEssential ? 'disabled' : ''} onchange="togglePrefChannel('${p.id}', 'email', this.checked)">
+            Email
+          </label>
+        </div>
+      </div>
+    `;
+  });
+
+  view.innerHTML = `
+    ${getNotificationSandboxNavbarHTML('learner-settings', n.selectedDemoState)}
+
+    <div class="form-card" style="padding: 24px; max-width:680px; margin: 0 auto;">
+      <h2 style="font-family: var(--font-family-headings); font-size: 20px; font-weight: 800; margin-bottom: 4px;">⚙️ Notification Preferences</h2>
+      <p style="font-size: 12.5px; color: var(--color-tertiary); margin-bottom: 20px;">Configure your in-app notification center alerts and email notification preferences.</p>
+
+      <div style="background-color: var(--color-surface-container); border:1.5px solid var(--color-outline-variant); padding:12px; border-radius:6px; font-size:12.5px; color:var(--color-tertiary); margin-bottom:20px;">
+        ℹ️ <strong>Essential Messages:</strong> Transactional billing invoices, case support resolutions, and account recovery updates always follow mandatory channel delivery rules by system security policy.
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        ${listHtml}
+      </div>
+    </div>
+  `;
+};
+
+window.togglePrefChannel = function(prefId, channel, val) {
+  ensureNotificationState();
+  const pref = state.notifications.preferences.find(p => p.id === prefId);
+  if (pref) {
+    const oldVal = pref[channel] ? "On" : "Off";
+    pref[channel] = val;
+    const newVal = val ? "On" : "Off";
+    
+    state.notifications.preferenceAudits.push({
+      time: new Date().toLocaleTimeString(),
+      text: `${pref.category} ${channel} changed: ${oldVal} &rarr; ${newVal} by Ali Khan`
+    });
+
+    showToastAlert(`✓ Saved: ${pref.category} ${channel} preferences updated.`);
+    window.renderLearnerNotificationSettings();
+  }
+};
+
+// ==========================================================================
+// Screen 28 — Learner Personal Notification Center Inbox View
+// ==========================================================================
+
+window.renderLearnerNotificationCenter = function() {
+  ensureNotificationState();
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  const n = state.notifications;
+  
+  // Sort: Unread first, then date
+  const sorted = [...n.inAppNotifications].sort((a, b) => {
+    if (a.status === "Unread" && b.status === "Read") return -1;
+    if (a.status === "Read" && b.status === "Unread") return 1;
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
+
+  // Render rows
+  let cardsHtml = "";
+  sorted.forEach(c => {
+    const isUnread = c.status === "Unread";
+    cardsHtml += `
+      <div class="form-card" style="padding: 16px; margin-bottom: 12px; border-left: 4px solid ${isUnread ? 'var(--color-secondary)' : 'var(--color-outline-variant)'}; background-color: ${isUnread ? '#fffdf7' : 'var(--color-surface-container-lowest)'};">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;">
+          <div>
+            <span style="font-size:10.5px; font-weight:bold; background-color:var(--color-surface-container); padding:3px 6px; border-radius:4px; color:var(--color-tertiary); text-transform:uppercase;">
+              ${c.courseName}
+            </span>
+            <h4 style="font-size:14px; font-weight:800; margin:4px 0 0 0; color:var(--color-on-surface); display:flex; align-items:center; gap:8px;">
+              ${c.title}
+              ${isUnread ? '<span style="width: 8px; height: 8px; background-color: var(--color-error); border-radius: 50%;"></span>' : ''}
+            </h4>
+          </div>
+          <span style="font-size:11px; color:var(--color-tertiary);">${new Date(c.createdAt).toLocaleTimeString()}</span>
+        </div>
+        <p style="margin: 0 0 12px 0; font-size:13px; color:var(--color-tertiary);">${c.body}</p>
+        
+        <div style="display:flex; gap:10px; justify-content:flex-end;">
+          ${isUnread ? `
+            <button class="btn btn-secondary" style="height:28px; font-size:11px; padding:0 8px;" onclick="markNotificationRead('${c.id}')">Mark as Read</button>
+          ` : ''}
+          <a href="${c.deepLink}" class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; height:28px; font-size:11px; padding:0 10px; display:inline-flex; align-items:center;">
+            View Details
+          </a>
+        </div>
+      </div>
+    `;
+  });
+
+  const unreadCount = n.inAppNotifications.filter(c => c.status === "Unread").length;
+  // Update header badge dynamically if element exists
+  const badge = document.getElementById("header-unread-count-badge");
+  if (badge) {
+    badge.innerText = unreadCount;
+    badge.style.display = unreadCount > 0 ? "inline-block" : "none";
+  }
+
+  view.innerHTML = `
+    ${getNotificationSandboxNavbarHTML('learner-inbox', n.selectedDemoState)}
+
+    <div style="max-width:680px; margin: 0 auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--color-outline-variant); padding-bottom: 12px; margin-bottom: 20px;">
+        <div>
+          <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 800;">🔔 My Notifications Center</h2>
+          <p style="font-size: 12.5px; color: var(--color-tertiary); margin-top: 4px;">Recent service notifications, live class reminder details, and grading updates.</p>
+        </div>
+        ${unreadCount > 0 ? `
+          <button class="btn btn-secondary" style="height:32px; font-size:12px;" onclick="markAllNotificationsRead()">Mark all as Read</button>
+        ` : ''}
+      </div>
+
+      <div>
+        ${cardsHtml ? cardsHtml : '<div style="text-align:center; padding:40px; color:var(--color-tertiary); font-style:italic;">No notifications in your inbox.</div>'}
+      </div>
+    </div>
+  `;
+};
+
+window.markNotificationRead = function(notifId) {
+  ensureNotificationState();
+  const notif = state.notifications.inAppNotifications.find(n => n.id === notifId);
+  if (notif) {
+    notif.status = "Read";
+    window.renderLearnerNotificationCenter();
+  }
+};
+
+window.markAllNotificationsRead = function() {
+  ensureNotificationState();
+  state.notifications.inAppNotifications.forEach(n => {
+    n.status = "Read";
+  });
+  window.renderLearnerNotificationCenter();
+};
+// ==========================================================================
+// Screen 29 Dashboard, Operational Analytics & Action Queues State & Layouts
+// ==========================================================================
+
+window.ensureDashboardState = function() {
+  if (!state.dashboard) {
+    state.dashboard = {
+      selectedDemoState: "Current",
+      activeRole: "operations", // Default view
+      filters: {
+        dateRange: "This Week",
+        programme: "All",
+        owner: "All"
+      },
+      savedViews: [
+        { id: "SAVEDVIEW-OPS-001", ownerId: "ops-sarah", name: "My Morning Operations", status: "Active", filters: { dateRange: "Today", programme: "Spoken English", owner: "Sarah Ahmed" } }
+      ],
+      snapshots: {
+        "DSH-OPS-001": {
+          asOf: "21 Aug 2026 &middot; 6:45 PM PKT",
+          freshness: "Current"
+        }
+      },
+      taskQueue: [
+        { id: "TASKQ-001", sourceType: "Case", sourceId: "CASE-001", title: "Investigate classroom setup exception", ownerId: "Sarah Ahmed", status: "In Progress", priority: "Normal" },
+        { id: "TASKQ-002", sourceType: "DeadLetter", sourceId: "DLQ-NOTIF-001", title: "Resolve email retries bounce exception", ownerId: "Unassigned", status: "Open", priority: "Urgent" },
+        { id: "TASKQ-003", sourceType: "ResourceException", sourceId: "RES-K12-SCI-DEMO-001", title: "Restore missing science resource asset", ownerId: "Unassigned", status: "Open", priority: "Normal" },
+        { id: "TASKQ-004", sourceType: "PaymentReview", sourceId: "PAY-SUB-DEMO-002", title: "Audit pending payment verification request", ownerId: "Omar Farooq", status: "In Progress", priority: "Normal" }
+      ],
+      simFreshness: "Current"
+    };
+  }
+  
+  // Ensure related collections exist for reconciliation counting
+  if (!state.support) window.ensureSupportCaseState();
+  if (!state.notifications) window.ensureNotificationState();
+};
+
+// ==========================================================================
+// Main dashboard dispatcher
+// ==========================================================================
+
+window.renderDashboardRoute = function(hash) {
+  ensureDashboardState();
+  const d = state.dashboard;
+
+  // Sync active role based on hash if user navigated directly
+  if (hash.includes("learner/dashboard")) d.activeRole = "learner";
+  else if (hash.includes("trainer/dashboard")) d.activeRole = "trainer";
+  else if (hash.includes("csr/dashboard")) d.activeRole = "csr";
+  else if (hash.includes("admin/dashboard")) d.activeRole = "admin";
+  else if (hash.includes("finance/dashboard")) d.activeRole = "finance";
+  else if (hash.includes("hr/dashboard")) d.activeRole = "hr";
+  else if (hash.includes("media/dashboard")) d.activeRole = "media";
+  else if (hash.includes("development/dashboard")) d.activeRole = "development";
+  else if (hash.includes("operations/dashboard") || hash === "#staff/dashboard") d.activeRole = "operations";
+
+  // Simulate permission verification check (Rule 35)
+  if (d.selectedDemoState === "Permission Changed" && d.activeRole === "finance") {
+    const view = document.getElementById("learner-assessment-view");
+    view.innerHTML = `
+      ${getDashboardSandboxNavbarHTML(d.activeRole, d.selectedDemoState)}
+      <div class="form-card" style="padding: 40px; text-align: center; max-width: 580px; margin: 40px auto; border-top: 4px solid var(--color-error);">
+        <span style="font-size: 40px;">🔒</span>
+        <h3 style="font-family: var(--font-family-headings); font-weight:800; font-size:18px; margin-top:12px;">Your dashboard access has changed</h3>
+        <p style="font-size:13px; color:var(--color-tertiary);">Finance scope and metric widgets have been removed by administrator governance policy.</p>
+        <button class="btn btn-secondary" onclick="window.location.hash='#operations/dashboard'">Return to Operations</button>
+      </div>
+    `;
+    return;
+  }
+
+  // Render correct role dashboard view
+  if (d.activeRole === "learner") renderLearnerDashboard();
+  else if (d.activeRole === "trainer") renderTrainerDashboard();
+  else if (d.activeRole === "csr") renderCSRDashboard();
+  else if (d.activeRole === "admin") renderAdminDashboard();
+  else if (d.activeRole === "finance") renderFinanceDashboard();
+  else if (d.activeRole === "hr") renderHRDashboard();
+  else if (d.activeRole === "media") renderMediaDashboard();
+  else if (d.activeRole === "development") renderDevelopmentDashboard();
+  else renderOperationsDashboard();
+};
+
+// ==========================================================================
+// Dashboard sandbox console bar
+// ==========================================================================
+
+function getDashboardSandboxNavbarHTML(activeRole, activeDemoState) {
+  return `
+    <div style="background-color: var(--color-surface-container-highest); border-bottom: 2px solid var(--color-outline-variant); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; border-radius: 8px;">
+      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+        <span style="font-weight: 900; font-size: 13px; color: var(--color-secondary);">🎛️ Dashboard Sandbox:</span>
+        
+        <select class="form-input" style="width: 170px; height: 32px; font-size: 11.5px; margin-bottom:0; font-weight: bold; background: #fff;" onchange="switchDashboardRole(this.value)">
+          <option value="operations" ${activeRole === 'operations' ? 'selected' : ''}>Operations Dashboard</option>
+          <option value="trainer" ${activeRole === 'trainer' ? 'selected' : ''}>Trainer Dashboard</option>
+          <option value="learner" ${activeRole === 'learner' ? 'selected' : ''}>Learner Dashboard</option>
+          <option value="csr" ${activeRole === 'csr' ? 'selected' : ''}>CSR Dashboard</option>
+          <option value="admin" ${activeRole === 'admin' ? 'selected' : ''}>Admin Dashboard</option>
+          <option value="finance" ${activeRole === 'finance' ? 'selected' : ''}>Finance Dashboard</option>
+          <option value="hr" ${activeRole === 'hr' ? 'selected' : ''}>HR Department Preview</option>
+          <option value="media" ${activeRole === 'media' ? 'selected' : ''}>Media Department Preview</option>
+          <option value="development" ${activeRole === 'development' ? 'selected' : ''}>Dev/CTO Department Preview</option>
+        </select>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 12px; font-weight: 700; color: var(--color-tertiary);">Demo State:</span>
+        <select class="form-input" style="width: 230px; height: 32px; font-size: 11.5px; margin-bottom: 0; font-weight: bold; background: #fff;" onchange="changeDashboardDemoState(this.value, '${activeRole}')">
+          <option value="Current" ${activeDemoState === 'Current' ? 'selected' : ''}>Current (Healthy 6:45 PM)</option>
+          <option value="Refreshing" ${activeDemoState === 'Refreshing' ? 'selected' : ''}>Refreshing (Stale read model)</option>
+          <option value="Delayed" ${activeDemoState === 'Delayed' ? 'selected' : ''}>Delayed (Eventual consistency warning)</option>
+          <option value="Read Model Failed" ${activeDemoState === 'Read Model Failed' ? 'selected' : ''}>Read Model Failed (404/500 error)</option>
+          <option value="No Records" ${activeDemoState === 'No Records' ? 'selected' : ''}>No Records (Empty states filters)</option>
+          <option value="Permission Changed" ${activeDemoState === 'Permission Changed' ? 'selected' : ''}>Permission Revoked (Simulate 403)</option>
+          <option value="Metric Mismatch" ${activeDemoState === 'Metric Mismatch' ? 'selected' : ''}>Metric Mismatch (Discrepancy test)</option>
+        </select>
+      </div>
+    </div>
+  `;
+}
+
+window.switchDashboardRole = function(role) {
+  ensureDashboardState();
+  state.dashboard.activeRole = role;
+  
+  if (role === "operations") window.location.hash = "#operations/dashboard";
+  else window.location.hash = `#${role}/dashboard`;
+};
+
+window.changeDashboardDemoState = function(val, role) {
+  ensureDashboardState();
+  state.dashboard.selectedDemoState = val;
+  state.dashboard.simFreshness = (val === "Delayed") ? "Delayed" : ((val === "Read Model Failed") ? "Failed" : "Current");
+  
+  showToastAlert(`✓ Dashboard simulation changed: ${val}`);
+  renderDashboardRoute(window.location.hash);
+};
+
+// ==========================================================================
+// Centralized KPI selectors to ensure reconciliation (Rule 83)
+// ==========================================================================
+
+function getMetricRecords(metricType, filters) {
+  let list = [];
+  
+  if (metricType === "upcomingClasses") {
+    // CLASS-002-R1 scheduled replacement. CLASS-002 rescheduled is excluded! (Rule 45 & 46)
+    list = [
+      { id: "CLASS-002-R1", title: "Class 2 (Rescheduled)", time: "Friday, 21 Aug, 7:00 PM", status: "Scheduled", course: "Spoken English" }
+    ];
+  } else if (metricType === "paymentReviews") {
+    // Audit reviews pending
+    list = [
+      { id: "PAY-SUB-DEMO-002", title: "Membership Invoice evidence", amount: "PKR 15,000", status: "Under Review", course: "Spoken English" }
+    ];
+  } else if (metricType === "openCases") {
+    // Filter safeguarding/HR restricted cases unless Admin/Finance (Rule 94)
+    const cases = state.support.cases.filter(c => c.status !== "Closed" && c.status !== "Resolved");
+    list = cases.filter(c => !c.isRestricted && !c.isHRRestricted);
+  } else if (metricType === "notificationExceptions") {
+    list = state.notifications.deadLetterQueue.filter(q => q.status === "Open");
+  } else if (metricType === "resourceExceptions") {
+    list = [
+      { id: "RES-K12-SCI-DEMO-001", title: "General Science Quiz Guide", status: "Missing Object", course: "Science Grade 7" }
+    ];
+  } else if (metricType === "attendanceExceptions") {
+    list = [
+      { id: "ATT-EXC-001", title: "Learner late arrival reconciliation", status: "Pending review", course: "Live Classes" }
+    ];
+  } else if (metricType === "reportsPending") {
+    list = [
+      { id: "DELIVERY-REVIEW-CLASS-001", title: "Trainer report pending review", status: "Submitted", course: "Spoken English" }
+    ];
+  } else if (metricType === "unsettledPayable") {
+    list = [
+      { id: "EARN-CLASS-001", title: "Ayesha Rahman session payout", amount: "PKR 3,500", status: "Created", course: "Spoken English" }
+    ];
+  }
+
+  // Apply global filters
+  if (filters.programme !== "All") {
+    list = list.filter(item => item.course === filters.programme);
+  }
+  
+  return list;
+}
+
+// ==========================================================================
+// Operations / COO Dashboard View
+// ==========================================================================
+
+function renderOperationsDashboard() {
+  const d = state.dashboard;
+  const f = d.filters;
+  const snap = d.snapshots["DSH-OPS-001"];
+  const freshness = d.simFreshness;
+
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  // Handle broken/read-model failed screen scenario (Rule 32)
+  if (freshness === "Failed") {
+    view.innerHTML = `
+      ${getDashboardSandboxNavbarHTML('operations', d.selectedDemoState)}
+      <div class="form-card" style="padding: 40px; text-align: center; max-width: 580px; margin: 40px auto; border-top: 4px solid var(--color-error);">
+        <span style="font-size: 40px;">⚠️</span>
+        <h3 style="font-family: var(--font-family-headings); font-weight:800; font-size:18px; margin-top:12px;">Dashboard Data Unavailable</h3>
+        <p style="font-size:13px; color:var(--color-tertiary); margin-bottom: 20px;">The operations read model could not refresh due to temporary connection latency. Note that all underlying workflows are operational.</p>
+        <div style="display:flex; gap:12px; justify-content:center;">
+          <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="changeDashboardDemoState('Current', 'operations')">Retry Dashboard</button>
+          <button class="btn btn-secondary" onclick="window.location.hash='#staff/support/cases'">Open Cases Queue</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // Metric derivations
+  const upcomingClasses = getMetricRecords("upcomingClasses", f);
+  const paymentReviews = getMetricRecords("paymentReviews", f);
+  const openCases = getMetricRecords("openCases", f);
+  const notifExceptions = getMetricRecords("notificationExceptions", f);
+  const resExceptions = getMetricRecords("resourceExceptions", f);
+  const attendanceExceptions = getMetricRecords("attendanceExceptions", f);
+  const reportsPending = getMetricRecords("reportsPending", f);
+  const unsettledPayable = getMetricRecords("unsettledPayable", f);
+
+  // Freshness status indicators (Rule 30 & 31)
+  let freshnessBadge = `<span style="background-color: #e6f4ea; color:#137333; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 11.5px;">✓ Current &middot; Updated Just Now</span>`;
+  if (freshness === "Delayed") {
+    freshnessBadge = `<span style="background-color: #fff9e6; color:#b78103; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 11.5px;">⚠️ Data Delayed (15 mins older)</span>`;
+  } else if (d.selectedDemoState === "Refreshing") {
+    freshnessBadge = `<span style="background-color: #e8f0fe; color:#1a73e8; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 11.5px;">⏳ Recomputing read models...</span>`;
+  }
+
+  // Handle empty state filters path (Rule 37)
+  let overviewBodyHtml = "";
+  if (d.selectedDemoState === "No Records" || (upcomingClasses.length === 0 && paymentReviews.length === 0 && openCases.length === 0)) {
+    overviewBodyHtml = `
+      <div style="padding:40px; background-color: var(--color-surface-container); border:1.5px dashed var(--color-outline-variant); border-radius:12px; text-align:center; color:var(--color-tertiary);">
+        <h3>No Records Found</h3>
+        <p style="font-size:13px; margin: 4px 0 16px 0;">No active dashboard items match the chosen filter configuration.</p>
+        <button class="btn btn-secondary" onclick="resetDashboardFilters()">Clear Filters</button>
+      </div>
+    `;
+  } else {
+    overviewBodyHtml = `
+      <!-- Row 1: Immediate operations -->
+      <div style="margin-bottom: 24px;">
+        <h4 style="font-weight: 800; font-size: 13.5px; text-transform: uppercase; color: var(--color-tertiary); margin-bottom: 12px; border-bottom: 1px solid var(--color-outline-variant); padding-bottom: 4px;">📅 Immediate Class Operations</h4>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+          
+          <div class="form-card" style="padding: 16px; border-top: 3px solid var(--color-secondary); cursor: pointer;" onclick="openReconciliationDrawer('upcomingClasses')">
+            <span style="font-size: 11.5px; color: var(--color-tertiary); text-transform: uppercase;">Upcoming Classes</span>
+            <div style="font-size: 26px; font-weight: 800; margin: 4px 0;">${upcomingClasses.length}</div>
+            <div style="font-size: 11.5px; color: green; font-weight:bold;">1 rescheduled slot active</div>
+          </div>
+
+          <div class="form-card" style="padding: 16px; border-top: 3px solid var(--color-secondary); cursor: pointer;" onclick="openReconciliationDrawer('attendanceExceptions')">
+            <span style="font-size: 11.5px; color: var(--color-tertiary); text-transform: uppercase;">Attendance Exceptions</span>
+            <div style="font-size: 26px; font-weight: 800; margin: 4px 0;">${attendanceExceptions.length}</div>
+            <div style="font-size: 11.5px; color: #ba1a1a; font-weight:bold;">Requires review</div>
+          </div>
+
+          <div class="form-card" style="padding: 16px; border-top: 3px solid var(--color-secondary); cursor: pointer;" onclick="openReconciliationDrawer('reportsPending')">
+            <span style="font-size: 11.5px; color: var(--color-tertiary); text-transform: uppercase;">Reviews Pending</span>
+            <div style="font-size: 26px; font-weight: 800; margin: 4px 0;">${reportsPending.length}</div>
+            <div style="font-size: 11.5px; color: var(--color-tertiary);">Awaiting CSR review</div>
+          </div>
+
+          <div class="form-card" style="padding: 16px; background-color: var(--color-surface-container); border-color: var(--color-outline-variant);">
+            <span style="font-size: 11.5px; color: var(--color-tertiary); text-transform: uppercase;">Running Rooms</span>
+            <div style="font-size: 26px; font-weight: 800; margin: 4px 0;">0</div>
+            <div style="font-size: 11.5px; color: var(--color-tertiary); font-style:italic;">No active calls</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Row 2: Customer Operations & Access -->
+      <div style="margin-bottom: 24px;">
+        <h4 style="font-weight: 800; font-size: 13.5px; text-transform: uppercase; color: var(--color-tertiary); margin-bottom: 12px; border-bottom: 1px solid var(--color-outline-variant); padding-bottom: 4px;">💳 Commercial & Customer Operations</h4>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+          
+          <div class="form-card" style="padding: 16px; border-top: 3px solid var(--color-secondary); cursor: pointer;" onclick="window.location.hash='#staff/payments'">
+            <span style="font-size: 11.5px; color: var(--color-tertiary); text-transform: uppercase;">Payment Reviews</span>
+            <div style="font-size: 26px; font-weight: 800; margin: 4px 0;">${paymentReviews.length}</div>
+            <div style="font-size: 11.5px; color: #b78103; font-weight:bold;">Audit pending</div>
+          </div>
+
+          <div class="form-card" style="padding: 16px; border-top: 3px solid var(--color-secondary); cursor: pointer;" onclick="openReconciliationDrawer('openCases')">
+            <span style="font-size: 11.5px; color: var(--color-tertiary); text-transform: uppercase;">Open Support Cases</span>
+            <div style="font-size: 26px; font-weight: 800; margin: 4px 0;">${openCases.length}</div>
+            <div style="font-size: 11.5px; color: #ba1a1a; font-weight:bold;">SLA target active</div>
+          </div>
+
+          <div class="form-card" style="padding: 16px; border-top: 3px solid var(--color-secondary); cursor: pointer;" onclick="openReconciliationDrawer('notificationExceptions')">
+            <span style="font-size: 11.5px; color: var(--color-tertiary); text-transform: uppercase;">Notification Exceptions</span>
+            <div style="font-size: 26px; font-weight: 800; margin: 4px 0;">${notifExceptions.length}</div>
+            <div style="font-size: 11.5px; color: #ba1a1a; font-weight:bold;">DLQ items pending</div>
+          </div>
+
+          <div class="form-card" style="padding: 16px; border-top: 3px solid var(--color-secondary); cursor: pointer;" onclick="openReconciliationDrawer('resourceExceptions')">
+            <span style="font-size: 11.5px; color: var(--color-tertiary); text-transform: uppercase;">Resource Exceptions</span>
+            <div style="font-size: 26px; font-weight: 800; margin: 4px 0;">${resExceptions.length}</div>
+            <div style="font-size: 11.5px; color: #ba1a1a; font-weight:bold;">Missing assets alert</div>
+          </div>
+
+        </div>
+      </div>
+    `;
+  }
+
+  // Main tasks table rows
+  let taskRowsHtml = "";
+  d.taskQueue.forEach(t => {
+    taskRowsHtml += `
+      <tr style="border-bottom: 1px solid var(--color-outline-variant); font-size:13px; background-color: ${t.priority === 'Urgent' ? '#fff0f0' : 'transparent'};">
+        <td style="padding: 12px; font-weight:bold; color:var(--color-primary);">${t.id}</td>
+        <td style="padding: 12px; font-weight:bold;">${t.title}</td>
+        <td style="padding: 12px; font-family:monospace; font-size:11.5px;">${t.sourceType} (${t.sourceId})</td>
+        <td style="padding: 12px;">${t.ownerId}</td>
+        <td style="padding: 12px; font-weight:bold; color: ${t.priority === 'Urgent' ? 'red' : 'inherit'};">${t.priority}</td>
+        <td style="padding: 12px;">
+          <span class="status-badge status-badge-${t.status.toLowerCase().replace(/ /g, '-')}" style="padding: 3px 6px; border-radius: 4px; font-weight: bold; font-size: 11px;">
+            ${t.status}
+          </span>
+        </td>
+        <td style="padding: 12px;">
+          ${t.status === 'Open' ? `
+            <button class="btn btn-secondary" style="padding: 4px 8px; font-size:11px; height:28px;" onclick="claimTaskQueueItem('${t.id}')">Claim Task</button>
+          ` : `
+            <button class="btn btn-secondary" style="padding: 4px 8px; font-size:11px; height:28px;" onclick="completeTaskQueueItem('${t.id}')">Complete</button>
+          `}
+        </td>
+      </tr>
+    `;
+  });
+
+  // Saved views HTML
+  let savedViewsHtml = "";
+  d.savedViews.forEach(v => {
+    savedViewsHtml += `
+      <div style="background-color:#fff9ee; border:1px solid var(--color-outline-variant); padding:10px; border-radius:6px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <strong style="font-size:12px; color:var(--color-secondary);">${v.name}</strong>
+          <div style="font-size:10.5px; color:var(--color-tertiary); margin-top:2px;">Prog: ${v.filters.programme} &bull; Date: ${v.filters.dateRange}</div>
+        </div>
+        <button class="btn btn-secondary" style="font-size:10.5px; height:24px; padding:0 6px;" onclick="applySavedViewFilters('${v.id}')">Apply</button>
+      </div>
+    `;
+  });
+
+  view.innerHTML = `
+    ${getDashboardSandboxNavbarHTML(d.activeRole, d.selectedDemoState)}
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+      <div>
+        <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 800; margin-bottom:4px;">📋 Operations / COO Dashboard</h2>
+        <span style="font-size:12px; color:var(--color-tertiary);">Demo snapshot &bull; ${snap.asOf} &bull; Timezone: PKT</span>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center;">
+        ${freshnessBadge}
+        <button class="btn btn-secondary" style="height:36px; display:flex; align-items:center; font-weight:bold;" onclick="simulateReadModelRebuild()">🔄 Refresh</button>
+      </div>
+    </div>
+
+    <!-- Global filter bar (Rule 13 & 14) -->
+    <div style="background-color: var(--color-surface-container); border:1.5px solid var(--color-outline-variant); padding:12px 16px; border-radius:8px; display:flex; gap:16px; align-items:center; margin-bottom:24px; flex-wrap:wrap;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:12.5px; font-weight:bold; color:var(--color-tertiary);">Date:</span>
+        <select class="form-input" style="width:130px; height:32px; font-size:12px; margin-bottom:0; font-weight:bold; background:#fff;" onchange="updateDashboardFilter('dateRange', this.value)">
+          <option value="Today" ${f.dateRange === 'Today' ? 'selected' : ''}>Today</option>
+          <option value="This Week" ${f.dateRange === 'This Week' ? 'selected' : ''}>This Week</option>
+          <option value="This Month" ${f.dateRange === 'This Month' ? 'selected' : ''}>This Month</option>
+        </select>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:12.5px; font-weight:bold; color:var(--color-tertiary);">Course:</span>
+        <select class="form-input" style="width:150px; height:32px; font-size:12px; margin-bottom:0; font-weight:bold; background:#fff;" onchange="updateDashboardFilter('programme', this.value)">
+          <option value="All" ${f.programme === 'All' ? 'selected' : ''}>All Courses</option>
+          <option value="Spoken English" ${f.programme === 'Spoken English' ? 'selected' : ''}>Spoken English</option>
+          <option value="Practical AI" ${f.programme === 'Practical AI' ? 'selected' : ''}>Practical AI</option>
+        </select>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:12.5px; font-weight:bold; color:var(--color-tertiary);">Owner:</span>
+        <select class="form-input" style="width:130px; height:32px; font-size:12px; margin-bottom:0; font-weight:bold; background:#fff;" onchange="updateDashboardFilter('owner', this.value)">
+          <option value="All" ${f.owner === 'All' ? 'selected' : ''}>All Staff</option>
+          <option value="Sarah Ahmed" ${f.owner === 'Sarah Ahmed' ? 'selected' : ''}>Sarah Ahmed</option>
+          <option value="Omar Farooq" ${f.owner === 'Omar Farooq' ? 'selected' : ''}>Omar Farooq</option>
+        </select>
+      </div>
+
+      <button class="btn btn-secondary" style="height:32px; font-size:12px;" onclick="resetDashboardFilters()">Reset Filters</button>
+      
+      <div style="margin-left:auto; display:flex; gap:8px;">
+        <button class="btn btn-secondary" style="height:32px; font-size:12px;" onclick="triggerDashboardExport()">📥 Export Data</button>
+        <button class="btn btn-secondary" style="height:32px; font-size:12px;" onclick="openSaveViewModal()">💾 Save View</button>
+      </div>
+    </div>
+
+    <!-- Main Grid layout split -->
+    <div style="display: grid; grid-template-columns: 1fr 280px; gap: 24px; align-items: flex-start;">
+      
+      <div>
+        ${overviewBodyHtml}
+
+        <!-- Prioritized Action Queue list (Rule 19 & 20) -->
+        <div class="form-card" style="padding: 20px;">
+          <h3 style="font-family: var(--font-family-headings); font-weight: 800; font-size: 16px; margin-bottom: 12px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px;">⚡ Prioritized Operational Action Queue</h3>
+          <table style="width:100%; border-collapse:collapse; text-align:left;">
+            <thead>
+              <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+                <th style="padding: 12px;">Task ID</th>
+                <th style="padding: 12px;">Task Description</th>
+                <th style="padding: 12px;">Source Record</th>
+                <th style="padding: 12px;">Assignee</th>
+                <th style="padding: 12px;">Priority</th>
+                <th style="padding: 12px;">Status</th>
+                <th style="padding: 12px;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${taskRowsHtml}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Right column sidebar panels -->
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <!-- Saved views panel -->
+        <div class="form-card" style="padding: 16px;">
+          <h4 style="font-weight: 800; font-size: 13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:10px;">💾 Saved Personal Views</h4>
+          ${savedViewsHtml ? savedViewsHtml : '<div style="font-style:italic; font-size:12px; color:var(--color-tertiary);">No saved views.</div>'}
+        </div>
+
+        <!-- System Alerts Warnings -->
+        <div class="form-card" style="padding: 16px;">
+          <h4 style="font-weight: 800; font-size: 13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:10px; color:#ba1a1a;">⚠️ Exception Warnings</h4>
+          <div style="display:flex; flex-direction:column; gap:8px; font-size:12.5px;">
+            <div style="background-color:#fff0f0; border-left:3px solid #ba1a1a; padding:6px 10px; border-radius:4px; font-weight:bold;">
+              🚨 Dead-letter Queue alerts pending review!
+            </div>
+            <div style="background-color:#fff0f0; border-left:3px solid #ba1a1a; padding:6px 10px; border-radius:4px; font-weight:bold;">
+              ⚠️ Missing science resource files reported.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  `;
+}
+
+window.updateDashboardFilter = function(key, val) {
+  ensureDashboardState();
+  state.dashboard.filters[key] = val;
+  renderOperationsDashboard();
+};
+
+window.resetDashboardFilters = function() {
+  ensureDashboardState();
+  state.dashboard.filters = {
+    dateRange: "This Week",
+    programme: "All",
+    owner: "All"
+  };
+  showToastAlert("✓ Filter criteria reset to default.");
+  renderOperationsDashboard();
+};
+
+window.simulateReadModelRebuild = function() {
+  ensureDashboardState();
+  state.dashboard.simFreshness = "Current";
+  state.dashboard.selectedDemoState = "Current";
+  showToastAlert("⏳ Recomputing metric aggregates...");
+  setTimeout(() => {
+    showToastAlert("✅ Dashboard metrics recompiled successfully.");
+    renderDashboardRoute(window.location.hash);
+  }, 600);
+};
+
+window.triggerDashboardExport = function() {
+  // Simulates asynchronous exports (Rule 38 & 39)
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <p style="margin-bottom:12px; color:var(--color-tertiary);">Your requested CSV export is compiling in the background queue. System will notify you once ready.</p>
+      <table style="width:100%; border-collapse:collapse; line-height:22px; font-size:12.5px; background:var(--color-surface-container); padding:8px; border-radius:6px; margin-bottom:16px;">
+        <tr><td style="color:var(--color-tertiary);">Scope:</td><td style="font-weight:bold; text-align:right;">Operations Log</td></tr>
+        <tr><td style="color:var(--color-tertiary);">Date range:</td><td style="font-weight:bold; text-align:right;">This Week</td></tr>
+        <tr><td style="color:var(--color-tertiary);">Format:</td><td style="font-weight:bold; text-align:right;">CSV / XLSX</td></tr>
+      </table>
+      <div style="text-align:right;">
+        <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  `;
+  openModal("Export Compiled Task", content);
+};
+
+window.openSaveViewModal = function() {
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <label style="font-weight:bold; display:block; margin-bottom:4px;">Saved View Name:</label>
+      <input type="text" id="savedview-name-input" class="form-input" placeholder="e.g. My Morning Operations">
+      <div style="display:flex; gap:12px; margin-top:16px;">
+        <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="executeSaveDashboardView()">Save View</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Save Filter Configuration", content);
+};
+
+window.executeSaveDashboardView = function() {
+  ensureDashboardState();
+  const input = document.getElementById("savedview-name-input");
+  if (!input || !input.value.trim()) return;
+
+  const f = state.dashboard.filters;
+  state.dashboard.savedViews.push({
+    id: `SAVEDVIEW-${Date.now()}`,
+    ownerId: "ops-sarah",
+    name: input.value.trim(),
+    status: "Active",
+    filters: { ...f }
+  });
+
+  closeModal();
+  showToastAlert(`✓ Saved view "${input.value.trim()}" created successfully.`);
+  renderOperationsDashboard();
+};
+
+window.applySavedViewFilters = function(viewId) {
+  ensureDashboardState();
+  const view = state.dashboard.savedViews.find(v => v.id === viewId);
+  if (view) {
+    state.dashboard.filters = { ...view.filters };
+    showToastAlert(`✓ Applied filters from saved view: ${view.name}`);
+    renderOperationsDashboard();
+  }
+};
+
+// ==========================================================================
+// Metric Reconciliation Calculation Drawer overlay (Rule 28 & 84)
+// ==========================================================================
+
+window.openReconciliationDrawer = function(metricType) {
+  ensureDashboardState();
+  const f = state.dashboard.filters;
+  const list = getMetricRecords(metricType, f);
+  
+  let headerTitle = "";
+  let formulaDesc = "";
+  let listRows = "";
+
+  list.forEach(item => {
+    listRows += `
+      <div style="background:#fff; border:1px solid var(--color-outline-variant); padding:8px 10px; border-radius:4px; font-size:12.5px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <strong style="color:var(--color-primary); font-family:monospace;">${item.id}</strong>
+          <span style="margin-left:8px; font-weight:bold;">${item.title}</span>
+        </div>
+        <span style="font-size:11px; font-weight:bold; background:var(--color-surface-container); padding:2px 6px; border-radius:4px; color:var(--color-tertiary);">${item.status}</span>
+      </div>
+    `;
+  });
+
+  if (metricType === "upcomingClasses") {
+    headerTitle = "Upcoming Classes Count";
+    formulaDesc = "Count of rescheduled and scheduled active class occurrences within the selected period timezone (excluding cancelled or stale parent reschedule occurrences to avoid double counting).";
+  } else if (metricType === "attendanceExceptions") {
+    headerTitle = "Attendance Exceptions Count";
+    formulaDesc = "Count of live delivery logs marked late, incomplete, or pending investigation from student classroom access reports.";
+  } else if (metricType === "reportsPending") {
+    headerTitle = "Trainer Reviews Count";
+    formulaDesc = "Count of submitted trainer lesson reports requiring operational check and publishing approvals.";
+  } else if (metricType === "openCases") {
+    headerTitle = "Open Cases Count";
+    formulaDesc = "Count of active support and operations queries (excluding closed or resolved tickets, restricted HR issues, and safeguarding concerns to prevent access leaks).";
+  } else if (metricType === "notificationExceptions") {
+    headerTitle = "Notification Exceptions Count";
+    formulaDesc = "Count of consistent email delivery failures escalated to the Dead Letter Queue (DLQ).";
+  } else if (metricType === "resourceExceptions") {
+    headerTitle = "Resource Exceptions Count";
+    formulaDesc = "Count of shared file assets flagged missing or quarantined by scan checks.";
+  }
+
+  const content = `
+    <div style="text-align:left; font-size:13px; line-height:1.5;">
+      <p style="margin-bottom:12px; color:var(--color-tertiary);">Formula key: <code>KPI-${metricType.toUpperCase()}-v1</code></p>
+      
+      <div style="background-color: var(--color-surface-container); padding:10px; border-radius:6px; margin-bottom:16px;">
+        <strong>KPI Calculation Rule:</strong><br/>
+        <span style="font-size:12px; color:var(--color-tertiary);">${formulaDesc}</span>
+      </div>
+
+      <h4 style="font-weight:bold; font-size:13.5px; margin-bottom:8px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:4px;">Reconciled Source Records (${list.length})</h4>
+      <div style="max-height:200px; overflow-y:auto; margin-bottom:16px;">
+        ${listRows ? listRows : '<div style="font-style:italic; color:var(--color-tertiary);">No active matching rows.</div>'}
+      </div>
+
+      <div style="text-align:right;">
+        <button class="btn btn-secondary" onclick="closeModal()">Close Calculation</button>
+      </div>
+    </div>
+  `;
+
+  openModal(`Metric Reconciliation Details: ${headerTitle}`, content);
+};
+
+// ==========================================================================
+// Action Queue claim, claim ownership transitions (Rule 21 & 22)
+// ==========================================================================
+
+window.claimTaskQueueItem = function(taskId) {
+  ensureDashboardState();
+  const task = state.dashboard.taskQueue.find(t => t.id === taskId);
+  if (task) {
+    task.status = "In Progress";
+    task.ownerId = "Sarah Ahmed"; // Claimed by CSR user Sarah
+    showToastAlert(`✓ Task ${taskId} claimed by Sarah Ahmed.`);
+    renderOperationsDashboard();
+  }
+};
+
+window.completeTaskQueueItem = function(taskId) {
+  ensureDashboardState();
+  const task = state.dashboard.taskQueue.find(t => t.id === taskId);
+  if (task) {
+    task.status = "Completed";
+    showToastAlert(`✓ Task ${taskId} completed. Note: Source entity remains authoritative.`);
+    renderOperationsDashboard();
+  }
+};
+
+// ==========================================================================
+// Screen 29 — Trainer Dashboard View (Rule 48)
+// ==========================================================================
+
+function renderTrainerDashboard() {
+  const d = state.dashboard;
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  view.innerHTML = `
+    ${getDashboardSandboxNavbarHTML('trainer', d.selectedDemoState)}
+
+    <div class="form-card" style="padding: 24px;">
+      <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 800; margin-bottom:4px;">🎓 Trainer Dashboard: Ayesha Rahman</h2>
+      <p style="font-size: 12.5px; color: var(--color-tertiary); margin-bottom: 20px;">Manage upcoming live classes, student risk lists, and check grading queues.</p>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;">
+        <div class="form-card" style="padding: 16px; border-top:3px solid var(--color-secondary);">
+          <span style="font-size: 11px; text-transform:uppercase; color: var(--color-tertiary);">My Upcoming Classes</span>
+          <div style="font-size: 24px; font-weight:800; margin-top:4px;">1</div>
+          <div style="font-size:11px; color:green; font-weight:bold;">Spoken English (CLASS-002-R1)</div>
+        </div>
+        <div class="form-card" style="padding: 16px; border-top:3px solid var(--color-secondary);">
+          <span style="font-size: 11px; text-transform:uppercase; color: var(--color-tertiary);">Assigned Grading Items</span>
+          <div style="font-size: 24px; font-weight:800; margin-top:4px;">0</div>
+          <div style="font-size:11px; color:var(--color-tertiary);">All reviews up to date</div>
+        </div>
+        <div class="form-card" style="padding: 16px; border-top:3px solid var(--color-secondary);">
+          <span style="font-size: 11px; text-transform:uppercase; color: var(--color-tertiary);">Active Student Risks</span>
+          <div style="font-size: 24px; font-weight:800; margin-top:4px;">0</div>
+          <div style="font-size:11px; color:var(--color-tertiary);">No low-credits alerts</div>
+        </div>
+      </div>
+
+      <div class="form-card" style="padding: 16px; font-size:13px; background-color: var(--color-surface-container);">
+        <strong>📖 Scope Isolation Note:</strong> Ayesha sees only her assigned classes and learners. K-12, Practical AI gradebooks, and financial ledger data are omitted.
+      </div>
+    </div>
+  `;
+}
+
+// ==========================================================================
+// Screen 29 — Learner Dashboard View (Rule 57)
+// ==========================================================================
+
+function renderLearnerDashboard() {
+  const d = state.dashboard;
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  view.innerHTML = `
+    ${getDashboardSandboxNavbarHTML('learner', d.selectedDemoState)}
+
+    <div class="form-card" style="padding: 24px;">
+      <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 800; margin-bottom:4px;">🙋 Ali Khan's Course Dashboard</h2>
+      <p style="font-size: 12.5px; color: var(--color-tertiary); margin-bottom: 20px;">Review your active courses, grades, homework, and next live class schedules.</p>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        
+        <!-- Course 1: Spoken English -->
+        <div class="form-card" style="padding: 16px; border-top: 4px solid var(--color-secondary);">
+          <h3 style="font-weight: 800; font-size: 15px; margin-bottom: 8px;">Spoken English (Enrolment ENR-001)</h3>
+          <table style="width:100%; font-size:12.5px; line-height:22px; margin-bottom:12px;">
+            <tr><td style="color:var(--color-tertiary);">Next Live Session:</td><td style="font-weight:bold; text-align:right;">21 Aug, 7:00 PM (CLASS-002-R1)</td></tr>
+            <tr><td style="color:var(--color-tertiary);">Credits Remaining:</td><td style="font-weight:bold; text-align:right;">11 classes left</td></tr>
+            <tr><td style="color:var(--color-tertiary);">Status:</td><td style="font-weight:bold; text-align:right; color:green;">Active</td></tr>
+          </table>
+          <button class="btn btn-secondary" style="font-size:11.5px; height:28px;" onclick="window.location.hash='#learner/courses/ENR-001'">Open Classroom Workspace</button>
+        </div>
+
+        <!-- Course 2: Practical AI -->
+        <div class="form-card" style="padding: 16px; border-top: 4px solid var(--color-secondary);">
+          <h3 style="font-weight: 800; font-size: 15px; margin-bottom: 8px;">Practical AI (Self-Paced)</h3>
+          <table style="width:100%; font-size:12.5px; line-height:22px; margin-bottom:12px;">
+            <tr><td style="color:var(--color-tertiary);">Current Lesson:</td><td style="font-weight:bold; text-align:right;">Prompt Fundamentals</td></tr>
+            <tr><td style="color:var(--color-tertiary);">Completed Milestones:</td><td style="font-weight:bold; text-align:right;">1 Completed</td></tr>
+            <tr><td style="color:var(--color-tertiary);">Access Token status:</td><td style="font-weight:bold; text-align:right; color:green;">Authorized</td></tr>
+          </table>
+          <button class="btn btn-secondary" style="font-size:11.5px; height:28px;" onclick="window.location.hash='#learner/courses/ENR-PAI-001'">Open Self-Paced Workspace</button>
+        </div>
+
+      </div>
+    </div>
+  `;
+}
+
+// ==========================================================================
+// Screen 29 — CSR Dashboard View (Rule 52)
+// ==========================================================================
+
+function renderCSRDashboard() {
+  const d = state.dashboard;
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  view.innerHTML = `
+    ${getDashboardSandboxNavbarHTML('csr', d.selectedDemoState)}
+
+    <div class="form-card" style="padding: 24px;">
+      <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 800; margin-bottom:4px;">📞 Customer Success Representative Dashboard</h2>
+      <p style="font-size: 12.5px; color: var(--color-tertiary); margin-bottom: 20px;">Track new leads funnel conversion, trials, and follow-up queues.</p>
+
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+        <div class="form-card" style="padding: 16px; border-top:3px solid var(--color-secondary);">
+          <span style="font-size: 11px; text-transform:uppercase; color: var(--color-tertiary);">Active Leads</span>
+          <div style="font-size: 24px; font-weight:800; margin-top:4px;">1</div>
+          <div style="font-size:11px; color:var(--color-tertiary);">Lead: Ali Khan (LEAD-001)</div>
+        </div>
+        <div class="form-card" style="padding: 16px; border-top:3px solid var(--color-secondary);">
+          <span style="font-size: 11px; text-transform:uppercase; color: var(--color-tertiary);">Trial Requests</span>
+          <div style="font-size: 24px; font-weight:800; margin-top:4px;">1</div>
+          <div style="font-size:11px; color:green; font-weight:bold;">Trial scheduled</div>
+        </div>
+        <div class="form-card" style="padding: 16px; border-top:3px solid var(--color-secondary);">
+          <span style="font-size: 11px; text-transform:uppercase; color: var(--color-tertiary);">Completed Follow-Ups</span>
+          <div style="font-size: 24px; font-weight:800; margin-top:4px;">1</div>
+          <div style="font-size:11px; color:var(--color-tertiary);">FOLLOWUP-001 Resolved</div>
+        </div>
+        <div class="form-card" style="padding: 16px; border-top:3px solid var(--color-secondary);">
+          <span style="font-size: 11px; text-transform:uppercase; color: var(--color-tertiary);">Attributed Commission</span>
+          <div style="font-size: 24px; font-weight:800; margin-top:4px;">Potential</div>
+          <div style="font-size:11px; color:var(--color-tertiary);">Awaiting payroll run</div>
+        </div>
+      </div>
+
+      <div class="form-card" style="padding: 16px; font-size:13px; background-color: var(--color-surface-container);">
+        <strong>🎯 Funnel Conversion Path:</strong> Lead (LEAD-001) &rarr; Trial Requested &rarr; Trial Completed &rarr; Follow-Up (Resolved) &rarr; Membership Requested &rarr; Payment Confirmed &rarr; Enrolment (ENR-001).
+      </div>
+    </div>
+  `;
+}
+
+// ==========================================================================
+// Admin & Department Dashboard Previews (Rules 61-71)
+// ==========================================================================
+
+function renderAdminDashboard() {
+  const d = state.dashboard;
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  view.innerHTML = `
+    ${getDashboardSandboxNavbarHTML('admin', d.selectedDemoState)}
+    <div class="form-card" style="padding: 24px;">
+      <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 800; margin-bottom:4px;">🛡️ Platform Admin Dashboard</h2>
+      <p style="font-size: 12.5px; color: var(--color-tertiary); margin-bottom: 20px;">Monitor database access tokens, background job queues, and security audit logs.</p>
+
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+        <div class="form-card" style="padding:16px; border-top:3px solid #ba1a1a;">
+          <span style="font-size:11px; color:var(--color-tertiary); text-transform:uppercase;">Notification Failures</span>
+          <div style="font-size:24px; font-weight:800; margin-top:4px; color:#ba1a1a;">1</div>
+        </div>
+        <div class="form-card" style="padding:16px; border-top:3px solid #ba1a1a;">
+          <span style="font-size:11px; color:var(--color-tertiary); text-transform:uppercase;">Resource Exceptions</span>
+          <div style="font-size:24px; font-weight:800; margin-top:4px; color:#ba1a1a;">1</div>
+        </div>
+        <div class="form-card" style="padding:16px; border-top:3px solid var(--color-outline-variant);">
+          <span style="font-size:11px; color:var(--color-tertiary); text-transform:uppercase;">Active Tokens</span>
+          <div style="font-size:24px; font-weight:800; margin-top:4px;">12</div>
+        </div>
+        <div class="form-card" style="padding:16px; border-top:3px solid var(--color-outline-variant);">
+          <span style="font-size:11px; color:var(--color-tertiary); text-transform:uppercase;">Audit Alerts</span>
+          <div style="font-size:24px; font-weight:800; margin-top:4px;">0</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderFinanceDashboard() {
+  const d = state.dashboard;
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  view.innerHTML = `
+    ${getDashboardSandboxNavbarHTML('finance', d.selectedDemoState)}
+    <div class="form-card" style="padding: 24px;">
+      <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 800; margin-bottom:4px;">💵 Finance Dashboard</h2>
+      <p style="font-size: 12.5px; color: var(--color-tertiary); margin-bottom: 20px;">Review billing receivables, membership collections, and trainer payouts.</p>
+
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+        <div class="form-card" style="padding:16px;">
+          <span style="font-size:11px; color:var(--color-tertiary); text-transform:uppercase;">Active Enrolments Receivables</span>
+          <div style="font-size:22px; font-weight:800; margin-top:4px;">PKR 15,000</div>
+        </div>
+        <div class="form-card" style="padding:16px;">
+          <span style="font-size:11px; color:var(--color-tertiary); text-transform:uppercase;">Approved Payouts</span>
+          <div style="font-size:22px; font-weight:800; margin-top:4px;">PKR 3,500</div>
+        </div>
+        <div class="form-card" style="padding:16px;">
+          <span style="font-size:11px; color:var(--color-tertiary); text-transform:uppercase;">Refund requests</span>
+          <div style="font-size:22px; font-weight:800; margin-top:4px;">0</div>
+        </div>
+        <div class="form-card" style="padding:16px;">
+          <span style="font-size:11px; color:var(--color-tertiary); text-transform:uppercase;">Settlements Status</span>
+          <div style="font-size:22px; font-weight:800; margin-top:4px; color:green;">Healthy</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderHRDashboard() {
+  const d = state.dashboard;
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  view.innerHTML = `
+    ${getDashboardSandboxNavbarHTML('hr', d.selectedDemoState)}
+    <div class="form-card" style="padding: 24px;">
+      <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 800; margin-bottom:4px;">👥 HR Department Dashboard Preview</h2>
+      <p style="font-size: 12.5px; color: var(--color-tertiary); margin-bottom: 20px;">Staff onboarding lists, contracts, and payroll calculations summaries.</p>
+      
+      <div style="padding:20px; background-color: var(--color-surface-container); border:1px dashed var(--color-outline-variant); border-radius:8px; text-align:center; color:var(--color-tertiary);">
+        <strong>Definition configured:</strong> HR core payroll schemas are not fully represented in the current prototype. Detail flows will follow in later phases.
+      </div>
+    </div>
+  `;
+}
+
+function renderMediaDashboard() {
+  const d = state.dashboard;
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  view.innerHTML = `
+    ${getDashboardSandboxNavbarHTML('media', d.selectedDemoState)}
+    <div class="form-card" style="padding: 24px;">
+      <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 800; margin-bottom:4px;">🎬 Media Department Dashboard Preview</h2>
+      <p style="font-size: 12.5px; color: var(--color-tertiary); margin-bottom: 20px;">Review content assignments queues, recording reviews, and publishing status checks.</p>
+      
+      <div style="padding:20px; background-color: var(--color-surface-container); border:1px dashed var(--color-outline-variant); border-radius:8px; text-align:center; color:var(--color-tertiary);">
+        <strong>Definition configured:</strong> Media asset uploading schemas are not fully represented in the current prototype. Detail flows will follow in later phases.
+      </div>
+    </div>
+  `;
+}
+
+function renderDevelopmentDashboard() {
+  const d = state.dashboard;
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  view.innerHTML = `
+    ${getDashboardSandboxNavbarHTML('development', d.selectedDemoState)}
+    <div class="form-card" style="padding: 24px;">
+      <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 800; margin-bottom:4px;">💻 Development / CTO Department Dashboard Preview</h2>
+      <p style="font-size: 12.5px; color: var(--color-tertiary); margin-bottom: 20px;">Track platform tickets, testing task queues, and release deployments.</p>
+      
+      <div style="padding:20px; background-color: var(--color-surface-container); border:1px dashed var(--color-outline-variant); border-radius:8px; text-align:center; color:var(--color-tertiary);">
+        <strong>Definition configured:</strong> CI release automation pipelines are not fully represented in the current prototype. Detail flows will follow in later phases.
+      </div>
+    </div>
+  `;
+}
+// ==========================================================================
+// Screen 30 Finance Reconciliation, Expense, Refund & Correction Lifecycle
+// ==========================================================================
+
+window.ensureFinanceState = function() {
+  if (!state.finance) {
+    state.finance = {
+      selectedDemoState: "Payment Confirmed / Unmatched",
+      activeTab: "Overview",
+      
+      // Reusable exact minor unit helper representation (Rule 6, 14 & 104)
+      payments: [
+        {
+          id: "PAY-TXN-001",
+          amountMinor: 1500000, // PKR 15,000.00
+          currency: "PKR",
+          status: "Confirmed",
+          reconciliation: "Unmatched",
+          sourcePaymentSubmissionId: "PAY-SUB-001",
+          sourceDecisionId: "PAY-REV-001",
+          receiptId: "IHS-REC-001",
+          allocatedTo: "PAY-ALLOC-001",
+          date: "2026-08-13",
+          reference: "TRX-ALI-15000",
+          notes: []
+        }
+      ],
+      
+      statementLines: [
+        {
+          id: "STMT-LINE-001",
+          account: "IHS Habib Bank Account",
+          transactionDate: "2026-08-13",
+          amountMinor: 1500000,
+          currency: "PKR",
+          reference: "TRX-ALI-15000",
+          payerDisplay: "T. Rizwan / Ali Khan Payment",
+          status: "Unmatched"
+        }
+      ],
+
+      ledgerPostings: [],
+      
+      expenses: [
+        {
+          id: "EXP-001",
+          category: "Education Materials",
+          payee: "City Print House",
+          department: "Academic Operations",
+          amountMinor: 850000, // PKR 8,500
+          taxMinor: 0,
+          currency: "PKR",
+          date: "2026-08-20",
+          description: "Printed learner practice packs for the Spoken English programme.",
+          status: "Draft",
+          evidenceStatus: "Missing", // Upload check
+          evidenceId: null
+        }
+      ],
+
+      refundRequests: [
+        {
+          id: "REFUND-REQ-001",
+          transactionId: "PAY-TXN-001",
+          amountMinor: 500000, // PKR 5,000
+          type: "Partial Refund",
+          reason: "Configured demonstration of a partial refund request.",
+          status: "Submitted",
+          date: "2026-08-22"
+        }
+      ],
+
+      periods: [
+        { id: "PER-AUG-2026", name: "August 2026", status: "Open", lockHistory: [] }
+      ],
+
+      receivables: [
+        { id: "REC-001", learnerId: "LEARNER-001", dueAmountMinor: 1500000, allocatedAmountMinor: 1000000, status: "Active", dueDate: "2026-08-10" }
+      ],
+      
+      exports: []
+    };
+  }
+};
+
+// Exact-money minor units formatting helper (Rule 14 & 104)
+window.formatExactMoney = function(minorUnits, currency = "PKR") {
+  const value = minorUnits / 100;
+  return `${currency} ${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+};
+
+// ==========================================================================
+// Finance workspace layout router
+// ==========================================================================
+
+window.renderFinanceWorkspace = function(hash) {
+  ensureFinanceState();
+  const f = state.finance;
+
+  // Sync active UI tab based on hash path
+  if (hash.includes("reconciliation")) f.activeTab = "Reconciliation";
+  else if (hash.includes("expenses")) f.activeTab = "Expenses";
+  else if (hash.includes("refunds")) f.activeTab = "Refunds";
+  else if (hash.includes("periods")) f.activeTab = "Periods";
+  else if (hash.includes("receivables")) f.activeTab = "Receivables";
+  else f.activeTab = "Overview";
+
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  // Render Shared Finance Layout Header
+  let tabsHtml = "";
+  ["Overview", "Reconciliation", "Expenses", "Refunds", "Periods", "Receivables"].forEach(t => {
+    const isSel = t === f.activeTab;
+    const tabHash = t === "Overview" ? "#finance/dashboard" : `#finance/${t.toLowerCase().replace(/ /g, '-')}`;
+    tabsHtml += `
+      <a href="${tabHash}" class="btn" style="border:none; padding:10px 16px; font-weight:bold; font-size:13px; cursor:pointer; background: ${isSel ? 'var(--color-primary-container)' : 'transparent'}; border-bottom: ${isSel ? '3px solid var(--color-secondary)' : 'none'}; color: ${isSel ? 'var(--color-on-primary-container)' : 'var(--color-tertiary)'}; text-decoration:none; border-radius:0;">
+        ${t}
+      </a>
+    `;
+  });
+
+  // Render correct inner content pane
+  let bodyHtml = "";
+  if (f.activeTab === "Overview") bodyHtml = renderFinanceOverviewTab();
+  else if (f.activeTab === "Reconciliation") bodyHtml = renderFinanceReconciliationTab();
+  else if (f.activeTab === "Expenses") bodyHtml = renderFinanceExpensesTab();
+  else if (f.activeTab === "Refunds") bodyHtml = renderFinanceRefundsTab();
+  else if (f.activeTab === "Periods") bodyHtml = renderFinancePeriodsTab();
+  else if (f.activeTab === "Receivables") bodyHtml = renderFinanceReceivablesTab();
+
+  view.innerHTML = `
+    ${getFinanceSandboxNavbarHTML(f.selectedDemoState)}
+
+    <div class="form-card" style="padding: 24px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 4px; flex-wrap:wrap; gap:12px;">
+        <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 800;">💸 Finance Control Workspace</h2>
+        <span style="font-size:11.5px; background:#fff9ee; color:#b78103; padding:3px 8px; border-radius:4px; font-weight:bold;">Demo snapshot &bull; 21 Aug 2026 &bull; Asia/Karachi</span>
+      </div>
+      <p style="font-size: 12.5px; color: var(--color-tertiary); margin-bottom: 20px;">Review bank matched reconciliation records, operating expenses approvals, locked periods controls, and adjustments ledger logs.</p>
+
+      <div style="display: flex; gap: 8px; border-bottom: 2px solid var(--color-outline-variant); margin-bottom: 20px; flex-wrap:wrap;">
+        ${tabsHtml}
+      </div>
+
+      ${bodyHtml}
+    </div>
+  `;
+};
+
+// ==========================================================================
+// Finance Sandbox controller
+// ==========================================================================
+
+function getFinanceSandboxNavbarHTML(activeState) {
+  return `
+    <div style="background-color: var(--color-surface-container-highest); border-bottom: 2px solid var(--color-outline-variant); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; border-radius: 8px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="font-weight: 900; font-size: 13.5px; color: var(--color-secondary);">🎛️ Finance Sandbox:</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 12px; font-weight: 700; color: var(--color-tertiary);">Demo State:</span>
+        <select class="form-input" style="width: 250px; height: 32px; font-size: 12px; margin-bottom: 0; font-weight: bold; background: #fff;" onchange="changeFinanceDemoState(this.value)">
+          <option value="Payment Confirmed / Unmatched" ${activeState === 'Payment Confirmed / Unmatched' ? 'selected' : ''}>Confirmed Payment / Unmatched</option>
+          <option value="Suggested Reconciliation" ${activeState === 'Suggested Reconciliation' ? 'selected' : ''}>Suggested Reconciliation Match</option>
+          <option value="Reconciliation Exception" ${activeState === 'Reconciliation Exception' ? 'selected' : ''}>Reconciliation Exceptions List</option>
+          <option value="Payment Reconciled" ${activeState === 'Payment Reconciled' ? 'selected' : ''}>Payment Match Reconciled</option>
+          <option value="Currency Mismatch" ${activeState === 'Currency Mismatch' ? 'selected' : ''}>Currency Exception (USD vs PKR)</option>
+          <option value="Expense Draft" ${activeState === 'Expense Draft' ? 'selected' : ''}>Expense Invoices Draft</option>
+          <option value="Expense Submitted" ${activeState === 'Expense Submitted' ? 'selected' : ''}>Expense Invoice Submitted</option>
+          <option value="Expense Posted" ${activeState === 'Expense Posted' ? 'selected' : ''}>Expense Invoice Posted / Adjusted</option>
+          <option value="Partial Refund Requested" ${activeState === 'Partial Refund Requested' ? 'selected' : ''}>Partial Refund Requested</option>
+          <option value="Partial Refund Processed" ${activeState === 'Partial Refund Processed' ? 'selected' : ''}>Partial Refund Posted / Credit Note</option>
+          <option value="Period Locked" ${activeState === 'Period Locked' ? 'selected' : ''}>Locked Period (Direct Edit Blocked)</option>
+        </select>
+      </div>
+    </div>
+  `;
+}
+
+window.changeFinanceDemoState = function(val) {
+  ensureFinanceState();
+  const f = state.finance;
+  f.selectedDemoState = val;
+
+  const pay = f.payments[0];
+  const stmt = f.statementLines[0];
+  const exp = f.expenses[0];
+  const ref = f.refundRequests[0];
+  const per = f.periods[0];
+
+  // Default clean configurations resets
+  pay.status = "Confirmed";
+  pay.reconciliation = "Unmatched";
+  stmt.status = "Unmatched";
+  exp.status = "Draft";
+  exp.evidenceStatus = "Missing";
+  exp.evidenceId = null;
+  ref.status = "Submitted";
+  per.status = "Open";
+  f.ledgerPostings = [];
+
+  if (val === "Suggested Reconciliation") {
+    pay.reconciliation = "Suggested";
+    stmt.status = "Suggested";
+  } else if (val === "Reconciliation Exception") {
+    pay.reconciliation = "Exception";
+    pay.notes = ["Reference ID conflict with other allocation logs"];
+  } else if (val === "Payment Reconciled") {
+    pay.status = "Reconciled";
+    pay.reconciliation = "Matched";
+    stmt.status = "Matched";
+    f.ledgerPostings.push({ id: "FIN-POST-PAY-001", type: "Learner Payment", sourceTransactionId: "PAY-TXN-001", amountMinor: 1500000, currency: "PKR", effectiveDate: "2026-08-13", status: "Posted" });
+  } else if (val === "Currency Mismatch") {
+    stmt.currency = "USD";
+    stmt.amountMinor = 5400; // USD 54.00
+    pay.reconciliation = "Exception";
+  } else if (val === "Expense Submitted") {
+    exp.status = "Submitted";
+    exp.evidenceStatus = "Ready";
+    exp.evidenceId = "EXP-EVID-001";
+  } else if (val === "Expense Posted") {
+    exp.status = "Posted";
+    exp.evidenceStatus = "Ready";
+    exp.evidenceId = "EXP-EVID-001";
+    f.ledgerPostings.push({ id: "FIN-POST-EXP-001", type: "Operating Expense", sourceExpenseId: "EXP-001", amountMinor: 850000, currency: "PKR", effectiveDate: "2026-08-20", status: "Posted" });
+  } else if (val === "Partial Refund Requested") {
+    ref.status = "Submitted";
+  } else if (val === "Partial Refund Processed") {
+    pay.status = "Partially Refunded";
+    pay.reconciliation = "Matched";
+    stmt.status = "Matched";
+    ref.status = "Approved";
+    f.ledgerPostings.push(
+      { id: "FIN-POST-PAY-001", type: "Learner Payment", sourceTransactionId: "PAY-TXN-001", amountMinor: 1500000, currency: "PKR", effectiveDate: "2026-08-13", status: "Posted" },
+      { id: "FIN-POST-REFUND-001", type: "Refund", sourceTransactionId: "PAY-TXN-001", sourceRefundRequestId: "REFUND-REQ-001", amountMinor: -500000, currency: "PKR", status: "Posted" }
+    );
+  } else if (val === "Period Locked") {
+    per.status = "Locked";
+  }
+
+  showToastAlert(`✓ Demo Scenario: ${val}`);
+  renderFinanceWorkspace(window.location.hash);
+  
+  // Sync Screen 29 metric dashboard counts if active
+  if (state.dashboard) {
+    state.dashboard.simFreshness = "Current";
+  }
+};
+
+// ==========================================================================
+// Finance Overview Tab (Rule 2)
+// ==========================================================================
+
+function renderFinanceOverviewTab() {
+  const f = state.finance;
+  
+  const confirmedCount = f.payments.filter(p => p.status === "Confirmed" || p.status === "Reconciled" || p.status === "Partially Refunded").length;
+  const unmatchedStmtCount = f.statementLines.filter(s => s.status === "Unmatched" || s.status === "Suggested").length;
+  const exceptionCount = f.payments.filter(p => p.reconciliation === "Exception").length;
+  const expensesAwaiting = f.expenses.filter(e => e.status === "Submitted").length;
+  const refundCount = f.refundRequests.filter(r => r.status === "Submitted").length;
+  const lockedPeriods = f.periods.filter(p => p.status === "Locked").length;
+
+  return `
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;">
+      
+      <div class="form-card" style="padding: 16px; border-left: 4px solid var(--color-secondary);">
+        <span style="font-size:11px; text-transform:uppercase; color:var(--color-tertiary);">Confirmed Payments (Booked Cash)</span>
+        <div style="font-size:24px; font-weight:800; margin-top:4px;">${confirmedCount}</div>
+        <div style="font-size:11px; color:var(--color-tertiary);">Ali Khan: ${formatExactMoney(f.payments[0].amountMinor)}</div>
+      </div>
+
+      <div class="form-card" style="padding: 16px; border-left: 4px solid ${unmatchedStmtCount > 0 ? '#b78103' : 'green'};">
+        <span style="font-size:11px; text-transform:uppercase; color:var(--color-tertiary);">Unmatched Statement lines</span>
+        <div style="font-size:24px; font-weight:800; margin-top:4px; color:${unmatchedStmtCount > 0 ? '#b78103' : 'green'};">${unmatchedStmtCount}</div>
+        <div style="font-size:11px; color:var(--color-tertiary);">Pending matching queue checks</div>
+      </div>
+
+      <div class="form-card" style="padding: 16px; border-left: 4px solid ${exceptionCount > 0 ? '#ba1a1a' : 'var(--color-outline-variant)'};">
+        <span style="font-size:11px; text-transform:uppercase; color:var(--color-tertiary);">Reconciliation Exceptions</span>
+        <div style="font-size:24px; font-weight:800; margin-top:4px; color:${exceptionCount > 0 ? '#ba1a1a' : 'inherit'};">${exceptionCount}</div>
+        <div style="font-size:11px; color:var(--color-tertiary);">Ambiguous / currency mismatch rules</div>
+      </div>
+
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;">
+      
+      <div class="form-card" style="padding: 16px; border-left: 4px solid ${expensesAwaiting > 0 ? '#b78103' : 'var(--color-outline-variant)'};">
+        <span style="font-size:11px; text-transform:uppercase; color:var(--color-tertiary);">Expenses Awaiting Approval</span>
+        <div style="font-size:24px; font-weight:800; margin-top:4px; color:${expensesAwaiting > 0 ? '#b78103' : 'inherit'};">${expensesAwaiting}</div>
+        <div style="font-size:11px; color:var(--color-tertiary);">Education Materials invoices checks</div>
+      </div>
+
+      <div class="form-card" style="padding: 16px; border-left: 4px solid ${refundCount > 0 ? '#b78103' : 'var(--color-outline-variant)'};">
+        <span style="font-size:11px; text-transform:uppercase; color:var(--color-tertiary);">Refund Requests</span>
+        <div style="font-size:24px; font-weight:800; margin-top:4px; color:${refundCount > 0 ? '#b78103' : 'inherit'};">${refundCount}</div>
+        <div style="font-size:11px; color:var(--color-tertiary);">Partial refund requests log</div>
+      </div>
+
+      <div class="form-card" style="padding: 16px; border-left: 4px solid ${lockedPeriods > 0 ? 'green' : 'var(--color-outline-variant)'};">
+        <span style="font-size:11px; text-transform:uppercase; color:var(--color-tertiary);">Locked Accounting Periods</span>
+        <div style="font-size:24px; font-weight:800; margin-top:4px; color:${lockedPeriods > 0 ? 'green' : 'inherit'};">${lockedPeriods}</div>
+        <div style="font-size:11px; color:var(--color-tertiary);">August 2026 status: ${f.periods[0].status}</div>
+      </div>
+
+    </div>
+
+    <!-- Domain list summary overview -->
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; align-items:flex-start;">
+      
+      <!-- Payments Register -->
+      <div class="form-card" style="padding:16px;">
+        <h3 style="font-weight:800; font-size:14.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">👤 Learner Financial History</h3>
+        <table style="width:100%; border-collapse:collapse; font-size:12.5px; line-height:22px;">
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Ali Khan (LEARNER-001) &bull; Spoken English</td><td style="font-weight:bold; text-align:right;">${formatExactMoney(f.payments[0].amountMinor)}</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Payment Booking status:</td><td style="font-weight:bold; text-align:right; color:green;">${f.payments[0].status}</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Reconciliation status:</td><td style="font-weight:bold; text-align:right; color:#b78103;">${f.payments[0].reconciliation}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Receipt Reference:</td><td style="font-weight:bold; text-align:right; font-family:monospace;">${f.payments[0].receiptId}</td></tr>
+        </table>
+        <div style="margin-top:12px; text-align:right;">
+          <a href="#finance/reconciliation" class="btn btn-secondary" style="font-size:11.5px; height:28px; display:inline-flex; align-items:center;">Go to reconciliation</a>
+        </div>
+      </div>
+
+      <!-- General Ledger Postings Activity -->
+      <div class="form-card" style="padding:16px;">
+        <h3 style="font-weight:800; font-size:14.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">📊 Double-Entry Posted Ledger Journal</h3>
+        <div style="max-height:130px; overflow-y:auto; font-size:12px;">
+          ${f.ledgerPostings.length === 0 ? '<div style="font-style:italic; color:var(--color-tertiary);">No postings generated for the active period.</div>' : ''}
+          ${f.ledgerPostings.map(post => `
+            <div style="display:flex; justify-content:space-between; background:#fff; border:1px solid var(--color-outline-variant); padding:6px; border-radius:4px; margin-bottom:6px;">
+              <div>
+                <strong>${post.id}</strong> &middot; <span style="font-family:monospace; color:var(--color-tertiary); font-size:11px;">${post.type}</span>
+              </div>
+              <span style="font-weight:bold; color: ${post.amountMinor < 0 ? 'red' : 'green'};">${post.amountMinor < 0 ? '-' : '+'}${formatExactMoney(Math.abs(post.amountMinor), post.currency)}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+    </div>
+  `;
+}
+
+// ==========================================================================
+// Payments Reconciliation workspace (Rule 8)
+// ==========================================================================
+
+function renderFinanceReconciliationTab() {
+  const f = state.finance;
+  const pay = f.payments[0];
+  const stmt = f.statementLines[0];
+
+  const suggestedMatchHtml = pay.reconciliation === "Suggested";
+  const matched = pay.reconciliation === "Matched";
+  
+  // Side by side workspace HTML (Rule 13)
+  return `
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; align-items:flex-start; margin-bottom:24px;">
+      
+      <!-- Left: Internal Booking Transaction -->
+      <div class="form-card" style="padding:16px;">
+        <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">
+          <h3 style="font-weight:800; font-size:14px; margin:0;">🏢 Internal Payment Transaction</h3>
+          <span style="font-size:11px; background:#e8f0fe; color:#1a73e8; font-weight:bold; padding:2px 6px; border-radius:4px;">${pay.id}</span>
+        </div>
+        
+        <table style="width:100%; font-size:13px; line-height:22px; margin-bottom:16px;">
+          <tr><td style="color:var(--color-tertiary);">Account Payer:</td><td style="font-weight:bold; text-align:right;">Ali Khan (LEARNER-001)</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Expected Amount:</td><td style="font-weight:bold; text-align:right;">${formatExactMoney(pay.amountMinor, pay.currency)}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Commerce Date:</td><td style="font-weight:bold; text-align:right;">${pay.date}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Allocated Target:</td><td style="font-weight:bold; text-align:right;">Spoken English (${pay.allocatedTo})</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Transaction status:</td><td style="font-weight:bold; text-align:right; color:green;">${pay.status}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Reconciliation state:</td><td style="font-weight:bold; text-align:right; color:#b78103;">${pay.reconciliation}</td></tr>
+        </table>
+
+        <!-- Direct edit block scenario testing -->
+        <div style="background:#fcf8f2; border:1px solid #faecc5; border-radius:6px; padding:10px; font-size:12px; color:#b78103; display:flex; justify-content:space-between; align-items:center;">
+          <span>Need to modify payment amount?</span>
+          <button class="btn btn-secondary" style="height:28px; font-size:11px;" onclick="attemptDirectPaymentEdit()">Edit Amount</button>
+        </div>
+      </div>
+
+      <!-- Right: Statement Line Candidate -->
+      <div class="form-card" style="padding:16px;">
+        <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">
+          <h3 style="font-weight:800; font-size:14px; margin:0;">🏦 Bank Statement Candidate</h3>
+          <span style="font-size:11px; background:#f5f5f5; font-weight:bold; padding:2px 6px; border-radius:4px;">${stmt.id}</span>
+        </div>
+
+        <table style="width:100%; font-size:13px; line-height:22px; margin-bottom:16px;">
+          <tr><td style="color:var(--color-tertiary);">Account Holder:</td><td style="font-weight:bold; text-align:right;">${stmt.account}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Import Date:</td><td style="font-weight:bold; text-align:right;">${stmt.transactionDate}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Payer Indicator:</td><td style="font-weight:bold; text-align:right;">${stmt.payerDisplay}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Transaction Reference:</td><td style="font-weight:bold; text-align:right; font-family:monospace;">${stmt.reference}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Received Amount:</td><td style="font-weight:bold; text-align:right;">${formatExactMoney(stmt.amountMinor, stmt.currency)}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Statement Line status:</td><td style="font-weight:bold; text-align:right;">${stmt.status}</td></tr>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- Match Proposal Block (Rule 11) -->
+    ${suggestedMatchHtml ? `
+      <div class="form-card" style="padding:20px; border:2px solid #b78103; background-color:#fffdf7; margin-bottom:24px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+          <div>
+            <h3 style="font-weight:800; font-size:15px; color:#b78103; margin:0;">💡 Strong Reconciliation Suggestion Proposed</h3>
+            <p style="font-size:12.5px; color:var(--color-tertiary); margin:4px 0 0 0;">System matching rules detected consistent correlation vectors between these transactions.</p>
+          </div>
+          <span style="background-color:#fff3cd; color:#b78103; padding:4px 8px; border-radius:4px; font-weight:bold; font-size:11.5px;">Strong Match (98% confidence)</span>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:12px; font-size:12px; margin-bottom:16px;">
+          <div style="background:#fff; padding:6px; border-radius:4px; text-align:center;"><strong>Amount:</strong><br/><span style="color:green; font-weight:bold;">✓ Match</span></div>
+          <div style="background:#fff; padding:6px; border-radius:4px; text-align:center;"><strong>Currency:</strong><br/><span style="color:green; font-weight:bold;">✓ Match</span></div>
+          <div style="background:#fff; padding:6px; border-radius:4px; text-align:center;"><strong>Date Aligns:</strong><br/><span style="color:green; font-weight:bold;">✓ Match</span></div>
+          <div style="background:#fff; padding:6px; border-radius:4px; text-align:center;"><strong>Reference Match:</strong><br/><span style="color:green; font-weight:bold;">✓ Match</span></div>
+          <div style="background:#fff; padding:6px; border-radius:4px; text-align:center;"><strong>Payer Match:</strong><br/><span style="color:green; font-weight:bold;">✓ Match</span></div>
+        </div>
+
+        <div style="display:flex; gap:12px; justify-content:flex-end;">
+          <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="openConfirmMatchModal()">Confirm Match</button>
+          <button class="btn btn-secondary" onclick="rejectSuggestedMatch()">Reject Match</button>
+          <button class="btn btn-secondary" onclick="markReconciliationException()">Mark Exception</button>
+        </div>
+      </div>
+    ` : ''}
+
+    <!-- Currency Mismatch state warning check (Rule 21) -->
+    ${pay.reconciliation === "Exception" && stmt.currency === "USD" ? `
+      <div class="form-card" style="padding:20px; border:2px solid #ba1a1a; background-color:#fff0f0; margin-bottom:24px;">
+        <h3 style="font-weight:800; font-size:15px; color:#ba1a1a; margin:0 0 4px 0;">🚨 Currency Mismatch Exception Warning</h3>
+        <p style="font-size:12.5px; color:var(--color-tertiary); margin-bottom:12px;">Original payment transaction is denominated in <strong>PKR 15,000</strong> while statement line imports USD. Conversions cannot be processed blindly.</p>
+        <div style="display:flex; gap:12px;">
+          <button class="btn btn-secondary" style="color:#ba1a1a; border-color:#ba1a1a;" onclick="rejectSuggestedMatch()">Reject Match</button>
+          <button class="btn btn-secondary" onclick="openConversionEvidenceModal()">Review Conversion Evidence</button>
+        </div>
+      </div>
+    ` : ''}
+
+    <!-- Matched Ledger posting history details (Rule 16 & 18) -->
+    ${matched ? `
+      <div class="form-card" style="padding:20px; border:2px solid green; background-color:#f4faf5; margin-bottom:24px;">
+        <h3 style="font-weight:800; font-size:15px; color:green; margin:0 0 6px 0;">✓ Reconciled & Ledger Posted</h3>
+        <p style="font-size:12.5px; color:var(--color-tertiary); margin-bottom:16px;">This transaction match is confirmed. Double-entry ledger entry FIN-POST-PAY-001 was generated successfully.</p>
+        
+        <h4 style="font-weight:bold; font-size:13px; margin-bottom:8px;">Reconciliation Timeline History</h4>
+        <div style="display:flex; flex-direction:column; gap:4px; font-size:12px; color:var(--color-tertiary); border-left:2px solid var(--color-outline-variant); padding-left:12px;">
+          <div>⏱️ <strong>13 Aug 9:00 AM:</strong> Commerce payment approved</div>
+          <div>⏱️ <strong>13 Aug 9:02 AM:</strong> Official receipt IHS-REC-001 issued</div>
+          <div>⏱️ <strong>13 Aug 12:15 PM:</strong> Bank Statement line STMT-LINE-001 imported</div>
+          <div>⏱️ <strong>13 Aug 12:20 PM:</strong> Suggested match generated</div>
+          <div>⏱️ <strong>13 Aug 4:10 PM:</strong> Finance Admin confirmed match</div>
+          <div>⏱️ <strong>13 Aug 4:10 PM:</strong> General Ledger posting FIN-POST-PAY-001 entry archived</div>
+        </div>
+      </div>
+    ` : ''}
+  `;
+}
+
+window.attemptDirectPaymentEdit = function() {
+  ensureFinanceState();
+  const per = state.finance.periods[0];
+  if (per.status === "Locked") {
+    // Lock period edit block triggers (Rule 61 & 62)
+    const content = `
+      <div style="text-align:left; font-size:13px; color:#ba1a1a;">
+        <strong>⛔ Action Blocked: Financial Period Locked</strong>
+        <p style="margin-top:8px; color:var(--color-tertiary);">August 2026 transactions have been closed and locked by administrator policy. Posted settled values cannot be modified directly.</p>
+        <p style="font-size:12px; font-weight:bold;">Use a controlled adjustment or reversal correction in an allowed open period instead.</p>
+        <div style="margin-top:16px; text-align:right;">
+          <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+        </div>
+      </div>
+    `;
+    openModal("Security Policy Blocked", content);
+  } else {
+    showToastAlert("🔧 Commerce operational records are immutable. Use reconciliation tools to handle matching.");
+  }
+};
+
+window.openConfirmMatchModal = function() {
+  ensureFinanceState();
+  const pay = state.finance.payments[0];
+  const stmt = state.finance.statementLines[0];
+
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <p style="margin-bottom:12px; color:var(--color-tertiary);">Confirm linking this transaction to statement evidence? This does not alter the original commerce approvals.</p>
+      
+      <table style="width:100%; border-collapse:collapse; line-height:22px; font-size:12.5px; background:var(--color-surface-container); padding:8px; border-radius:6px; margin-bottom:16px;">
+        <tr><td style="color:var(--color-tertiary);">Payment Booking:</td><td style="font-weight:bold; text-align:right;">${pay.id} (${formatExactMoney(pay.amountMinor)})</td></tr>
+        <tr><td style="color:var(--color-tertiary);">Statement Line:</td><td style="font-weight:bold; text-align:right;">${stmt.id} (${formatExactMoney(stmt.amountMinor)})</td></tr>
+        <tr><td style="color:var(--color-tertiary);">Difference Net:</td><td style="font-weight:bold; text-align:right; color:green;">PKR 0.00 (Perfect Match)</td></tr>
+      </table>
+
+      <div style="display:flex; gap:12px;">
+        <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="executeConfirmReconciliationMatch()">Confirm Match</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Confirm Reconciliation Match", content);
+};
+
+window.executeConfirmReconciliationMatch = function() {
+  ensureFinanceState();
+  const f = state.finance;
+  f.payments[0].status = "Reconciled";
+  f.payments[0].reconciliation = "Matched";
+  f.statementLines[0].status = "Matched";
+  
+  f.ledgerPostings.push({
+    id: "FIN-POST-PAY-001",
+    type: "Learner Payment",
+    sourceTransactionId: "PAY-TXN-001",
+    amountMinor: 1500000,
+    currency: "PKR",
+    effectiveDate: "2026-08-13",
+    status: "Posted"
+  });
+
+  closeModal();
+  showToastAlert("✓ Reconciliation confirmed: PAY-TXN-001 Reconciled and ledger posting created.");
+  renderFinanceWorkspace("#finance/reconciliation");
+};
+
+window.rejectSuggestedMatch = function() {
+  ensureFinanceState();
+  state.finance.payments[0].reconciliation = "Unmatched";
+  state.finance.statementLines[0].status = "Unmatched";
+  showToastAlert("✓ Suggested match rejected. Item returned to unmatched pool queue.");
+  renderFinanceWorkspace("#finance/reconciliation");
+};
+
+window.markReconciliationException = function() {
+  ensureFinanceState();
+  state.finance.payments[0].reconciliation = "Exception";
+  showToastAlert("✓ Reconciliation marked as exception. Exception warning badge shown.");
+  renderFinanceWorkspace("#finance/reconciliation");
+};
+
+window.openConversionEvidenceModal = function() {
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <strong>Conversion Audit Details:</strong>
+      <table style="width:100%; border-collapse:collapse; margin-top:8px; line-height:22px;">
+        <tr><td>Original Confirmed:</td><td style="font-weight:bold; text-align:right;">PKR 15,000.00</td></tr>
+        <tr><td>Statement Amount:</td><td style="font-weight:bold; text-align:right;">USD 54.00</td></tr>
+        <tr><td>Implied Rate:</td><td style="font-weight:bold; text-align:right;">1 USD = 277.77 PKR</td></tr>
+        <tr><td>Rate Reference:</td><td style="font-weight:bold; text-align:right;">Habib Bank Spot Rate &bull; 13 Aug</td></tr>
+      </table>
+      <div style="margin-top:16px; text-align:right;">
+        <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  `;
+  openModal("Conversion details", content);
+};
+
+// ==========================================================================
+// Expenses Tab (Rule 26)
+// ==========================================================================
+
+function renderFinanceExpensesTab() {
+  const f = state.finance;
+  let rows = "";
+
+  f.expenses.forEach(e => {
+    rows += `
+      <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:13px;">
+        <td style="padding:12px; font-weight:bold; color:var(--color-primary);">${e.id}</td>
+        <td style="padding:12px; font-weight:700;">${e.category}</td>
+        <td style="padding:12px;">${e.payee}</td>
+        <td style="padding:12px;">${e.department}</td>
+        <td style="padding:12px; font-weight:bold;">${formatExactMoney(e.amountMinor, e.currency)}</td>
+        <td style="padding:12px; color:var(--color-tertiary);">${e.date}</td>
+        <td style="padding:12px;">
+          <span class="status-badge status-badge-${e.status.toLowerCase()}" style="padding:3px 6px; border-radius:4px; font-weight:bold; font-size:11px;">
+            ${e.status}
+          </span>
+        </td>
+        <td style="padding:12px;">
+          ${e.evidenceStatus === 'Missing' ? `
+            <span style="color:#ba1a1a; font-weight:bold;">⚠️ Invoice Missing</span>
+          ` : `
+            <span style="color:green; font-weight:bold;">📄 Ready (invoice.pdf)</span>
+          `}
+        </td>
+        <td style="padding:12px;">
+          ${e.status === 'Draft' ? `
+            <button class="btn btn-secondary" style="padding:4px 8px; font-size:11.5px; height:28px;" onclick="openAttachEvidenceModal('${e.id}')">Attach Invoice</button>
+            <button class="btn btn-primary" style="padding:4px 10px; font-size:11.5px; height:28px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="submitExpenseItem('${e.id}')" ${e.evidenceStatus === 'Missing' ? 'disabled' : ''}>Submit</button>
+          ` : ''}
+          ${e.status === 'Submitted' ? `
+            <div style="display:flex; gap:6px;">
+              <button class="btn btn-primary" style="padding:4px 10px; font-size:11.5px; height:28px; background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="approveExpenseItem('${e.id}')">Approve</button>
+              <button class="btn btn-secondary" style="padding:4px 8px; font-size:11.5px; height:28px; color:#ba1a1a; border-color:#ba1a1a;" onclick="rejectExpenseItem('${e.id}')">Reject</button>
+            </div>
+          ` : ''}
+          ${e.status === 'Posted' ? `
+            <div style="display:flex; gap:6px; align-items:center;">
+              <span style="color:green; font-weight:bold;">✓ Posted</span>
+              <button class="btn btn-secondary" style="padding:3px 6px; font-size:10.5px; height:24px; color:#ba1a1a; border-color:#ba1a1a;" onclick="correctExpenseModal('${e.id}')">Correct</button>
+            </div>
+          ` : ''}
+        </td>
+      </tr>
+    `;
+  });
+
+  return `
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h3 style="font-family: var(--font-family-headings); font-weight: 800; font-size: 16px; margin:0;">Operating Expenses Claims Register</h3>
+      <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="openRecordExpenseModal()">Record Expense</button>
+    </div>
+
+    <table style="width:100%; border-collapse:collapse; text-align:left;">
+      <thead>
+        <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+          <th style="padding: 12px;">Expense ID</th>
+          <th style="padding: 12px;">Category</th>
+          <th style="padding: 12px;">Payee</th>
+          <th style="padding: 12px;">Cost Center</th>
+          <th style="padding: 12px;">Amount</th>
+          <th style="padding: 12px;">Date</th>
+          <th style="padding: 12px;">Status</th>
+          <th style="padding: 12px;">Evidence</th>
+          <th style="padding: 12px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+    </table>
+  `;
+}
+
+window.openRecordExpenseModal = function() {
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <div class="form-group">
+        <label class="form-label" style="font-weight:bold;">Expense Category:</label>
+        <select id="exp-category" class="form-input" style="height:36px; background:#fff;">
+          <option value="Education Materials">Education Materials</option>
+          <option value="Facilities / Utilities">Facilities / Utilities</option>
+          <option value="Software Subscription">Software Subscription</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="font-weight:bold;">Payee:</label>
+        <input type="text" id="exp-payee" class="form-input" placeholder="e.g. City Print House">
+      </div>
+      <div class="form-group" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div>
+          <label class="form-label" style="font-weight:bold;">Amount (PKR):</label>
+          <input type="number" id="exp-amount" class="form-input" placeholder="8500">
+        </div>
+        <div>
+          <label class="form-label" style="font-weight:bold;">Expense Date:</label>
+          <input type="date" id="exp-date" class="form-input" value="2026-08-20">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" style="font-weight:bold;">Description:</label>
+        <input type="text" id="exp-desc" class="form-input" placeholder="Purpose details...">
+      </div>
+
+      <div style="display:flex; gap:12px; margin-top:16px;">
+        <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="executeCreateExpenseDraft()">Create Draft</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Record New Operating Expense", content);
+};
+
+window.executeCreateExpenseDraft = function() {
+  ensureFinanceState();
+  const category = document.getElementById("exp-category").value;
+  const payee = document.getElementById("exp-payee").value.trim();
+  const amountVal = parseFloat(document.getElementById("exp-amount").value);
+  const date = document.getElementById("exp-date").value;
+  const desc = document.getElementById("exp-desc").value.trim();
+
+  if (!payee || isNaN(amountVal)) {
+    showToastAlert("❌ Error: Please fill in payee and amount fields.");
+    return;
+  }
+
+  const f = state.finance;
+  f.expenses.push({
+    id: `EXP-${Date.now().toString().substring(8)}`,
+    category,
+    payee,
+    amountMinor: Math.round(amountVal * 100),
+    taxMinor: 0,
+    currency: "PKR",
+    date,
+    description: desc,
+    status: "Draft",
+    evidenceStatus: "Missing",
+    evidenceId: null
+  });
+
+  closeModal();
+  showToastAlert("✓ Expense draft created. Invoice PDF evidence is required before submission.");
+  renderFinanceWorkspace("#finance/expenses");
+};
+
+window.openAttachEvidenceModal = function(expId) {
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <p style="color:var(--color-tertiary); margin-bottom:12px;">Attach a valid invoice scan for verification. (Simulating Screen 25 secure private resource upload flow)</p>
+      
+      <div style="border:2px dashed var(--color-outline-variant); padding:20px; text-align:center; border-radius:6px; background:var(--color-surface-container); margin-bottom:16px; cursor:pointer;" onclick="simulateInvoiceAttachmentUpload('${expId}')">
+        <span style="font-size:24px;">📄</span>
+        <div style="font-weight:bold; margin-top:8px;" id="upload-status-lbl">Click to upload printing-invoice.pdf</div>
+        <div style="font-size:11.5px; color:var(--color-tertiary); margin-top:2px;">Private &bull; Encrypted Storage</div>
+      </div>
+    </div>
+  `;
+  openModal("Attach Expense Invoice Evidence", content);
+};
+
+window.simulateInvoiceAttachmentUpload = function(expId) {
+  ensureFinanceState();
+  const lbl = document.getElementById("upload-status-lbl");
+  if (lbl) {
+    lbl.innerText = "⏳ Uploading & Scanning invoice.pdf...";
+  }
+
+  setTimeout(() => {
+    const exp = state.finance.expenses.find(e => e.id === expId);
+    if (exp) {
+      exp.evidenceStatus = "Ready";
+      exp.evidenceId = "EXP-EVID-001";
+    }
+    closeModal();
+    showToastAlert("✓ Invoice evidence verified: status READY.");
+    renderFinanceWorkspace("#finance/expenses");
+  }, 1000);
+};
+
+window.submitExpenseItem = function(expId) {
+  ensureFinanceState();
+  const exp = state.finance.expenses.find(e => e.id === expId);
+  if (exp) {
+    exp.status = "Submitted";
+    showToastAlert(`✓ Expense ${expId} submitted to operational approval routing.`);
+    renderFinanceWorkspace("#finance/expenses");
+  }
+};
+
+window.approveExpenseItem = function(expId) {
+  ensureFinanceState();
+  const exp = state.finance.expenses.find(e => e.id === expId);
+  if (exp) {
+    exp.status = "Posted";
+    
+    // Auto post ledger entry (Rule 38)
+    state.finance.ledgerPostings.push({
+      id: `FIN-POST-${expId}`,
+      type: "Operating Expense",
+      sourceExpenseId: expId,
+      amountMinor: exp.amountMinor,
+      currency: exp.currency,
+      effectiveDate: exp.date,
+      status: "Posted"
+    });
+
+    showToastAlert(`✓ Expense ${expId} approved & posted to Ledger Book.`);
+    renderFinanceWorkspace("#finance/expenses");
+  }
+};
+
+window.rejectExpenseItem = function(expId) {
+  ensureFinanceState();
+  const exp = state.finance.expenses.find(e => e.id === expId);
+  if (exp) {
+    exp.status = "Rejected";
+    showToastAlert(`✓ Expense ${expId} rejected.`);
+    renderFinanceWorkspace("#finance/expenses");
+  }
+};
+
+// Posted-expense linked adjustments correction (Rule 41, 42 & 43)
+window.correctExpenseModal = function(expId) {
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <p style="color:#ba1a1a; font-weight:bold;">⛔ Posted financial ledger rows cannot be deleted or rewritten.</p>
+      <p style="color:var(--color-tertiary); margin-bottom:12px;">To adjust this transaction, submit a linked correction adjustment record.</p>
+      
+      <div class="form-group">
+        <label style="font-weight:bold; display:block; margin-bottom:4px;">Adjustment Amount (PKR change, e.g. -500 for reduction):</label>
+        <input type="number" id="correction-amount" class="form-input" value="-500">
+      </div>
+      <div class="form-group">
+        <label style="font-weight:bold; display:block; margin-bottom:4px;">Correction Reason:</label>
+        <input type="text" id="correction-reason" class="form-input" value="Invoice credit adjustments received">
+      </div>
+
+      <div style="display:flex; gap:12px; margin-top:16px;">
+        <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="executeExpenseCorrection('${expId}')">Post Correction</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Correct Posted Expense", content);
+};
+
+window.executeExpenseCorrection = function(expId) {
+  ensureFinanceState();
+  const amountVal = parseFloat(document.getElementById("correction-amount").value);
+  const reason = document.getElementById("correction-reason").value.trim();
+
+  if (isNaN(amountVal) || !reason) {
+    showToastAlert("❌ Error: Invalid input values.");
+    return;
+  }
+
+  const f = state.finance;
+  f.ledgerPostings.push({
+    id: `FIN-CORR-${expId}`,
+    sourceExpenseId: expId,
+    type: "Adjustment",
+    reason,
+    amountMinor: Math.round(amountVal * 100),
+    currency: "PKR",
+    status: "Posted"
+  });
+
+  closeModal();
+  showToastAlert("✓ Adjustment ledger entry posted successfully. Ledger registers net balance updated.");
+  renderFinanceWorkspace("#finance/expenses");
+};
+
+// ==========================================================================
+// Refunds workspace (Rule 45-56)
+// ==========================================================================
+
+function renderFinanceRefundsTab() {
+  const f = state.finance;
+  const pay = f.payments[0];
+  const req = f.refundRequests[0];
+
+  const hasRefund = req.status === "Approved";
+  const netValue = pay.amountMinor - (hasRefund ? req.amountMinor : 0);
+
+  return `
+    <div style="display:grid; grid-template-columns: 1fr 300px; gap:20px; align-items:flex-start; margin-bottom:24px;">
+      
+      <!-- Refund Request Card details -->
+      <div class="form-card" style="padding:16px;">
+        <h3 style="font-weight:800; font-size:14.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">Refund Request: ${req.id}</h3>
+        
+        <table style="width:100%; font-size:13px; line-height:22px; margin-bottom:16px;">
+          <tr><td style="color:var(--color-tertiary);">Original Transaction ID:</td><td style="font-weight:bold; text-align:right;">${req.transactionId}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Refund Type:</td><td style="font-weight:bold; text-align:right;">${req.type}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Requested Refund Amount:</td><td style="font-weight:bold; text-align:right; color:#ba1a1a;">${formatExactMoney(req.amountMinor)}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Reason:</td><td style="font-weight:bold; text-align:right;">${req.reason}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Requested Date:</td><td style="font-weight:bold; text-align:right;">${req.date}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Refund status:</td><td style="font-weight:bold; text-align:right;">${req.status}</td></tr>
+        </table>
+
+        ${req.status === 'Submitted' ? `
+          <div style="display:flex; gap:12px; justify-content:flex-end;">
+            <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="approveRefundRequest()">Approve Partial Refund</button>
+            <button class="btn btn-secondary" onclick="rejectRefundRequest()">Reject Request</button>
+          </div>
+        ` : `<div style="background-color:#e6f4ea; color:#137333; padding:8px 10px; border-radius:4px; font-weight:bold; font-size:12px;">✓ Refund Processed and Ledger Posted.</div>`}
+      </div>
+
+      <!-- Financial Net Effect Calculations Card (Rule 52) -->
+      <div class="form-card" style="padding:16px;">
+        <h3 style="font-weight:800; font-size:13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">💰 Financial Net Balance Effect</h3>
+        
+        <table style="width:100%; font-size:12.5px; line-height:24px; margin-bottom:12px;">
+          <tr><td style="color:var(--color-tertiary);">Original Payment:</td><td style="font-weight:bold; text-align:right; color:green;">+ ${formatExactMoney(pay.amountMinor)}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Adjustment (Refund):</td><td style="font-weight:bold; text-align:right; color:red;">- ${formatExactMoney(hasRefund ? req.amountMinor : 0)}</td></tr>
+          <tr style="border-top:1px solid var(--color-outline-variant); font-size:13.5px; font-weight:bold;">
+            <td>Net Posted Cash:</td><td style="text-align:right;">${formatExactMoney(netValue)}</td>
+          </tr>
+        </table>
+        
+        ${hasRefund ? `
+          <div style="background-color:#f5f5f5; border:1px solid var(--color-outline-variant); padding:10px; border-radius:4px; font-size:11.5px; color:var(--color-tertiary); margin-top:12px;">
+            📄 <strong>Credit Note:</strong> CREDIT-NOTE-001 posted.<br/>
+            🔒 <strong>Immutable Rule:</strong> Original transaction PAY-TXN-001 PKR 15,000 remains unchanged in base history.
+          </div>
+        ` : ''}
+      </div>
+
+    </div>
+  `;
+}
+
+window.approveRefundRequest = function() {
+  ensureFinanceState();
+  const f = state.finance;
+  f.payments[0].status = "Partially Refunded";
+  f.refundRequests[0].status = "Approved";
+  
+  // Post credit note & refund posting (Rule 50 & 51)
+  f.ledgerPostings.push({
+    id: "FIN-POST-REFUND-001",
+    type: "Refund",
+    sourceTransactionId: "PAY-TXN-001",
+    sourceRefundRequestId: "REFUND-REQ-001",
+    amountMinor: -500000,
+    currency: "PKR",
+    status: "Posted"
+  });
+
+  showToastAlert("✓ Refund approved: partially refunded credit posting generated. Original invoice unchanged.");
+  renderFinanceWorkspace("#finance/refunds");
+};
+
+window.rejectRefundRequest = function() {
+  ensureFinanceState();
+  state.finance.refundRequests[0].status = "Rejected";
+  showToastAlert("✓ Refund request rejected.");
+  renderFinanceWorkspace("#finance/refunds");
+};
+
+// ==========================================================================
+// Periods Tab (Rule 58-64)
+// ==========================================================================
+
+function renderFinancePeriodsTab() {
+  const f = state.finance;
+  const per = f.periods[0];
+  const locked = per.status === "Locked";
+
+  return `
+    <div style="max-width:680px; margin:0 auto;">
+      <div class="form-card" style="padding:20px; border-left:4px solid ${locked ? 'green' : '#b78103'};">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">
+          <h3 style="font-weight:800; font-size:15px; margin:0;">Accounting Close Period: ${per.name}</h3>
+          <span class="status-badge status-badge-${per.status.toLowerCase()}" style="padding:3px 8px; border-radius:4px; font-weight:bold; font-size:11px;">
+            ${per.status}
+          </span>
+        </div>
+
+        <p style="font-size:12.5px; color:var(--color-tertiary); margin-bottom:16px;">
+          Locking a financial period prevents all direct ledger posting edits. Any late corrections require adjustment transactions in subsequent periods.
+        </p>
+
+        <!-- Lock Period Checklist controls (Rule 60) -->
+        <div style="background:var(--color-surface-container); padding:12px; border-radius:6px; font-size:12.5px; margin-bottom:16px;">
+          <strong>Period Close Checklist Status:</strong>
+          <table style="width:100%; margin-top:8px; line-height:20px;">
+            <tr><td>✓ Unmatched statement lines resolved:</td><td style="font-weight:bold; text-align:right; color:green;">Passed</td></tr>
+            <tr><td>✓ Expenses claims reviews complete:</td><td style="font-weight:bold; text-align:right; color:green;">Passed</td></tr>
+            <tr><td>✓ Refund requests approved/posted:</td><td style="font-weight:bold; text-align:right; color:green;">Passed</td></tr>
+          </table>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end;">
+          ${!locked ? `
+            <button class="btn btn-primary" style="background-color:#137333; border-color:#137333; color:#fff; font-weight:800;" onclick="executeLockPeriod()">Lock Period (August 2026)</button>
+          ` : `
+            <span style="color:green; font-weight:bold;">🔒 August Period Permanently Locked</span>
+          `}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+window.executeLockPeriod = function() {
+  ensureFinanceState();
+  state.finance.periods[0].status = "Locked";
+  showToastAlert("✓ Financial Period August 2026 is now LOCKED. Ledger history frozen.");
+  renderFinanceWorkspace("#finance/periods");
+};
+// ==========================================================================
+// Screen 31 Payroll Earning Generation, Payroll Run Approval & Settlement State & Layouts
+// ==========================================================================
+
+window.ensurePayrollState = function() {
+  if (!state.payroll) {
+    state.payroll = {
+      selectedDemoState: "Earning Generated",
+      activeTab: "Overview",
+      
+      agreements: [
+        {
+          id: "PAYAGR-AYESHA-SE-001",
+          payeeName: "Ayesha Rahman",
+          type: "Trainer Class Rate",
+          course: "Spoken English",
+          format: "1-to-1",
+          duration: "45 minutes",
+          effectiveFrom: "2026-08-01",
+          effectiveTo: "2026-08-31",
+          version: "v1",
+          baseRateMinor: 120000, // PKR 1,200
+          status: "Active"
+        },
+        {
+          id: "PAYAGR-AYESHA-SE-002",
+          payeeName: "Ayesha Rahman",
+          type: "Trainer Class Rate",
+          course: "Spoken English",
+          format: "1-to-1",
+          duration: "45 minutes",
+          effectiveFrom: "2026-09-01",
+          effectiveTo: "Open-ended",
+          version: "v2",
+          baseRateMinor: 135000, // PKR 1,350
+          status: "Future"
+        }
+      ],
+
+      earnings: [
+        {
+          id: "EARN-CLASS-001",
+          sourceType: "ApprovedClassDelivery",
+          sourceId: "CLASS-001",
+          payeeId: "trainer-ayesha",
+          payAgreementId: "PAYAGR-AYESHA-SE-001",
+          rateRuleVersionId: "RATERULE-SE-1TO1-45-v1",
+          quantity: 1,
+          unit: "Approved Class",
+          amountMinor: 120000, // PKR 1,200
+          currency: "PKR",
+          status: "Available", // Available, Reserved, Approved in Run, Settled, Reversed
+          settlementStatus: "Not Settled",
+          eligibility: "Qualified",
+          notes: []
+        }
+      ],
+
+      runs: [
+        {
+          id: "PAYRUN-2026-08-001",
+          periodName: "August 2026",
+          periodId: "PAYPERIOD-2026-08",
+          preparedBy: "Fatima Noor",
+          approverId: null,
+          currency: "PKR",
+          status: "Draft", // Draft, Submitted, Approved, Rejected, Settled, Cancelled
+          earningIds: [],
+          paylines: [],
+          rejectionReason: null,
+          settlementDate: null,
+          settlementChannel: null,
+          settlementRef: null
+        }
+      ],
+
+      disputes: [],
+      ledgerPostings: [],
+      exceptions: []
+    };
+  }
+};
+
+// ==========================================================================
+// Payroll Workspace main router
+// ==========================================================================
+
+window.renderPayrollWorkspace = function(hash) {
+  ensurePayrollState();
+  const p = state.payroll;
+
+  // Route sub-tabs
+  if (hash.includes("earnings")) p.activeTab = "Earnings";
+  else if (hash.includes("runs")) p.activeTab = "Payroll Runs";
+  else if (hash.includes("exceptions")) p.activeTab = "Exceptions";
+  else if (hash.includes("statements") || hash.startsWith("#trainer/pay")) p.activeTab = "Statements";
+  else if (hash.includes("agreements")) p.activeTab = "Agreements";
+  else p.activeTab = "Overview";
+
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  // Render tabs header list
+  let tabsHtml = "";
+  ["Overview", "Earnings", "Payroll Runs", "Exceptions", "Statements", "Agreements"].forEach(t => {
+    const isSel = t === p.activeTab;
+    const tabHash = t === "Overview" ? "#payroll/dashboard" : `#payroll/${t.toLowerCase().replace(/ /g, '-')}`;
+    tabsHtml += `
+      <a href="${tabHash}" class="btn" style="border:none; padding:10px 16px; font-weight:bold; font-size:13px; cursor:pointer; background: ${isSel ? 'var(--color-primary-container)' : 'transparent'}; border-bottom: ${isSel ? '3px solid var(--color-secondary)' : 'none'}; color: ${isSel ? 'var(--color-on-primary-container)' : 'var(--color-tertiary)'}; text-decoration:none; border-radius:0;">
+        ${t}
+      </a>
+    `;
+  });
+
+  let bodyHtml = "";
+  if (p.activeTab === "Overview") bodyHtml = renderPayrollOverview();
+  else if (p.activeTab === "Earnings") bodyHtml = renderPayrollEarnings();
+  else if (p.activeTab === "Payroll Runs") bodyHtml = renderPayrollRuns();
+  else if (p.activeTab === "Exceptions") bodyHtml = renderPayrollExceptions();
+  else if (p.activeTab === "Statements") bodyHtml = renderPayrollStatements();
+  else if (p.activeTab === "Agreements") bodyHtml = renderPayrollAgreements();
+
+  view.innerHTML = `
+    ${getPayrollSandboxNavbarHTML(p.selectedDemoState)}
+
+    <div class="form-card" style="padding: 24px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; flex-wrap:wrap; gap:12px;">
+        <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 800;">💰 Payroll & Compensation Manager</h2>
+        <span style="font-size:11.5px; background:#fff9ee; color:#b78103; padding:3px 8px; border-radius:4px; font-weight:bold;">Demo snapshot &bull; 21 Aug 2026 &bull; Asia/Karachi</span>
+      </div>
+      <p style="font-size: 12.5px; color: var(--color-tertiary); margin-bottom: 20px;">Calculate payee rates based on effective agreements, build draft payroll runs, enforce duty segregation, and issue settled statements.</p>
+
+      <div style="display: flex; gap: 8px; border-bottom: 2px solid var(--color-outline-variant); margin-bottom: 20px; flex-wrap:wrap;">
+        ${tabsHtml}
+      </div>
+
+      ${bodyHtml}
+    </div>
+  `;
+};
+
+// ==========================================================================
+// Payroll Sandbox Controller (Rule 110)
+// ==========================================================================
+
+function getPayrollSandboxNavbarHTML(activeState) {
+  return `
+    <div style="background-color: var(--color-surface-container-highest); border-bottom: 2px solid var(--color-outline-variant); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; border-radius: 8px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="font-weight: 900; font-size: 13.5px; color: var(--color-secondary);">🎛️ Payroll Sandbox:</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 12px; font-weight: 700; color: var(--color-tertiary);">Demo State:</span>
+        <select class="form-input" style="width: 250px; height: 32px; font-size: 12px; margin-bottom: 0; font-weight: bold; background: #fff;" onchange="changePayrollDemoState(this.value)">
+          <option value="Earning Generated" ${activeState === 'Earning Generated' ? 'selected' : ''}>Earning Generated (Available)</option>
+          <option value="Missing Rate" ${activeState === 'Missing Rate' ? 'selected' : ''}>Missing Rate Agreement Exception</option>
+          <option value="Conflicting Rate" ${activeState === 'Conflicting Rate' ? 'selected' : ''}>Conflicting Rate Rules Exception</option>
+          <option value="Duplicate Source Prevented" ${activeState === 'Duplicate Source Prevented' ? 'selected' : ''}>Duplicate Source Exception</option>
+          <option value="Draft Run" ${activeState === 'Draft Run' ? 'selected' : ''}>Draft Run Builder</option>
+          <option value="Earning Reserved" ${activeState === 'Earning Reserved' ? 'selected' : ''}>Earning Reserved (Locked in Run)</option>
+          <option value="Second Run Conflict" ${activeState === 'Second Run Conflict' ? 'selected' : ''}>Second Run Selection Conflict</option>
+          <option value="Submitted" ${activeState === 'Submitted' ? 'selected' : ''}>Submitted Run (Review Pending)</option>
+          <option value="Self-Approval Blocked" ${activeState === 'Self-Approval Blocked' ? 'selected' : ''}>Self-Approval Segregation Block</option>
+          <option value="Rejected" ${activeState === 'Rejected' ? 'selected' : ''}>Submitted Run Rejected</option>
+          <option value="Approved" ${activeState === 'Approved' ? 'selected' : ''}>Run Approved (Settle Pending)</option>
+          <option value="Disputed Earning" ${activeState === 'Disputed Earning' ? 'selected' : ''}>Disputed Earning Query (Hold)</option>
+          <option value="Adjustment" ${activeState === 'Adjustment' ? 'selected' : ''}>Rate Override / Adjustment (+200)</option>
+          <option value="Settled" ${activeState === 'Settled' ? 'selected' : ''}>Run Settled (Finance Expense Posted)</option>
+          <option value="Failed Finance Posting" ${activeState === 'Failed Finance Posting' ? 'selected' : ''}>Failed Finance Posting Exception</option>
+        </select>
+      </div>
+    </div>
+  `;
+}
+
+window.changePayrollDemoState = function(val) {
+  ensurePayrollState();
+  const p = state.payroll;
+  p.selectedDemoState = val;
+
+  const earn = p.earnings[0];
+  const run = p.runs[0];
+  const agr = p.agreements[0];
+
+  // Reset defaults
+  earn.status = "Available";
+  earn.settlementStatus = "Not Settled";
+  earn.eligibility = "Qualified";
+  earn.amountMinor = 120000;
+  earn.notes = [];
+  run.status = "Draft";
+  run.earningIds = [];
+  run.paylines = [];
+  run.rejectionReason = null;
+  run.preparedBy = "Fatima Noor";
+  run.approverId = null;
+  p.exceptions = [];
+  p.disputes = [];
+
+  if (val === "Missing Rate") {
+    earn.status = "Exception";
+    earn.eligibility = "Missing Agreement";
+    p.exceptions.push({ id: "EXC-PAY-001", type: "Missing Rate Agreement", source: "CLASS-001", payee: "Ayesha Rahman", status: "Open" });
+  } else if (val === "Conflicting Rate") {
+    earn.status = "Exception";
+    earn.eligibility = "Conflicting Rules";
+    p.exceptions.push({ id: "EXC-PAY-002", type: "Conflicting Pay Rules", source: "CLASS-001", payee: "Ayesha Rahman", status: "Open" });
+  } else if (val === "Duplicate Source Prevented") {
+    p.exceptions.push({ id: "EXC-PAY-003", type: "Duplicate Source Attempt", source: "CLASS-001", payee: "Ayesha Rahman", status: "Resolved" });
+  } else if (val === "Draft Run") {
+    // Normal draft
+  } else if (val === "Earning Reserved") {
+    earn.status = "Reserved";
+    run.earningIds = ["EARN-CLASS-001"];
+    run.paylines.push({ id: "PAYLINE-CLASS-001", earningId: "EARN-CLASS-001", amountMinor: 120000, currency: "PKR" });
+  } else if (val === "Second Run Conflict") {
+    earn.status = "Reserved";
+    run.earningIds = ["EARN-CLASS-001"];
+    p.exceptions.push({ id: "EXC-PAY-004", type: "Earning Reserved in Other Run", source: "EARN-CLASS-001", payee: "Ayesha Rahman", status: "Open" });
+  } else if (val === "Submitted") {
+    earn.status = "Reserved";
+    run.status = "Submitted";
+    run.earningIds = ["EARN-CLASS-001"];
+    run.paylines.push({ id: "PAYLINE-CLASS-001", earningId: "EARN-CLASS-001", amountMinor: 120000, currency: "PKR" });
+  } else if (val === "Self-Approval Blocked") {
+    earn.status = "Reserved";
+    run.status = "Submitted";
+    run.preparedBy = "Omar Farooq"; // Set preparer as Omar to trigger block on self approval!
+    run.earningIds = ["EARN-CLASS-001"];
+  } else if (val === "Rejected") {
+    earn.status = "Available";
+    run.status = "Rejected";
+    run.rejectionReason = "Rate override requires supporting approval documents.";
+  } else if (val === "Approved") {
+    earn.status = "Approved in Run";
+    run.status = "Approved";
+    run.earningIds = ["EARN-CLASS-001"];
+    run.paylines.push({ id: "PAYLINE-CLASS-001", earningId: "EARN-CLASS-001", amountMinor: 120000, currency: "PKR" });
+    run.approverId = "coo-omar";
+  } else if (val === "Disputed Earning") {
+    earn.status = "Available";
+    earn.eligibility = "On Hold / Disputed";
+    p.disputes.push({ id: "PAY-DISPUTE-001", earningId: "EARN-CLASS-001", payee: "Ayesha Rahman", reason: "I expected this class to use the approved special-session rate.", status: "Open" });
+  } else if (val === "Adjustment") {
+    earn.amountMinor = 140000; // PKR 1,400 override
+    earn.notes.push("Rate adjustments override +200 PKR applied");
+  } else if (val === "Settled") {
+    earn.status = "Settled";
+    earn.settlementStatus = "Settled";
+    run.status = "Settled";
+    run.approverId = "coo-omar";
+    run.earningIds = ["EARN-CLASS-001"];
+    run.paylines.push({ id: "PAYLINE-CLASS-001", earningId: "EARN-CLASS-001", amountMinor: 120000, currency: "PKR" });
+    run.settlementDate = "2026-08-21";
+    run.settlementChannel = "HBL Bank Transfer";
+    run.settlementRef = "PAYROLL-DEMO-001";
+  } else if (val === "Failed Finance Posting") {
+    earn.status = "Settled";
+    run.status = "Settled";
+    p.exceptions.push({ id: "EXC-PAY-005", type: "Failed Finance Posting Exception", source: "SETTLEMENT-PAYRUN-001", payee: "Ayesha Rahman", status: "Open" });
+  }
+
+  showToastAlert(`✓ Sandbox State: ${val}`);
+  renderPayrollWorkspace(window.location.hash);
+};
+
+// ==========================================================================
+// Payroll Overview View (Rule 2)
+// ==========================================================================
+
+function renderPayrollOverview() {
+  const p = state.payroll;
+  
+  const availableCount = p.earnings.filter(e => e.status === "Available").length;
+  const reservedCount = p.earnings.filter(e => e.status === "Reserved").length;
+  const runsAwaiting = p.runs.filter(r => r.status === "Submitted").length;
+  const approvedSettlement = p.runs.filter(r => r.status === "Approved").length;
+  const settledCount = p.runs.filter(r => r.status === "Settled").length;
+  const exceptionCount = p.exceptions.length + p.disputes.length;
+
+  return `
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;">
+      
+      <div class="form-card" style="padding: 16px; border-left: 4px solid var(--color-secondary);">
+        <span style="font-size:11px; text-transform:uppercase; color:var(--color-tertiary);">Available Earnings (Payable Work)</span>
+        <div style="font-size:24px; font-weight:800; margin-top:4px;">${availableCount}</div>
+        <div style="font-size:11px; color:var(--color-tertiary);">Ayesha Rahman: ${formatExactMoney(p.earnings[0].amountMinor)}</div>
+      </div>
+
+      <div class="form-card" style="padding: 16px; border-left: 4px solid ${reservedCount > 0 ? '#b78103' : 'var(--color-outline-variant)'};">
+        <span style="font-size:11px; text-transform:uppercase; color:var(--color-tertiary);">Reserved in Draft Runs</span>
+        <div style="font-size:24px; font-weight:800; margin-top:4px; color:${reservedCount > 0 ? '#b78103' : 'inherit'};">${reservedCount}</div>
+        <div style="font-size:11px; color:var(--color-tertiary);">Atomic reservation queue</div>
+      </div>
+
+      <div class="form-card" style="padding: 16px; border-left: 4px solid ${runsAwaiting > 0 ? '#b78103' : 'var(--color-outline-variant)'};">
+        <span style="font-size:11px; text-transform:uppercase; color:var(--color-tertiary);">Runs Awaiting Approval</span>
+        <div style="font-size:24px; font-weight:800; margin-top:4px; color:${runsAwaiting > 0 ? '#b78103' : 'inherit'};">${runsAwaiting}</div>
+        <div style="font-size:11px; color:var(--color-tertiary);">COO verification pending</div>
+      </div>
+
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;">
+      
+      <div class="form-card" style="padding: 16px; border-left: 4px solid ${approvedSettlement > 0 ? 'green' : 'var(--color-outline-variant)'};">
+        <span style="font-size:11px; text-transform:uppercase; color:var(--color-tertiary);">Approved for Settlement</span>
+        <div style="font-size:24px; font-weight:800; margin-top:4px; color:${approvedSettlement > 0 ? 'green' : 'inherit'};">${approvedSettlement}</div>
+        <div style="font-size:11px; color:var(--color-tertiary);">Ready to transfer payouts</div>
+      </div>
+
+      <div class="form-card" style="padding: 16px; border-left: 4px solid ${settledCount > 0 ? 'green' : 'var(--color-outline-variant)'};">
+        <span style="font-size:11px; text-transform:uppercase; color:var(--color-tertiary);">Settled This Period</span>
+        <div style="font-size:24px; font-weight:800; margin-top:4px; color:${settledCount > 0 ? 'green' : 'inherit'};">${settledCount}</div>
+        <div style="font-size:11px; color:var(--color-tertiary);">Ledger postings confirmed</div>
+      </div>
+
+      <div class="form-card" style="padding: 16px; border-left: 4px solid ${exceptionCount > 0 ? '#ba1a1a' : 'var(--color-outline-variant)'};">
+        <span style="font-size:11px; text-transform:uppercase; color:var(--color-tertiary);">Exceptions & Disputes</span>
+        <div style="font-size:24px; font-weight:800; margin-top:4px; color:${exceptionCount > 0 ? '#ba1a1a' : 'inherit'};">${exceptionCount}</div>
+        <div style="font-size:11px; color:var(--color-tertiary);">Missing rates / queries</div>
+      </div>
+
+    </div>
+
+    <!-- Segregation actor notice display (Rule 25) -->
+    <div style="background:#fcf8f2; border:1px solid #faecc5; border-radius:6px; padding:12px; font-size:12.5px; color:#b78103; margin-bottom:20px;">
+      🔒 <strong>Segregation of Duties Policy:</strong> Payroll runs prepared by <strong>Fatima Noor (Operator)</strong> must be approved by an authorized manager (e.g. <strong>Omar Farooq (COO)</strong>) and settled by Finance Admin. Self-approval actions will trigger authorization policy violations.
+    </div>
+
+    <!-- Active Periods status register -->
+    <div class="form-card" style="padding:16px;">
+      <h3 style="font-weight:800; font-size:14.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">📅 Compensation Period Status</h3>
+      <table style="width:100%; border-collapse:collapse; font-size:13px;">
+        <tr style="border-bottom:1px solid var(--color-outline-variant); line-height:30px;">
+          <td><strong>August 2026</strong> (PAYPERIOD-2026-08)</td>
+          <td>Dates: 1 Aug &ndash; 31 Aug</td>
+          <td style="text-align:right;"><span style="background-color:#e6f4ea; color:#137333; padding:2px 8px; border-radius:4px; font-weight:bold; font-size:11px;">Active Open</span></td>
+        </tr>
+      </table>
+    </div>
+  `;
+}
+
+// ==========================================================================
+// Earnings Tab (Rule 22)
+// ==========================================================================
+
+function renderPayrollEarnings() {
+  const p = state.payroll;
+  let rows = "";
+
+  p.earnings.forEach(e => {
+    rows += `
+      <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:13px;">
+        <td style="padding:12px; font-weight:bold; color:var(--color-primary);">${e.id}</td>
+        <td style="padding:12px; font-weight:700;">Ayesha Rahman</td>
+        <td style="padding:12px;">${e.sourceType} (${e.sourceId})</td>
+        <td style="padding:12px; font-family:monospace; font-size:11.5px;">${e.payAgreementId}</td>
+        <td style="padding:12px; font-weight:bold;">${formatExactMoney(e.amountMinor, e.currency)}</td>
+        <td style="padding:12px;">
+          <span class="status-badge status-badge-${e.status.toLowerCase().replace(/ /g, '-')}" style="padding:3px 6px; border-radius:4px; font-weight:bold; font-size:11px;">
+            ${e.status}
+          </span>
+        </td>
+        <td style="padding:12px; font-weight:bold; color: ${e.eligibility === 'Qualified' ? 'green' : '#ba1a1a'};">${e.eligibility}</td>
+        <td style="padding:12px;">
+          <button class="btn btn-secondary" style="padding:4px 8px; font-size:11px; height:28px;" onclick="openCalculationDetailModal('${e.id}')">View Calculation</button>
+          ${e.eligibility === 'Qualified' && e.status === 'Available' ? `
+            <button class="btn btn-secondary" style="padding:4px 8px; font-size:11px; height:28px; color:#ba1a1a; border-color:#ba1a1a;" onclick="openRaiseDisputeModal('${e.id}')">Dispute</button>
+          ` : ''}
+        </td>
+      </tr>
+    `;
+  });
+
+  return `
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h3 style="font-family: var(--font-family-headings); font-weight: 800; font-size: 16px; margin:0;">Payable Earnings Register Logs</h3>
+      <!-- Test duplicate prevention checks (Rule 17 & 18) -->
+      <button class="btn btn-secondary" style="font-size:11.5px; height:32px;" onclick="triggerDuplicateEarningAttempt()">🔄 Generate Earning for CLASS-001</button>
+    </div>
+
+    <table style="width:100%; border-collapse:collapse; text-align:left; margin-bottom:24px;">
+      <thead>
+        <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+          <th style="padding: 12px;">Earning ID</th>
+          <th style="padding: 12px;">Payee</th>
+          <th style="padding: 12px;">Source Reference</th>
+          <th style="padding: 12px;">Rate Agreement</th>
+          <th style="padding: 12px;">Calculated Amount</th>
+          <th style="padding: 12px;">Status</th>
+          <th style="padding: 12px;">Eligibility</th>
+          <th style="padding: 12px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+    </table>
+
+    <!-- Active Disputes logging (Rule 67 & 68) -->
+    ${p.disputes.length > 0 ? `
+      <div class="form-card" style="padding:16px; border:1px solid #faecc5; background:#fffdf7;">
+        <h4 style="font-weight:800; font-size:13.5px; color:#b78103; margin:0 0 8px 0;">⚠️ Open Pay Queries / Disputes</h4>
+        ${p.disputes.map(d => `
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; font-size:12.5px;">
+            <div>
+              <strong>${d.id}</strong> (Earning: ${d.earningId}) &bull; Payee: ${d.payee}<br/>
+              <span style="color:var(--color-tertiary);">Reason: "${d.reason}"</span>
+            </div>
+            <button class="btn btn-secondary" style="height:28px; font-size:11px;" onclick="resolveDisputeModal('${d.earningId}')">Resolve Dispute</button>
+          </div>
+        `).join('')}
+      </div>
+    ` : ''}
+  `;
+}
+
+window.triggerDuplicateEarningAttempt = function() {
+  ensurePayrollState();
+  // Duplicate source prevention rule check (Rule 17)
+  const content = `
+    <div style="text-align:left; font-size:13px; color:#ba1a1a;">
+      <strong>⛔ Action Blocked: Earning Already Exists</strong>
+      <p style="margin-top:8px; color:var(--color-tertiary);">Source event ApprovedClassDelivery:CLASS-001 has already produced Earning ID <strong>EARN-CLASS-001</strong>.</p>
+      <p style="font-size:12px; font-weight:bold; color:var(--color-primary);">Duplicate payouts for identical delivery events are automatically prevented by source uniqueness key constraints.</p>
+      <div style="margin-top:16px; text-align:right;">
+        <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  `;
+  openModal("Duplicate Prevention Blocked", content);
+};
+
+window.openCalculationDetailModal = function(earnId) {
+  ensurePayrollState();
+  const earn = state.payroll.earnings.find(e => e.id === earnId);
+  if (!earn) return;
+
+  // Traceability source calculation (Rule 14 & 65)
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <h4 style="font-weight:bold; margin-bottom:8px;">Source-to-Payout Audit Traceability</h4>
+      
+      <!-- Trace chain map visualization (Rule 65) -->
+      <div style="background:var(--color-surface-container); padding:10px; border-radius:6px; font-family:monospace; font-size:11.5px; line-height:20px; margin-bottom:16px;">
+        🟩 CLASS-001 (Approved/Completed)<br/>
+        &nbsp;&nbsp;↓ Delivery Review Approved<br/>
+        🟩 EARN-CLASS-001 (Earning Calculated)<br/>
+        &nbsp;&nbsp;↓ Rate Rule: RATERULE-SE-1TO1-45-v1<br/>
+        🟩 PAYLINE-CLASS-001 (Reserved in Run)<br/>
+        &nbsp;&nbsp;↓ Run: PAYRUN-2026-08-001
+      </div>
+
+      <table style="width:100%; border-collapse:collapse; line-height:22px; font-size:12.5px;">
+        <tr><td style="color:var(--color-tertiary);">Rate Agreement ID:</td><td style="font-weight:bold; text-align:right; font-family:monospace;">${earn.payAgreementId}</td></tr>
+        <tr><td style="color:var(--color-tertiary);">Base Rate:</td><td style="font-weight:bold; text-align:right;">PKR 1,200.00 (Configured Demo Rate)</td></tr>
+        <tr><td style="color:var(--color-tertiary);">Quantity:</td><td style="font-weight:bold; text-align:right;">1 approved class duration (45 mins)</td></tr>
+        <tr><td style="color:var(--color-tertiary);">Calculated Payable:</td><td style="font-weight:bold; text-align:right; font-size:14px; color:green;">${formatExactMoney(earn.amountMinor)}</td></tr>
+      </table>
+
+      ${earn.notes.length > 0 ? `
+        <div style="margin-top:12px; font-size:11.5px; background-color:#fffdf7; border:1px solid #faecc5; padding:6px; border-radius:4px;">
+          <strong>Audit Notes:</strong> ${earn.notes.join(', ')}
+        </div>
+      ` : ''}
+
+      <div style="margin-top:16px; text-align:right;">
+        <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  `;
+  openModal("Earning Calculation Details", content);
+};
+
+window.openRaiseDisputeModal = function(earnId) {
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <label style="font-weight:bold; display:block; margin-bottom:4px;">Enter Dispute / Pay Query Reason:</label>
+      <input type="text" id="dispute-reason-input" class="form-input" value="I expected this class to use the approved special-session rate.">
+      
+      <div style="display:flex; gap:12px; margin-top:16px;">
+        <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="executeRaiseDispute('${earnId}')">Submit Query</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Raise Pay Query Dispute", content);
+};
+
+window.executeRaiseDispute = function(earnId) {
+  ensurePayrollState();
+  const reason = document.getElementById("dispute-reason-input").value.trim();
+  if (!reason) return;
+
+  const p = state.payroll;
+  p.earnings[0].eligibility = "On Hold / Disputed";
+  p.disputes.push({
+    id: `PAY-DISPUTE-001`,
+    earningId: earnId,
+    payee: "Ayesha Rahman",
+    reason,
+    status: "Open"
+  });
+
+  closeModal();
+  showToastAlert("✓ Pay dispute query logged. Earning eligibility placed On Hold.");
+  renderPayrollWorkspace("#payroll/earnings");
+};
+
+window.resolveDisputeModal = function(earnId) {
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <p style="color:var(--color-tertiary); margin-bottom:12px;">Confirm dispute resolution. Original agreement rate remains immutable. Adjustments will generate a linked correction line.</p>
+      
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="executeResolveDisputeAdjustment('${earnId}')">Approve Correction Adjustment (+200 PKR)</button>
+        <button class="btn btn-secondary" onclick="executeResolveDisputeNoChange('${earnId}')">Confirm Original Rate (No Change)</button>
+      </div>
+    </div>
+  `;
+  openModal("Resolve Dispute Query", content);
+};
+
+window.executeResolveDisputeAdjustment = function(earnId) {
+  ensurePayrollState();
+  const p = state.payroll;
+  p.earnings[0].amountMinor = 140000; // PKR 1,400 adjusted override rate
+  p.earnings[0].eligibility = "Qualified";
+  p.earnings[0].notes.push("Rate adjustments override +200 PKR applied");
+  p.disputes = [];
+
+  closeModal();
+  showToastAlert("✓ Dispute resolved with linked rate adjustment override.");
+  renderPayrollWorkspace("#payroll/earnings");
+};
+
+window.executeResolveDisputeNoChange = function(earnId) {
+  ensurePayrollState();
+  const p = state.payroll;
+  p.earnings[0].eligibility = "Qualified";
+  p.disputes = [];
+
+  closeModal();
+  showToastAlert("✓ Dispute resolved. Original rate confirmed.");
+  renderPayrollWorkspace("#payroll/earnings");
+};
+
+// ==========================================================================
+// Payroll Runs Tab (Rule 24)
+// ==========================================================================
+
+function renderPayrollRuns() {
+  const p = state.payroll;
+  const run = p.runs[0];
+  const earn = p.earnings[0];
+
+  // Derive Gross/Net calculations (Rule 38 & 39)
+  const isEarningReserved = run.earningIds.includes("EARN-CLASS-001") || earn.status === "Reserved" || earn.status === "Approved in Run" || earn.status === "Settled";
+  const grossMinor = isEarningReserved ? earn.amountMinor : 0;
+  const netMinor = grossMinor; // 0 deductions
+
+  return `
+    <div style="display:grid; grid-template-columns: 1fr 280px; gap:20px; align-items:flex-start; margin-bottom:24px;">
+      
+      <!-- Run Details & States -->
+      <div class="form-card" style="padding:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">
+          <h3 style="font-weight:800; font-size:14.5px; margin:0;">Active Run Builder: ${run.id}</h3>
+          <span class="status-badge status-badge-${run.status.toLowerCase()}" style="padding:3px 8px; border-radius:4px; font-weight:bold; font-size:11px;">
+            ${run.status}
+          </span>
+        </div>
+
+        <table style="width:100%; font-size:12.5px; line-height:22px; margin-bottom:16px;">
+          <tr><td style="color:var(--color-tertiary);">Payroll Period:</td><td style="font-weight:bold; text-align:right;">August 2026 (PAYPERIOD-2026-08)</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Prepared By Operator:</td><td style="font-weight:bold; text-align:right;">${run.preparedBy}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Approver COO:</td><td style="font-weight:bold; text-align:right;">${run.approverId ? run.approverId : 'Awaiting review submission'}</td></tr>
+        </table>
+
+        <!-- Reserve Earning Controls (Rule 27 & 28) -->
+        ${run.status === 'Draft' ? `
+          <h4 style="font-weight:bold; font-size:13px; margin-bottom:8px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:4px;">Select Eligible Earnings to Reserve</h4>
+          <div style="background:#fff; border:1px solid var(--color-outline-variant); padding:10px; border-radius:6px; font-size:12.5px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <input type="checkbox" id="reserve-earn-chk" ${isEarningReserved ? 'checked' : ''} onchange="toggleEarningReservation(this.checked)">
+              <strong style="margin-left:8px;">EARN-CLASS-001</strong> &middot; Ayesha Rahman (PKR 1,200)
+            </div>
+            <span style="font-size:11px; background:var(--color-surface-container); padding:2px 6px; border-radius:4px;">Qualified</span>
+          </div>
+
+          <div style="text-align:right;">
+            <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="submitPayrollRun()" ${!isEarningReserved ? 'disabled' : ''}>Submit for Approval</button>
+          </div>
+        ` : ''}
+
+        <!-- Approval checks (Rule 44 & 45) -->
+        ${run.status === 'Submitted' ? `
+          <div style="background:#fcf8f2; border:1.5px solid #faecc5; border-radius:6px; padding:12px; margin-bottom:16px;">
+            <h4 style="font-weight:bold; font-size:13px; color:#b78103; margin:0 0 6px 0;">🛡️ Segregation Reviewer Action Panel</h4>
+            <p style="font-size:12.5px; color:var(--color-tertiary); margin-bottom:12px;">Confirm Ayesha Rahman class delivery records align with PAYAGR v1 rates.</p>
+            
+            <div style="display:flex; gap:12px; justify-content:flex-end;">
+              <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="approvePayrollRun()">Approve Run</button>
+              <button class="btn btn-secondary" style="color:#ba1a1a; border-color:#ba1a1a;" onclick="rejectPayrollRun()">Reject Run</button>
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- Settle run checks (Rule 55) -->
+        ${run.status === 'Approved' ? `
+          <div style="background:#f4faf5; border:1.5px solid green; border-radius:6px; padding:12px; margin-bottom:16px;">
+            <h4 style="font-weight:bold; font-size:13px; color:green; margin:0 0 6px 0;">✓ Approved Paylist Settlement Panel</h4>
+            <p style="font-size:12.5px; color:var(--color-tertiary); margin-bottom:12px;">Disburse funds via verified banking channels to generate payment statement.</p>
+            <div style="text-align:right;">
+              <button class="btn btn-primary" style="background-color:#137333; border-color:#137333; color:#fff; font-weight:800;" onclick="openSettlePayrollRunModal()">Settle Payroll</button>
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- Settlement details display (Rule 58 & 60) -->
+        ${run.status === 'Settled' ? `
+          <div style="background:#f5f5f5; border:1px solid var(--color-outline-variant); padding:12px; border-radius:6px; font-size:12.5px; margin-bottom:16px;">
+            <strong>Settlement Reference Audit:</strong>
+            <table style="width:100%; margin-top:8px; line-height:20px;">
+              <tr><td>Channel:</td><td style="font-weight:bold; text-align:right;">${run.settlementChannel}</td></tr>
+              <tr><td>Reference Code:</td><td style="font-weight:bold; text-align:right; font-family:monospace;">${run.settlementRef}</td></tr>
+              <tr><td>Ledger Posting ID:</td><td style="font-weight:bold; text-align:right; font-family:monospace; color:green;">FIN-POST-PAYROLL-001</td></tr>
+            </table>
+          </div>
+        ` : ''}
+
+        <!-- Rejection reason display -->
+        ${run.status === 'Rejected' ? `
+          <div style="background-color:#fff0f0; border-left:3px solid #ba1a1a; padding:10px; border-radius:4px; font-size:12.5px; margin-bottom:16px;">
+            <strong>Rejection Reason:</strong> "${run.rejectionReason}"
+          </div>
+          <button class="btn btn-secondary" onclick="resubmitPayrollRunToDraft()">Correct & Return to Draft</button>
+        ` : ''}
+
+      </div>
+
+      <!-- Right Column: Gross to Net Summary Calculations Panel -->
+      <div class="form-card" style="padding:16px;">
+        <h3 style="font-weight:800; font-size:13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">📊 Run Payout Summary</h3>
+        <table style="width:100%; font-size:12.5px; line-height:24px; margin-bottom:12px;">
+          <tr><td style="color:var(--color-tertiary);">Gross Earning Base:</td><td style="font-weight:bold; text-align:right;">+ ${formatExactMoney(grossMinor)}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Performance Bonuses:</td><td style="font-weight:bold; text-align:right;">PKR 0.00</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Deductions / Fines:</td><td style="font-weight:bold; text-align:right;">PKR 0.00</td></tr>
+          <tr style="border-top:1px solid var(--color-outline-variant); font-size:13.5px; font-weight:bold;">
+            <td>Net Payable Cash:</td><td style="text-align:right;">${formatExactMoney(netMinor)}</td>
+          </tr>
+        </table>
+      </div>
+
+    </div>
+  `;
+}
+
+window.toggleEarningReservation = function(checked) {
+  ensurePayrollState();
+  const p = state.payroll;
+  if (checked) {
+    p.earnings[0].status = "Reserved";
+    p.runs[0].earningIds = ["EARN-CLASS-001"];
+    p.runs[0].paylines = [{ id: "PAYLINE-CLASS-001", earningId: "EARN-CLASS-001", amountMinor: p.earnings[0].amountMinor, currency: "PKR" }];
+    showToastAlert("✓ Earning reserved: locked in August Payroll Run draft.");
+  } else {
+    p.earnings[0].status = "Available";
+    p.runs[0].earningIds = [];
+    p.runs[0].paylines = [];
+    showToastAlert("✓ Earning reservation released.");
+  }
+  renderPayrollWorkspace("#payroll/runs");
+};
+
+window.submitPayrollRun = function() {
+  ensurePayrollState();
+  state.payroll.runs[0].status = "Submitted";
+  showToastAlert("✓ Payroll run submitted for COO authorization checks.");
+  renderPayrollWorkspace("#payroll/runs");
+};
+
+window.approvePayrollRun = function() {
+  ensurePayrollState();
+  const run = state.payroll.runs[0];
+  
+  // Segregation of duties validation (Rule 48 & 49)
+  if (run.preparedBy === "Omar Farooq") {
+    const content = `
+      <div style="text-align:left; font-size:13px; color:#ba1a1a;">
+        <strong>⛔ Security Violation: Self-Approval Blocked</strong>
+        <p style="margin-top:8px; color:var(--color-tertiary);">Under organizational governance rules, the preparer (Omar Farooq) is barred from approving their own submitted payroll run.</p>
+        <div style="margin-top:16px; text-align:right;">
+          <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+        </div>
+      </div>
+    `;
+    openModal("Segregation Blocked", content);
+    return;
+  }
+
+  run.status = "Approved";
+  run.approverId = "coo-omar";
+  state.payroll.earnings[0].status = "Approved in Run";
+  showToastAlert("✓ Run approved. Awaiting Finance payout settlement.");
+  renderPayrollWorkspace("#payroll/runs");
+};
+
+window.rejectPayrollRun = function() {
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <label style="font-weight:bold; display:block; margin-bottom:4px;">Enter Rejection Reason:</label>
+      <input type="text" id="run-rejection-reason" class="form-input" value="Rate override requires supporting approval documents.">
+      
+      <div style="display:flex; gap:12px; margin-top:16px;">
+        <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="executeRejectPayrollRun()">Reject Run</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Reject Payroll Run", content);
+};
+
+window.executeRejectPayrollRun = function() {
+  ensurePayrollState();
+  const reason = document.getElementById("run-rejection-reason").value.trim();
+  if (!reason) return;
+
+  const p = state.payroll;
+  p.runs[0].status = "Rejected";
+  p.runs[0].rejectionReason = reason;
+  p.earnings[0].status = "Available"; // Release back to available pool!
+
+  closeModal();
+  showToastAlert("✓ Payroll run rejected and returned to preparer.");
+  renderPayrollWorkspace("#payroll/runs");
+};
+
+window.resubmitPayrollRunToDraft = function() {
+  ensurePayrollState();
+  state.payroll.runs[0].status = "Draft";
+  state.payroll.runs[0].rejectionReason = null;
+  renderPayrollWorkspace("#payroll/runs");
+};
+
+window.openSettlePayrollRunModal = function() {
+  ensurePayrollState();
+  const run = state.payroll.runs[0];
+  const earn = state.payroll.earnings[0];
+
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <p style="color:var(--color-tertiary); margin-bottom:12px;">Process payout disbursement settlement details below:</p>
+      
+      <table style="width:100%; border-collapse:collapse; line-height:22px; font-size:12.5px; background:var(--color-surface-container); padding:8px; border-radius:6px; margin-bottom:16px;">
+        <tr><td style="color:var(--color-tertiary);">Total Payees:</td><td style="font-weight:bold; text-align:right;">1 (Ayesha Rahman)</td></tr>
+        <tr><td style="color:var(--color-tertiary);">Net Amount:</td><td style="font-weight:bold; text-align:right;">${formatExactMoney(earn.amountMinor)}</td></tr>
+      </table>
+
+      <div class="form-group">
+        <label style="font-weight:bold; display:block; margin-bottom:4px;">Disbursement Payout Channel:</label>
+        <select id="settle-channel" class="form-input" style="height:36px; background:#fff;">
+          <option value="HBL Bank Transfer">Habib Bank Transfer</option>
+          <option value="JazzCash Payout">JazzCash Payout</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label style="font-weight:bold; display:block; margin-bottom:4px;">Bank Transaction Reference:</label>
+        <input type="text" id="settle-ref" class="form-input" value="PAYROLL-DEMO-001">
+      </div>
+
+      <div style="display:flex; gap:12px; margin-top:16px;">
+        <button class="btn btn-primary" style="background-color:#137333; border-color:#137333; color:#fff; font-weight:800; flex:1.2;" onclick="executeSettlePayrollRun()">Settle Run</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Confirm Payroll Payout Settlement", content);
+};
+
+window.executeSettlePayrollRun = function() {
+  ensurePayrollState();
+  const channel = document.getElementById("settle-channel").value;
+  const ref = document.getElementById("settle-ref").value.trim();
+
+  if (!ref) {
+    showToastAlert("❌ Error: Transaction reference code is required.");
+    return;
+  }
+
+  const p = state.payroll;
+  p.runs[0].status = "Settled";
+  p.runs[0].settlementDate = "2026-08-21";
+  p.runs[0].settlementChannel = channel;
+  p.runs[0].settlementRef = ref;
+  p.earnings[0].status = "Settled";
+  p.earnings[0].settlementStatus = "Settled";
+
+  // Create linked Finance Posting (Rule 60)
+  if (state.finance) {
+    state.finance.ledgerPostings.push({
+      id: "FIN-POST-PAYROLL-001",
+      type: "Payroll Expense",
+      sourceSettlementId: "SETTLEMENT-PAYRUN-001",
+      amountMinor: p.earnings[0].amountMinor,
+      currency: "PKR",
+      status: "Posted"
+    });
+  }
+
+  closeModal();
+  showToastAlert("✓ Payroll settled successfully. Payslips available and ledger posting created.");
+  renderPayrollWorkspace("#payroll/runs");
+};
+
+// ==========================================================================
+// Exceptions Queue Tab (Rule 78)
+// ==========================================================================
+
+function renderPayrollExceptions() {
+  const p = state.payroll;
+  let rows = "";
+
+  p.exceptions.forEach(exc => {
+    rows += `
+      <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:13px; background-color:#fff0f0;">
+        <td style="padding:12px; font-weight:bold; color:var(--color-primary);">${exc.id}</td>
+        <td style="padding:12px; font-weight:700; color:#ba1a1a;">${exc.type}</td>
+        <td style="padding:12px; font-family:monospace;">${exc.source}</td>
+        <td style="padding:12px;">${exc.payee}</td>
+        <td style="padding:12px;">
+          <span class="status-badge" style="background:#fff3cd; color:#b78103; padding:3px 6px; border-radius:4px; font-weight:bold; font-size:11px;">
+            ${exc.status}
+          </span>
+        </td>
+        <td style="padding:12px;">
+          <button class="btn btn-secondary" style="padding:4px 8px; font-size:11px; height:28px;" onclick="resolveExceptionModal('${exc.id}')">Resolve Exception</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  return `
+    <h3 style="font-family: var(--font-family-headings); font-weight: 800; font-size: 16px; margin:0 0 12px 0;">Compensation Exceptions Queue</h3>
+    
+    <table style="width:100%; border-collapse:collapse; text-align:left;">
+      <thead>
+        <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+          <th style="padding: 12px;">Exception ID</th>
+          <th style="padding: 12px;">Exception Type</th>
+          <th style="padding: 12px;">Source Record</th>
+          <th style="padding: 12px;">Payer / Payee</th>
+          <th style="padding: 12px;">Status</th>
+          <th style="padding: 12px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows ? rows : '<tr><td colspan="6" style="padding:20px; text-align:center; font-style:italic; color:var(--color-tertiary);">No open exception alerts in the active range.</td></tr>'}
+      </tbody>
+    </table>
+  `;
+}
+
+window.resolveExceptionModal = function(excId) {
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <p style="color:var(--color-tertiary); margin-bottom:12px;">Configure exception resolution actions below:</p>
+      
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="executeResolveException('${excId}')">Apply Resolved Override</button>
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Resolve Exception Alert", content);
+};
+
+window.executeResolveException = function(excId) {
+  ensurePayrollState();
+  state.payroll.exceptions = state.payroll.exceptions.filter(exc => exc.id !== excId);
+  closeModal();
+  showToastAlert(`✓ Exception ${excId} resolved.`);
+  renderPayrollWorkspace("#payroll/exceptions");
+};
+
+// ==========================================================================
+// Pay Statement tab (Payslip view) (Rule 62)
+// ==========================================================================
+
+function renderPayrollStatements() {
+  const p = state.payroll;
+  const earn = p.earnings[0];
+  
+  const isSettled = earn.status === "Settled";
+
+  return `
+    <div style="max-width:580px; margin:0 auto;">
+      <div class="form-card" style="padding:24px; border-top: 4px solid var(--color-secondary);">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--color-outline-variant); padding-bottom:10px; margin-bottom:16px;">
+          <div>
+            <h3 style="font-weight:900; font-size:16px; margin:0;">August 2026 Pay Statement</h3>
+            <span style="font-size:12px; color:var(--color-tertiary);">Ref: PAYSTATEMENT-AYESHA-2026-08</span>
+          </div>
+          <span class="status-badge status-badge-${isSettled ? 'settled' : 'draft'}" style="padding:4px 8px; border-radius:4px; font-weight:bold; font-size:11.5px;">
+            ${isSettled ? 'Settled' : 'Statement Draft'}
+          </span>
+        </div>
+
+        <table style="width:100%; font-size:13px; line-height:28px; margin-bottom:16px; border-collapse:collapse;">
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Payee Name:</td><td style="font-weight:bold; text-align:right;">Ayesha Rahman</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Role Context:</td><td style="font-weight:bold; text-align:right;">Trainer</td></tr>
+          
+          <tr style="border-bottom:1px solid var(--color-outline-variant);">
+            <td style="color:var(--color-tertiary); cursor:pointer; text-decoration:underline;" onclick="openCalculationDetailModal('EARN-CLASS-001')">Class Earnings (Spoken English 1-to-1):</td>
+            <td style="font-weight:bold; text-align:right;">+ ${formatExactMoney(earn.amountMinor)}</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Other Additions / Bonuses:</td><td style="font-weight:bold; text-align:right;">PKR 0.00</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Withholding Deductions:</td><td style="font-weight:bold; text-align:right;">PKR 0.00</td></tr>
+          
+          <tr style="font-weight:bold; font-size:15px; line-height:36px;">
+            <td>Net Payout:</td><td style="text-align:right;">${formatExactMoney(earn.amountMinor)}</td>
+          </tr>
+        </table>
+
+        <!-- Payslip privacy note check (Rule 63) -->
+        <div style="background-color:#e8f0fe; color:#1a73e8; border-radius:6px; padding:10px; font-size:11.5px; line-height:1.5;">
+          ℹ️ <strong>Payee Privacy Rules:</strong> Trainers are allowed view access to their own compensation items and deep-linked session IDs ('CLASS-001'). Access permissions filter other employees' salary logs or company bank statement reconciliations.
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ==========================================================================
+// Agreements Tab (Rule 88 & 89)
+// ==========================================================================
+
+function renderPayrollAgreements() {
+  const p = state.payroll;
+  let rows = "";
+
+  p.agreements.forEach(agr => {
+    rows += `
+      <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:13px;">
+        <td style="padding:12px; font-weight:bold; color:var(--color-primary);">${agr.id}</td>
+        <td style="padding:12px; font-weight:700;">${agr.payeeName}</td>
+        <td style="padding:12px;">${agr.course} &bull; ${agr.format}</td>
+        <td style="padding:12px; font-family:monospace; font-size:11.5px;">${agr.version}</td>
+        <td style="padding:12px;">${agr.effectiveFrom} &ndash; ${agr.effectiveTo}</td>
+        <td style="padding:12px; font-weight:bold;">${formatExactMoney(agr.baseRateMinor)}</td>
+        <td style="padding:12px;">
+          <span class="status-badge status-badge-${agr.status.toLowerCase()}" style="padding:3px 6px; border-radius:4px; font-weight:bold; font-size:11px;">
+            ${agr.status}
+          </span>
+        </td>
+      </tr>
+    `;
+  });
+
+  return `
+    <h3 style="font-family: var(--font-family-headings); font-weight: 800; font-size: 16px; margin:0 0 12px 0;">Trainer Rate Agreements Registry</h3>
+    
+    <table style="width:100%; border-collapse:collapse; text-align:left;">
+      <thead>
+        <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+          <th style="padding: 12px;">Agreement ID</th>
+          <th style="padding: 12px;">Trainer</th>
+          <th style="padding: 12px;">Scope Class Format</th>
+          <th style="padding: 12px;">Version</th>
+          <th style="padding: 12px;">Effective Dates Range</th>
+          <th style="padding: 12px;">Base Rate Payout</th>
+          <th style="padding: 12px;">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+    </table>
+  `;
+}
+// ==========================================================================
+// Screen 32 HR Profile, Employee Detail, Official Letter & Certificate Lifecycle
+// ==========================================================================
+
+window.ensureHRState = function() {
+  if (!state.hr) {
+    state.hr = {
+      selectedDemoState: "Active Employee",
+      activeTab: "Overview",
+      activeProfileTab: "Overview",
+
+      employee: {
+        id: "EMP-AYESHA-001",
+        personId: "trainer-ayesha",
+        employmentStatus: "Active",
+        department: "Academic / Training",
+        jobTitle: "English Language Trainer",
+        managerId: "Academic Manager",
+        startDate: "2026-08-01",
+        endDate: null,
+        onboardingComplete: true,
+        privilegedApprovalStatus: "Approved"
+      },
+
+      details: {
+        id: "EMPDETAIL-AYESHA-001",
+        employeeId: "EMP-AYESHA-001",
+        preferredName: "Ayesha",
+        timezone: "Asia/Karachi",
+        contactPhone: "+92 300 1234567",
+        educationSummary: "M.A. English Literature, Punjab University",
+        experienceSummary: "5+ years teaching oral communication & Spoken English",
+        certificationName: "CELTA Certificate",
+        verificationStatus: "Verified", // Verified, Needs Correction
+        correctionNotes: ""
+      },
+
+      verifications: [
+        { id: "VERIFY-AYESHA-EDU-001", field: "Education", status: "Verified", verifiedBy: "hr-demo", verifiedAt: "2026-08-05" }
+      ],
+
+      emergencyContact: {
+        id: "EMERGENCY-AYESHA-001",
+        name: "Rizwan Rahman",
+        relationship: "Spouse",
+        phone: "+92 321 7654321",
+        verificationStatus: "Verified"
+      },
+
+      uploadedDocuments: [
+        {
+          id: "HRFILE-AYESHA-EDU-001",
+          type: "Education Certificate",
+          resourceVersionId: "RESVER-HR-AYESHA-EDU-v1",
+          verificationStatus: "Verified",
+          expiryDate: null,
+          status: "Verified"
+        }
+      ],
+
+      generatedDocuments: [
+        {
+          id: "HRDOC-AYESHA-001",
+          employeeId: "EMP-AYESHA-001",
+          templateVersionId: "HRTPL-EMPLOYMENT-LETTER-v1",
+          type: "Employment Verification Letter",
+          status: "Issued", // Draft, In Review, Issued, Superseded, Revoked
+          issuedAt: "2026-08-13",
+          issuedBy: "hr-demo",
+          snapshotVersion: 1,
+          mergeFields: {
+            employeeName: "Ayesha Rahman",
+            jobTitle: "English Language Trainer",
+            department: "Academic / Training",
+            startDate: "2026-08-01",
+            issueDate: "2026-08-13"
+          },
+          wordingSnapshot: "This is to confirm that Ayesha Rahman is employed with Innovator Huzsam as an English Language Trainer in the Academic / Training department starting Aug 1, 2026."
+        }
+      ],
+
+      disciplinaryCases: [],
+      
+      timeline: [
+        { date: "2026-08-01", event: "Employment Started (Active Profile created)", type: "System" },
+        { date: "2026-08-01", event: "Trainer assignment role activated (TRAIN-ASSIGN-001)", type: "System" },
+        { date: "2026-08-05", event: "Education credentials verified by HR", type: "Verification" },
+        { date: "2026-08-13", event: "Official Employment Verification Letter generated (HRDOC-AYESHA-001)", type: "Document" }
+      ],
+
+      activeTemplateVersion: "v1"
+    };
+  }
+};
+
+// ==========================================================================
+// HR Workspace main router
+// ==========================================================================
+
+window.renderHRWorkspace = function(hash) {
+  ensureHRState();
+  const hr = state.hr;
+
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  // Dispatch lists vs details
+  if (hash.includes("offboarding")) {
+    renderOffboardingWorkspace(view, hash);
+  } else if (hash === "#hr/employees" || hash === "#hr") {
+    renderHREmployeesList(view);
+  } else if (hash.includes("EMP-AYESHA-001")) {
+    renderHREmployeeProfile(view, hash);
+  } else if (hash.includes("verification/expiring")) {
+    renderHRExpiringQueue(view);
+  } else {
+    renderHREmployeesList(view);
+  }
+};
+
+// ==========================================================================
+// HR Sandbox controller
+// ==========================================================================
+
+function getHRSandboxNavbarHTML(activeState) {
+  return `
+    <div style="background-color: var(--color-surface-container-highest); border-bottom: 2px solid var(--color-outline-variant); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; border-radius: 8px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="font-weight: 900; font-size: 13.5px; color: var(--color-secondary);">🎛️ HR Sandbox:</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 12px; font-weight: 700; color: var(--color-tertiary);">Demo State:</span>
+        <select class="form-input" style="width: 250px; height: 32px; font-size: 12px; margin-bottom: 0; font-weight: bold; background: #fff;" onchange="changeHRDemoState(this.value)">
+          <option value="Active Employee" ${activeState === 'Active Employee' ? 'selected' : ''}>Active Employee (Healthy Profile)</option>
+          <option value="Onboarding Draft" ${activeState === 'Onboarding Draft' ? 'selected' : ''}>Onboarding Incomplete (Draft Block)</option>
+          <option value="Needs Correction" ${activeState === 'Needs Correction' ? 'selected' : ''}>Employee Details Corrections Required</option>
+          <option value="Missing Verification" ${activeState === 'Missing Verification' ? 'selected' : ''}>Education Verification Pending</option>
+          <option value="Document Rejected" ${activeState === 'Document Rejected' ? 'selected' : ''}>Uploaded Document Rejected (v1 preserved)</option>
+          <option value="Document Expiring" ${activeState === 'Document Expiring' ? 'selected' : ''}>Uploaded Document Expiring Soon</option>
+          <option value="Letter Draft" ${activeState === 'Letter Draft' ? 'selected' : ''}>Official Letter Draft Preview</option>
+          <option value="Letter In Review" ${activeState === 'Letter In Review' ? 'selected' : ''}>Official Letter Pending Review</option>
+          <option value="Template Updated" ${activeState === 'Template Updated' ? 'selected' : ''}>Template Updated v2 (v1 letter immutable)</option>
+          <option value="Letter Superseded" ${activeState === 'Letter Superseded' ? 'selected' : ''}>Old Letter Superseded by New Letter</option>
+          <option value="Letter Revoked" ${activeState === 'Letter Revoked' ? 'selected' : ''}>Issued Letter Revoked (Retained History)</option>
+          <option value="Restricted Disciplinary Record" ${activeState === 'Restricted Disciplinary Record' ? 'selected' : ''}>Disciplinary Record (HR Only visibility)</option>
+        </select>
+      </div>
+    </div>
+  `;
+}
+
+window.changeHRDemoState = function(val) {
+  ensureHRState();
+  const hr = state.hr;
+  hr.selectedDemoState = val;
+
+  const emp = hr.employee;
+  const det = hr.details;
+  const doc = hr.uploadedDocuments[0];
+  const gdoc = hr.generatedDocuments[0];
+
+  // Default clean resets
+  emp.employmentStatus = "Active";
+  emp.onboardingComplete = true;
+  emp.privilegedApprovalStatus = "Approved";
+  det.verificationStatus = "Verified";
+  det.correctionNotes = "";
+  doc.verificationStatus = "Verified";
+  doc.expiryDate = null;
+  doc.status = "Verified";
+  doc.resourceVersionId = "RESVER-HR-AYESHA-EDU-v1";
+  gdoc.status = "Issued";
+  gdoc.templateVersionId = "HRTPL-EMPLOYMENT-LETTER-v1";
+  gdoc.wordingSnapshot = "This is to confirm that Ayesha Rahman is employed with Innovator Huzsam as an English Language Trainer in the Academic / Training department starting Aug 1, 2026.";
+  hr.disciplinaryCases = [];
+  hr.activeTemplateVersion = "v1";
+
+  if (val === "Onboarding Draft") {
+    emp.employmentStatus = "Draft";
+    emp.onboardingComplete = false;
+    emp.privilegedApprovalStatus = "Pending";
+  } else if (val === "Needs Correction") {
+    det.verificationStatus = "Needs Correction";
+    det.correctionNotes = "Education institution name needs clarification.";
+  } else if (val === "Missing Verification") {
+    det.verificationStatus = "Submitted";
+    hr.verifications = [];
+  } else if (val === "Document Rejected") {
+    doc.verificationStatus = "Rejected";
+    doc.status = "Rejected";
+  } else if (val === "Document Expiring") {
+    doc.expiryDate = "2026-09-30";
+    doc.status = "Expiring Soon";
+  } else if (val === "Letter Draft") {
+    gdoc.status = "Draft";
+  } else if (val === "Letter In Review") {
+    gdoc.status = "In Review";
+  } else if (val === "Template Updated") {
+    hr.activeTemplateVersion = "v2";
+  } else if (val === "Letter Superseded") {
+    gdoc.status = "Superseded";
+    hr.generatedDocuments.push({
+      id: "HRDOC-AYESHA-002",
+      employeeId: "EMP-AYESHA-001",
+      templateVersionId: "HRTPL-EMPLOYMENT-LETTER-v2",
+      type: "Employment Verification Letter",
+      status: "Issued",
+      issuedAt: "2026-08-21",
+      issuedBy: "hr-demo",
+      snapshotVersion: 2,
+      mergeFields: {
+        employeeName: "Ayesha Rahman",
+        jobTitle: "English Language Trainer",
+        department: "Academic / Training",
+        startDate: "2026-08-01",
+        issueDate: "2026-08-21"
+      },
+      wordingSnapshot: "OFFICIAL VERIFICATION v2: Ayesha Rahman holds active service as English Language Trainer under Academic / Training since Aug 1, 2026."
+    });
+  } else if (val === "Letter Revoked") {
+    gdoc.status = "Revoked";
+  } else if (val === "Restricted Disciplinary Record") {
+    hr.disciplinaryCases.push({
+      id: "DISC-CASE-001",
+      type: "Formal Warning",
+      status: "Under Review",
+      issuedDate: "2026-08-20",
+      reason: "Restricted administrative profile review logs"
+    });
+  }
+
+  showToastAlert(`✓ Onboarding state aligned: ${val}`);
+  renderHRWorkspace(window.location.hash);
+  
+  // Sync HR counts card in Screen 29 dashboard if active
+  if (state.dashboard) {
+    state.dashboard.simFreshness = "Current";
+  }
+};
+
+// ==========================================================================
+// Employees Registry list view
+// ==========================================================================
+
+function renderHREmployeesList(container) {
+  const hr = state.hr;
+  const emp = hr.employee;
+
+  container.innerHTML = `
+    ${getHRSandboxNavbarHTML(hr.selectedDemoState)}
+
+    <div class="form-card" style="padding: 20px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3 style="font-family: var(--font-family-headings); font-weight:800; font-size:16px; margin:0;">HR Employee Directory</h3>
+        <a href="#hr/verification/expiring" class="btn btn-secondary" style="font-size:12px; height:32px; display:inline-flex; align-items:center;">⚠️ View Expiring Documents</a>
+      </div>
+
+      <table style="width:100%; border-collapse:collapse; text-align:left;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+            <th style="padding: 12px;">Employee ID</th>
+            <th style="padding: 12px;">Name</th>
+            <th style="padding: 12px;">Department</th>
+            <th style="padding: 12px;">Job Title</th>
+            <th style="padding: 12px;">Start Date</th>
+            <th style="padding: 12px;">Status</th>
+            <th style="padding: 12px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:13px;">
+            <td style="padding:12px; font-weight:bold; color:var(--color-primary);">${emp.id}</td>
+            <td style="padding:12px; font-weight:700;">Ayesha Rahman</td>
+            <td style="padding:12px;">${emp.department}</td>
+            <td style="padding:12px;">${emp.jobTitle}</td>
+            <td style="padding:12px; color:var(--color-tertiary);">${emp.startDate}</td>
+            <td style="padding:12px;">
+              <span class="status-badge status-badge-${emp.employmentStatus.toLowerCase()}" style="padding:3px 6px; border-radius:4px; font-weight:bold; font-size:11px;">
+                ${emp.employmentStatus}
+              </span>
+            </td>
+            <td style="padding:12px;">
+              <a href="#hr/employees/${emp.id}" class="btn btn-secondary" style="padding:4px 8px; font-size:11px; height:28px; text-decoration:none; display:inline-flex; align-items:center;">Open HR Profile</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+// ==========================================================================
+// Employee Profile Detail workspace (Overview header + tabbed sub-panes)
+// ==========================================================================
+
+function renderHREmployeeProfile(container, hash) {
+  const hr = state.hr;
+  const emp = hr.employee;
+  const det = hr.details;
+
+  // Sync profile tab hash check
+  if (hash.includes("personal")) hr.activeProfileTab = "Personal Details";
+  else if (hash.includes("verification")) hr.activeProfileTab = "Verification";
+  else if (hash.includes("evidence")) hr.activeProfileTab = "Evidence Documents";
+  else if (hash.includes("letters")) hr.activeProfileTab = "Letters & Certificates";
+  else if (hash.includes("cases")) hr.activeProfileTab = "Disciplinary Cases";
+  else if (hash.includes("timeline")) hr.activeProfileTab = "Timeline";
+  else hr.activeProfileTab = "Overview";
+
+  // Build profile tab headers
+  let tabsHtml = "";
+  ["Overview", "Personal Details", "Verification", "Evidence Documents", "Letters & Certificates", "Disciplinary Cases", "Timeline"].forEach(pt => {
+    const isSel = pt === hr.activeProfileTab;
+    const ptHash = pt === "Overview" ? `#hr/employees/${emp.id}` : `#hr/employees/${emp.id}/${pt.toLowerCase().split(' ')[0]}`;
+    tabsHtml += `
+      <a href="${ptHash}" class="btn" style="border:none; padding:8px 12px; font-weight:bold; font-size:12px; cursor:pointer; background: ${isSel ? 'var(--color-secondary-container)' : 'transparent'}; color: ${isSel ? 'var(--color-on-secondary-container)' : 'var(--color-tertiary)'}; text-decoration:none; border-radius:4px;">
+        ${pt}
+      </a>
+    `;
+  });
+
+  // Render inner sub-pane HTML
+  let paneHtml = "";
+  if (hr.activeProfileTab === "Overview") paneHtml = renderProfileOverviewTab();
+  else if (hr.activeProfileTab === "Personal Details") paneHtml = renderProfilePersonalTab();
+  else if (hr.activeProfileTab === "Verification") paneHtml = renderProfileVerificationTab();
+  else if (hr.activeProfileTab === "Evidence Documents") paneHtml = renderProfileEvidenceTab();
+  else if (hr.activeProfileTab === "Letters & Certificates") paneHtml = renderProfileLettersTab();
+  else if (hr.activeProfileTab === "Disciplinary Cases") paneHtml = renderProfileDisciplinaryTab();
+  else if (hr.activeProfileTab === "Timeline") paneHtml = renderProfileTimelineTab();
+
+  container.innerHTML = `
+    ${getHRSandboxNavbarHTML(hr.selectedDemoState)}
+
+    <!-- Profile Header Card (Rule 5) -->
+    <div class="form-card" style="padding: 20px; border-top: 4px solid var(--color-primary); margin-bottom: 20px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px;">
+        <div>
+          <h2 style="font-family: var(--font-family-headings); font-size: 20px; font-weight: 900; margin:0 0 4px 0;">Ayesha Rahman</h2>
+          <span style="font-size:12.5px; color:var(--color-tertiary);">${emp.jobTitle} &bull; ${emp.department}</span>
+          <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;">
+            <span style="background-color:#e6f4ea; color:#137333; padding:2px 8px; border-radius:4px; font-weight:bold; font-size:11px;">✓ Identity Verified</span>
+            <span style="background-color:#e6f4ea; color:#137333; padding:2px 8px; border-radius:4px; font-weight:bold; font-size:11px;">✓ Onboarding Complete</span>
+            <span style="background-color:#e6f4ea; color:#137333; padding:2px 8px; border-radius:4px; font-weight:bold; font-size:11px;">✓ Credentials Current</span>
+          </div>
+        </div>
+        
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-secondary" style="height:32px; font-size:11.5px;" onclick="window.location.hash='#trainer/pay/statements/PAYSTATEMENT-AYESHA-2026-08'">Payroll Statements</button>
+          <button class="btn btn-secondary" style="height:32px; font-size:11.5px;" onclick="window.location.hash='#hr/employees/EMP-AYESHA-001/offboarding'">Start Offboarding</button>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:6px; border-top: 1px solid var(--color-outline-variant); padding-top:12px; margin-top:16px; flex-wrap:wrap;">
+        ${tabsHtml}
+      </div>
+    </div>
+
+    ${paneHtml}
+  `;
+}
+
+window.triggerOffboardingPreview = function() {
+  // Offboarding workflow preview rules (Rule 96)
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <strong>🛫 Start Offboarding Workflow (Preview)</strong>
+      <p style="margin-top:8px; color:var(--color-tertiary);">This will trigger the offboarding process which coordinates session deactivation, client transfer ownerships, and final settlements.</p>
+      <div style="background:var(--color-surface-container); padding:8px; border-radius:4px; font-size:12px; font-style:italic; margin-bottom:16px;">
+        Details flow will follow in Screen 33 implementation.
+      </div>
+      <div style="text-align:right;">
+        <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  `;
+  openModal("Offboarding System", content);
+};
+
+// ==========================================================================
+// Tab Pane: Overview Onboarding check (Rule 12 & 13)
+// ==========================================================================
+
+function renderProfileOverviewTab() {
+  const hr = state.hr;
+  const emp = hr.employee;
+  
+  // Onboarding checklists check (Rule 12)
+  return `
+    <div style="display:grid; grid-template-columns: 1fr 280px; gap:20px; align-items:flex-start;">
+      
+      <!-- Onboarding list -->
+      <div class="form-card" style="padding:16px;">
+        <h3 style="font-weight:800; font-size:14.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">🏁 Onboarding Checklists Completion</h3>
+        
+        <div style="display:flex; flex-direction:column; gap:8px; font-size:13px;">
+          <div>✅ Employment Profile Created</div>
+          <div>✅ IAM Account Invitation Activated</div>
+          <div>✅ Identity Document Evidence Uploaded</div>
+          <div>✅ Core Profile details declared</div>
+          <div>✅ Versioned Pay rate Agreement resolved</div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span>${emp.privilegedApprovalStatus === 'Approved' ? '✅' : '⏳'} Privileged staff activation approval</span>
+            <span style="font-weight:bold; color: ${emp.privilegedApprovalStatus === 'Approved' ? 'green' : '#ba1a1a'};">${emp.privilegedApprovalStatus}</span>
+          </div>
+        </div>
+
+        ${emp.employmentStatus !== 'Active' ? `
+          <div style="background-color:#fff0f0; border-left:3px solid #ba1a1a; padding:10px; border-radius:4px; font-size:12.5px; margin-top:16px;">
+            ⛔ <strong>Privileged Onboarding Incomplete:</strong> Staff profile access remains locked under Draft state until manager resolves role approval triggers.
+          </div>
+        ` : ''}
+      </div>
+
+      <!-- Authentication Account link mappings (Rule 4) -->
+      <div class="form-card" style="padding:16px; font-size:12.5px; line-height:22px;">
+        <h3 style="font-weight:800; font-size:13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">🛡️ IAM Account mappings</h3>
+        <table style="width:100%;">
+          <tr><td style="color:var(--color-tertiary);">IAM Login:</td><td style="font-weight:bold; text-align:right;">trainer-ayesha</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Invite reference:</td><td style="font-weight:bold; text-align:right; font-family:monospace;">IAM-INV-AYESHA-001</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Onboard status:</td><td style="font-weight:bold; text-align:right; color:green;">Accepted</td></tr>
+        </table>
+        <div style="background:#f5f5f5; border:1px solid var(--color-outline-variant); padding:8px; border-radius:4px; font-size:11px; color:var(--color-tertiary); margin-top:8px;">
+          🔒 Authentication state is independent from employment records.
+        </div>
+      </div>
+
+    </div>
+  `;
+}
+
+// ==========================================================================
+// Tab Pane: Personal Details & Emergency privacy (Rule 24)
+// ==========================================================================
+
+function renderProfilePersonalTab() {
+  const hr = state.hr;
+  const det = hr.details;
+  const isRestricted = hr.selectedDemoState === "Permission Restricted";
+
+  return `
+    <div style="display:grid; grid-template-columns: 1fr 300px; gap:20px; align-items:flex-start;">
+      
+      <!-- Core Profile details form -->
+      <div class="form-card" style="padding:16px;">
+        <h3 style="font-weight:800; font-size:14.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">👤 Employee Personal Information</h3>
+        
+        <table style="width:100%; font-size:13px; line-height:24px;">
+          <tr><td style="color:var(--color-tertiary);">Preferred Name:</td><td style="font-weight:bold; text-align:right;">${det.preferredName}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Timezone Context:</td><td style="font-weight:bold; text-align:right;">${det.timezone}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Primary Phone:</td><td style="font-weight:bold; text-align:right;">${isRestricted ? '[Restricted HR Data]' : det.contactPhone}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Education Profile:</td><td style="font-weight:bold; text-align:right;">${det.educationSummary}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Experience Profile:</td><td style="font-weight:bold; text-align:right;">${det.experienceSummary}</td></tr>
+        </table>
+
+        <!-- Custom HR config fields (Rule 28 & 29) -->
+        <h4 style="font-weight:bold; font-size:13px; margin:16px 0 8px 0; border-top:1px solid var(--color-outline-variant); padding-top:12px;">Custom HR fields Metadata</h4>
+        <table style="width:100%; font-size:12.5px;">
+          <tr>
+            <td><strong>Professional Certification:</strong> ${det.certificationName}</td>
+            <td style="text-align:right; color:var(--color-tertiary); font-size:11px;">Purpose: Role Qualification &bull; Verified</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Emergency contacts privacy & minimal data checks (Rule 24 & 26) -->
+      <div class="form-card" style="padding:16px;">
+        <h3 style="font-weight:800; font-size:13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px; color:#ba1a1a;">⚠️ Emergency Contact (Highly Restricted)</h3>
+        
+        ${isRestricted ? `
+          <div style="background-color:#fff0f0; border-left:3px solid #ba1a1a; padding:10px; border-radius:4px; font-size:11.5px; font-weight:bold; color:#ba1a1a;">
+            🔒 Restricted Access: Private Emergency Contact data masked. Sensitive audit log registered.
+          </div>
+        ` : `
+          <table style="width:100%; font-size:12.5px; line-height:22px; margin-bottom:12px;">
+            <tr><td style="color:var(--color-tertiary);">Name:</td><td style="font-weight:bold; text-align:right;">${hr.emergencyContact.name}</td></tr>
+            <tr><td style="color:var(--color-tertiary);">Relationship:</td><td style="font-weight:bold; text-align:right;">${hr.emergencyContact.relationship}</td></tr>
+            <tr><td style="color:var(--color-tertiary);">Phone:</td><td style="font-weight:bold; text-align:right;">${hr.emergencyContact.phone}</td></tr>
+          </table>
+        `}
+
+        <div style="background:#f5f5f5; border:1px solid var(--color-outline-variant); padding:8px; border-radius:4px; font-size:11.5px; color:var(--color-tertiary); margin-top:8px;">
+          👪 <strong>Data Minimization Policy:</strong> No additional family or spouse bio-data is compiled unless authorized business purposes call for it.
+        </div>
+      </div>
+
+    </div>
+  `;
+}
+
+// ==========================================================================
+// Tab Pane: Verification & Needs correction check (Rule 15-22)
+// ==========================================================================
+
+function renderProfileVerificationTab() {
+  const hr = state.hr;
+  const det = hr.details;
+
+  return `
+    <div class="form-card" style="padding:16px; max-width:680px; margin:0 auto;">
+      <h3 style="font-weight:800; font-size:14.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">Profile Verification Status</h3>
+      
+      <table style="width:100%; font-size:13px; line-height:24px; margin-bottom:16px;">
+        <tr style="border-bottom:1px solid var(--color-outline-variant);">
+          <td><strong>Education Qualifications verification</strong></td>
+          <td style="text-align:right; font-weight:bold; color:${hr.verifications.length > 0 ? 'green' : '#b78103'};">
+            ${hr.verifications.length > 0 ? '✓ Verified' : '⏳ Verification Pending'}
+          </td>
+        </tr>
+      </table>
+
+      <!-- Needs Correction alert box check (Rule 21) -->
+      ${det.verificationStatus === 'Needs Correction' ? `
+        <div style="background-color:#fff0f0; border-left:3px solid #ba1a1a; padding:12px; border-radius:6px; font-size:13px;">
+          <strong style="color:#ba1a1a;">⚠️ HR Profile Correction Requested</strong>
+          <p style="margin-top:6px; color:var(--color-tertiary);">${det.correctionNotes}</p>
+          <div style="margin-top:12px; text-align:right;">
+            <button class="btn btn-secondary" onclick="simulateEmployeeCorrectionsSubmit()">Update details & Resubmit</button>
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- Verify Action queue for HR (Rule 20) -->
+      ${hr.verifications.length === 0 && det.verificationStatus === 'Submitted' ? `
+        <div style="background-color:#fff9ee; border:1px solid #faecc5; padding:12px; border-radius:6px; font-size:13px;">
+          <strong style="color:#b78103;">💡 Action Required: Education verification checks</strong>
+          <p style="margin-top:6px; color:var(--color-tertiary);">Review submitted university records and evidence PDF before verifying profile items.</p>
+          <div style="margin-top:12px; display:flex; gap:12px; justify-content:flex-end;">
+            <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; height:32px;" onclick="executeConfirmVerification()">Approve Verification</button>
+            <button class="btn btn-secondary" style="height:32px; color:#ba1a1a; border-color:#ba1a1a;" onclick="requestCorrectionNotesModal()">Request Corrections</button>
+          </div>
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+window.simulateEmployeeCorrectionsSubmit = function() {
+  ensureHRState();
+  state.hr.details.verificationStatus = "Submitted";
+  state.hr.details.correctionNotes = "";
+  showToastAlert("✓ Profile details updated and resubmitted to HR queue.");
+  renderHRWorkspace(window.location.hash);
+};
+
+window.executeConfirmVerification = function() {
+  ensureHRState();
+  state.hr.verifications.push({
+    id: "VERIFY-AYESHA-EDU-001",
+    field: "Education",
+    status: "Verified",
+    verifiedBy: "hr-demo",
+    verifiedAt: "2026-08-21"
+  });
+  state.hr.details.verificationStatus = "Verified";
+  showToastAlert("✓ Profile details verified successfully.");
+  renderHRWorkspace(window.location.hash);
+};
+
+window.requestCorrectionNotesModal = function() {
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <label style="font-weight:bold; display:block; margin-bottom:4px;">Enter Correction Notes:</label>
+      <input type="text" id="correction-notes-input" class="form-input" value="Education institution name needs clarification.">
+      
+      <div style="display:flex; gap:12px; margin-top:16px;">
+        <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="executeRequestCorrection()">Submit Notes</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Request Profile Corrections", content);
+};
+
+window.executeRequestCorrection = function() {
+  ensureHRState();
+  const notes = document.getElementById("correction-notes-input").value.trim();
+  if (!notes) return;
+
+  state.hr.details.verificationStatus = "Needs Correction";
+  state.hr.details.correctionNotes = notes;
+  closeModal();
+  showToastAlert("✓ Correction request returned to employee.");
+  renderHRWorkspace(window.location.hash);
+};
+
+// ==========================================================================
+// Tab Pane: Uploaded Evidence documents (Rule 30-38)
+// ==========================================================================
+
+function renderProfileEvidenceTab() {
+  const hr = state.hr;
+  let rows = "";
+
+  hr.uploadedDocuments.forEach(doc => {
+    rows += `
+      <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:13px;">
+        <td style="padding:12px; font-weight:bold;">${doc.type}</td>
+        <td style="padding:12px; font-family:monospace; font-size:11.5px;">${doc.resourceVersionId}</td>
+        <td style="padding:12px;">
+          <span class="status-badge status-badge-${doc.status.toLowerCase().replace(/ /g, '-')}" style="padding:3px 6px; border-radius:4px; font-weight:bold; font-size:11px;">
+            ${doc.status}
+          </span>
+        </td>
+        <td style="padding:12px; color:var(--color-tertiary);">${doc.expiryDate ? doc.expiryDate : 'N/A'}</td>
+        <td style="padding:12px;">
+          ${doc.status === 'Rejected' ? `
+            <button class="btn btn-secondary" style="padding:4px 8px; font-size:11px; height:28px;" onclick="simulateEvidenceReplacement('${doc.type}')">Upload Replacement (v2)</button>
+          ` : `<span style="color:green; font-weight:bold;">✓ Document Active</span>`}
+        </td>
+      </tr>
+    `;
+  });
+
+  return `
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h3 style="font-family: var(--font-family-headings); font-weight: 800; font-size: 14.5px; margin:0;">Uploaded Onboarding Evidence files</h3>
+    </div>
+
+    <table style="width:100%; border-collapse:collapse; text-align:left;">
+      <thead>
+        <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+          <th style="padding: 12px;">Document Type</th>
+          <th style="padding: 12px;">Resource Version ID</th>
+          <th style="padding: 12px;">Verification status</th>
+          <th style="padding: 12px;">Expiry date</th>
+          <th style="padding: 12px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+    </table>
+  `;
+}
+
+window.simulateEvidenceReplacement = function(type) {
+  ensureHRState();
+  // Replacement uploads create v2, preserving v1 (Rule 36)
+  state.hr.uploadedDocuments[0].resourceVersionId = "RESVER-HR-AYESHA-EDU-v2";
+  state.hr.uploadedDocuments[0].verificationStatus = "Verified";
+  state.hr.uploadedDocuments[0].status = "Verified";
+  
+  showToastAlert("✓ Replacement uploaded successfully: RESVER-HR-AYESHA-EDU-v2 verified. Rejected v1 preserved historically.");
+  renderHRWorkspace(window.location.hash);
+};
+
+// ==========================================================================
+// Tab Pane: Generated Letters & Merge Field Engine (Rule 39-67)
+// ==========================================================================
+
+function renderProfileLettersTab() {
+  const hr = state.hr;
+  let rows = "";
+
+  hr.generatedDocuments.forEach(gdoc => {
+    rows += `
+      <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:13px;">
+        <td style="padding:12px; font-weight:bold; color:var(--color-primary);">${gdoc.id}</td>
+        <td style="padding:12px; font-weight:700;">${gdoc.type}</td>
+        <td style="padding:12px; font-family:monospace; font-size:11.5px;">${gdoc.templateVersionId}</td>
+        <td style="padding:12px; color:var(--color-tertiary);">${gdoc.issuedAt}</td>
+        <td style="padding:12px;">
+          <span class="status-badge status-badge-${gdoc.status.toLowerCase()}" style="padding:3px 6px; border-radius:4px; font-weight:bold; font-size:11px;">
+            ${gdoc.status}
+          </span>
+        </td>
+        <td style="padding:12px;">
+          <div style="display:flex; gap:6px;">
+            <button class="btn btn-secondary" style="padding:4px 8px; font-size:11px; height:28px;" onclick="openLetterPreviewModal('${gdoc.id}')">View Document</button>
+            ${gdoc.status === 'Issued' ? `
+              <button class="btn btn-secondary" style="padding:4px 8px; font-size:11px; height:28px; color:#ba1a1a; border-color:#ba1a1a;" onclick="revokeGeneratedLetter('${gdoc.id}')">Revoke</button>
+            ` : ''}
+          </div>
+        </td>
+      </tr>
+    `;
+  });
+
+  return `
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h3 style="font-family: var(--font-family-headings); font-weight: 800; font-size: 14.5px; margin:0;">HR Issued Letters & Certificates</h3>
+      <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="openGenerateLetterModal()">Generate Document</button>
+    </div>
+
+    <table style="width:100%; border-collapse:collapse; text-align:left; margin-bottom:24px;">
+      <thead>
+        <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+          <th style="padding: 12px;">Document ID</th>
+          <th style="padding: 12px;">Document Type</th>
+          <th style="padding: 12px;">Template Version</th>
+          <th style="padding: 12px;">Issue Date</th>
+          <th style="padding: 12px;">Status</th>
+          <th style="padding: 12px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+    </table>
+  `;
+}
+
+window.openGenerateLetterModal = function() {
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <div class="form-group">
+        <label style="font-weight:bold; display:block; margin-bottom:4px;">Document Type Template:</label>
+        <select id="letter-tpl-select" class="form-input" style="height:36px; background:#fff;">
+          <option value="Employment Verification Letter">Employment Verification Letter</option>
+          <option value="Offer Letter">Offer Letter</option>
+          <option value="Joining Letter">Joining Letter</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label style="font-weight:bold; display:block; margin-bottom:4px;">Recipient Employee:</label>
+        <select id="letter-emp-select" class="form-input" style="height:36px; background:#fff;">
+          <option value="EMP-AYESHA-001">Ayesha Rahman (EMP-AYESHA-001)</option>
+        </select>
+      </div>
+
+      <!-- Test field allowlists (Rule 47) -->
+      <div class="form-group">
+        <label style="font-weight:bold; display:block; margin-bottom:4px;">Merge Fields Config Injection:</label>
+        <select id="letter-fields-inject" class="form-input" style="height:36px; background:#fff;">
+          <option value="Allowed Fields">Standard HR profile merge fields (Name, Title, Dept)</option>
+          <option value="Unauthorized Field">Inject restricted payroll details (Payroll Net Pay)</option>
+        </select>
+      </div>
+
+      <div style="display:flex; gap:12px; margin-top:16px;">
+        <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="executeGenerateLetter()">Generate Draft</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Generate Official Document", content);
+};
+
+window.executeGenerateLetter = function() {
+  ensureHRState();
+  const tpl = document.getElementById("letter-tpl-select").value;
+  const fieldsOpt = document.getElementById("letter-fields-inject").value;
+
+  if (fieldsOpt === "Unauthorized Field") {
+    // Merge field unauthorized checks (Rule 47)
+    const content = `
+      <div style="text-align:left; font-size:13px; color:#ba1a1a;">
+        <strong>⛔ Security Policy Blocked: Field Not Allowed</strong>
+        <p style="margin-top:8px; color:var(--color-tertiary);">Official letters templates cannot access cross-domain financial payroll structures (Payroll Net Pay).</p>
+        <p style="font-size:12px; font-weight:bold; color:var(--color-primary);">Merge field requests are restricted to HR Profile domains only to preserve payroll privacy.</p>
+        <div style="margin-top:16px; text-align:right;">
+          <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+        </div>
+      </div>
+    `;
+    openModal("Field Access Denied", content);
+    return;
+  }
+
+  const hr = state.hr;
+  hr.generatedDocuments.push({
+    id: `HRDOC-AYESHA-00${hr.generatedDocuments.length + 1}`,
+    employeeId: "EMP-AYESHA-001",
+    templateVersionId: `HRTPL-EMPLOYMENT-LETTER-${hr.activeTemplateVersion}`,
+    type: tpl,
+    status: "Issued",
+    issuedAt: "2026-08-21",
+    issuedBy: "hr-demo",
+    snapshotVersion: hr.activeTemplateVersion === "v1" ? 1 : 2,
+    mergeFields: {
+      employeeName: "Ayesha Rahman",
+      jobTitle: "English Language Trainer",
+      department: "Academic / Training",
+      startDate: "2026-08-01",
+      issueDate: "2026-08-21"
+    },
+    wordingSnapshot: hr.activeTemplateVersion === "v1" ? 
+      "This is to confirm that Ayesha Rahman is employed with Innovator Huzsam as an English Language Trainer in the Academic / Training department starting Aug 1, 2026." :
+      "OFFICIAL VERIFICATION v2: Ayesha Rahman holds active service as English Language Trainer under Academic / Training since Aug 1, 2026."
+  });
+
+  closeModal();
+  showToastAlert(`✓ Official document issued using template ${hr.activeTemplateVersion}. Timeline event generated.`);
+  renderHRWorkspace(window.location.hash);
+};
+
+window.openLetterPreviewModal = function(docId) {
+  ensureHRState();
+  const doc = state.hr.generatedDocuments.find(d => d.id === docId);
+  if (!doc) return;
+
+  // Immutability details checking (Rule 62)
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <div style="background-color: var(--color-surface-container); padding:12px; border-radius:6px; margin-bottom:16px; border:1px solid var(--color-outline-variant);">
+        <strong>Immutable Issued Snapshot (Template: ${doc.templateVersionId}):</strong>
+        <p style="font-family:serif; font-size:14px; margin-top:8px; line-height:1.6; color:#000;">
+          "${doc.wordingSnapshot}"
+        </p>
+      </div>
+
+      <table style="width:100%; border-collapse:collapse; line-height:22px; font-size:12px;">
+        <tr><td style="color:var(--color-tertiary);">Issued By:</td><td style="font-weight:bold; text-align:right;">${doc.issuedBy}</td></tr>
+        <tr><td style="color:var(--color-tertiary);">Issue Date:</td><td style="font-weight:bold; text-align:right;">${doc.issuedAt}</td></tr>
+        <tr><td style="color:var(--color-tertiary);">Document Status:</td><td style="font-weight:bold; text-align:right;">${doc.status}</td></tr>
+      </table>
+
+      <div style="margin-top:16px; text-align:right;">
+        <button class="btn btn-secondary" onclick="closeModal()">Close Document</button>
+      </div>
+    </div>
+  `;
+  openModal(`Official Document View: ${doc.id}`, content);
+};
+
+window.revokeGeneratedLetter = function(docId) {
+  ensureTimelineState();
+  ensureHRState();
+  const doc = state.hr.generatedDocuments.find(d => d.id === docId);
+  if (doc) {
+    doc.status = "Revoked";
+    state.hr.timeline.push({ date: "2026-08-21", event: `Issued letter ${docId} revoked`, type: "Document" });
+    showToastAlert(`✓ Document ${docId} revoked successfully.`);
+    renderHRWorkspace(window.location.hash);
+  }
+};
+
+// ==========================================================================
+// Tab Pane: Disciplinary Warning Case (Rule 71-74)
+// ==========================================================================
+
+function renderProfileDisciplinaryTab() {
+  const hr = state.hr;
+  let rows = "";
+
+  hr.disciplinaryCases.forEach(c => {
+    rows += `
+      <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:13px; background:#fff0f0;">
+        <td style="padding:12px; font-weight:bold; color:#ba1a1a;">${c.id}</td>
+        <td style="padding:12px; font-weight:700;">${c.type}</td>
+        <td style="padding:12px; color:var(--color-tertiary);">${c.issuedDate}</td>
+        <td style="padding:12px; font-weight:bold;">${c.status}</td>
+        <td style="padding:12px; font-style:italic;">${c.reason}</td>
+      </tr>
+    `;
+  });
+
+  return `
+    <h3 style="font-family: var(--font-family-headings); font-weight: 800; font-size: 14.5px; margin:0 0 12px 0; color:#ba1a1a;">🛡️ Restricted Disciplinary Records</h3>
+    
+    <table style="width:100%; border-collapse:collapse; text-align:left;">
+      <thead>
+        <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+          <th style="padding: 12px;">Case ID</th>
+          <th style="padding: 12px;">Action Type</th>
+          <th style="padding: 12px;">Effective Date</th>
+          <th style="padding: 12px;">Case Status</th>
+          <th style="padding: 12px;">Audit Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows ? rows : '<tr><td colspan="5" style="padding:20px; text-align:center; font-style:italic; color:var(--color-tertiary);">No active disciplinary records.</td></tr>'}
+      </tbody>
+    </table>
+  `;
+}
+
+// ==========================================================================
+// Tab Pane: Timeline Event logs (Rule 84)
+// ==========================================================================
+
+function renderProfileTimelineTab() {
+  const hr = state.hr;
+  let timelineItems = "";
+
+  hr.timeline.forEach(item => {
+    timelineItems += `
+      <div style="display:flex; gap:16px; margin-bottom:12px; font-size:13px; align-items:flex-start;">
+        <span style="font-weight:bold; font-family:monospace; background:var(--color-surface-container); padding:3px 6px; border-radius:4px; font-size:12px; width:90px; text-align:center;">
+          ${item.date}
+        </span>
+        <div style="border-left:2px solid var(--color-outline-variant); padding-left:12px; padding-bottom:8px;">
+          <strong>${item.event}</strong>
+          <div style="font-size:11px; color:var(--color-tertiary); margin-top:2px;">Category: ${item.type}</div>
+        </div>
+      </div>
+    `;
+  });
+
+  return `
+    <h3 style="font-family: var(--font-family-headings); font-weight: 800; font-size: 14.5px; margin:0 0 16px 0;">Append-Only Employment Timeline Events</h3>
+    <div style="display:flex; flex-direction:column; position:relative;">
+      ${timelineItems}
+    </div>
+  `;
+}
+
+// ==========================================================================
+// Expiring Documents Queue Tab view (Rule 80)
+// ==========================================================================
+
+function renderHRExpiringQueue(container) {
+  const hr = state.hr;
+  
+  // Static demo expiring queue (Rule 80)
+  return `
+    ${getHRSandboxNavbarHTML(hr.selectedDemoState)}
+
+    <div class="form-card" style="padding: 20px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3 style="font-family: var(--font-family-headings); font-weight:800; font-size:16px; margin:0; color:#ba1a1a;">⚠️ Expiring Documents Queue</h3>
+        <a href="#hr/employees" class="btn btn-secondary" style="font-size:12px; height:32px; display:inline-flex; align-items:center;">Back to Directory</a>
+      </div>
+
+      <table style="width:100%; border-collapse:collapse; text-align:left;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+            <th style="padding: 12px;">Employee</th>
+            <th style="padding: 12px;">Document Type</th>
+            <th style="padding: 12px;">Resource ID</th>
+            <th style="padding: 12px;">Expiry Date</th>
+            <th style="padding: 12px;">Status</th>
+            <th style="padding: 12px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:13px; background:#fffdf7;">
+            <td style="padding:12px; font-weight:700;">Ayesha Rahman (EMP-AYESHA-001)</td>
+            <td style="padding:12px; font-weight:bold;">CELTA Professional Certificate</td>
+            <td style="padding:12px; font-family:monospace;">RESVER-HR-AYESHA-EDU-v1</td>
+            <td style="padding:12px; font-weight:bold; color:#ba1a1a;">30 Sep 2026</td>
+            <td style="padding:12px; font-weight:bold; color:#b78103;">Expiring Soon</td>
+            <td style="padding:12px;">
+              <button class="btn btn-secondary" style="padding:4px 8px; font-size:11px; height:28px;" onclick="showToastAlert('✓ Renewal notification sent.')">Request Updated Document</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+// ==========================================================================
+// Screen 33 Staff Offboarding, Access Revocation & Final Settlement State & Layouts
+// ==========================================================================
+
+window.ensureOffboardingState = function() {
+  if (!state.offboarding) {
+    state.offboarding = {
+      selectedDemoState: "Draft",
+      activeTab: "Overview",
+
+      offboardCase: {
+        id: "OFFBOARD-AYESHA-001",
+        employeeId: "EMP-AYESHA-001",
+        status: "Draft", // Draft, In Progress, Access Revoked, Final Settlement Pending, Closed
+        exitType: "Resignation",
+        noticeDate: "2026-08-28",
+        effectiveDate: "2026-08-31",
+        hrNotes: "Resigned to pursue higher education opportunities. Service record has been highly satisfactory.",
+        closedBy: null,
+        closedAt: null
+      },
+
+      checklist: [
+        { id: "ITEM-01", category: "Exit details", label: "Confirm exit information", status: "Complete", updatedBy: "hr-demo" },
+        { id: "ITEM-02", category: "Teaching", label: "Review future teaching assignments", status: "Pending", updatedBy: null },
+        { id: "ITEM-03", category: "Teaching", label: "Resolve open classes/tasks", status: "Pending", updatedBy: null },
+        { id: "ITEM-04", category: "Operations", label: "Transfer operational ownership", status: "Pending", updatedBy: null },
+        { id: "ITEM-05", category: "Operations", label: "Review active conversations/cases", status: "Pending", updatedBy: null },
+        { id: "ITEM-06", category: "Access", label: "Revoke roles/access", status: "Pending", updatedBy: null },
+        { id: "ITEM-07", category: "Access", label: "Revoke active sessions", status: "Pending", updatedBy: null },
+        { id: "ITEM-08", category: "Documents", label: "Review HR documents", status: "Pending", updatedBy: null },
+        { id: "ITEM-09", category: "Payroll", label: "Create final-payroll request", status: "Pending", updatedBy: null },
+        { id: "ITEM-10", category: "Documents", label: "Issue exit document", status: "Pending", updatedBy: null },
+        { id: "ITEM-11", category: "Profile", label: "Close employment profile", status: "Blocked", updatedBy: null }
+      ],
+
+      futureClasses: [
+        { id: "CLASS-005", date: "2026-09-01", topic: "Spoken English Session 5", trainer: "Ayesha Rahman" },
+        { id: "CLASS-006", date: "2026-09-03", topic: "Spoken English Session 6", trainer: "Ayesha Rahman" },
+        { id: "CLASS-007", date: "2026-09-08", topic: "Spoken English Session 7", trainer: "Ayesha Rahman" },
+        { id: "CLASS-008", date: "2026-09-10", topic: "Spoken English Session 8", trainer: "Ayesha Rahman" },
+        { id: "CLASS-009", date: "2026-09-15", topic: "Spoken English Session 9", trainer: "Ayesha Rahman" },
+        { id: "CLASS-010", date: "2026-09-17", topic: "Spoken English Session 10", trainer: "Ayesha Rahman" },
+        { id: "CLASS-011", date: "2026-09-22", topic: "Spoken English Session 11", trainer: "Ayesha Rahman" },
+        { id: "CLASS-012", date: "2026-09-24", topic: "Spoken English Session 12", trainer: "Ayesha Rahman" }
+      ],
+
+      reassignmentComplete: false,
+      reassignmentTrainer: "Maria Hassan",
+
+      resourceOwnershipTransferred: false,
+      conversationsClosed: false,
+
+      accessRevokedStatus: "Scheduled", // Scheduled, Revoked, Failed, Incomplete
+      activeSessionsCount: 3,
+
+      finalPayrollRequest: {
+        id: "FINALPAY-AYESHA-001",
+        status: "Pending Review", // Pending Review, Disputed, Completed
+        disputeNotes: "",
+        settlementId: null
+      },
+
+      exitLetterIssued: false
+    };
+  }
+};
+
+// ==========================================================================
+// Offboarding Main Workspace Layout (Rule 8)
+// ==========================================================================
+
+window.renderOffboardingWorkspace = function(view, hash) {
+  ensureOffboardingState();
+  const off = state.offboarding;
+  const c = off.offboardCase;
+
+  // Build tabs header layout
+  let tabsHtml = "";
+  ["Overview", "Checklist", "Assignments & Ownership", "Access Control", "Payroll & Payout", "Documents & Timeline"].forEach(t => {
+    const isSel = t === off.activeTab;
+    tabsHtml += `
+      <button class="btn" style="border:none; padding:10px 14px; font-weight:bold; font-size:12.5px; cursor:pointer; background: ${isSel ? 'var(--color-primary-container)' : 'transparent'}; border-bottom: ${isSel ? '3px solid var(--color-secondary)' : 'none'}; color: ${isSel ? 'var(--color-on-primary-container)' : 'var(--color-tertiary)'}; border-radius:0;" onclick="changeOffboardingTab('${t}')">
+        ${t}
+      </button>
+    `;
+  });
+
+  let paneHtml = "";
+  if (off.activeTab === "Overview") paneHtml = renderOffboardOverview();
+  else if (off.activeTab === "Checklist") paneHtml = renderOffboardChecklist();
+  else if (off.activeTab === "Assignments & Ownership") paneHtml = renderOffboardAssignments();
+  else if (off.activeTab === "Access Control") paneHtml = renderOffboardAccess();
+  else if (off.activeTab === "Payroll & Payout") paneHtml = renderOffboardPayroll();
+  else if (off.activeTab === "Documents & Timeline") paneHtml = renderOffboardDocuments();
+
+  view.innerHTML = `
+    <!-- Developer State Selector Sandbox (Rule 103) -->
+    ${getOffboardingSandboxNavbarHTML(off.selectedDemoState)}
+
+    <div class="form-card" style="padding: 24px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 900; margin:0;">🛫 Offboard Ayesha Rahman</h2>
+          <span style="font-size:12px; color:var(--color-tertiary);">Case ID: ${c.id} &bull; Profile Reference: EMP-AYESHA-001</span>
+        </div>
+        <span class="status-badge status-badge-${c.status.toLowerCase().replace(/ /g, '-')}" style="padding:4px 10px; border-radius:4px; font-weight:bold; font-size:12.5px;">
+          ${c.status}
+        </span>
+      </div>
+
+      <p style="font-size: 13px; color: var(--color-tertiary); margin-bottom: 20px;">Resolve future teaching occurrences, revoke administrative login permissions, verify final unsettled settlements, and compile Exit documents.</p>
+
+      <!-- Persistent Offboarding Step Progress Rail (Rule 8) -->
+      <div style="display:flex; justify-content:space-between; align-items:center; background:var(--color-surface-container); padding:10px 20px; border-radius:8px; margin-bottom:24px; border:1px solid var(--color-outline-variant); flex-wrap:wrap; gap:12px;">
+        ${getLifecycleStepHTML("Started", ["Draft", "In Progress", "Access Revoked", "Final Settlement Pending", "Closed"].indexOf(c.status) >= 0)}
+        <div style="flex:1; border-top:2px solid var(--color-outline-variant); margin:0 8px;"></div>
+        ${getLifecycleStepHTML("Work Resolved", off.reassignmentComplete && off.resourceOwnershipTransferred && off.conversationsClosed)}
+        <div style="flex:1; border-top:2px solid var(--color-outline-variant); margin:0 8px;"></div>
+        ${getLifecycleStepHTML("Access Revoked", c.status === "Access Revoked" || c.status === "Final Settlement Pending" || c.status === "Closed")}
+        <div style="flex:1; border-top:2px solid var(--color-outline-variant); margin:0 8px;"></div>
+        ${getLifecycleStepHTML("Settled", off.finalPayrollRequest.status === "Completed")}
+        <div style="flex:1; border-top:2px solid var(--color-outline-variant); margin:0 8px;"></div>
+        ${getLifecycleStepHTML("Closed", c.status === "Closed")}
+      </div>
+
+      <div style="display: flex; gap: 8px; border-bottom: 2px solid var(--color-outline-variant); margin-bottom: 20px; flex-wrap:wrap;">
+        ${tabsHtml}
+      </div>
+
+      ${paneHtml}
+    </div>
+  `;
+};
+
+window.changeOffboardingTab = function(t) {
+  ensureOffboardingState();
+  state.offboarding.activeTab = t;
+  renderOffboardingWorkspace(document.getElementById("learner-assessment-view"), window.location.hash);
+};
+
+function getLifecycleStepHTML(label, isDone) {
+  return `
+    <div style="display:flex; align-items:center; gap:8px;">
+      <div style="width:24px; height:24px; border-radius:50%; background: ${isDone ? 'green' : 'var(--color-outline-variant)'}; color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:bold;">
+        ${isDone ? '✓' : '•'}
+      </div>
+      <span style="font-size:12.5px; font-weight:bold; color: ${isDone ? 'inherit' : 'var(--color-tertiary)'};">${label}</span>
+    </div>
+  `;
+}
+
+// ==========================================================================
+// Offboarding Sandbox Controller (Rule 103)
+// ==========================================================================
+
+function getOffboardingSandboxNavbarHTML(activeState) {
+  return `
+    <div style="background-color: var(--color-surface-container-highest); border-bottom: 2px solid var(--color-outline-variant); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; border-radius: 8px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="font-weight: 900; font-size: 13.5px; color: var(--color-secondary);">🎛️ Offboarding Sandbox:</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 12px; font-weight: 700; color: var(--color-tertiary);">Demo State:</span>
+        <select class="form-input" style="width: 250px; height: 32px; font-size: 12px; margin-bottom: 0; font-weight: bold; background: #fff;" onchange="changeOffboardingDemoState(this.value)">
+          <option value="Draft" ${activeState === 'Draft' ? 'selected' : ''}>Draft Case</option>
+          <option value="In Progress" ${activeState === 'In Progress' ? 'selected' : ''}>In Progress (Active duties)</option>
+          <option value="Pending Work" ${activeState === 'Pending Work' ? 'selected' : ''}>Unresolved Future Classes Block</option>
+          <option value="Reassignment Complete" ${activeState === 'Reassignment Complete' ? 'selected' : ''}>Reassignment Handed Over</option>
+          <option value="Access Revocation Scheduled" ${activeState === 'Access Revocation Scheduled' ? 'selected' : ''}>Scheduled Session Revocation</option>
+          <option value="Immediate Security Revocation" ${activeState === 'Immediate Security Revocation' ? 'selected' : ''}>Immediate Access Disabling</option>
+          <option value="Access Revocation Failed" ${activeState === 'Access Revocation Failed' ? 'selected' : ''}>Access Revocation Failed Alert</option>
+          <option value="Access Revoked" ${activeState === 'Access Revoked' ? 'selected' : ''}>Access Revoked Completed</option>
+          <option value="Final Settlement Pending" ${activeState === 'Final Settlement Pending' ? 'selected' : ''}>Final Settlement In Review</option>
+          <option value="Settlement Disputed" ${activeState === 'Settlement Disputed' ? 'selected' : ''}>Payroll Settlement Dispute</option>
+          <option value="Final Settlement Complete" ${activeState === 'Final Settlement Complete' ? 'selected' : ''}>Settlement Disbursed</option>
+          <option value="Exit Letter Review" ${activeState === 'Exit Letter Review' ? 'selected' : ''}>Exit Document Pending Approval</option>
+          <option value="Ready to Close" ${activeState === 'Ready to Close' ? 'selected' : ''}>Checklist Complete (Ready to Close)</option>
+          <option value="Closed" ${activeState === 'Closed' ? 'selected' : ''}>Case Closed (Profile Archived)</option>
+          <option value="Rehire Later" ${activeState === 'Rehire Later' ? 'selected' : ''}>Rehire Simulation Log</option>
+          <option value="Permission Restricted" ${activeState === 'Permission Restricted' ? 'selected' : ''}>Role Denied Restricted View</option>
+        </select>
+      </div>
+    </div>
+  `;
+}
+
+window.changeOffboardingDemoState = function(val) {
+  ensureOffboardingState();
+  ensureHRState();
+  const off = state.offboarding;
+  const hr = state.hr;
+  off.selectedDemoState = val;
+
+  const c = off.offboardCase;
+  const finalPay = off.finalPayrollRequest;
+
+  // Defaults reset
+  c.status = "In Progress";
+  c.closedBy = null;
+  c.closedAt = null;
+  off.reassignmentComplete = false;
+  off.resourceOwnershipTransferred = false;
+  off.conversationsClosed = false;
+  off.accessRevokedStatus = "Scheduled";
+  off.activeSessionsCount = 3;
+  finalPay.status = "Pending Review";
+  finalPay.disputeNotes = "";
+  off.exitLetterIssued = false;
+  
+  // Set checklists back to pending
+  off.checklist.forEach(item => {
+    if (item.id === "ITEM-01") item.status = "Complete";
+    else if (item.id === "ITEM-11") item.status = "Blocked";
+    else item.status = "Pending";
+  });
+
+  if (val === "Draft") {
+    c.status = "Draft";
+  } else if (val === "In Progress") {
+    // Normal progress
+  } else if (val === "Pending Work") {
+    // Blocks due to reassignment pending
+  } else if (val === "Reassignment Complete") {
+    off.reassignmentComplete = true;
+    off.resourceOwnershipTransferred = true;
+    off.conversationsClosed = true;
+    off.checklist.find(i => i.id === "ITEM-02").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-03").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-04").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-05").status = "Complete";
+  } else if (val === "Access Revocation Scheduled") {
+    off.reassignmentComplete = true;
+    off.resourceOwnershipTransferred = true;
+    off.conversationsClosed = true;
+    off.accessRevokedStatus = "Scheduled";
+  } else if (val === "Immediate Security Revocation") {
+    c.status = "Access Revoked";
+    off.accessRevokedStatus = "Revoked";
+    off.activeSessionsCount = 0;
+    off.checklist.find(i => i.id === "ITEM-06").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-07").status = "Complete";
+  } else if (val === "Access Revocation Failed") {
+    off.reassignmentComplete = true;
+    off.accessRevokedStatus = "Failed";
+  } else if (val === "Access Revoked") {
+    c.status = "Access Revoked";
+    off.reassignmentComplete = true;
+    off.resourceOwnershipTransferred = true;
+    off.conversationsClosed = true;
+    off.accessRevokedStatus = "Revoked";
+    off.activeSessionsCount = 0;
+    off.checklist.find(i => i.id === "ITEM-02").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-03").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-04").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-05").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-06").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-07").status = "Complete";
+  } else if (val === "Final Settlement Pending") {
+    c.status = "Final Settlement Pending";
+    off.reassignmentComplete = true;
+    off.resourceOwnershipTransferred = true;
+    off.conversationsClosed = true;
+    off.accessRevokedStatus = "Revoked";
+    off.activeSessionsCount = 0;
+    off.checklist.find(i => i.id === "ITEM-02").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-03").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-04").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-05").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-06").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-07").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-08").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-09").status = "In Progress";
+  } else if (val === "Settlement Disputed") {
+    c.status = "Final Settlement Pending";
+    off.reassignmentComplete = true;
+    off.resourceOwnershipTransferred = true;
+    off.conversationsClosed = true;
+    off.accessRevokedStatus = "Revoked";
+    off.activeSessionsCount = 0;
+    finalPay.status = "Disputed";
+    finalPay.disputeNotes = "I believe one approved earning is missing from the final calculation.";
+    off.checklist.find(i => i.id === "ITEM-09").status = "In Progress";
+  } else if (val === "Final Settlement Complete") {
+    c.status = "Final Settlement Pending";
+    off.reassignmentComplete = true;
+    off.resourceOwnershipTransferred = true;
+    off.conversationsClosed = true;
+    off.accessRevokedStatus = "Revoked";
+    off.activeSessionsCount = 0;
+    finalPay.status = "Completed";
+    finalPay.settlementId = "PAYSETTLE-AYESHA-EXIT";
+    off.checklist.find(i => i.id === "ITEM-02").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-03").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-04").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-05").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-06").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-07").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-08").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-09").status = "Complete";
+  } else if (val === "Exit Letter Review") {
+    c.status = "Final Settlement Pending";
+    off.reassignmentComplete = true;
+    off.resourceOwnershipTransferred = true;
+    off.conversationsClosed = true;
+    off.accessRevokedStatus = "Revoked";
+    off.activeSessionsCount = 0;
+    finalPay.status = "Completed";
+    finalPay.settlementId = "PAYSETTLE-AYESHA-EXIT";
+    off.checklist.find(i => i.id === "ITEM-09").status = "Complete";
+    off.checklist.find(i => i.id === "ITEM-10").status = "In Progress";
+  } else if (val === "Ready to Close") {
+    c.status = "Final Settlement Pending";
+    off.reassignmentComplete = true;
+    off.resourceOwnershipTransferred = true;
+    off.conversationsClosed = true;
+    off.accessRevokedStatus = "Revoked";
+    off.activeSessionsCount = 0;
+    finalPay.status = "Completed";
+    finalPay.settlementId = "PAYSETTLE-AYESHA-EXIT";
+    off.exitLetterIssued = true;
+    off.checklist.forEach(item => {
+      if (item.id !== "ITEM-11") item.status = "Complete";
+    });
+    off.checklist.find(i => i.id === "ITEM-11").status = "Pending";
+  } else if (val === "Closed") {
+    c.status = "Closed";
+    c.closedBy = "hr-demo";
+    c.closedAt = "2026-08-31";
+    off.reassignmentComplete = true;
+    off.resourceOwnershipTransferred = true;
+    off.conversationsClosed = true;
+    off.accessRevokedStatus = "Revoked";
+    off.activeSessionsCount = 0;
+    finalPay.status = "Completed";
+    finalPay.settlementId = "PAYSETTLE-AYESHA-EXIT";
+    off.exitLetterIssued = true;
+    off.checklist.forEach(item => {
+      item.status = "Complete";
+    });
+    // Set employee inactive in HR profile
+    hr.employee.employmentStatus = "Inactive / Closed";
+  } else if (val === "Rehire Later") {
+    // Simulated log rehire scenario
+  }
+
+  showToastAlert(`✓ Sandbox exit state updated: ${val}`);
+  renderOffboardingWorkspace(document.getElementById("learner-assessment-view"), window.location.hash);
+};
+
+// ==========================================================================
+// Offboarding Overview View
+// ==========================================================================
+
+function renderOffboardOverview() {
+  const off = state.offboarding;
+  const c = off.offboardCase;
+
+  return `
+    <div style="display:grid; grid-template-columns: 1fr 300px; gap:20px; align-items:flex-start;">
+      
+      <!-- Exit detail summaries -->
+      <div class="form-card" style="padding:16px;">
+        <h3 style="font-weight:800; font-size:14.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">📊 Exit Reason & Details</h3>
+        
+        <table style="width:100%; font-size:13px; line-height:26px; margin-bottom:16px;">
+          <tr><td style="color:var(--color-tertiary);">Exit Type Selected:</td><td style="font-weight:bold; text-align:right;">${c.exitType}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Notice Date Recorded:</td><td style="font-weight:bold; text-align:right;">${c.noticeDate}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Effective Exit Date:</td><td style="font-weight:bold; text-align:right;">${c.effectiveDate}</td></tr>
+        </table>
+
+        <!-- Sensitive exit narrative privacy mask (Rule 4 & 81) -->
+        <div style="background:#fffdf7; border:1px solid #faecc5; padding:12px; border-radius:6px; font-size:12.5px;">
+          <strong style="color:#b78103; display:block; margin-bottom:4px;">🔒 Sensitive Exit HR Notes (Restricted)</strong>
+          <span style="color:var(--color-tertiary); font-style:italic;">"${off.selectedDemoState === 'Permission Restricted' ? 'Restricted Exit Reason' : c.hrNotes}"</span>
+        </div>
+
+        <!-- Initial confirmation drawer simulator (Rule 6 & 7) -->
+        ${c.status === 'Draft' ? `
+          <div style="background:#f0faf2; border:1px solid #cce8d4; border-radius:6px; padding:12px; margin-top:20px;">
+            <strong style="color:green;">🚀 Ready to Launch Offboarding Case?</strong>
+            <p style="margin:4px 0 12px 0; font-size:12px; color:var(--color-tertiary);">Confirming notice triggers work reassignment scans. Employment remains Active until the effective date.</p>
+            <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; width:100%;" onclick="confirmStartOffboarding()">Start Offboarding</button>
+          </div>
+        ` : ''}
+      </div>
+
+      <!-- Overview Status Card logs -->
+      <div class="form-card" style="padding:16px; font-size:12.5px; line-height:22px;">
+        <h3 style="font-weight:800; font-size:13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">🛡️ Identity & Audit Snapshots</h3>
+        <p style="margin:0 0 10px 0; color:var(--color-tertiary);">Offboarding terminates future active roles while locking historical service logs immutably.</p>
+        <table style="width:100%; border-collapse:collapse;">
+          <tr><td>Person Identity:</td><td style="font-weight:bold; text-align:right; color:green;">Retained</td></tr>
+          <tr><td>Historical Classes:</td><td style="font-weight:bold; text-align:right; color:green;">Retained</td></tr>
+          <tr><td>Earning Logs:</td><td style="font-weight:bold; text-align:right; color:green;">Retained</td></tr>
+          <tr><td>Issued HR Docs:</td><td style="font-weight:bold; text-align:right; color:green;">Retained</td></tr>
+        </table>
+      </div>
+
+    </div>
+  `;
+}
+
+window.confirmStartOffboarding = function() {
+  ensureOffboardingState();
+  state.offboarding.offboardCase.status = "In Progress";
+  showToastAlert("✓ Offboarding case OFFBOARD-AYESHA-001 launched. Verification queues activated.");
+  renderOffboardingWorkspace(document.getElementById("learner-assessment-view"), "#hr/employees/EMP-AYESHA-001/offboarding");
+};
+
+// ==========================================================================
+// Offboarding Checklist Panel (Rule 9, 10, 11)
+// ==========================================================================
+
+function renderOffboardChecklist() {
+  const off = state.offboarding;
+  let rows = "";
+
+  off.checklist.forEach(item => {
+    rows += `
+      <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:13px;">
+        <td style="padding:12px; font-weight:bold;">${item.id}</td>
+        <td style="padding:12px; font-weight:700; color:var(--color-tertiary);">${item.category}</td>
+        <td style="padding:12px;">${item.label}</td>
+        <td style="padding:12px;">
+          <span class="status-badge status-badge-${item.status.toLowerCase().replace(/ /g, '-')}" style="padding:3px 6px; border-radius:4px; font-weight:bold; font-size:11px;">
+            ${item.status}
+          </span>
+        </td>
+      </tr>
+    `;
+  });
+
+  return `
+    <h3 style="font-family: var(--font-family-headings); font-weight: 800; font-size: 15px; margin:0 0 12px 0;">Offboarding Case Checklist Tracker (11 items)</h3>
+    <table style="width:100%; border-collapse:collapse; text-align:left; margin-bottom:24px;">
+      <thead>
+        <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+          <th style="padding: 12px;">ID</th>
+          <th style="padding: 12px;">Category</th>
+          <th style="padding: 12px;">Item Label</th>
+          <th style="padding: 12px;">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+    </table>
+
+    <!-- Final Case closure panel check (Rule 64 & 65) -->
+    ${renderClosureValidationPanelHTML()}
+  `;
+}
+
+function renderClosureValidationPanelHTML() {
+  const off = state.offboarding;
+  const c = off.offboardCase;
+
+  const incompleteCount = off.checklist.filter(item => item.id !== "ITEM-11" && item.status !== "Complete").length;
+  const isReady = incompleteCount === 0 && c.status !== "Closed";
+
+  return `
+    <div class="form-card" style="padding:16px; border:1px solid ${isReady ? 'green' : 'var(--color-outline-variant)'}; background-color: ${isReady ? '#f4faf5' : 'var(--color-surface-container)'}; margin-top:20px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div>
+          <strong style="color: ${isReady ? 'green' : 'inherit'}; font-size:14px;">🏁 Case Closure Validation Rules</strong>
+          <p style="margin:4px 0 0 0; font-size:12px; color:var(--color-tertiary);">
+            ${isReady ? '✓ All required checklist items resolved. Ready to close offboarding.' : `⏳ Case closure blocked: ${incompleteCount} required checklist items remain unresolved.`}
+          </p>
+        </div>
+        <button class="btn btn-primary" style="background-color: ${isReady ? '#137333' : 'var(--color-outline)'}; border-color: ${isReady ? '#137333' : 'var(--color-outline)'}; color:#fff; font-weight:800;" ${!isReady ? 'disabled' : ''} onclick="executeCaseClosure()">
+          Close Offboarding
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+window.executeCaseClosure = function() {
+  ensureOffboardingState();
+  ensureHRState();
+  const off = state.offboarding;
+  off.offboardCase.status = "Closed";
+  off.offboardCase.closedBy = "hr-demo";
+  off.offboardCase.closedAt = "2026-08-31";
+  off.checklist.forEach(item => {
+    item.status = "Complete";
+  });
+  state.hr.employee.employmentStatus = "Inactive / Closed";
+
+  showToastAlert("✓ Offboarding case Closed. Trainer employment profile marked Inactive.");
+  renderOffboardingWorkspace(document.getElementById("learner-assessment-view"), window.location.hash);
+};
+
+// ==========================================================================
+// Tab Pane: Assignments & Reassignments (Rule 12-29)
+// ==========================================================================
+
+function renderOffboardAssignments() {
+  const off = state.offboarding;
+  let futureRows = "";
+
+  off.futureClasses.forEach(cls => {
+    futureRows += `
+      <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:12.5px;">
+        <td style="padding:8px; font-weight:bold; color:var(--color-primary);">${cls.id}</td>
+        <td style="padding:8px; font-family:monospace;">${cls.date}</td>
+        <td style="padding:8px;">${cls.topic}</td>
+        <td style="padding:8px; font-weight:bold; color: ${cls.trainer === 'Maria Hassan' ? 'green' : 'inherit'};">
+          ${cls.trainer}
+        </td>
+      </tr>
+    `;
+  });
+
+  return `
+    <div style="display:grid; grid-template-columns: 1fr 300px; gap:20px; align-items:flex-start;">
+      
+      <!-- Future teaching occurrences reassign -->
+      <div class="form-card" style="padding:16px;">
+        <h3 style="font-weight:800; font-size:14px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">📅 Reassign Future Classes Occurrences</h3>
+        
+        <table style="width:100%; border-collapse:collapse; text-align:left; margin-bottom:16px;">
+          <thead>
+            <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:11px; text-transform:uppercase; color:var(--color-tertiary);">
+              <th style="padding:8px;">Class ID</th>
+              <th style="padding:8px;">Date</th>
+              <th style="padding:8px;">Topic</th>
+              <th style="padding:8px;">Assigned Trainer</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${futureRows}
+          </tbody>
+        </table>
+
+        <!-- Actions panel -->
+        ${!off.reassignmentComplete ? `
+          <div style="background:#fff9ee; border:1px solid #faecc5; padding:12px; border-radius:6px; font-size:12.5px;">
+            <strong style="color:#b78103;">⚠️ September Classes Require Reassignment</strong>
+            <p style="margin:4px 0 12px 0; color:var(--color-tertiary);">8 future classroom events occurring after effective exit (31 Aug) are currently assigned to Ayesha.</p>
+            
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span>Replacement Trainer: <strong>Maria Hassan</strong> (Spoken English)</span>
+              <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; height:32px;" onclick="executeFutureReassignment()">Reassign Occurrences</button>
+            </div>
+          </div>
+        ` : `
+          <div style="background:#f0faf2; border:1px solid #cce8d4; padding:12px; border-radius:6px; font-size:12.5px; color:green; font-weight:bold;">
+            ✓ Future responsibilities reassigned to Maria Hassan starting Sep 1. August historical records (CLASS-001) remain associated with Ayesha.
+          </div>
+        `}
+      </div>
+
+      <!-- Handover details panels -->
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        
+        <!-- Conversation closure check (Rule 24 & 25) -->
+        <div class="form-card" style="padding:16px; font-size:12.5px;">
+          <h3 style="font-weight:800; font-size:13px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">💬 Messaging Handover</h3>
+          <table style="width:100%; margin-bottom:8px;">
+            <tr><td>Conversation:</td><td style="font-weight:bold; text-align:right;">CONV-SE-001</td></tr>
+            <tr><td>Past Messages:</td><td style="font-weight:bold; text-align:right; color:green;">Preserved (Ayesha)</td></tr>
+            <tr><td>Status:</td><td style="font-weight:bold; text-align:right; color:${off.conversationsClosed ? 'red' : 'green'};">${off.conversationsClosed ? 'Archived' : 'Active'}</td></tr>
+          </table>
+          ${!off.conversationsClosed ? `
+            <button class="btn btn-secondary" style="width:100%; font-size:11.5px; height:28px;" onclick="executeMessagingHandover()">Archive CONV-SE-001 & Create CONV-SE-002</button>
+          ` : ''}
+        </div>
+
+        <!-- Resource ownership check (Rule 27 & 28) -->
+        <div class="form-card" style="padding:16px; font-size:12.5px;">
+          <h3 style="font-weight:800; font-size:13px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">📂 Resource Ownership</h3>
+          <table style="width:100%; margin-bottom:8px;">
+            <tr><td>Authored Resources:</td><td style="font-weight:bold; text-align:right;">Vocabulary sheet</td></tr>
+            <tr><td>Authorship credit:</td><td style="font-weight:bold; text-align:right; color:green;">Preserved (Ayesha)</td></tr>
+            <tr><td>Operational Owner:</td><td style="font-weight:bold; text-align:right;">${off.resourceOwnershipTransferred ? 'Academic Team' : 'Ayesha Rahman'}</td></tr>
+          </table>
+          ${!off.resourceOwnershipTransferred ? `
+            <button class="btn btn-secondary" style="width:100%; font-size:11.5px; height:28px;" onclick="executeResourceTransfer()">Transfer Course Ownership</button>
+          ` : ''}
+        </div>
+
+      </div>
+
+    </div>
+  `;
+}
+
+window.executeFutureReassignment = function() {
+  ensureOffboardingState();
+  const off = state.offboarding;
+  off.futureClasses.forEach(cls => {
+    cls.trainer = "Maria Hassan";
+  });
+  off.reassignmentComplete = true;
+  off.checklist.find(i => i.id === "ITEM-02").status = "Complete";
+  off.checklist.find(i => i.id === "ITEM-03").status = "Complete";
+
+  showToastAlert("✓ September classes reassigned to trainer Maria Hassan. Past records preserved.");
+  renderOffboardingWorkspace(document.getElementById("learner-assessment-view"), off.activeTab);
+};
+
+window.executeMessagingHandover = function() {
+  ensureOffboardingState();
+  const off = state.offboarding;
+  off.conversationsClosed = true;
+  off.checklist.find(i => i.id === "ITEM-05").status = "Complete";
+  showToastAlert("✓ Conversation CONV-SE-001 archived. Conversation CONV-SE-002 created for Maria Hassan.");
+  renderOffboardingWorkspace(document.getElementById("learner-assessment-view"), off.activeTab);
+};
+
+window.executeResourceTransfer = function() {
+  ensureOffboardingState();
+  const off = state.offboarding;
+  off.resourceOwnershipTransferred = true;
+  off.checklist.find(i => i.id === "ITEM-04").status = "Complete";
+  showToastAlert("✓ Course operational ownership transferred to Academic Team. Ayesha's authorship credit preserved.");
+  renderOffboardingWorkspace(document.getElementById("learner-assessment-view"), off.activeTab);
+};
+
+// ==========================================================================
+// Tab Pane: Credentials & Revocations (Rule 31-38)
+// ==========================================================================
+
+function renderOffboardAccess() {
+  const off = state.offboarding;
+  const c = off.offboardCase;
+
+  return `
+    <div style="max-width:680px; margin:0 auto;" class="form-card">
+      <h3 style="font-weight:800; font-size:14.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">🔒 Credential & Session Revocation Panel</h3>
+      
+      <table style="width:100%; font-size:13px; line-height:28px; margin-bottom:20px; border-collapse:collapse;">
+        <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">IAM Login Account:</td><td style="font-weight:bold; text-align:right;">trainer-ayesha</td></tr>
+        <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Active Session Count:</td><td style="font-weight:bold; text-align:right;">${off.activeSessionsCount} sessions</td></tr>
+        <tr style="border-bottom:1px solid var(--color-outline-variant);">
+          <td style="color:var(--color-tertiary);">Revocation Status:</td>
+          <td style="font-weight:bold; text-align:right; color:${off.accessRevokedStatus === 'Revoked' ? 'green' : '#b78103'};">
+            ${off.accessRevokedStatus}
+          </td>
+        </tr>
+      </table>
+
+      <!-- Access controls (Rule 36 & 40) -->
+      ${c.status === 'In Progress' && off.accessRevokedStatus !== 'Revoked' ? `
+        <div style="background:#fff9ee; border:1px solid #faecc5; padding:12px; border-radius:6px; font-size:12.5px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <strong>Session Revocation is scheduled for Aug 31</strong>
+            <p style="margin:2px 0 0 0; font-size:11.5px; color:var(--color-tertiary);">Perform immediate security block if required due to compliance breaches.</p>
+          </div>
+          <button class="btn btn-primary" style="background-color:#ba1a1a; border-color:#ba1a1a; color:#fff; font-weight:800;" onclick="executeImmediateRevocation()">Revoke Access Now</button>
+        </div>
+      ` : ''}
+
+      ${off.accessRevokedStatus === 'Revoked' ? `
+        <div style="background:#f0faf2; border:1px solid #cce8d4; padding:12px; border-radius:6px; font-size:12.5px; color:green; font-weight:bold;">
+          ✓ Login Credentials disabled. Active sessions revoked successfully. Employment history logs preserved.
+        </div>
+      ` : ''}
+
+      <!-- Failed access integration retry cue (Rule 94) -->
+      ${off.accessRevokedStatus === 'Failed' ? `
+        <div style="background-color:#fff0f0; border-left:3px solid #ba1a1a; padding:12px; border-radius:6px; font-size:12.5px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <strong style="color:#ba1a1a;">⛔ Session Revocation Integration Failed</strong>
+            <p style="margin:2px 0 0 0; color:var(--color-tertiary);">Identity backend API returned timeout. Case closure remains blocked.</p>
+          </div>
+          <button class="btn btn-secondary" style="color:#ba1a1a; border-color:#ba1a1a; height:32px;" onclick="executeImmediateRevocation()">Retry Revocation</button>
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+window.executeImmediateRevocation = function() {
+  ensureOffboardingState();
+  const off = state.offboarding;
+  off.offboardCase.status = "Access Revoked";
+  off.accessRevokedStatus = "Revoked";
+  off.activeSessionsCount = 0;
+  off.checklist.find(i => i.id === "ITEM-06").status = "Complete";
+  off.checklist.find(i => i.id === "ITEM-07").status = "Complete";
+
+  showToastAlert("✓ Immediate session revocation completed. Credentials disabled.");
+  renderOffboardingWorkspace(document.getElementById("learner-assessment-view"), off.activeTab);
+};
+
+// ==========================================================================
+// Tab Pane: Final Payroll request mappings (Rule 43-53)
+// ==========================================================================
+
+function renderOffboardPayroll() {
+  const off = state.offboarding;
+  const pay = off.finalPayrollRequest;
+
+  // Retrieve base values from Screen 31
+  let earnAmount = 0;
+  if (state.payroll && state.payroll.earnings[0]) {
+    earnAmount = state.payroll.earnings[0].amountMinor;
+  }
+
+  return `
+    <div style="display:grid; grid-template-columns: 1fr 300px; gap:20px; align-items:flex-start;">
+      
+      <!-- Final Settlement audit -->
+      <div class="form-card" style="padding:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">
+          <h3 style="font-weight:800; font-size:14px; margin:0;">Final Settlement Review: ${pay.id}</h3>
+          <span class="status-badge" style="background:#fff3cd; color:#b78103; padding:2px 8px; border-radius:4px; font-weight:bold; font-size:11px;">
+            ${pay.status}
+          </span>
+        </div>
+
+        <table style="width:100%; font-size:12.5px; line-height:24px; margin-bottom:16px;">
+          <tr><td style="color:var(--color-tertiary);">Unsettled Earnings:</td><td style="font-weight:bold; text-align:right;">${formatExactMoney(earnAmount)}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Exit Severance component:</td><td style="font-weight:bold; text-align:right;">PKR 0.00</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Assigned Deductions:</td><td style="font-weight:bold; text-align:right;">PKR 0.00</td></tr>
+          <tr style="border-top:1px solid var(--color-outline-variant); font-weight:bold;">
+            <td>Total Net Payable:</td><td style="text-align:right;">${formatExactMoney(earnAmount)}</td>
+          </tr>
+        </table>
+
+        <!-- Handover actions -->
+        ${pay.status === 'Pending Review' ? `
+          <div style="display:flex; gap:12px; justify-content:flex-end;">
+            <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="window.location.hash='#payroll/runs'">Open in Payroll (Settle)</button>
+            <button class="btn btn-secondary" style="color:#ba1a1a; border-color:#ba1a1a;" onclick="raiseSettlementDisputeModal()">Raise Dispute</button>
+          </div>
+        ` : ''}
+
+        ${pay.status === 'Completed' ? `
+          <div style="background:#f0faf2; border:1px solid #cce8d4; padding:12px; border-radius:6px; font-size:12.5px; color:green; font-weight:bold; margin-bottom:16px;">
+            ✓ Final Settlement processed. Reference: ${pay.settlementId} &bull; Finance Posted.
+          </div>
+        ` : ''}
+
+        <!-- Dispute warnings (Rule 50 & 51) -->
+        ${pay.status === 'Disputed' ? `
+          <div style="background-color:#fff0f0; border-left:3px solid #ba1a1a; padding:12px; border-radius:6px; font-size:12.5px; margin-bottom:16px;">
+            <strong>⚠️ Final Settlement Dispute Logged:</strong>
+            <p style="margin:4px 0 0 0; color:var(--color-tertiary);">"${pay.disputeNotes}"</p>
+            <p style="font-size:11px; margin-top:8px; font-weight:bold; color:var(--color-primary);">Staff login remains disabled during settlement investigations.</p>
+            <div style="margin-top:12px; text-align:right;">
+              <button class="btn btn-secondary" onclick="resolveSettlementDispute()">Resolve Dispute & Approve</button>
+            </div>
+          </div>
+        ` : ''}
+
+      </div>
+
+      <!-- Static rule information -->
+      <div class="form-card" style="padding:16px; font-size:12.5px; line-height:20px;">
+        <h3 style="font-weight:800; font-size:13px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">📅 Payroll Settlements Rule</h3>
+        <p style="color:var(--color-tertiary);">Scheduled future classes (occurring after Sep 1) are excluded from final payouts. Only completed approved classes generate earnings.</p>
+      </div>
+
+    </div>
+  `;
+}
+
+window.raiseSettlementDisputeModal = function() {
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <label style="font-weight:bold; display:block; margin-bottom:4px;">Enter Settlement Dispute Reason:</label>
+      <input type="text" id="settle-dispute-input" class="form-input" value="I believe one approved earning is missing from the final calculation.">
+      
+      <div style="display:flex; gap:12px; margin-top:16px;">
+        <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="executeSettleDispute()">Submit Dispute</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Raise Settlement Dispute", content);
+};
+
+window.executeSettleDispute = function() {
+  ensureOffboardingState();
+  const notes = document.getElementById("settle-dispute-input").value.trim();
+  if (!notes) return;
+
+  const off = state.offboarding;
+  off.finalPayrollRequest.status = "Disputed";
+  off.finalPayrollRequest.disputeNotes = notes;
+  off.checklist.find(i => i.id === "ITEM-09").status = "In Progress";
+  
+  closeModal();
+  showToastAlert("✓ Settlement dispute registered. Payroll placed under review.");
+  renderOffboardingWorkspace(document.getElementById("learner-assessment-view"), off.activeTab);
+};
+
+window.resolveSettlementDispute = function() {
+  ensureOffboardingState();
+  const off = state.offboarding;
+  off.finalPayrollRequest.status = "Completed";
+  off.finalPayrollRequest.settlementId = "PAYSETTLE-AYESHA-EXIT";
+  off.checklist.find(i => i.id === "ITEM-09").status = "Complete";
+
+  showToastAlert("✓ Dispute resolved. Final payout settled successfully.");
+  renderOffboardingWorkspace(document.getElementById("learner-assessment-view"), off.activeTab);
+};
+
+// ==========================================================================
+// Tab Pane: Exit Letter & Timeline (Rule 54-59)
+// ==========================================================================
+
+function renderOffboardDocuments() {
+  const off = state.offboarding;
+
+  return `
+    <div style="display:grid; grid-template-columns: 1fr 300px; gap:20px; align-items:flex-start;">
+      
+      <!-- Exit letter preview -->
+      <div class="form-card" style="padding:16px;">
+        <h3 style="font-weight:800; font-size:14px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">📄 Exit & Service Certificates</h3>
+        
+        <table style="width:100%; font-size:12.5px; line-height:24px; margin-bottom:16px;">
+          <tr><td>Document ID:</td><td style="font-weight:bold; text-align:right; font-family:monospace;">HRDOC-AYESHA-EXIT-001</td></tr>
+          <tr><td>Template Used:</td><td style="font-weight:bold; text-align:right; font-family:monospace;">HRTPL-EMPLOYMENT-COMPLETION-v1</td></tr>
+          <tr><td>Issue Status:</td><td style="font-weight:bold; text-align:right; color: ${off.exitLetterIssued ? 'green' : '#b78103'};">${off.exitLetterIssued ? 'Issued' : 'Draft'}</td></tr>
+        </table>
+
+        <!-- Document viewer -->
+        <div style="background-color: var(--color-surface-container); padding:12px; border-radius:6px; border:1px solid var(--color-outline-variant); margin-bottom:16px;">
+          <strong style="font-size:11.5px; color:var(--color-tertiary);">Exit Wording Snapshot:</strong>
+          <p style="font-family:serif; font-size:13.5px; margin:6px 0 0 0; line-height:1.5;">
+            "This is to certify that Ayesha Rahman completed her service tenure as English Language Trainer within Academic / Training starting Aug 1, 2026 and exiting on Aug 31, 2026."
+          </p>
+        </div>
+
+        ${!off.exitLetterIssued ? `
+          <div style="text-align:right;">
+            <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="executeIssueExitLetter()">Approve & Issue Exit Letter</button>
+          </div>
+        ` : `
+          <div style="background:#f0faf2; border:1px solid #cce8d4; padding:10px; border-radius:6px; font-size:12.5px; color:green; font-weight:bold; text-align:center;">
+            ✓ Exit Letter issued successfully. Timeline event generated.
+          </div>
+        `}
+      </div>
+
+      <!-- Offboarding case timeline logs (Rule 97) -->
+      <div class="form-card" style="padding:16px;">
+        <h3 style="font-weight:800; font-size:13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">📅 Case Timeline Logs</h3>
+        
+        <div style="font-size:12px; line-height:18px;">
+          <div style="margin-bottom:8px;">
+            <strong style="color:var(--color-primary);">28 Aug &middot; 10:00 AM</strong><br/>
+            <span style="color:var(--color-tertiary);">Offboarding Case created in Draft. Notice received.</span>
+          </div>
+          <div style="margin-bottom:8px;">
+            <strong style="color:var(--color-primary);">28 Aug &middot; 10:15 AM</strong><br/>
+            <span style="color:var(--color-tertiary);">Teaching responsibilities scan initiated. 8 future classes flagged.</span>
+          </div>
+          ${off.reassignmentComplete ? `
+            <div style="margin-bottom:8px;">
+              <strong style="color:var(--color-primary);">28 Aug &middot; 10:31 AM</strong><br/>
+              <span style="color:var(--color-tertiary);">September classes reassigned to trainer Maria Hassan.</span>
+            </div>
+          ` : ''}
+          ${off.accessRevokedStatus === 'Revoked' ? `
+            <div style="margin-bottom:8px;">
+              <strong style="color:var(--color-primary);">31 Aug &middot; 05:00 PM</strong><br/>
+              <span style="color:var(--color-tertiary);">Trainer login credentials disabled. Active sessions revoked.</span>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+
+    </div>
+  `;
+}
+
+window.executeIssueExitLetter = function() {
+  ensureOffboardingState();
+  const off = state.offboarding;
+  off.exitLetterIssued = true;
+  off.checklist.find(i => i.id === "ITEM-08").status = "Complete";
+  off.checklist.find(i => i.id === "ITEM-10").status = "Complete";
+
+  showToastAlert("✓ Employment exit completion letter issued.");
+  renderOffboardingWorkspace(document.getElementById("learner-assessment-view"), off.activeTab);
+};
+// ==========================================================================
+// Screen 34 CSR Leads, Enrolment Attributions & Commission Qualification
+// ==========================================================================
+
+window.ensureCSRState = function() {
+  if (!state.csr) {
+    state.csr = {
+      selectedDemoState: "Attribution Verified",
+      activeTab: "Overview",
+
+      lead: {
+        id: "LEAD-001",
+        name: "Ali Khan",
+        learnerId: "LEARNER-001",
+        status: "Converted", // New, Contacted, Qualified, Trial Scheduled, Trial Completed, Converted, Lost
+        lostReason: "",
+        acquisitionSource: "Direct / Portal Inquiry",
+        timeline: [
+          { stage: "New", detail: "Lead captured via Web Portal Form", time: "2026-08-01 10:00", actor: "system" },
+          { stage: "Contacted", detail: "CSR contacted lead to confirm interest", time: "2026-08-01 11:30", actor: "csr-sarah" },
+          { stage: "Qualified", detail: "Spoken English Beginner interest verified", time: "2026-08-01 12:00", actor: "csr-sarah" },
+          { stage: "Trial Scheduled", detail: "Trial request TRIAL-001 booked", time: "2026-08-02 09:00", actor: "csr-sarah" },
+          { stage: "Trial Completed", detail: "Trial OCC-TRIAL-001 marked completed", time: "2026-08-04 18:00", actor: "trainer-ayesha" },
+          { stage: "Converted", detail: "Enrolment ENR-001 active after payment receipt", time: "2026-08-11 14:00", actor: "csr-sarah" }
+        ]
+      },
+
+      attribution: {
+        id: "CSRATTR-ENR-001",
+        enrolmentId: "ENR-001",
+        learnerId: "LEARNER-001",
+        csrId: "csr-sarah", // Sarah Ahmed
+        sourceLeadId: "LEAD-001",
+        sourceTrialRequestId: "TRIAL-001",
+        sourceFollowUpId: "FOLLOWUP-001",
+        membershipRequestId: "MEMREQ-001",
+        status: "Verified", // Pending Verification, Verified, Disputed, Superseded
+        verifiedBy: "hr-demo",
+        verifiedAt: "2026-08-11"
+      },
+
+      claimsConflict: {
+        hasConflict: false,
+        csr1: { csrId: "csr-sarah", name: "Sarah Ahmed", role: "Lead Owner / Trial Follow-Up" },
+        csr2: { csrId: "csr-bilal", name: "Bilal Khan", role: "Later Membership Assistance" },
+        resolvedCsrId: null
+      },
+
+      rule: {
+        id: "COMMRULE-SE-NEW-v1",
+        name: "New Enrolment Commission Rule",
+        version: "v1",
+        basis: "Verified Received Payment",
+        rateBasisPoints: 500, // 5%
+        effectiveFrom: "2026-08-01",
+        effectiveTo: null,
+        conditions: ["Attribution Verified", "Payment Approved", "Allocation Valid", "Enrolment Active", "Manager Approval Required"]
+      },
+
+      candidate: {
+        id: "COMM-CAND-001",
+        enrolmentAttributionId: "CSRATTR-ENR-001",
+        csrId: "csr-sarah",
+        commissionRuleVersionId: "COMMRULE-SE-NEW-v1",
+        sourcePaymentTransactionId: "PAY-TXN-001",
+        sourcePaymentAllocationId: "PAY-ALLOC-001",
+        sourceEnrolmentId: "ENR-001",
+        basisMinor: 1500000, // PKR 15,000.00
+        rateBasisPoints: 500, // 5%
+        resultMinor: 75000, // PKR 750.00
+        currency: "PKR",
+        status: "Qualified", // Pending Verification, Qualified, Approved, Payable, Reserved, Paid, Rejected, Reversed
+        evaluationChecklist: [
+          { check: "CSR Attribution Verified", pass: true },
+          { check: "Product Rule Matched", pass: true },
+          { check: "Rule Effective Date Valid", pass: true },
+          { check: "Payment Transaction Approved", pass: true },
+          { check: "Payment Allocation Valid", pass: true },
+          { check: "Enrolment Status Active", pass: true },
+          { check: "New Sale vs Renewal check", pass: true },
+          { check: "Duplicate Source Check passed", pass: true }
+        ]
+      },
+
+      reversalPolicy: {
+        type: "Full Reversal",
+        notes: "Configured commission reversal after qualifying-source refund."
+      },
+
+      earningHandoffFailed: false
+    };
+  }
+};
+
+// ==========================================================================
+// CSR Workspace Router
+// ==========================================================================
+
+window.renderCSRWorkspace = function(hash) {
+  ensureCSRState();
+  const csr = state.csr;
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  if (hash === "#csr/dashboard" || hash === "#csr") {
+    renderCSRDashboardView(view);
+  } else if (hash === "#csr/leads") {
+    renderCSRLeadsRegistry(view);
+  } else if (hash === "#csr/attributions/CSRATTR-ENR-001") {
+    renderCSRAttributionChain(view);
+  } else if (hash === "#csr/commissions/COMM-CAND-001") {
+    renderCSRCommissionDetail(view);
+  } else if (hash === "#operations/commissions") {
+    renderCSROperationsQueue(view);
+  } else {
+    renderCSRDashboardView(view);
+  }
+};
+
+// ==========================================================================
+// CSR Sandbox State Syncer
+// ==========================================================================
+
+function getCSRSandboxNavbarHTML(activeState) {
+  return `
+    <div style="background-color: var(--color-surface-container-highest); border-bottom: 2px solid var(--color-outline-variant); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; border-radius: 8px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="font-weight: 900; font-size: 13.5px; color: var(--color-secondary);">🎛️ CSR Sandbox:</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 12px; font-weight: 700; color: var(--color-tertiary);">Demo State:</span>
+        <select class="form-input" style="width: 250px; height: 32px; font-size: 12px; margin-bottom: 0; font-weight: bold; background: #fff;" onchange="changeCSRDemoState(this.value)">
+          <option value="Attribution Verified" ${activeState === 'Attribution Verified' ? 'selected' : ''}>Attribution Verified (Success)</option>
+          <option value="Lead New" ${activeState === 'Lead New' ? 'selected' : ''}>Lead New Stage</option>
+          <option value="Lead Contacted" ${activeState === 'Lead Contacted' ? 'selected' : ''}>Lead Contacted Stage</option>
+          <option value="Qualified Lead" ${activeState === 'Qualified Lead' ? 'selected' : ''}>Qualified Lead Stage</option>
+          <option value="Trial Completed" ${activeState === 'Trial Completed' ? 'selected' : ''}>Trial Completed Stage</option>
+          <option value="Converted" ${activeState === 'Converted' ? 'selected' : ''}>Converted Stage</option>
+          <option value="Attribution Pending" ${activeState === 'Attribution Pending' ? 'selected' : ''}>Attribution Pending Verification</option>
+          <option value="Multiple CSR Conflict" ${activeState === 'Multiple CSR Conflict' ? 'selected' : ''}>Multiple CSR Claims Conflict</option>
+          <option value="No CSR Attribution" ${activeState === 'No CSR Attribution' ? 'selected' : ''}>No CSR Attribution (Self-Service)</option>
+          <option value="Commission Pending Verification" ${activeState === 'Commission Pending Verification' ? 'selected' : ''}>Commission Pending Verification</option>
+          <option value="Commission Eligible" ${activeState === 'Commission Eligible' ? 'selected' : ''}>Commission Qualified (Eligible)</option>
+          <option value="Self-Approval Blocked" ${activeState === 'Self-Approval Blocked' ? 'selected' : ''}>Self-Approval Blocked</option>
+          <option value="Segregation Review" ${activeState === 'Segregation Review' ? 'selected' : ''}>Segregation Escalation Review</option>
+          <option value="Commission Rejected" ${activeState === 'Commission Rejected' ? 'selected' : ''}>Commission Rejected</option>
+          <option value="Commission Approved" ${activeState === 'Commission Approved' ? 'selected' : ''}>Commission Approved Decision</option>
+          <option value="Payroll Handoff Failed" ${activeState === 'Payroll Handoff Failed' ? 'selected' : ''}>Payroll Handoff Exception Failed</option>
+          <option value="Commission Payable" ${activeState === 'Commission Payable' ? 'selected' : ''}>Commission Payable (Earning Created)</option>
+          <option value="Commission Reserved" ${activeState === 'Commission Reserved' ? 'selected' : ''}>Commission Reserved in Payroll</option>
+          <option value="Commission Paid" ${activeState === 'Commission Paid' ? 'selected' : ''}>Commission Paid (Settlement Done)</option>
+          <option value="Payment Rejected" ${activeState === 'Payment Rejected' ? 'selected' : ''}>Source Payment Rejected</option>
+          <option value="Refund Impact Review" ${activeState === 'Refund Impact Review' ? 'selected' : ''}>Refund Impact Policy Review</option>
+          <option value="Commission Reversed" ${activeState === 'Commission Reversed' ? 'selected' : ''}>Commission Reversed Adjustment</option>
+          <option value="Permission Restricted" ${activeState === 'Permission Restricted' ? 'selected' : ''}>Restricted Role View</option>
+        </select>
+      </div>
+    </div>
+  `;
+}
+
+window.changeCSRDemoState = function(val) {
+  ensureCSRState();
+  const csr = state.csr;
+  csr.selectedDemoState = val;
+
+  const lead = csr.lead;
+  const attr = csr.attribution;
+  const cand = csr.candidate;
+  const claims = csr.claimsConflict;
+
+  // Defaults clean reset
+  lead.status = "Converted";
+  attr.status = "Verified";
+  attr.csrId = "csr-sarah";
+  cand.status = "Qualified";
+  cand.resultMinor = 75000;
+  claims.hasConflict = false;
+  claims.resolvedCsrId = null;
+  csr.earningHandoffFailed = false;
+
+  if (val === "Lead New") {
+    lead.status = "New";
+    attr.status = "Pending Verification";
+  } else if (val === "Lead Contacted") {
+    lead.status = "Contacted";
+  } else if (val === "Qualified Lead") {
+    lead.status = "Qualified";
+  } else if (val === "Trial Completed") {
+    lead.status = "Trial Completed";
+  } else if (val === "Converted") {
+    lead.status = "Converted";
+  } else if (val === "Attribution Pending") {
+    attr.status = "Pending Verification";
+  } else if (val === "Multiple CSR Conflict") {
+    attr.status = "Pending Verification";
+    claims.hasConflict = true;
+  } else if (val === "No CSR Attribution") {
+    attr.status = "Pending Verification";
+    attr.csrId = null; // Self-Service
+  } else if (val === "Commission Pending Verification") {
+    cand.status = "Pending Verification";
+  } else if (val === "Commission Eligible") {
+    cand.status = "Qualified";
+  } else if (val === "Self-Approval Blocked") {
+    cand.status = "Qualified";
+  } else if (val === "Segregation Review") {
+    cand.status = "Qualified";
+  } else if (val === "Commission Rejected") {
+    cand.status = "Rejected";
+  } else if (val === "Commission Approved") {
+    cand.status = "Approved";
+  } else if (val === "Payroll Handoff Failed") {
+    cand.status = "Approved";
+    csr.earningHandoffFailed = true;
+  } else if (val === "Commission Payable") {
+    cand.status = "Payable";
+    // Sync into Screen 31
+    syncEarningToPayroll("Available");
+  } else if (val === "Commission Reserved") {
+    cand.status = "Reserved";
+    syncEarningToPayroll("Reserved");
+  } else if (val === "Commission Paid") {
+    cand.status = "Paid";
+    syncEarningToPayroll("Settled");
+  } else if (val === "Payment Rejected") {
+    cand.status = "Rejected";
+  } else if (val === "Refund Impact Review") {
+    cand.status = "Reversed";
+  } else if (val === "Commission Reversed") {
+    cand.status = "Reversed";
+    syncEarningToPayroll("Reversed");
+  }
+
+  showToastAlert(`✓ CSR Demo state aligned: ${val}`);
+  renderCSRWorkspace(window.location.hash);
+};
+
+function syncEarningToPayroll(earnStatus) {
+  if (!state.payroll) return;
+  
+  // Find or create commission earning in Screen 31 State
+  let earn = state.payroll.earnings.find(e => e.id === "EARN-CSR-001");
+  if (!earn) {
+    earn = {
+      id: "EARN-CSR-001",
+      sourceType: "VerifiedCSRCommission",
+      sourceId: "COMM-CAND-001",
+      payeeId: "Sarah Ahmed",
+      amountMinor: 75000,
+      currency: "PKR",
+      status: earnStatus,
+      description: "Verified commission for ENR-001 conversion"
+    };
+    state.payroll.earnings.push(earn);
+  } else {
+    earn.status = earnStatus;
+  }
+}
+
+// ==========================================================================
+// CSR Dashboard View (Rule 2)
+// ==========================================================================
+
+function renderCSRDashboardView(container) {
+  const csr = state.csr;
+  const cand = csr.candidate;
+
+  // Derive counts based on candidate statuses
+  let pendingCount = cand.status === 'Pending Verification' ? 1 : 0;
+  let payableCount = cand.status === 'Payable' ? 1 : 0;
+  let paidCount = cand.status === 'Paid' ? 1 : 0;
+
+  container.innerHTML = `
+    ${getCSRSandboxNavbarHTML(csr.selectedDemoState)}
+
+    <!-- KPI Counters Grid -->
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:16px; margin-bottom:24px;">
+      <div class="kpi-card" style="padding:16px; border-left: 4px solid var(--color-primary);">
+        <span style="font-size:12px; font-weight:700; color:var(--color-tertiary);">My Leads</span>
+        <h3 style="font-size:24px; font-weight:900; margin:4px 0 0 0;">1</h3>
+      </div>
+      <div class="kpi-card" style="padding:16px; border-left: 4px solid var(--color-secondary);">
+        <span style="font-size:12px; font-weight:700; color:var(--color-tertiary);">Verified Enrolments</span>
+        <h3 style="font-size:24px; font-weight:900; margin:4px 0 0 0;">1</h3>
+      </div>
+      <div class="kpi-card" style="padding:16px; border-left: 4px solid #b78103;">
+        <span style="font-size:12px; font-weight:700; color:var(--color-tertiary);">Commission Eligible</span>
+        <h3 style="font-size:24px; font-weight:900; margin:4px 0 0 0;">${pendingCount}</h3>
+      </div>
+      <div class="kpi-card" style="padding:16px; border-left: 4px solid green;">
+        <span style="font-size:12px; font-weight:700; color:var(--color-tertiary);">Payable Commission</span>
+        <h3 style="font-size:24px; font-weight:900; margin:4px 0 0 0;">${payableCount}</h3>
+      </div>
+    </div>
+
+    <!-- Active Registry Links -->
+    <div class="form-card" style="padding:20px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3 style="font-family: var(--font-family-headings); font-weight:800; font-size:16px; margin:0;">Attributed Conversion Records</h3>
+        <a href="#csr/leads" class="btn btn-secondary" style="font-size:12px; height:32px; display:inline-flex; align-items:center;">Lead Registry</a>
+      </div>
+
+      <table style="width:100%; border-collapse:collapse; text-align:left;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+            <th style="padding: 12px;">Enrolment ID</th>
+            <th style="padding: 12px;">Learner</th>
+            <th style="padding: 12px;">Attributed CSR</th>
+            <th style="padding: 12px;">Product</th>
+            <th style="padding: 12px;">Commission Candidate</th>
+            <th style="padding: 12px;">Status</th>
+            <th style="padding: 12px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:13px;">
+            <td style="padding:12px; font-weight:bold; color:var(--color-primary);">ENR-001</td>
+            <td style="padding:12px; font-weight:700;">Ali Khan</td>
+            <td style="padding:12px;">Sarah Ahmed</td>
+            <td style="padding:12px;">Spoken English (Beginner)</td>
+            <td style="padding:12px; font-weight:bold;">PKR 750.00</td>
+            <td style="padding:12px;">
+              <span class="status-badge status-badge-${cand.status.toLowerCase().replace(/ /g, '-')}" style="padding:3px 6px; border-radius:4px; font-weight:bold; font-size:11px;">
+                ${cand.status}
+              </span>
+            </td>
+            <td style="padding:12px;">
+              <div style="display:flex; gap:6px;">
+                <a href="#csr/attributions/CSRATTR-ENR-001" class="btn btn-secondary" style="padding:4px 8px; font-size:11px; height:28px; text-decoration:none; display:inline-flex; align-items:center;">Attribution Chain</a>
+                <a href="#csr/commissions/COMM-CAND-001" class="btn btn-secondary" style="padding:4px 8px; font-size:11px; height:28px; text-decoration:none; display:inline-flex; align-items:center;">View Details</a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+// ==========================================================================
+// Lead registry Stage list view
+// ==========================================================================
+
+function renderCSRLeadsRegistry(container) {
+  const csr = state.csr;
+  const lead = csr.lead;
+
+  let timelineHtml = "";
+  lead.timeline.forEach(step => {
+    timelineHtml += `
+      <div style="display:flex; gap:16px; margin-bottom:12px; font-size:13px; align-items:flex-start;">
+        <span style="font-weight:bold; font-family:monospace; background:var(--color-surface-container); padding:3px 6px; border-radius:4px; font-size:11px; width:120px; text-align:center;">
+          ${step.time}
+        </span>
+        <div style="border-left:2px solid var(--color-outline-variant); padding-left:12px; padding-bottom:6px;">
+          <strong>Stage: ${step.stage}</strong>
+          <div style="font-size:12px; color:var(--color-tertiary); margin-top:2px;">${step.detail} (Actor: ${step.actor})</div>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = `
+    ${getCSRSandboxNavbarHTML(csr.selectedDemoState)}
+
+    <div style="display:grid; grid-template-columns: 1fr 300px; gap:20px; align-items:flex-start;">
+      
+      <!-- Lead Details & Stages timeline -->
+      <div class="form-card" style="padding:20px;">
+        <h3 style="font-family: var(--font-family-headings); font-weight:800; font-size:16px; margin:0 0 16px 0;">Lead Stage History: ${lead.id}</h3>
+        
+        <table style="width:100%; font-size:13px; line-height:24px; margin-bottom:20px;">
+          <tr><td style="color:var(--color-tertiary);">Prospect Name:</td><td style="font-weight:bold; text-align:right;">${lead.name}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Learner Account:</td><td style="font-weight:bold; text-align:right; color:var(--color-primary);">${lead.learnerId}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Lead Source:</td><td style="font-weight:bold; text-align:right;">${lead.acquisitionSource}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Conversion Status:</td><td style="font-weight:bold; text-align:right; color:green;">${lead.status}</td></tr>
+        </table>
+
+        <h4 style="font-weight:bold; font-size:13.5px; border-top:1px solid var(--color-outline-variant); padding-top:16px; margin-bottom:12px;">Stage Timeline logs</h4>
+        <div style="display:flex; flex-direction:column;">
+          ${timelineHtml}
+        </div>
+      </div>
+
+      <!-- Action panel link -->
+      <div class="form-card" style="padding:16px; font-size:12.5px; line-height:20px;">
+        <h3 style="font-weight:800; font-size:13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">💡 Conversions</h3>
+        <p style="color:var(--color-tertiary);">Linking a prospect lead to an active learner profile preserves the conversion pipeline funnel statistics without erasing lead metadata history.</p>
+        <a href="#csr/dashboard" class="btn btn-secondary" style="width:100%; text-align:center;">Back to Dashboard</a>
+      </div>
+
+    </div>
+  `;
+}
+
+// ==========================================================================
+// Attribution Chain Visual Diagram & Conflict Resolve (Rule 11-26)
+// ==========================================================================
+
+function renderCSRAttributionChain(container) {
+  const csr = state.csr;
+  const attr = csr.attribution;
+  const claims = csr.claimsConflict;
+
+  return `
+    ${getCSRSandboxNavbarHTML(csr.selectedDemoState)}
+
+    <div style="display:grid; grid-template-columns: 1fr 320px; gap:20px; align-items:flex-start;">
+      
+      <!-- Source Chain Diagram -->
+      <div class="form-card" style="padding:20px;">
+        <h3 style="font-family: var(--font-family-headings); font-weight:800; font-size:16px; margin:0 0 16px 0;">Attribution Conversion Pipeline Diagram</h3>
+
+        <div style="display:flex; flex-direction:column; gap:12px; max-width:480px; margin: 0 auto; position:relative;">
+          ${renderChainStepHTML("Lead Registered", "LEAD-001", "Source: Direct / Portal Inquiry")}
+          ${renderChainStepHTML("Trial Scheduled", "TRIAL-001", "CSR Assistant: Sarah Ahmed")}
+          ${renderChainStepHTML("Trial Completed", "OCC-TRIAL-001", "Trainer: Ayesha Rahman &bull; Ali Khan")}
+          ${renderChainStepHTML("Conversion Follow-Up", "FOLLOWUP-001", "Outcome: Converted to Membership")}
+          ${renderChainStepHTML("Payment Allocation", "PAY-ALLOC-001", "Approved transaction: PAY-TXN-001 (PKR 15,000)")}
+          ${renderChainStepHTML("Active Enrolment", "ENR-001", "Product: Spoken English Beginner")}
+          ${renderChainStepHTML("Verified CSR Attribution", attr.id, `Status: ${attr.status} &bull; Attributed to Sarah Ahmed`)}
+        </div>
+      </div>
+
+      <!-- Verification & Claim conflict panels -->
+      <div style="display:flex; flex-direction:column; gap:20px;">
+        
+        <!-- Attribution Verification checklist (Rule 15) -->
+        <div class="form-card" style="padding:16px; font-size:13px;">
+          <h3 style="font-weight:800; font-size:14px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">📋 Attribution Checklist</h3>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <div>✓ Lead exists (LEAD-001)</div>
+            <div>✓ Assigned CSR (Sarah Ahmed)</div>
+            <div>✓ Trial relationship (TRIAL-001)</div>
+            <div>✓ Follow-up relationship (FOLLOWUP-001)</div>
+            <div>✓ Payment Approved (PAY-TXN-001)</div>
+            <div>✓ Payment Allocation (PAY-ALLOC-001)</div>
+            <div style="color:green; font-weight:bold;">✓ Enrolment Active (ENR-001)</div>
+          </div>
+          
+          <div style="border-top:1px solid var(--color-outline-variant); padding-top:12px; margin-top:12px; text-align:right;">
+            <span class="status-badge" style="background:#e6f4ea; color:#137333; font-weight:bold; font-size:12px; padding:4px 8px; border-radius:4px;">
+              Attribution Verified
+            </span>
+          </div>
+        </div>
+
+        <!-- Claims Conflict Resolution Drawer (Rule 22 & 23) -->
+        ${claims.hasConflict ? `
+          <div class="form-card" style="padding:16px; background:#fff9ee; border:1px solid #faecc5; font-size:12.5px;">
+            <strong style="color:#b78103; display:block; margin-bottom:8px;">⚠️ Attribution Conflict Detected</strong>
+            <p style="color:var(--color-tertiary); margin-bottom:12px;">Two CSRs have submitted conversions claims for the Ali Khan enrolment. Select the qualified owner:</p>
+            
+            <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px;">
+              <button class="btn btn-secondary" style="font-size:11.5px; text-align:left; font-weight:bold; justify-content:flex-start;" onclick="resolveAttributionConflict('csr-sarah')">
+                Sarah Ahmed (Lead Owner / Follow-Up)
+              </button>
+              <button class="btn btn-secondary" style="font-size:11.5px; text-align:left; font-weight:bold; justify-content:flex-start;" onclick="resolveAttributionConflict('csr-bilal')">
+                Bilal Khan (Membership Assistance)
+              </button>
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- Self-Service acquisition check (Rule 24 & 25) -->
+        ${csr.selectedDemoState === "No CSR Attribution" ? `
+          <div class="form-card" style="padding:16px; background:#f5f5f5; border:1px solid var(--color-outline-variant); font-size:12.5px;">
+            <strong style="color:var(--color-primary); display:block; margin-bottom:4px;">🔒 Legitimate Self-Service</strong>
+            <p style="color:var(--color-tertiary); margin-bottom:0;">This conversion has been flagged as Self-Service. No CSR commissions will be generated.</p>
+          </div>
+        ` : ''}
+
+      </div>
+
+    </div>
+  `;
+}
+
+function renderChainStepHTML(title, refId, notes) {
+  return `
+    <div style="background:var(--color-surface-container); border:1px solid var(--color-outline-variant); border-radius:6px; padding:10px 14px; text-align:left; font-size:12.5px;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <strong>${title}</strong>
+        <span style="font-family:monospace; font-weight:bold; color:var(--color-secondary);">${refId}</span>
+      </div>
+      <div style="font-size:11.5px; color:var(--color-tertiary); margin-top:2px;">${notes}</div>
+    </div>
+  `;
+}
+
+window.resolveAttributionConflict = function(csrId) {
+  ensureCSRState();
+  const csr = state.csr;
+  csr.claimsConflict.hasConflict = false;
+  csr.claimsConflict.resolvedCsrId = csrId;
+  csr.attribution.csrId = csrId;
+  showToastAlert(`✓ Attribution conflict resolved: CSR owner set to ${csrId === 'csr-sarah' ? 'Sarah Ahmed' : 'Bilal Khan'}`);
+  renderCSRWorkspace(window.location.hash);
+};
+
+// ==========================================================================
+// Commission Candidate Review Workspace & Segregation checks (Rule 30-49)
+// ==========================================================================
+
+function renderCSRCommissionDetail(container) {
+  const csr = state.csr;
+  const cand = csr.candidate;
+  const rule = csr.rule;
+
+  return `
+    ${getCSRSandboxNavbarHTML(csr.selectedDemoState)}
+
+    <div style="display:grid; grid-template-columns: 1fr 320px; gap:20px; align-items:flex-start;">
+      
+      <!-- Candidate review card -->
+      <div class="form-card" style="padding:20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--color-outline-variant); padding-bottom:10px; margin-bottom:16px;">
+          <h3 style="font-family: var(--font-family-headings); font-weight:800; font-size:16px; margin:0;">Commission Candidate: ${cand.id}</h3>
+          <span class="status-badge status-badge-${cand.status.toLowerCase().replace(/ /g, '-')}" style="padding:3px 8px; border-radius:4px; font-weight:bold; font-size:12px;">
+            ${cand.status}
+          </span>
+        </div>
+
+        <table style="width:100%; font-size:13px; line-height:26px; margin-bottom:20px;">
+          <tr><td style="color:var(--color-tertiary);">Recipient CSR:</td><td style="font-weight:bold; text-align:right;">Sarah Ahmed</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Enrolment Attribution:</td><td style="font-weight:bold; text-align:right; font-family:monospace;">${cand.enrolmentAttributionId}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Payment Basis:</td><td style="font-weight:bold; text-align:right;">PKR 15,000.00</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Commission Rate:</td><td style="font-weight:bold; text-align:right;">5% (500 bps)</td></tr>
+          <tr style="border-top:1px solid var(--color-outline-variant); font-size:14px; font-weight:bold; color:var(--color-primary);">
+            <td>Calculated Commission:</td><td style="text-align:right;">PKR 750.00</td>
+          </tr>
+        </table>
+
+        <!-- Qualification checklist audit -->
+        <h4 style="font-weight:bold; font-size:13.5px; border-top:1px solid var(--color-outline-variant); padding-top:16px; margin-bottom:10px;">Rule Verification check</h4>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-size:12.5px; margin-bottom:20px;">
+          ${cand.evaluationChecklist.map(c => `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:var(--color-surface-container); padding:6px 10px; border-radius:4px;">
+              <span>${c.check}</span>
+              <span style="font-weight:bold; color:green;">✓</span>
+            </div>
+          `).join('')}
+        </div>
+
+        <!-- Manager Approvals drawer simulator (Rule 37, 39, 40) -->
+        ${cand.status === 'Qualified' ? `
+          <div style="background:#fff9ee; border:1px solid #faecc5; border-radius:6px; padding:16px;">
+            <strong style="color:#b78103; font-size:13.5px; display:block; margin-bottom:4px;">🔑 Manager Commission Review Required</strong>
+            <p style="margin:2px 0 12px 0; font-size:12px; color:var(--color-tertiary);">Confirm calculation parameters to generate the downstream payable payroll earning.</p>
+            
+            <div style="display:flex; gap:12px; justify-content:flex-end;">
+              <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="executeCommissionApprove()">Approve Commission</button>
+              <button class="btn btn-secondary" onclick="executeCommissionReject()">Reject</button>
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- Self-Approval warning (Rule 39) -->
+        ${csr.selectedDemoState === "Self-Approval Blocked" ? `
+          <div style="background-color:#fff0f0; border-left:3px solid #ba1a1a; padding:12px; border-radius:6px; font-size:12.5px; margin-top:12px;">
+            <strong style="color:#ba1a1a;">⛔ Segregation Action Blocked</strong>
+            <p style="margin:4px 0 0 0; color:var(--color-tertiary);">You cannot approve your own commission candidate. Request escalated to COO Omar Farooq.</p>
+          </div>
+        ` : ''}
+
+        <!-- Payable payroll handoff (Rule 47 & 48) -->
+        ${cand.status === 'Payable' ? `
+          <div style="background:#f0faf2; border:1px solid #cce8d4; border-radius:6px; padding:12px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <strong style="color:green;">✓ Earning Created (EARN-CSR-001)</strong>
+              <span style="font-size:11.5px; color:var(--color-tertiary); display:block; margin-top:2px;">Commission available under Screen 31 Payroll.</span>
+            </div>
+            <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="window.location.hash='#payroll/runs'">Open in Payroll</button>
+          </div>
+        ` : ''}
+
+        ${cand.status === 'Paid' ? `
+          <div style="background:#f0faf2; border:1px solid #cce8d4; border-radius:6px; padding:12px; font-size:13px; color:green; font-weight:bold; text-align:center;">
+            ✓ Earning Settled & Disbursed via PAYSETTLE-AYESHA-EXIT / Run Posting.
+          </div>
+        ` : ''}
+
+        <!-- Handoff exception retry cue (Rule 92 & 93) -->
+        ${csr.earningHandoffFailed ? `
+          <div style="background-color:#fff0f0; border-left:3px solid #ba1a1a; padding:12px; border-radius:6px; font-size:12.5px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <strong style="color:#ba1a1a;">⛔ Payroll Integration Handoff Failed</strong>
+              <p style="margin:2px 0 0 0; color:var(--color-tertiary);">Earning API timed out. Decision remains Approved.</p>
+            </div>
+            <button class="btn btn-secondary" style="color:#ba1a1a; border-color:#ba1a1a; height:32px;" onclick="executeHandoffRetry()">Retry Handoff</button>
+          </div>
+        ` : ''}
+      </div>
+
+      <!-- Rule definition drawer -->
+      <div class="form-card" style="padding:16px; font-size:12.5px; line-height:22px;">
+        <h3 style="font-weight:800; font-size:13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">How is this calculated?</h3>
+        <table style="width:100%; border-collapse:collapse;">
+          <tr><td>Rule:</td><td style="font-weight:bold; text-align:right; font-family:monospace;">${rule.id}</td></tr>
+          <tr><td>Type:</td><td style="font-weight:bold; text-align:right;">New Enrolment</td></tr>
+          <tr><td>Rate:</td><td style="font-weight:bold; text-align:right;">5%</td></tr>
+        </table>
+        
+        <!-- Reversal Policy configs (Rule 58 & 59) -->
+        <h4 style="font-weight:bold; font-size:12px; margin:16px 0 6px 0; border-top:1px solid var(--color-outline-variant); padding-top:12px;">Refund Reversal Policy</h4>
+        <div style="background:#f9f9f9; padding:8px; border-radius:4px; border:1px solid var(--color-outline-variant); font-size:11.5px; color:var(--color-tertiary);">
+          <strong>${csr.reversalPolicy.type}:</strong> ${csr.reversalPolicy.notes}
+        </div>
+      </div>
+
+    </div>
+  `;
+}
+
+window.executeCommissionApprove = function() {
+  ensureCSRState();
+  const csr = state.csr;
+  
+  if (csr.selectedDemoState === "Self-Approval Blocked") {
+    showToastAlert("⛔ Action Blocked: You cannot self-approve your own commission.", "error");
+    return;
+  }
+
+  csr.candidate.status = "Payable";
+  syncEarningToPayroll("Available");
+  showToastAlert("✓ Commission approved by manager. Payroll Earning EARN-CSR-001 created.");
+  renderCSRWorkspace(window.location.hash);
+};
+
+window.executeCommissionReject = function() {
+  ensureCSRState();
+  const csr = state.csr;
+  csr.candidate.status = "Rejected";
+  showToastAlert("✓ Commission candidate rejected.");
+  renderCSRWorkspace(window.location.hash);
+};
+
+window.executeHandoffRetry = function() {
+  ensureCSRState();
+  const csr = state.csr;
+  csr.earningHandoffFailed = false;
+  csr.candidate.status = "Payable";
+  syncEarningToPayroll("Available");
+  showToastAlert("✓ Earning handoff completed successfully.");
+  renderCSRWorkspace(window.location.hash);
+};
+
+// ==========================================================================
+// Operations Manager Commission Queue View (Rule 77 & 78)
+// ==========================================================================
+
+function renderCSROperationsQueue(container) {
+  const csr = state.csr;
+  const cand = csr.candidate;
+
+  container.innerHTML = `
+    ${getCSRSandboxNavbarHTML(csr.selectedDemoState)}
+
+    <div class="form-card" style="padding: 20px;">
+      <h3 style="font-family: var(--font-family-headings); font-weight:800; font-size:16px; margin:0 0 16px 0;">Operations Manager Commissions Queue</h3>
+
+      <table style="width:100%; border-collapse:collapse; text-align:left;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+            <th style="padding: 12px;">Candidate ID</th>
+            <th style="padding: 12px;">Recipient CSR</th>
+            <th style="padding: 12px;">Qualifying Enrolment</th>
+            <th style="padding: 12px;">Basis Value</th>
+            <th style="padding: 12px;">Earning Result</th>
+            <th style="padding: 12px;">Status</th>
+            <th style="padding: 12px;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:13px;">
+            <td style="padding:12px; font-weight:bold; color:var(--color-primary);">${cand.id}</td>
+            <td style="padding:12px; font-weight:700;">Sarah Ahmed</td>
+            <td style="padding:12px; font-family:monospace;">${cand.sourceEnrolmentId}</td>
+            <td style="padding:12px;">PKR 15,000.00</td>
+            <td style="padding:12px; font-weight:bold;">PKR 750.00</td>
+            <td style="padding:12px;">
+              <span class="status-badge status-badge-${cand.status.toLowerCase().replace(/ /g, '-')}" style="padding:3px 6px; border-radius:4px; font-weight:bold; font-size:11px;">
+                ${cand.status}
+              </span>
+            </td>
+            <td style="padding:12px;">
+              <a href="#csr/commissions/${cand.id}" class="btn btn-secondary" style="padding:4px 8px; font-size:11px; height:28px; text-decoration:none; display:inline-flex; align-items:center;">Review Candidate</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+// ==========================================================================
+// Screen 35 Media Assignment, Submission, Review, Approval & Wage Generation
+// ==========================================================================
+
+window.ensureMediaState = function() {
+  if (!state.media) {
+    state.media = {
+      selectedDemoState: "Assigned",
+      activeUserRole: "Media Head", // Media Head, Video Editor
+
+      project: {
+        id: "MEDIA-PROJ-001",
+        title: "Practical AI Launch Campaign",
+        type: "Campaign",
+        status: "Active",
+        objective: "Create launch media assets for the Practical AI programme."
+      },
+
+      assignments: [
+        {
+          id: "MEDIA-ASGN-001",
+          projectId: "MEDIA-PROJ-001",
+          title: "Practical AI Launch Reel",
+          contentType: "Short-Form Video",
+          platform: "Instagram / TikTok",
+          assigneeId: "media-editor-noor",
+          assigneeName: "Noor Fatima",
+          priority: "High",
+          dueDate: "2026-08-16 18:00 PKT",
+          status: "Assigned", // Assigned, In Progress, Submitted, Under Review, Revision Required, Approved
+          brief: "Introduce Practical AI as a beginner-friendly, practical programme. Expect hook, practical positioning, CTA, brand-safe end.",
+          targetDuration: "30-45 sec",
+          sourceAssets: [
+            { id: "RES-MEDIA-PAI-LOGO-001", label: "Innovator Huzsam Logo Pack", privacy: "Private Media Asset" },
+            { id: "RES-MEDIA-PAI-BROLL-001", label: "Practical AI Promo B-Roll", privacy: "Private Media Asset" },
+            { id: "RES-MEDIA-PAI-BRAND-001", label: "Brand Guide", privacy: "Private Media Asset" }
+          ],
+          activityLog: [
+            { actor: "media-head-hassan", timestamp: "2026-08-13 10:00", event: "Assignment Created and assigned to Noor Fatima" }
+          ]
+        },
+        {
+          id: "MEDIA-ASGN-002",
+          projectId: "MEDIA-PROJ-001",
+          title: "Practical AI Launch Thumbnail",
+          contentType: "Static Graphic",
+          platform: "YouTube",
+          assigneeId: "media-editor-other",
+          assigneeName: "Ali Raza",
+          priority: "Medium",
+          dueDate: "2026-08-15 12:00 PKT",
+          status: "Approved",
+          brief: "High-click YouTube thumbnail highlighting Practical AI launch benefits.",
+          targetDuration: "N/A",
+          sourceAssets: [],
+          activityLog: []
+        },
+        {
+          id: "MEDIA-ASGN-003",
+          projectId: "MEDIA-PROJ-001",
+          title: "Launch Announcement Post",
+          contentType: "Social Post",
+          platform: "Instagram / LinkedIn",
+          assigneeId: "media-social-zainab",
+          assigneeName: "Zainab Ahmed",
+          priority: "Low",
+          dueDate: "2026-08-14 15:00 PKT",
+          status: "Approved",
+          brief: "Formal Social announcement campaign text & carousel graphic.",
+          targetDuration: "N/A",
+          sourceAssets: [],
+          activityLog: []
+        }
+      ],
+
+      submissions: {
+        "MEDIA-ASGN-001": [
+          {
+            version: 1,
+            fileName: "practical-ai-launch-reel-v1.mp4",
+            submittedBy: "media-editor-noor",
+            timestamp: "2026-08-14 12:00",
+            duration: "38 sec",
+            aspectRatio: "9:16",
+            notes: "Initial launch reel following approved creative brief.",
+            review: {
+              reviewer: "Hassan Ali",
+              timestamp: "2026-08-14 14:00",
+              comments: [
+                { timecode: "00:04", note: "Make the opening hook more immediate." },
+                { timecode: "00:27", note: "CTA text should remain on screen slightly longer." }
+              ],
+              decision: "Revision Required",
+              summary: "Strengthen the first three seconds and extend CTA visibility."
+            }
+          }
+        ]
+      },
+
+      wageRule: {
+        id: "MEDIA-WAGE-SHORT-VIDEO-v1",
+        type: "Short-Form Video",
+        platform: "Instagram / TikTok",
+        complexity: "Standard",
+        amountMinor: 250000, // PKR 2,500.00
+        currency: "PKR"
+      },
+
+      rating: {
+        alignment: 4,
+        visual: 5,
+        consistency: 5,
+        technical: 4,
+        platformFit: 5,
+        average: 4.6
+      },
+
+      publishing: {
+        targetDate: "2026-08-20",
+        platform: "Instagram",
+        status: "Scheduled Metadata Only",
+        publicUrl: "Not Available Yet"
+      },
+
+      earningHandoffFailed: false
+    };
+  }
+};
+
+// ==========================================================================
+// Media Main Router
+// ==========================================================================
+
+window.renderMediaWorkspace = function(hash) {
+  ensureMediaState();
+  const med = state.media;
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  if (hash === "#media/dashboard" || hash === "#media") {
+    renderMediaDashboard(view);
+  } else if (hash.startsWith("#media/assignments/")) {
+    const asgnId = hash.split("/")[3];
+    renderMediaAssignmentDetail(view, asgnId);
+  } else {
+    renderMediaDashboard(view);
+  }
+};
+
+// ==========================================================================
+// Sandbox Control
+// ==========================================================================
+
+function getMediaSandboxNavbarHTML(activeState) {
+  return `
+    <div style="background-color: var(--color-surface-container-highest); border-bottom: 2px solid var(--color-outline-variant); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; border-radius: 8px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="font-weight: 900; font-size: 13.5px; color: var(--color-secondary);">🎛️ Media Sandbox:</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 12px; font-weight: 700; color: var(--color-tertiary);">Demo State:</span>
+        <select class="form-input" style="width: 250px; height: 32px; font-size: 12px; margin-bottom: 0; font-weight: bold; background: #fff;" onchange="changeMediaDemoState(this.value)">
+          <option value="Assigned" ${activeState === 'Assigned' ? 'selected' : ''}>Assigned (Default brief)</option>
+          <option value="In Progress" ${activeState === 'In Progress' ? 'selected' : ''}>In Progress (Editing starts)</option>
+          <option value="Uploading Submission" ${activeState === 'Uploading Submission' ? 'selected' : ''}>Uploading V1 deliverable</option>
+          <option value="Submitted V1" ${activeState === 'Submitted V1' ? 'selected' : ''}>Submitted V1 Review Queue</option>
+          <option value="Under Review" ${activeState === 'Under Review' ? 'selected' : ''}>Under Review timecode logs</option>
+          <option value="Revision Required" ${activeState === 'Revision Required' ? 'selected' : ''}>Revision Required Block</option>
+          <option value="V2 Submitted" ${activeState === 'V2 Submitted' ? 'selected' : ''}>V2 Submitted (Awaiting approval)</option>
+          <option value="Approved" ${activeState === 'Approved' ? 'selected' : ''}>Approved & Wage Snapshotted</option>
+          <option value="Missing Wage Rule" ${activeState === 'Missing Wage Rule' ? 'selected' : ''}>Missing Wage Rule Error</option>
+          <option value="Conflicting Wage Rule" ${activeState === 'Conflicting Wage Rule' ? 'selected' : ''}>Conflicting Wage Rules Exception</option>
+          <option value="Payroll Handoff Failed" ${activeState === 'Payroll Handoff Failed' ? 'selected' : ''}>Payroll Handoff Failed Alert</option>
+          <option value="Payroll Available" ${activeState === 'Payroll Available' ? 'selected' : ''}>Payroll Available (Payable)</option>
+          <option value="Payroll Reserved" ${activeState === 'Payroll Reserved' ? 'selected' : ''}>Payroll Run Reserved</option>
+          <option value="Paid" ${activeState === 'Paid' ? 'selected' : ''}>Paid (Payroll Settled)</option>
+          <option value="Late Submission" ${activeState === 'Late Submission' ? 'selected' : ''}>Late Submission Badge</option>
+          <option value="External Link" ${activeState === 'External Link' ? 'selected' : ''}>External Link Submission</option>
+          <option value="External Link Failed" ${activeState === 'External Link Failed' ? 'selected' : ''}>External Link Failed Status</option>
+          <option value="Reassigned" ${activeState === 'Reassigned' ? 'selected' : ''}>Reassigned Editor Handover</option>
+          <option value="Rejected" ${activeState === 'Rejected' ? 'selected' : ''}>Work Rejected (No Pay)</option>
+          <option value="Cancelled" ${activeState === 'Cancelled' ? 'selected' : ''}>Assignment Cancelled</option>
+          <option value="Publication Scheduled" ${activeState === 'Publication Scheduled' ? 'selected' : ''}>Publication Scheduled</option>
+          <option value="Published" ${activeState === 'Published' ? 'selected' : ''}>Published Live Outcomes</option>
+          <option value="Source Asset Missing" ${activeState === 'Source Asset Missing' ? 'selected' : ''}>Source Asset Missing Exception</option>
+          <option value="Permission Restricted" ${activeState === 'Permission Restricted' ? 'selected' : ''}>Permission Restricted View</option>
+        </select>
+      </div>
+    </div>
+  `;
+}
+
+window.changeMediaDemoState = function(val) {
+  ensureMediaState();
+  const med = state.media;
+  med.selectedDemoState = val;
+
+  const asgn = med.assignments.find(a => a.id === "MEDIA-ASGN-001");
+  const subs = med.submissions;
+  med.earningHandoffFailed = false;
+
+  // Reset defaults
+  asgn.status = "Assigned";
+  asgn.assigneeName = "Noor Fatima";
+  asgn.assigneeId = "media-editor-noor";
+  subs["MEDIA-ASGN-001"] = [];
+  med.publishing.status = "Scheduled Metadata Only";
+
+  if (val === "Assigned") {
+    // Basic
+  } else if (val === "In Progress") {
+    asgn.status = "In Progress";
+  } else if (val === "Uploading Submission") {
+    asgn.status = "In Progress";
+  } else if (val === "Submitted V1") {
+    asgn.status = "Submitted";
+    subs["MEDIA-ASGN-001"] = [{
+      version: 1,
+      fileName: "practical-ai-launch-reel-v1.mp4",
+      submittedBy: "media-editor-noor",
+      timestamp: "2026-08-14 12:00",
+      duration: "38 sec",
+      aspectRatio: "9:16",
+      notes: "Initial launch reel following approved creative brief.",
+      review: null
+    }];
+  } else if (val === "Under Review") {
+    asgn.status = "Submitted";
+    subs["MEDIA-ASGN-001"] = [{
+      version: 1,
+      fileName: "practical-ai-launch-reel-v1.mp4",
+      submittedBy: "media-editor-noor",
+      timestamp: "2026-08-14 12:00",
+      duration: "38 sec",
+      aspectRatio: "9:16",
+      notes: "Initial launch reel following approved creative brief.",
+      review: {
+        reviewer: "Hassan Ali",
+        timestamp: "2026-08-14 13:00",
+        comments: [
+          { timecode: "00:04", note: "Make the opening hook more immediate." }
+        ],
+        decision: "Pending",
+        summary: "Under review."
+      }
+    }];
+  } else if (val === "Revision Required") {
+    asgn.status = "Revision Required";
+    subs["MEDIA-ASGN-001"] = [{
+      version: 1,
+      fileName: "practical-ai-launch-reel-v1.mp4",
+      submittedBy: "media-editor-noor",
+      timestamp: "2026-08-14 12:00",
+      duration: "38 sec",
+      aspectRatio: "9:16",
+      notes: "Initial launch reel following approved creative brief.",
+      review: {
+        reviewer: "Hassan Ali",
+        timestamp: "2026-08-14 14:00",
+        comments: [
+          { timecode: "00:04", note: "Make the opening hook more immediate." },
+          { timecode: "00:27", note: "CTA text should remain on screen slightly longer." }
+        ],
+        decision: "Revision Required",
+        summary: "Strengthen the first three seconds and extend CTA visibility."
+      }
+    }];
+  } else if (val === "V2 Submitted") {
+    asgn.status = "Submitted";
+    subs["MEDIA-ASGN-001"] = [
+      {
+        version: 1,
+        fileName: "practical-ai-launch-reel-v1.mp4",
+        submittedBy: "media-editor-noor",
+        timestamp: "2026-08-14 12:00",
+        duration: "38 sec",
+        aspectRatio: "9:16",
+        notes: "Initial launch reel following approved creative brief.",
+        review: {
+          reviewer: "Hassan Ali",
+          timestamp: "2026-08-14 14:00",
+          comments: [
+            { timecode: "00:04", note: "Make the opening hook more immediate." }
+          ],
+          decision: "Revision Required",
+          summary: "Strengthen the first three seconds and extend CTA visibility."
+        }
+      },
+      {
+        version: 2,
+        fileName: "practical-ai-launch-reel-v2.mp4",
+        submittedBy: "media-editor-noor",
+        timestamp: "2026-08-15 10:00",
+        duration: "38 sec",
+        aspectRatio: "9:16",
+        notes: "Updated hook and CTA based on V1 review feedback.",
+        review: null
+      }
+    ];
+  } else if (val === "Approved") {
+    asgn.status = "Approved";
+    subs["MEDIA-ASGN-001"] = [
+      {
+        version: 1,
+        fileName: "practical-ai-launch-reel-v1.mp4",
+        submittedBy: "media-editor-noor",
+        timestamp: "2026-08-14 12:00",
+        duration: "38s",
+        aspectRatio: "9:16",
+        notes: "V1 upload",
+        review: { decision: "Revision Required" }
+      },
+      {
+        version: 2,
+        fileName: "practical-ai-launch-reel-v2.mp4",
+        submittedBy: "media-editor-noor",
+        timestamp: "2026-08-15 10:00",
+        duration: "38 sec",
+        aspectRatio: "9:16",
+        notes: "Updated hook & CTA",
+        review: {
+          reviewer: "Hassan Ali",
+          timestamp: "2026-08-15 12:00",
+          decision: "Approved",
+          summary: "Outstanding revisions completed. Reel aligned with Hook brief criteria."
+        }
+      }
+    ];
+  } else if (val === "Missing Wage Rule") {
+    asgn.status = "Approved";
+  } else if (val === "Conflicting Wage Rule") {
+    asgn.status = "Approved";
+  } else if (val === "Payroll Handoff Failed") {
+    asgn.status = "Approved";
+    med.earningHandoffFailed = true;
+  } else if (val === "Payroll Available") {
+    asgn.status = "Approved";
+    syncMediaEarningToPayroll("Available");
+  } else if (val === "Payroll Reserved") {
+    asgn.status = "Approved";
+    syncMediaEarningToPayroll("Reserved");
+  } else if (val === "Paid") {
+    asgn.status = "Approved";
+    syncMediaEarningToPayroll("Settled");
+  } else if (val === "Late Submission") {
+    asgn.status = "Submitted";
+    subs["MEDIA-ASGN-001"] = [{
+      version: 1,
+      fileName: "practical-ai-launch-reel-v1.mp4",
+      submittedBy: "media-editor-noor",
+      timestamp: "2026-08-16 20:15", // Due 16 Aug 18:00
+      duration: "38 sec",
+      aspectRatio: "9:16",
+      notes: "Submitted after target deadline.",
+      review: null
+    }];
+  } else if (val === "External Link") {
+    asgn.status = "Submitted";
+    subs["MEDIA-ASGN-001"] = [{
+      version: 1,
+      fileName: "External Link &bull; Validated",
+      submittedBy: "media-editor-noor",
+      timestamp: "2026-08-14 12:00",
+      duration: "38 sec",
+      aspectRatio: "9:16",
+      notes: "Shared Google Drive draft file link.",
+      review: null
+    }];
+  } else if (val === "External Link Failed") {
+    asgn.status = "Submitted";
+    subs["MEDIA-ASGN-001"] = [{
+      version: 1,
+      fileName: "External Source Changed / Requires Review",
+      submittedBy: "media-editor-noor",
+      timestamp: "2026-08-14 12:00",
+      duration: "N/A",
+      aspectRatio: "N/A",
+      notes: "Link returned inaccessible / permission changed.",
+      review: null
+    }];
+  } else if (val === "Reassigned") {
+    asgn.status = "In Progress";
+    asgn.assigneeName = "Amina Yusuf";
+    asgn.assigneeId = "media-editor-amina";
+    asgn.activityLog.push({ actor: "media-head-hassan", timestamp: "2026-08-14 15:00", event: "Reassigned task from Noor Fatima to Amina Yusuf. Reason: Capacity change." });
+  } else if (val === "Rejected") {
+    asgn.status = "Rejected";
+  } else if (val === "Cancelled") {
+    asgn.status = "Cancelled";
+  } else if (val === "Publication Scheduled") {
+    asgn.status = "Approved";
+    med.publishing.status = "Scheduled";
+  } else if (val === "Published") {
+    asgn.status = "Approved";
+    med.publishing.status = "Published";
+    med.publishing.publicUrl = "https://instagram.com/p/C-mock";
+  }
+
+  showToastAlert(`✓ Media Demo state updated: ${val}`);
+  renderMediaWorkspace(window.location.hash);
+};
+
+function syncMediaEarningToPayroll(earnStatus) {
+  if (!state.payroll) return;
+  let earn = state.payroll.earnings.find(e => e.id === "EARN-MEDIA-001");
+  if (!earn) {
+    earn = {
+      id: "EARN-MEDIA-001",
+      sourceType: "ApprovedMediaWork",
+      sourceId: "MEDIA-ASGN-001",
+      payeeId: "Noor Fatima",
+      amountMinor: 250000,
+      currency: "PKR",
+      status: earnStatus,
+      description: "Approved wage for Practical AI Launch Reel short video"
+    };
+    state.payroll.earnings.push(earn);
+  } else {
+    earn.status = earnStatus;
+  }
+}
+
+// ==========================================================================
+// Media Dashboard View (Rule 3 & 4)
+// ==========================================================================
+
+function renderMediaDashboard(container) {
+  const med = state.media;
+  const asgn = med.assignments;
+
+  // View Mode selector inside dashboard
+  let viewToggleHtml = `
+    <div style="display:flex; gap:8px; background:var(--color-surface-container); padding:4px; border-radius:6px; width:fit-content; margin-bottom:20px; border:1px solid var(--color-outline-variant);">
+      <button class="btn" style="border:none; padding:6px 12px; font-size:12px; font-weight:bold; cursor:pointer; background:${med.activeUserRole === 'Media Head' ? '#fff' : 'transparent'}; border-radius:4px;" onclick="changeMediaUserRole('Media Head')">
+        Media Head View
+      </button>
+      <button class="btn" style="border:none; padding:6px 12px; font-size:12px; font-weight:bold; cursor:pointer; background:${med.activeUserRole === 'Video Editor' ? '#fff' : 'transparent'}; border-radius:4px;" onclick="changeMediaUserRole('Video Editor')">
+        Editor View (Noor)
+      </button>
+    </div>
+  `;
+
+  let contentHtml = "";
+  if (med.activeUserRole === "Media Head") {
+    contentHtml = renderMediaHeadDashboardContent();
+  } else {
+    contentHtml = renderVideoEditorDashboardContent();
+  }
+
+  container.innerHTML = `
+    ${getMediaSandboxNavbarHTML(med.selectedDemoState)}
+    
+    <div class="form-card" style="padding:20px; margin-bottom:20px;">
+      <h2 style="font-family: var(--font-family-headings); font-size: 20px; font-weight:900; margin:0 0 4px 0;">🎥 Media Department Operations Workspace</h2>
+      <p style="font-size:12.5px; color:var(--color-tertiary); margin-bottom:16px;">Track high-quality social video deadlines, approve versioned draft submissions, and record rated work to trigger automated payroll payouts.</p>
+      ${viewToggleHtml}
+    </div>
+
+    ${contentHtml}
+  `;
+}
+
+window.changeMediaUserRole = function(role) {
+  ensureMediaState();
+  state.media.activeUserRole = role;
+  renderMediaWorkspace(window.location.hash);
+};
+
+function renderMediaHeadDashboardContent() {
+  const med = state.media;
+  
+  // Counts
+  let inProgressCount = med.assignments.filter(a => a.status === 'In Progress').length;
+  let submittedCount = med.assignments.filter(a => a.status === 'Submitted').length;
+  let revCount = med.assignments.filter(a => a.status === 'Revision Required').length;
+  let approvedCount = med.assignments.filter(a => a.status === 'Approved').length;
+
+  return `
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:16px; margin-bottom:24px;">
+      <div class="kpi-card" style="padding:16px; border-left:4px solid var(--color-primary);">
+        <span style="font-size:11.5px; font-weight:700; color:var(--color-tertiary);">In Progress Tasks</span>
+        <h3 style="font-size:24px; font-weight:900; margin:4px 0 0 0;">${inProgressCount}</h3>
+      </div>
+      <div class="kpi-card" style="padding:16px; border-left:4px solid #b78103;">
+        <span style="font-size:11.5px; font-weight:700; color:var(--color-tertiary);">Awaiting Review</span>
+        <h3 style="font-size:24px; font-weight:900; margin:4px 0 0 0;">${submittedCount}</h3>
+      </div>
+      <div class="kpi-card" style="padding:16px; border-left:4px solid var(--color-error);">
+        <span style="font-size:11.5px; font-weight:700; color:var(--color-tertiary);">Revision Required</span>
+        <h3 style="font-size:24px; font-weight:900; margin:4px 0 0 0;">${revCount}</h3>
+      </div>
+      <div class="kpi-card" style="padding:16px; border-left:4px solid green;">
+        <span style="font-size:11.5px; font-weight:700; color:var(--color-tertiary);">Approved Tasks</span>
+        <h3 style="font-size:24px; font-weight:900; margin:4px 0 0 0;">${approvedCount}</h3>
+      </div>
+    </div>
+
+    <!-- Assignments Queue -->
+    <div class="form-card" style="padding:20px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3 style="font-weight:800; font-size:15px; margin:0;">Practical AI Launch Campaign Tasks Grouping</h3>
+        <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; height:32px;" onclick="openNewAssignmentModal()">New Assignment</button>
+      </div>
+
+      <table style="width:100%; border-collapse:collapse; text-align:left;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+            <th style="padding: 12px;">Task ID</th>
+            <th style="padding: 12px;">Task Title</th>
+            <th style="padding: 12px;">Assignee</th>
+            <th style="padding: 12px;">Due Date</th>
+            <th style="padding: 12px;">Work Status</th>
+            <th style="padding: 12px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${med.assignments.map(a => `
+            <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:13px;">
+              <td style="padding:12px; font-weight:bold; color:var(--color-primary);">${a.id}</td>
+              <td style="padding:12px; font-weight:700;">${a.title}</td>
+              <td style="padding:12px;">${a.assigneeName}</td>
+              <td style="padding:12px; font-family:monospace;">${a.dueDate}</td>
+              <td style="padding:12px;">
+                <span class="status-badge status-badge-${a.status.toLowerCase().replace(/ /g, '-')}" style="padding:3px 6px; border-radius:4px; font-weight:bold; font-size:11px;">
+                  ${a.status}
+                </span>
+              </td>
+              <td style="padding:12px;">
+                <a href="#media/assignments/${a.id}" class="btn btn-secondary" style="padding:4px 8px; font-size:11px; height:28px; text-decoration:none; display:inline-flex; align-items:center;">Open Assignment</a>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderVideoEditorDashboardContent() {
+  const med = state.media;
+  const myAsgn = med.assignments.filter(a => a.assigneeId === 'media-editor-noor');
+
+  return `
+    <div class="form-card" style="padding:20px;">
+      <h3 style="font-weight:800; font-size:15px; margin:0 0 16px 0;">My Scoped Tasks Queue</h3>
+
+      <table style="width:100%; border-collapse:collapse; text-align:left;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+            <th style="padding: 12px;">Task ID</th>
+            <th style="padding: 12px;">Title</th>
+            <th style="padding: 12px;">Due Date</th>
+            <th style="padding: 12px;">Status</th>
+            <th style="padding: 12px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${myAsgn.map(a => `
+            <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:13px;">
+              <td style="padding:12px; font-weight:bold; color:var(--color-primary);">${a.id}</td>
+              <td style="padding:12px; font-weight:700;">${a.title}</td>
+              <td style="padding:12px; font-family:monospace;">${a.dueDate}</td>
+              <td style="padding:12px;">
+                <span class="status-badge status-badge-${a.status.toLowerCase().replace(/ /g, '-')}" style="padding:3px 6px; border-radius:4px; font-weight:bold; font-size:11px;">
+                  ${a.status}
+                </span>
+              </td>
+              <td style="padding:12px;">
+                <a href="#media/assignments/${a.id}" class="btn btn-secondary" style="padding:4px 8px; font-size:11px; height:28px; text-decoration:none; display:inline-flex; align-items:center;">View Workspace</a>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+// ==========================================================================
+// Media New Assignment Modal (Rule 10)
+// ==========================================================================
+
+window.openNewAssignmentModal = function() {
+  const content = `
+    <div style="text-align:left; font-size:13px; display:flex; flex-direction:column; gap:12px;">
+      <div>
+        <label style="font-weight:bold; display:block; margin-bottom:4px;">Task Title:</label>
+        <input type="text" id="asgn-title-input" class="form-input" value="Practical AI Launch Reel v2">
+      </div>
+      <div>
+        <label style="font-weight:bold; display:block; margin-bottom:4px;">Assignee Editor:</label>
+        <select id="asgn-assignee-input" class="form-input" style="background:#fff;">
+          <option value="media-editor-noor">Noor Fatima (Video Editor)</option>
+          <option value="media-social-zainab">Zainab Ahmed (Social Media)</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-weight:bold; display:block; margin-bottom:4px;">Creative Brief Description:</label>
+        <textarea id="asgn-brief-input" class="form-input" style="height:60px;">Introduce Practical AI beginner Hook.</textarea>
+      </div>
+      <div style="display:flex; gap:12px; margin-top:16px;">
+        <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="executeCreateAssignment()">Create Task</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("New Media Assignment", content);
+};
+
+window.executeCreateAssignment = function() {
+  ensureMediaState();
+  const title = document.getElementById("asgn-title-input").value.trim();
+  const assignee = document.getElementById("asgn-assignee-input").value;
+  const brief = document.getElementById("asgn-brief-input").value.trim();
+  
+  if (!title) return;
+
+  const newAsgn = {
+    id: `MEDIA-ASGN-00${state.media.assignments.length + 1}`,
+    projectId: "MEDIA-PROJ-001",
+    title: title,
+    contentType: "Short-Form Video",
+    platform: "Instagram / TikTok",
+    assigneeId: assignee,
+    assigneeName: assignee === "media-editor-noor" ? "Noor Fatima" : "Zainab Ahmed",
+    priority: "High",
+    dueDate: "2026-08-16 18:00 PKT",
+    status: "Assigned",
+    brief: brief,
+    targetDuration: "30-45 sec",
+    sourceAssets: [],
+    activityLog: [{ actor: "media-head-hassan", timestamp: "2026-08-13 19:45", event: "Assignment Created" }]
+  };
+
+  state.media.assignments.push(newAsgn);
+  closeModal();
+  showToastAlert(`✓ Media Assignment ${newAsgn.id} created successfully.`);
+  renderMediaWorkspace(window.location.hash);
+};
+
+// ==========================================================================
+// Media Assignment Detail View (Rule 11-123)
+// ==========================================================================
+
+function renderMediaAssignmentDetail(container, asgnId) {
+  const med = state.media;
+  const asgn = med.assignments.find(a => a.id === asgnId);
+  if (!asgn) return;
+
+  const subHistory = med.submissions[asgnId] || [];
+
+  // Source assets lists (Rule 14 & 15)
+  let assetsHtml = "";
+  asgn.sourceAssets.forEach(asset => {
+    assetsHtml += `
+      <div style="background:var(--color-surface-container); border:1px solid var(--color-outline-variant); border-radius:6px; padding:10px; display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:12.5px;">
+        <div>
+          <strong>${asset.label}</strong>
+          <span style="font-size:11px; display:block; color:red;">🔒 Private Media Asset</span>
+        </div>
+        <button class="btn btn-secondary" style="font-size:11px; padding:4px 8px; height:26px;" onclick="showToastAlert('🔒 Restricted Asset downloaded locally (Access Logged)')">Download</button>
+      </div>
+    `;
+  });
+
+  // Version history timeline html (Rule 38-40)
+  let subHistoryHtml = "";
+  subHistory.forEach(sub => {
+    let reviewHtml = "";
+    if (sub.review) {
+      reviewHtml = `
+        <div style="background:#fffcf4; border:1px solid #faecc5; border-radius:6px; padding:10px; margin-top:8px; font-size:12px;">
+          <strong style="color:#b78103;">📝 Hassan Ali Review Decision: ${sub.review.decision}</strong>
+          <p style="margin:4px 0; font-style:italic;">"${sub.review.summary}"</p>
+          ${sub.review.comments ? `
+            <div style="margin-top:6px; font-size:11.5px; line-height:16px;">
+              <strong>Timecode notes:</strong>
+              ${sub.review.comments.map(c => `<div style="color:var(--color-tertiary);">&bull; [${c.timecode}] ${c.note}</div>`).join('')}
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    subHistoryHtml += `
+      <div style="border-left: 2px solid var(--color-outline-variant); padding-left:14px; position:relative; margin-bottom:16px; font-size:12.5px;">
+        <div style="width:10px; height:10px; border-radius:50%; background:var(--color-primary); position:absolute; left:-6px; top:4px;"></div>
+        <div>
+          <strong>Version ${sub.version} Submission: ${sub.fileName}</strong>
+          <span style="font-size:11px; color:var(--color-tertiary); display:block;">Submitted: ${sub.timestamp}</span>
+          <p style="margin:4px 0 0 0; font-size:12px; color:var(--color-tertiary);">Work Notes: "${sub.notes}"</p>
+        </div>
+        ${reviewHtml}
+      </div>
+    `;
+  });
+
+  container.innerHTML = `
+    ${getMediaSandboxNavbarHTML(med.selectedDemoState)}
+
+    <div style="display:grid; grid-template-columns: 1fr 340px; gap:20px; align-items:flex-start;">
+      
+      <!-- Primary task briefs & version history -->
+      <div>
+        <div class="form-card" style="padding:20px; margin-bottom:20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:12px;">
+            <div>
+              <h3 style="font-family: var(--font-family-headings); font-weight:900; font-size:18px; margin:0;">${asgn.title}</h3>
+              <span style="font-size:12px; color:var(--color-tertiary);">${asgn.contentType} &bull; Channel: ${asgn.platform}</span>
+            </div>
+            <span class="status-badge status-badge-${asgn.status.toLowerCase().replace(/ /g, '-')}" style="padding:4px 8px; border-radius:4px; font-weight:bold; font-size:12px;">
+              ${asgn.status}
+            </span>
+          </div>
+
+          <div style="background:var(--color-surface-container); border-radius:6px; padding:12px; font-size:13px; margin-bottom:20px;">
+            <strong style="color:var(--color-secondary);">Creative Brief Objective:</strong>
+            <p style="margin:4px 0 0 0; line-height:1.5; color:var(--color-tertiary);">${asgn.brief}</p>
+          </div>
+
+          <!-- Versioned submissions logs -->
+          <h4 style="font-weight:bold; font-size:14px; border-top:1px solid var(--color-outline-variant); padding-top:16px; margin-bottom:12px;">Version Deliverables Timeline (Revision logs)</h4>
+          ${subHistoryHtml.length > 0 ? `
+            <div style="display:flex; flex-direction:column; margin-bottom:20px;">
+              ${subHistoryHtml}
+            </div>
+          ` : `
+            <div style="background:var(--color-surface-container); text-align:center; padding:20px; font-style:italic; font-size:12.5px; color:var(--color-tertiary); border-radius:6px; margin-bottom:20px;">
+              No versions submitted yet.
+            </div>
+          `}
+
+          <!-- Editor Submission Actions (Rule 23) -->
+          ${asgn.status !== 'Approved' && med.activeUserRole === 'Video Editor' ? `
+            <div style="background:#f4faf5; border:1px solid #cce8d4; border-radius:6px; padding:14px;">
+              <strong style="color:green; font-size:13px; display:block; margin-bottom:6px;">🚀 Ready to upload deliverable?</strong>
+              <button class="btn btn-primary" style="background-color:green; border-color:green; color:#fff; font-weight:800; width:100%;" onclick="openSubmitWorkModal('${asgnId}')">
+                Submit Deliverable v${subHistory.length + 1}
+              </button>
+            </div>
+          ` : ''}
+
+          <!-- Manager review panels (Rule 30) -->
+          ${asgn.status === 'Submitted' && med.activeUserRole === 'Media Head' ? `
+            <div style="background:#fffcf4; border:1px solid #faecc5; border-radius:6px; padding:14px;">
+              <strong style="color:#b78103; font-size:13px; display:block; margin-bottom:6px;">📝 Pending Decision Review</strong>
+              <div style="display:flex; gap:12px; justify-content:flex-end;">
+                <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="openApproveSubmissionModal('${asgnId}')">Approve Deliverable</button>
+                <button class="btn btn-secondary" onclick="openRequestRevisionModal('${asgnId}')">Request Revision</button>
+              </div>
+            </div>
+          ` : ''}
+
+        </div>
+      </div>
+
+      <!-- Assets, scorecards, publishing and comp details -->
+      <div style="display:flex; flex-direction:column; gap:20px;">
+        
+        <!-- Secure assets participant scoped -->
+        <div class="form-card" style="padding:16px;">
+          <h4 style="font-weight:800; font-size:13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">📁 Secure Campaign Source Files</h4>
+          ${assetsHtml.length > 0 ? assetsHtml : '<div style="font-style:italic; font-size:12px; color:var(--color-tertiary);">No assets assigned.</div>'}
+        </div>
+
+        <!-- Criteria rating scorecard (Rule 42) -->
+        ${asgn.status === 'Approved' ? `
+          <div class="form-card" style="padding:16px; font-size:12.5px;">
+            <h4 style="font-weight:800; font-size:13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">⭐ Criteria Quality Scorecard</h4>
+            <div style="display:flex; flex-direction:column; gap:4px; line-height:22px; margin-bottom:8px;">
+              <div style="display:flex; justify-content:space-between;"><span>Brief Alignment:</span><strong>${med.rating.alignment}/5</strong></div>
+              <div style="display:flex; justify-content:space-between;"><span>Visual Quality:</span><strong>${med.rating.visual}/5</strong></div>
+              <div style="display:flex; justify-content:space-between;"><span>Brand Fit:</span><strong>${med.rating.consistency}/5</strong></div>
+            </div>
+            <div style="border-top:1px solid var(--color-outline-variant); padding-top:8px; font-weight:bold; font-size:13px; display:flex; justify-content:space-between;">
+              <span>Average Rating:</span><span style="color:green;">${med.rating.average}/5</span>
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- Publishing details pane -->
+        ${asgn.status === 'Approved' ? `
+          <div class="form-card" style="padding:16px; font-size:12.5px; line-height:22px;">
+            <h4 style="font-weight:800; font-size:13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">📢 Social Platform Scheduling</h4>
+            <table style="width:100%;">
+              <tr><td>Channel:</td><td style="font-weight:bold; text-align:right;">${med.publishing.platform}</td></tr>
+              <tr><td>Target Date:</td><td style="font-weight:bold; text-align:right; font-family:monospace;">${med.publishing.targetDate}</td></tr>
+              <tr><td>Publish Status:</td><td style="font-weight:bold; text-align:right; color:green;">${med.publishing.status}</td></tr>
+            </table>
+          </div>
+        ` : ''}
+
+        <!-- Compensation details (Rule 53-61) -->
+        <div class="form-card" style="padding:16px; font-size:12.5px; line-height:22px;">
+          <h4 style="font-weight:800; font-size:13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">💰 Wage Payout Summary</h4>
+          ${asgn.status === 'Approved' ? `
+            <table style="width:100%; margin-bottom:8px;">
+              <tr><td>Wage Rule:</td><td style="font-weight:bold; text-align:right; font-family:monospace;">${med.wageRule.id}</td></tr>
+              <tr><td>Amount:</td><td style="font-weight:bold; text-align:right; color:green;">PKR 2,500.00</td></tr>
+              <tr><td>Earning ID:</td><td style="font-weight:bold; text-align:right; font-family:monospace;">EARN-MEDIA-001</td></tr>
+              <tr><td>Payroll Handoff:</td><td style="font-weight:bold; text-align:right;">
+                ${med.selectedDemoState === 'Paid' ? 'Settled (Paid)' : med.selectedDemoState === 'Payroll Reserved' ? 'Reserved' : 'Available'}
+              </td></tr>
+            </table>
+            ${med.selectedDemoState !== 'Paid' ? `
+              <button class="btn btn-secondary" style="width:100%; font-size:11.5px; height:28px;" onclick="window.location.hash='#payroll/runs'">Verify in Payroll Run</button>
+            ` : ''}
+          ` : `
+            <div style="font-style:italic; color:var(--color-tertiary);">payout rates are calculated and registered automatically at the point of manager approval.</div>
+          `}
+        </div>
+
+      </div>
+
+    </div>
+  `;
+}
+
+// ==========================================================================
+// Version Submission & Revision Dialogs (Rule 23, 34)
+// ==========================================================================
+
+window.openSubmitWorkModal = function(asgnId) {
+  const content = `
+    <div style="text-align:left; font-size:13px; display:flex; flex-direction:column; gap:12px;">
+      <div>
+        <label style="font-weight:bold; display:block; margin-bottom:4px;">Select File / External Draft Link:</label>
+        <input type="text" id="sub-file-input" class="form-input" value="practical-ai-launch-reel-v2.mp4">
+      </div>
+      <div>
+        <label style="font-weight:bold; display:block; margin-bottom:4px;">Work Submission Notes:</label>
+        <textarea id="sub-notes-input" class="form-input" style="height:60px;">Revisions applied to strengthen hook & CTA timing.</textarea>
+      </div>
+      <div style="display:flex; gap:12px; margin-top:16px;">
+        <button class="btn btn-primary" style="background-color:green; border-color:green; color:#fff; font-weight:800; flex:1.2;" onclick="executeSubmitWork('${asgnId}')">Upload Deliverable</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Submit Deliverable", content);
+};
+
+window.executeSubmitWork = function(asgnId) {
+  ensureMediaState();
+  const file = document.getElementById("sub-file-input").value.trim();
+  const notes = document.getElementById("sub-notes-input").value.trim();
+  if (!file) return;
+
+  const med = state.media;
+  const subList = med.submissions[asgnId] || [];
+  const nextVer = subList.length + 1;
+
+  const newSub = {
+    version: nextVer,
+    fileName: file,
+    submittedBy: "media-editor-noor",
+    timestamp: "2026-08-15 10:00",
+    duration: "38 sec",
+    aspectRatio: "9:16",
+    notes: notes,
+    review: null
+  };
+
+  subList.push(newSub);
+  med.submissions[asgnId] = subList;
+  med.assignments.find(a => a.id === asgnId).status = "Submitted";
+
+  closeModal();
+  showToastAlert(`✓ Version v${nextVer} deliverable submitted for review.`);
+  renderMediaWorkspace(window.location.hash);
+};
+
+window.openRequestRevisionModal = function(asgnId) {
+  const content = `
+    <div style="text-align:left; font-size:13px; display:flex; flex-direction:column; gap:12px;">
+      <div>
+        <label style="font-weight:bold; display:block; margin-bottom:4px;">Revision Summary Comments:</label>
+        <textarea id="rev-summary-input" class="form-input" style="height:80px;">Strengthen the first three seconds and extend the CTA visibility.</textarea>
+      </div>
+      <div style="display:flex; gap:12px; margin-top:16px;">
+        <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="executeRequestRevision('${asgnId}')">Send Revision Request</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Request Revision", content);
+};
+
+window.executeRequestRevision = function(asgnId) {
+  ensureMediaState();
+  const summary = document.getElementById("rev-summary-input").value.trim();
+  if (!summary) return;
+
+  const med = state.media;
+  const asgn = med.assignments.find(a => a.id === asgnId);
+  const sub = med.submissions[asgnId][med.submissions[asgnId].length - 1];
+
+  sub.review = {
+    reviewer: "Hassan Ali",
+    timestamp: "2026-08-14 14:00",
+    comments: [
+      { timecode: "00:04", note: "Make the opening hook more immediate." },
+      { timecode: "00:27", note: "CTA text should remain on screen slightly longer." }
+    ],
+    decision: "Revision Required",
+    summary: summary
+  };
+
+  asgn.status = "Revision Required";
+
+  closeModal();
+  showToastAlert("✓ Revision requested. Task returned to Video Editor.");
+  renderMediaWorkspace(window.location.hash);
+};
+
+window.openApproveSubmissionModal = function(asgnId) {
+  const content = `
+    <div style="text-align:left; font-size:13px; display:flex; flex-direction:column; gap:12px;">
+      <p style="margin:0; color:var(--color-tertiary);">Set quality ratings for scorecard evaluation:</p>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span>Brief Alignment:</span>
+        <input type="number" id="rate-align" class="form-input" style="width:60px; margin-bottom:0;" min="1" max="5" value="4">
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span>Visual Quality:</span>
+        <input type="number" id="rate-visual" class="form-input" style="width:60px; margin-bottom:0;" min="1" max="5" value="5">
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span>Brand Consistency:</span>
+        <input type="number" id="rate-brand" class="form-input" style="width:60px; margin-bottom:0;" min="1" max="5" value="5">
+      </div>
+      <div style="display:flex; gap:12px; margin-top:16px;">
+        <button class="btn btn-primary" style="background-color:green; border-color:green; color:#fff; font-weight:800; flex:1.2;" onclick="executeApproveSubmission('${asgnId}')">Approve & Generate Wage</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Approve Task", content);
+};
+
+window.executeApproveSubmission = function(asgnId) {
+  ensureMediaState();
+  const med = state.media;
+  const asgn = med.assignments.find(a => a.id === asgnId);
+  const sub = med.submissions[asgnId][med.submissions[asgnId].length - 1];
+
+  sub.review = {
+    reviewer: "Hassan Ali",
+    timestamp: "2026-08-15 12:00",
+    decision: "Approved",
+    summary: "Revisions completed. Reel aligns with Hook brief parameters."
+  };
+
+  asgn.status = "Approved";
+
+  // Record rating scorecard values
+  med.rating.alignment = parseInt(document.getElementById("rate-align").value) || 4;
+  med.rating.visual = parseInt(document.getElementById("rate-visual").value) || 5;
+  med.rating.consistency = parseInt(document.getElementById("rate-brand").value) || 5;
+  med.rating.average = parseFloat(((med.rating.alignment + med.rating.visual + med.rating.consistency) / 3).toFixed(1));
+
+  // Sync to Screen 31 payroll
+  syncMediaEarningToPayroll("Available");
+
+  closeModal();
+  showToastAlert("✓ Submission Approved. Payout Wage recorded and generated in Payroll.");
+  renderMediaWorkspace(window.location.hash);
+};
+// ==========================================================================
+// Screen 36 Development Task, Bug, Testing & Deployment Reporting
+// ==========================================================================
+
+window.ensureDevState = function() {
+  if (!state.dev) {
+    state.dev = {
+      selectedDemoState: "Assigned",
+      activeUserRole: "CTO", // CTO, Developer
+
+      project: {
+        id: "DEV-PROJ-001",
+        title: "LMS Prototype Platform",
+        status: "Active",
+        ownerId: "dev-cto-hamza"
+      },
+
+      release: {
+        id: "DEV-REL-001",
+        name: "Prototype Release 1",
+        targetDate: "2026-08-31",
+        status: "Planned",
+        description: "Initial stakeholder-ready LMS + Operations prototype release."
+      },
+
+      workItems: [
+        {
+          id: "DEV-WORK-001",
+          projectId: "DEV-PROJ-001",
+          releaseId: "DEV-REL-001",
+          type: "Feature",
+          title: "Add Notification Delivery Exception Dashboard",
+          ownerId: "dev-bilal",
+          ownerName: "Bilal Ahmed",
+          priority: "High",
+          status: "Planned", // Planned, Assigned, In Progress, Blocked, In Review, Testing, Completed, Deployed
+          deadline: "2026-08-24",
+          progress: 0,
+          description: "Provide Development/Operations visibility into mock notification delivery failures, retries and dead-letter exceptions.",
+          comments: [
+            { author: "Hamza Raza", timestamp: "2026-08-20 10:00", text: "Please ensure failed email attempts drill into the original notification event." }
+          ],
+          activityLog: [
+            { actor: "dev-cto-hamza", timestamp: "2026-08-20 09:00", event: "Work Item Created in Planned status" }
+          ]
+        },
+        {
+          id: "DEV-WORK-002",
+          projectId: "DEV-PROJ-001",
+          releaseId: "DEV-REL-001",
+          type: "Feature",
+          title: "Finalize Notification Event filtering",
+          ownerId: "dev-bilal",
+          ownerName: "Bilal Ahmed",
+          priority: "Normal",
+          status: "In Progress",
+          deadline: "2026-08-22",
+          progress: 50,
+          description: "Develop event filtering engine to parse exceptions by channel and severity.",
+          comments: [],
+          activityLog: []
+        }
+      ],
+
+      blocker: {
+        id: "DEV-BLOCK-001",
+        type: "Dependency",
+        blockedByWorkItemId: "DEV-WORK-002",
+        status: "Active", // Active, Resolved
+        description: "Blocks final testing because event filters must parse exception categories correctly."
+      },
+
+      bugs: [
+        {
+          id: "BUG-DEV-001",
+          projectId: "DEV-PROJ-001",
+          affectedReleaseId: "DEV-REL-001",
+          title: "Notification exception count does not refresh after retry",
+          severity: "Medium",
+          priority: "High",
+          environment: "Prototype / Staging",
+          reproducibility: "Always",
+          steps: "1. Open Exceptions. 2. Click Retry. 3. Return to Dev dashboard. 4. Observe count.",
+          expectedResult: "Count reflects updated state.",
+          actualResult: "Old count remains until reload.",
+          status: "Assigned",
+          ownerName: "Bilal Ahmed",
+          resolution: null
+        },
+        {
+          id: "BUG-DEV-002",
+          projectId: "DEV-PROJ-001",
+          affectedReleaseId: "DEV-REL-001",
+          title: "Dashboard counter exception duplicate",
+          severity: "Low",
+          priority: "Normal",
+          environment: "Prototype / Staging",
+          reproducibility: "Sometimes",
+          steps: "Same count lag.",
+          expectedResult: "Refreshed counts.",
+          actualResult: "Old counts.",
+          status: "Closed",
+          ownerName: "Bilal Ahmed",
+          resolution: "Duplicate",
+          resolutionLink: "BUG-DEV-001"
+        },
+        {
+          id: "BUG-URGENT-001",
+          projectId: "DEV-PROJ-001",
+          affectedReleaseId: "DEV-REL-001",
+          title: "Staff dashboard displays a restricted record count to an unauthorized role",
+          severity: "High",
+          priority: "Urgent",
+          environment: "Prototype / Staging",
+          reproducibility: "Always",
+          steps: "Access endpoint unauthorized.",
+          expectedResult: "Omission / Blocker page.",
+          actualResult: "Leaked records.",
+          status: "Assigned",
+          ownerName: "Hamza Raza",
+          isRestricted: true,
+          resolution: null
+        }
+      ],
+
+      tests: {
+        "DEV-WORK-001": [
+          {
+            id: "DEV-TEST-001",
+            testerName: "Sana Malik",
+            environment: "Prototype / Staging",
+            result: "Passed", // Pending, Passed, Failed
+            timestamp: "2026-08-22 14:00",
+            checklist: [
+              { check: "Notification exception count matches rows", pass: true },
+              { check: "Dead-letter drilldown opens exact event", pass: true },
+              { check: "Permission-restricted records omitted", pass: true },
+              { check: "Failed email state displayed", pass: true }
+            ]
+          }
+        ]
+      },
+
+      deployments: [
+        {
+          id: "DEV-DEPLOY-001",
+          releaseId: "DEV-REL-001",
+          version: "prototype-v1",
+          environment: "Demo",
+          deployedBy: "Hamza Raza",
+          timestamp: "2026-08-25 10:00",
+          outcome: "Success"
+        }
+      ]
+    };
+  }
+};
+
+// ==========================================================================
+// Dev Workspace Router
+// ==========================================================================
+
+window.renderDevWorkspace = function(hash) {
+  ensureDevState();
+  const dev = state.dev;
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  if (hash === "#development/dashboard" || hash === "#development") {
+    renderDevDashboard(view);
+  } else if (hash.startsWith("#development/work/")) {
+    const workId = hash.split("/")[3];
+    renderDevWorkItemDetail(view, workId);
+  } else if (hash === "#development/bugs") {
+    renderDevBugsRegistry(view);
+  } else {
+    renderDevDashboard(view);
+  }
+};
+
+// ==========================================================================
+// Sandbox Control
+// ==========================================================================
+
+function getDevSandboxNavbarHTML(activeState) {
+  return `
+    <div style="background-color: var(--color-surface-container-highest); border-bottom: 2px solid var(--color-outline-variant); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; border-radius: 8px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="font-weight: 900; font-size: 13.5px; color: var(--color-secondary);">🎛️ Development Sandbox:</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 12px; font-weight: 700; color: var(--color-tertiary);">Demo State:</span>
+        <select class="form-input" style="width: 250px; height: 32px; font-size: 12px; margin-bottom: 0; font-weight: bold; background: #fff;" onchange="changeDevDemoState(this.value)">
+          <option value="Assigned" ${activeState === 'Assigned' ? 'selected' : ''}>Assigned (Default planned)</option>
+          <option value="Planned" ${activeState === 'Planned' ? 'selected' : ''}>Planned Work</option>
+          <option value="In Progress" ${activeState === 'In Progress' ? 'selected' : ''}>In Progress (Bilal editing)</option>
+          <option value="Blocked" ${activeState === 'Blocked' ? 'selected' : ''}>Blocked by Dependency</option>
+          <option value="Review Requested" ${activeState === 'Review Requested' ? 'selected' : ''}>Review Requested (Awaiting QA)</option>
+          <option value="In Review" ${activeState === 'In Review' ? 'selected' : ''}>In Review metadata</option>
+          <option value="Testing" ${activeState === 'Testing' ? 'selected' : ''}>QA Testing Environment</option>
+          <option value="Testing Failed" ${activeState === 'Testing Failed' ? 'selected' : ''}>QA Testing Failed</option>
+          <option value="Retest Passed" ${activeState === 'Retest Passed' ? 'selected' : ''}>QA Retest Passed</option>
+          <option value="Completed" ${activeState === 'Completed' ? 'selected' : ''}>Completed (Completed is not Deployed)</option>
+          <option value="Ready for Release" ${activeState === 'Ready for Release' ? 'selected' : ''}>Release Ready Inclusion</option>
+          <option value="Deployment Failed" ${activeState === 'Deployment Failed' ? 'selected' : ''}>Deployment Failed Error</option>
+          <option value="Deployed" ${activeState === 'Deployed' ? 'selected' : ''}>Deployed (Release Live)</option>
+          <option value="Bug Triage" ${activeState === 'Bug Triage' ? 'selected' : ''}>Bug Triaging Assigned</option>
+          <option value="Duplicate Bug" ${activeState === 'Duplicate Bug' ? 'selected' : ''}>Duplicate Bug Resolution</option>
+          <option value="Urgent Restricted Bug" ${activeState === 'Urgent Restricted Bug' ? 'selected' : ''}>Urgent Security Restricted Bug</option>
+          <option value="Overdue" ${activeState === 'Overdue' ? 'selected' : ''}>Overdue deadline flag</option>
+          <option value="Reassigned" ${activeState === 'Reassigned' ? 'selected' : ''}>Reassigned handover</option>
+          <option value="Cancelled / Deferred" ${activeState === 'Cancelled / Deferred' ? 'selected' : ''}>Cancelled Work Item</option>
+          <option value="External Adapter Failure" ${activeState === 'External Adapter Failure' ? 'selected' : ''}>External Git Sync Failure</option>
+          <option value="Permission Restricted" ${activeState === 'Permission Restricted' ? 'selected' : ''}>Role Restricted View</option>
+        </select>
+      </div>
+    </div>
+  `;
+}
+
+window.changeDevDemoState = function(val) {
+  ensureDevState();
+  const dev = state.dev;
+  dev.selectedDemoState = val;
+
+  const w1 = dev.workItems.find(w => w.id === "DEV-WORK-001");
+  const w2 = dev.workItems.find(w => w.id === "DEV-WORK-002");
+  const tests = dev.tests;
+  const deploys = dev.deployments;
+
+  // Defaults Reset
+  w1.status = "Planned";
+  w1.ownerName = "Bilal Ahmed";
+  w1.ownerId = "dev-bilal";
+  w2.status = "In Progress";
+  dev.blocker.status = "Resolved";
+  tests["DEV-WORK-001"] = [{
+    id: "DEV-TEST-001",
+    testerName: "Sana Malik",
+    environment: "Prototype / Staging",
+    result: "Passed",
+    timestamp: "2026-08-22 14:00",
+    checklist: [
+      { check: "Notification count matches", pass: true },
+      { check: "Drilldowns function", pass: true }
+    ]
+  }];
+  deplays[0].outcome = "Success";
+
+  if (val === "Assigned") {
+    w1.status = "Assigned";
+  } else if (val === "Planned") {
+    w1.status = "Planned";
+  } else if (val === "In Progress") {
+    w1.status = "In Progress";
+    w1.progress = 40;
+  } else if (val === "Blocked") {
+    w1.status = "Blocked";
+    dev.blocker.status = "Active";
+    w2.status = "In Progress"; // blocks w1
+  } else if (val === "Review Requested") {
+    w1.status = "In Review";
+  } else if (val === "In Review") {
+    w1.status = "In Review";
+  } else if (val === "Testing") {
+    w1.status = "Testing";
+    tests["DEV-WORK-001"] = [{
+      id: "DEV-TEST-001",
+      testerName: "Sana Malik",
+      environment: "Prototype / Staging",
+      result: "Pending",
+      timestamp: "2026-08-22 14:00",
+      checklist: []
+    }];
+  } else if (val === "Testing Failed") {
+    w1.status = "In Progress";
+    tests["DEV-WORK-001"] = [{
+      id: "DEV-TEST-001",
+      testerName: "Sana Malik",
+      environment: "Prototype / Staging",
+      result: "Failed",
+      timestamp: "2026-08-22 14:00",
+      checklist: [
+        { check: "Notification count matches", pass: false }
+      ]
+    }];
+  } else if (val === "Retest Passed") {
+    w1.status = "Testing";
+    tests["DEV-WORK-001"] = [
+      {
+        id: "DEV-TEST-001",
+        testerName: "Sana Malik",
+        environment: "Prototype / Staging",
+        result: "Failed",
+        timestamp: "2026-08-22 14:00",
+        checklist: [{ check: "Notification count matches", pass: false }]
+      },
+      {
+        id: "DEV-TEST-002",
+        testerName: "Sana Malik",
+        environment: "Prototype / Staging",
+        result: "Passed",
+        timestamp: "2026-08-23 11:00",
+        checklist: [{ check: "Notification count matches", pass: true }]
+      }
+    ];
+  } else if (val === "Completed") {
+    w1.status = "Completed";
+  } else if (val === "Ready for Release") {
+    w1.status = "Completed";
+  } else if (val === "Deployment Failed") {
+    w1.status = "Completed";
+    deplays[0].outcome = "Failed";
+  } else if (val === "Deployed") {
+    w1.status = "Deployed";
+  } else if (val === "Bug Triage") {
+    // Basic
+  } else if (val === "Duplicate Bug") {
+    // Duplicate bug closure
+  } else if (val === "Urgent Restricted Bug") {
+    // Security restriction demo
+  } else if (val === "Overdue") {
+    w1.status = "In Progress";
+    w1.deadline = "2026-08-10"; // passed
+  } else if (val === "Reassigned") {
+    w1.status = "In Progress";
+    w1.ownerName = "Reassigned Developer";
+    w1.ownerId = "dev-other";
+  } else if (val === "Cancelled / Deferred") {
+    w1.status = "Cancelled";
+  }
+
+  showToastAlert(`✓ Dev Demo state aligned: ${val}`);
+  renderDevWorkspace(window.location.hash);
+};
+
+// ==========================================================================
+// Dev Dashboard (Rule 3 & 4)
+// ==========================================================================
+
+function renderDevDashboard(container) {
+  const dev = state.dev;
+
+  let viewToggleHtml = `
+    <div style="display:flex; gap:8px; background:var(--color-surface-container); padding:4px; border-radius:6px; width:fit-content; margin-bottom:20px; border:1px solid var(--color-outline-variant);">
+      <button class="btn" style="border:none; padding:6px 12px; font-size:12px; font-weight:bold; cursor:pointer; background:${dev.activeUserRole === 'CTO' ? '#fff' : 'transparent'}; border-radius:4px;" onclick="changeDevUserRole('CTO')">
+        CTO View (Hamza)
+      </button>
+      <button class="btn" style="border:none; padding:6px 12px; font-size:12px; font-weight:bold; cursor:pointer; background:${dev.activeUserRole === 'Developer' ? '#fff' : 'transparent'}; border-radius:4px;" onclick="changeDevUserRole('Developer')">
+        Developer View (Bilal)
+      </button>
+    </div>
+  `;
+
+  let contentHtml = "";
+  if (dev.activeUserRole === "CTO") {
+    contentHtml = renderDevCTODashboardContent();
+  } else {
+    contentHtml = renderDeveloperDashboardContent();
+  }
+
+  container.innerHTML = `
+    ${getDevSandboxNavbarHTML(dev.selectedDemoState)}
+
+    <div class="form-card" style="padding:20px; margin-bottom:20px;">
+      <h2 style="font-family: var(--font-family-headings); font-size: 20px; font-weight:900; margin:0 0- 4px 0;">💻 Development Engineering Workspace</h2>
+      <p style="font-size:12.5px; color:var(--color-tertiary); margin-bottom:16px;">Coordinate LMS features releases, review QA staging tests execution, and verify deployment release notes logs.</p>
+      ${viewToggleHtml}
+    </div>
+
+    ${contentHtml}
+  `;
+}
+
+window.changeDevUserRole = function(role) {
+  ensureDevState();
+  state.dev.activeUserRole = role;
+  renderDevWorkspace(window.location.hash);
+};
+
+function renderDevCTODashboardContent() {
+  const dev = state.dev;
+  
+  // Calculate overdue checks
+  let overdueCount = dev.workItems.filter(w => new Date(w.deadline) < new Date("2026-08-13") && w.status !== 'Completed' && w.status !== 'Deployed').length;
+  let activeCount = dev.workItems.length;
+  let blockedCount = dev.workItems.filter(w => w.status === 'Blocked').length;
+  let bugsCount = dev.bugs.filter(b => b.status !== 'Closed').length;
+
+  return `
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:16px; margin-bottom:24px;">
+      <div class="kpi-card" style="padding:16px; border-left:4px solid var(--color-primary);">
+        <span style="font-size:11.5px; font-weight:700; color:var(--color-tertiary);">Active Tasks</span>
+        <h3 style="font-size:24px; font-weight:900; margin:4px 0 0 0;">${activeCount}</h3>
+      </div>
+      <div class="kpi-card" style="padding:16px; border-left:4px solid #b78103;">
+        <span style="font-size:11.5px; font-weight:700; color:var(--color-tertiary);">Overdue Items</span>
+        <h3 style="font-size:24px; font-weight:900; margin:4px 0 0 0;">${overdueCount}</h3>
+      </div>
+      <div class="kpi-card" style="padding:16px; border-left:4px solid var(--color-error);">
+        <span style="font-size:11.5px; font-weight:700; color:var(--color-tertiary);">Blocked Dependencies</span>
+        <h3 style="font-size:24px; font-weight:900; margin:4px 0 0 0;">${blockedCount}</h3>
+      </div>
+      <div class="kpi-card" style="padding:16px; border-left:4px solid #ba1a1a;">
+        <span style="font-size:11.5px; font-weight:700; color:var(--color-tertiary);">Active Bugs</span>
+        <h3 style="font-size:24px; font-weight:900; margin:4px 0 0 0;">${bugsCount}</h3>
+      </div>
+    </div>
+
+    <!-- Dev Work items registry -->
+    <div class="form-card" style="padding:20px; margin-bottom:20px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3 style="font-weight:800; font-size:15px; margin:0;">Platform Release Work Items (DEV-REL-001)</h3>
+        <a href="#development/bugs" class="btn btn-secondary" style="font-size:12px; height:32px; display:inline-flex; align-items:center;">Bugs Registry</a>
+      </div>
+
+      <table style="width:100%; border-collapse:collapse; text-align:left;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+            <th style="padding: 12px;">Work ID</th>
+            <th style="padding: 12px;">Work Item Title</th>
+            <th style="padding: 12px;">Type</th>
+            <th style="padding: 12px;">Assignee</th>
+            <th style="padding: 12px;">Deadline</th>
+            <th style="padding: 12px;">Work Status</th>
+            <th style="padding: 12px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${dev.workItems.map(w => {
+            const isOverdue = new Date(w.deadline) < new Date("2026-08-13") && w.status !== 'Completed' && w.status !== 'Deployed';
+            return `
+              <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:13px;">
+                <td style="padding:12px; font-weight:bold; color:var(--color-primary);">${w.id}</td>
+                <td style="padding:12px; font-weight:700;">
+                  ${w.title}
+                  ${isOverdue ? `<span style="background-color:#fff0f0; color:#ba1a1a; padding:2px 4px; font-size:10px; border-radius:3px; margin-left:6px; font-weight:bold;">Overdue</span>` : ''}
+                </td>
+                <td style="padding:12px;">${w.type}</td>
+                <td style="padding:12px;">${w.ownerName}</td>
+                <td style="padding:12px; font-family:monospace;">${w.deadline}</td>
+                <td style="padding:12px;">
+                  <span class="status-badge status-badge-${w.status.toLowerCase().replace(/ /g, '-')}" style="padding:3px 6px; border-radius:4px; font-weight:bold; font-size:11px;">
+                    ${w.status}
+                  </span>
+                </td>
+                <td style="padding:12px;">
+                  <a href="#development/work/${w.id}" class="btn btn-secondary" style="padding:4px 8px; font-size:11px; height:28px; text-decoration:none; display:inline-flex; align-items:center;">Open Item</a>
+                </td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderDeveloperDashboardContent() {
+  const dev = state.dev;
+  const myItems = dev.workItems.filter(w => w.ownerId === 'dev-bilal');
+
+  return `
+    <div class="form-card" style="padding:20px;">
+      <h3 style="font-weight:800; font-size:15px; margin:0 0 16px 0;">My Assigned Engineering Tasks</h3>
+
+      <table style="width:100%; border-collapse:collapse; text-align:left;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+            <th style="padding: 12px;">Work ID</th>
+            <th style="padding: 12px;">Title</th>
+            <th style="padding: 12px;">Deadline</th>
+            <th style="padding: 12px;">Status</th>
+            <th style="padding: 12px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${myItems.map(w => `
+            <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:13px;">
+              <td style="padding:12px; font-weight:bold; color:var(--color-primary);">${w.id}</td>
+              <td style="padding:12px; font-weight:700;">${w.title}</td>
+              <td style="padding:12px; font-family:monospace;">${w.deadline}</td>
+              <td style="padding:12px;">
+                <span class="status-badge status-badge-${w.status.toLowerCase().replace(/ /g, '-')}" style="padding:3px 6px; border-radius:4px; font-weight:bold; font-size:11px;">
+                  ${w.status}
+                </span>
+              </td>
+              <td style="padding:12px;">
+                <a href="#development/work/${w.id}" class="btn btn-secondary" style="padding:4px 8px; font-size:11px; height:28px; text-decoration:none; display:inline-flex; align-items:center;">Open Workspace</a>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+// ==========================================================================
+// Dev Work Item Details (Briefs, dependencies, testing scorecards)
+// ==========================================================================
+
+function renderDevWorkItemDetail(container, workId) {
+  const dev = state.dev;
+  const w = dev.workItems.find(item => item.id === workId);
+  if (!w) return;
+
+  const testList = dev.tests[workId] || [];
+  const latestTest = testList[testList.length - 1];
+
+  // Dependencies block checker (Rule 24, 25, 29)
+  let blockHtml = "";
+  if (w.status === 'Blocked' && dev.blocker.status === 'Active') {
+    blockHtml = `
+      <div style="background-color:#fff0f0; border-left:3px solid #ba1a1a; padding:12px; border-radius:6px; font-size:12.5px; margin-bottom:16px;">
+        <strong style="color:#ba1a1a;">⚠️ Blocker: Unresolved Dependency DEV-WORK-002</strong>
+        <p style="margin:4px 0 10px 0; color:var(--color-tertiary);">${dev.blocker.description}</p>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:11.5px; font-weight:bold;">Blocks final testing</span>
+          <button class="btn btn-secondary" style="color:#ba1a1a; border-color:#ba1a1a; height:28px; font-size:11px;" onclick="executeResolveBlocker()">Resolve blocker</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // Testing checklist logs (Rule 40)
+  let testHtml = "";
+  if (latestTest) {
+    testHtml = `
+      <div style="background:var(--color-surface-container); border:1px solid var(--color-outline-variant); border-radius:6px; padding:12px; margin-bottom:16px; font-size:12.5px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <strong>QA Test Report: ${latestTest.id}</strong>
+          <span class="status-badge" style="background:${latestTest.result === 'Passed' ? 'green' : 'red'}; color:#fff; font-size:11px; padding:2px 6px; border-radius:4px; font-weight:bold;">
+            ${latestTest.result}
+          </span>
+        </div>
+        <div style="font-size:11px; color:var(--color-tertiary); margin-bottom:8px;">Tester: ${latestTest.testerName} &bull; Time: ${latestTest.timestamp}</div>
+        ${latestTest.checklist && latestTest.checklist.length > 0 ? `
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            ${latestTest.checklist.map(c => `
+              <div style="display:flex; justify-content:space-between; font-size:11.5px;">
+                <span>${c.check}</span>
+                <span style="font-weight:bold; color:${c.pass ? 'green' : 'red'};">${c.pass ? 'Pass' : 'Fail'}</span>
+              </div>
+            `).join('')}
+          </div>
+        ` : `<div style="font-style:italic; font-size:11px; color:var(--color-tertiary);">No checklist logs recorded.</div>`}
+      </div>
+    `;
+  }
+
+  container.innerHTML = `
+    ${getDevSandboxNavbarHTML(dev.selectedDemoState)}
+
+    <div style="display:grid; grid-template-columns: 1fr 340px; gap:20px; align-items:flex-start;">
+      
+      <!-- Primary specifications details -->
+      <div>
+        <div class="form-card" style="padding:20px; margin-bottom:20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:12px;">
+            <div>
+              <h3 style="font-family: var(--font-family-headings); font-weight:900; font-size:18px; margin:0;">${w.title}</h3>
+              <span style="font-size:12px; color:var(--color-tertiary);">${w.type} &bull; Release: ${w.releaseId}</span>
+            </div>
+            <span class="status-badge status-badge-${w.status.toLowerCase().replace(/ /g, '-')}" style="padding:4px 8px; border-radius:4px; font-weight:bold; font-size:12px;">
+              ${w.status}
+            </span>
+          </div>
+
+          <!-- Dependency Block warnings -->
+          ${blockHtml}
+
+          <div style="background:var(--color-surface-container); border-radius:6px; padding:12px; font-size:13px; margin-bottom:20px;">
+            <strong style="color:var(--color-secondary);">Task Specifications & Brief:</strong>
+            <p style="margin:4px 0 0 0; line-height:1.5; color:var(--color-tertiary);">${w.description}</p>
+          </div>
+
+          <!-- Actions controls -->
+          ${w.status === 'Assigned' && dev.activeUserRole === 'Developer' ? `
+            <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; width:100%;" onclick="executeStartDevWork('${workId}')">Start Work</button>
+          ` : ''}
+
+          ${w.status === 'In Progress' && dev.activeUserRole === 'Developer' ? `
+            <div style="display:flex; gap:12px;">
+              <button class="btn btn-primary" style="background-color:green; border-color:green; color:#fff; font-weight:800; flex:1;" onclick="executeRequestQA('${workId}')">Submit for QA Review</button>
+              <button class="btn btn-secondary" style="color:#ba1a1a; border-color:#ba1a1a; flex:1;" onclick="executeBlockWorkItem('${workId}')">Flag Blocked</button>
+            </div>
+          ` : ''}
+
+          ${w.status === 'Testing' && dev.activeUserRole === 'CTO' ? `
+            <div style="background:#fffcf4; border:1px solid #faecc5; border-radius:6px; padding:14px;">
+              <strong style="color:#b78103; font-size:13px; display:block; margin-bottom:6px;">🧪 Staging Test Evaluation</strong>
+              <div style="display:flex; gap:12px; justify-content:flex-end;">
+                <button class="btn btn-primary" style="background-color:green; border-color:green; color:#fff; font-weight:800;" onclick="executeQAPass('${workId}')">QA Pass</button>
+                <button class="btn btn-secondary" style="color:#ba1a1a; border-color:#ba1a1a;" onclick="executeQAFail('${workId}')">QA Fail</button>
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- Completed is not Deployed action triggers (Rule 53, 57) -->
+          ${w.status === 'Completed' && dev.activeUserRole === 'CTO' ? `
+            <div style="background:#f4faf5; border:1px solid #cce8d4; border-radius:6px; padding:14px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <strong style="color:green;">✓ QA Complete (Completed status)</strong>
+                <span style="font-size:11.5px; color:var(--color-tertiary); display:block; margin-top:2px;">This item is complete but requires a deployment record to mark Deployed.</span>
+              </div>
+              <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="openRecordDeploymentModal()">Record Deployment</button>
+            </div>
+          ` : ''}
+
+          ${w.status === 'Deployed' ? `
+            <div style="background:#f0faf2; border:1px solid #cce8d4; border-radius:6px; padding:12px; font-size:13px; color:green; font-weight:bold; text-align:center;">
+              ✓ Deployed Live in Demo environment via DEV-DEPLOY-001.
+            </div>
+          ` : ''}
+        </div>
+      </div>
+
+      <!-- Release, QA, and deployment summaries -->
+      <div style="display:flex; flex-direction:column; gap:20px;">
+        
+        <!-- QA test checklist logs -->
+        <div class="form-card" style="padding:16px;">
+          <h4 style="font-weight:800; font-size:13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">🧪 Staging Test Results History</h4>
+          ${testHtml.length > 0 ? testHtml : '<div style="font-style:italic; font-size:12px; color:var(--color-tertiary);">No test reports recorded.</div>'}
+        </div>
+
+        <!-- Release metadata -->
+        <div class="form-card" style="padding:16px; font-size:12.5px; line-height:22px;">
+          <h4 style="font-weight:800; font-size:13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">📦 Planned Release</h4>
+          <table style="width:100%;">
+            <tr><td>Release:</td><td style="font-weight:bold; text-align:right;">${dev.release.name}</td></tr>
+            <tr><td>Target Date:</td><td style="font-weight:bold; text-align:right; font-family:monospace;">${dev.release.targetDate}</td></tr>
+            <tr><td>Status:</td><td style="font-weight:bold; text-align:right;">${dev.release.status}</td></tr>
+          </table>
+        </div>
+
+        <!-- Deployments summary history (Rule 84) -->
+        <div class="form-card" style="padding:16px; font-size:12.5px; line-height:22px;">
+          <h4 style="font-weight:800; font-size:13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">🚀 Environment Deployment Logs</h4>
+          <table style="width:100%; margin-bottom:8px;">
+            <tr><td>Environment:</td><td style="font-weight:bold; text-align:right;">Demo</td></tr>
+            <tr><td>Deployer:</td><td style="font-weight:bold; text-align:right;">Hamza Raza</td></tr>
+            <tr><td>Deploy Date:</td><td style="font-weight:bold; text-align:right; font-family:monospace;">2026-08-25</td></tr>
+            <tr><td>Outcome:</td><td style="font-weight:bold; text-align:right; color:${dev.deployments[0].outcome === 'Success' ? 'green' : 'red'};">${dev.deployments[0].outcome}</td></tr>
+          </table>
+        </div>
+
+      </div>
+
+    </div>
+  `;
+}
+
+window.executeStartDevWork = function(workId) {
+  ensureDevState();
+  state.dev.workItems.find(w => w.id === workId).status = "In Progress";
+  showToastAlert("✓ Work started. Status updated to In Progress.");
+  renderDevWorkspace(window.location.hash);
+};
+
+window.executeBlockWorkItem = function(workId) {
+  ensureDevState();
+  const dev = state.dev;
+  dev.workItems.find(w => w.id === workId).status = "Blocked";
+  dev.blocker.status = "Active";
+  showToastAlert("✓ Task flagged as Blocked due to dependency.");
+  renderDevWorkspace(window.location.hash);
+};
+
+window.executeResolveBlocker = function() {
+  ensureDevState();
+  const dev = state.dev;
+  dev.blocker.status = "Resolved";
+  dev.workItems.find(w => w.id === "DEV-WORK-001").status = "In Progress";
+  showToastAlert("✓ Dependency resolved. Task returned to In Progress.");
+  renderDevWorkspace(window.location.hash);
+};
+
+window.executeRequestQA = function(workId) {
+  ensureDevState();
+  state.dev.workItems.find(w => w.id === workId).status = "Testing";
+  showToastAlert("✓ Task submitted. QA testing triggered on prototype environment.");
+  renderDevWorkspace(window.location.hash);
+};
+
+window.executeQAPass = function(workId) {
+  ensureDevState();
+  const dev = state.dev;
+  dev.workItems.find(w => w.id === workId).status = "Completed";
+  
+  // Update test log
+  dev.tests[workId] = [{
+    id: "DEV-TEST-002",
+    testerName: "Sana Malik",
+    environment: "Prototype / Staging",
+    result: "Passed",
+    timestamp: "2026-08-23 11:00",
+    checklist: [
+      { check: "Notification count matches", pass: true },
+      { check: "Drilldowns function", pass: true }
+    ]
+  }];
+
+  showToastAlert("✓ QA checklist verified. Status set to Completed.");
+  renderDevWorkspace(window.location.hash);
+};
+
+window.executeQAFail = function(workId) {
+  ensureDevState();
+  const dev = state.dev;
+  dev.workItems.find(w => w.id === workId).status = "In Progress";
+  
+  // Update test log
+  dev.tests[workId] = [{
+    id: "DEV-TEST-FAIL-001",
+    testerName: "Sana Malik",
+    environment: "Prototype / Staging",
+    result: "Failed",
+    timestamp: "2026-08-22 14:00",
+    checklist: [
+      { check: "Notification count matches", pass: false }
+    ]
+  }];
+
+  showToastAlert("⛔ QA validation failed. Task returned to In Progress.", "error");
+  renderDevWorkspace(window.location.hash);
+};
+
+// ==========================================================================
+// Deployment logger (Rule 54)
+// ==========================================================================
+
+window.openRecordDeploymentModal = function() {
+  const content = `
+    <div style="text-align:left; font-size:13px; display:flex; flex-direction:column; gap:12px;">
+      <div>
+        <label style="font-weight:bold; display:block; margin-bottom:4px;">Deployment Environment:</label>
+        <input type="text" id="deploy-env-input" class="form-input" value="Demo">
+      </div>
+      <div>
+        <label style="font-weight:bold; display:block; margin-bottom:4px;">Outcome Status:</label>
+        <select id="deploy-outcome-input" class="form-input" style="background:#fff;">
+          <option value="Success">Success (Deploy Work)</option>
+          <option value="Failed">Failed</option>
+        </select>
+      </div>
+      <div style="display:flex; gap:12px; margin-top:16px;">
+        <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="executeRecordDeployment()">Record Deployment</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Record Deployment", content);
+};
+
+window.executeRecordDeployment = function() {
+  ensureDevState();
+  const outcome = document.getElementById("deploy-outcome-input").value;
+  const dev = state.dev;
+
+  dev.deployments[0].outcome = outcome;
+  if (outcome === "Success") {
+    dev.workItems.find(w => w.id === "DEV-WORK-001").status = "Deployed";
+    showToastAlert("✓ Deployment completed successfully. Task is now Deployed.");
+  } else {
+    showToastAlert("⛔ Deployment failed validation check.", "error");
+  }
+
+  closeModal();
+  renderDevWorkspace(window.location.hash);
+};
+
+// ==========================================================================
+// Dev Bugs Directory with security filters (Rule 62, 72, 73)
+// ==========================================================================
+
+function renderDevBugsRegistry(container) {
+  const dev = state.dev;
+
+  container.innerHTML = `
+    ${getDevSandboxNavbarHTML(dev.selectedDemoState)}
+
+    <div class="form-card" style="padding:20px;">
+      <h3 style="font-family: var(--font-family-headings); font-weight:800; font-size:16px; margin:0 0 16px 0;">Bugs & Issues Registry</h3>
+
+      <table style="width:100%; border-collapse:collapse; text-align:left;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--color-outline-variant); background-color: var(--color-surface-container); font-size: 11.5px; text-transform: uppercase; color: var(--color-tertiary);">
+            <th style="padding: 12px;">Bug ID</th>
+            <th style="padding: 12px;">Title</th>
+            <th style="padding: 12px;">Severity</th>
+            <th style="padding: 12px;">Affected Release</th>
+            <th style="padding: 12px;">Status</th>
+            <th style="padding: 12px;">Resolution</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${dev.bugs.map(b => {
+            // Apply security restricted filter (Rule 72 & 73)
+            const isRestrictedForUser = b.isRestricted && dev.activeUserRole === 'Developer';
+            
+            return `
+              <tr style="border-bottom:1px solid var(--color-outline-variant); font-size:13px;">
+                <td style="padding:12px; font-weight:bold; color:var(--color-primary);">${b.id}</td>
+                <td style="padding:12px; font-weight:700;">
+                  ${isRestrictedForUser ? `<span style="color:#ba1a1a; font-style:italic;">🔒 Restricted Security Work Item</span>` : b.title}
+                </td>
+                <td style="padding:12px;">${isRestrictedForUser ? 'Restricted' : b.severity}</td>
+                <td style="padding:12px; font-family:monospace;">${isRestrictedForUser ? 'Restricted' : b.affectedReleaseId}</td>
+                <td style="padding:12px;">
+                  <span class="status-badge" style="padding:3px 6px; border-radius:4px; font-weight:bold; font-size:11px; background:#f5f5f5; color:#333;">
+                    ${isRestrictedForUser ? 'Restricted' : b.status}
+                  </span>
+                </td>
+                <td style="padding:12px;">
+                  ${b.resolution ? `${b.resolution} (${b.resolutionLink || ''})` : 'None'}
+                </td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+// ==========================================================================
+// Screen 37 Platform Administration, Settings, Integrations, Jobs & Feature Flags
+// ==========================================================================
+
+window.ensureAdminState = function() {
+  if (!state.admin) {
+    state.admin = {
+      selectedDemoState: "Healthy",
+      activeTab: "Overview",
+      activeUserRole: "Platform Admin", // Platform Admin, Technical Admin, COO, Operations Manager, Unauthorized Staff
+
+      referenceDurations: [
+        { id: "REF-DURATION-45", label: "45 Minutes", status: "Active", order: 2, usedBy: ["CLASS-001", "CLASS-002-R1"] }
+      ],
+
+      setting: {
+        id: "SETTING-CLASS-REMINDERS-v1",
+        key: "class-reminder-policy",
+        version: 1,
+        status: "Active",
+        val1: "24-hour reminder",
+        val2: "1-hour reminder",
+        history: [
+          { version: 1, status: "Active", actor: "dev-cto-hamza", timestamp: "2026-08-01 10:00", reason: "Initial release values" }
+        ]
+      },
+
+      roleAssignments: [
+        { id: "ROLE-PLATFORM-ADMIN-001", userName: "Operations Manager User", role: "Platform Admin", status: "Active" }
+      ],
+
+      integrations: {
+        resend: { id: "INTEGRATION-RESEND-DEMO", provider: "Resend", sender: "notifications@innovatorhuzsam.example", domain: "innovatorhuzsam.example", status: "Healthy" },
+        supabase: { id: "INTEGRATION-SUPABASE-DEMO", provider: "Supabase", status: "Healthy" },
+        daily: { id: "INTEGRATION-DAILY-DEMO", provider: "Daily.co", status: "Healthy" }
+      },
+
+      jobs: [
+        {
+          id: "BGJOB-NOTIF-001",
+          type: "Notification Delivery",
+          owningDomain: "Messaging / Notifications",
+          status: "Dead-letter", // Pending, Processing, Succeeded, Retry Scheduled, Dead-letter, Cancelled, Replayed
+          sourceId: "DLQ-NOTIF-001",
+          correlationId: "CORR-NOTIF-001",
+          attempts: [
+            { attempt: 1, result: "Failed", time: "2026-08-13 19:40", error: "Connection timeout" },
+            { attempt: 2, result: "Failed", time: "2026-08-13 19:42", error: "Connection timeout" },
+            { attempt: 3, result: "Dead-letter", time: "2026-08-13 19:45", error: "Max retries reached" }
+          ]
+        }
+      ],
+
+      schedule: {
+        id: "CRON-REMINDER-DISPATCH-001",
+        name: "Class & Trial Reminder Scheduler",
+        status: "Active", // Active, Paused, Delayed
+        lastRun: "2026-08-13 19:00",
+        nextRun: "2026-08-13 20:00"
+      },
+
+      webhooks: [
+        { id: "WEBHOOK-EMAIL-001", provider: "Mock Resend", type: "Delivery Event", status: "Processed", timestamp: "2026-08-13 19:40" }
+      ],
+
+      featureFlags: [
+        { id: "FLAG-NOTIF-OPS-V2", key: "notification-operations-v2", status: "Draft", owner: "Technical Admin", environment: "Demo", audience: "Admin & Operations Users Only", history: [] }
+      ],
+
+      freshness: {
+        data: "Current", // Current, Delayed
+        integration: "Healthy",
+        job: "Current",
+        lastRefresh: "2026-08-13 20:00"
+      }
+    };
+  }
+};
+
+// ==========================================================================
+// Admin Workspace Router
+// ==========================================================================
+
+window.renderAdminWorkspace = function(hash) {
+  ensureAdminState();
+  const ad = state.admin;
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  // Authorization Shield (Rule 96)
+  if (ad.activeUserRole === "Unauthorized Staff") {
+    renderAdminAccessDenied(view);
+    return;
+  }
+
+  // Header and Tabs Workspace
+  let tabsHtml = "";
+  ["Overview", "Reference Data", "Settings Configuration", "Roles & Permissions", "Integrations", "Jobs & Queues", "Feature Flags"].forEach(tab => {
+    const isSel = tab === ad.activeTab;
+    tabsHtml += `
+      <button class="btn" style="border:none; padding:10px 14px; font-weight:bold; font-size:12.5px; cursor:pointer; background: ${isSel ? 'var(--color-primary-container)' : 'transparent'}; border-bottom: ${isSel ? '3px solid var(--color-secondary)' : 'none'}; color: ${isSel ? 'var(--color-on-primary-container)' : 'var(--color-tertiary)'}; border-radius:0;" onclick="changeAdminTab('${tab}')">
+        ${tab}
+      </button>
+    `;
+  });
+
+  let paneHtml = "";
+  if (ad.activeTab === "Overview") paneHtml = renderAdminOverview();
+  else if (ad.activeTab === "Reference Data") paneHtml = renderAdminReferenceData();
+  else if (ad.activeTab === "Settings Configuration") paneHtml = renderAdminSettings();
+  else if (ad.activeTab === "Roles & Permissions") paneHtml = renderAdminRoles();
+  else if (ad.activeTab === "Integrations") paneHtml = renderAdminIntegrations();
+  else if (ad.activeTab === "Jobs & Queues") paneHtml = renderAdminJobs();
+  else if (ad.activeTab === "Feature Flags") paneHtml = renderAdminFeatureFlags();
+
+  view.innerHTML = `
+    <!-- Sandbox Console Dropdown selector -->
+    ${getAdminSandboxNavbarHTML(ad.selectedDemoState)}
+
+    <div class="form-card" style="padding: 24px;">
+      
+      <!-- Impersonation Selector -->
+      <div style="background:var(--color-surface-container); padding:10px 16px; border-radius:6px; margin-bottom:20px; border:1px solid var(--color-outline-variant); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-weight:900; font-size:13px; color:var(--color-primary);">👤 Admin Role Impersonator:</span>
+        </div>
+        <select class="form-input" style="width:220px; height:32px; font-size:12px; margin-bottom:0; font-weight:bold; background:#fff;" onchange="changeAdminImpersonatorRole(this.value)">
+          <option value="Platform Admin" ${ad.activeUserRole === 'Platform Admin' ? 'selected' : ''}>Platform Admin</option>
+          <option value="Technical Admin" ${ad.activeUserRole === 'Technical Admin' ? 'selected' : ''}>Technical Admin</option>
+          <option value="COO" ${ad.activeUserRole === 'COO' ? 'selected' : ''}>COO / Executive</option>
+          <option value="Operations Manager" ${ad.activeUserRole === 'Operations Manager' ? 'selected' : ''}>Operations Manager</option>
+          <option value="Unauthorized Staff" ${ad.activeUserRole === 'Unauthorized Staff' ? 'selected' : ''}>Unauthorized Staff (CSR / Editor)</option>
+        </select>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 900; margin:0;">🛠️ Platform Administration & Operations Console</h2>
+          <span style="font-size:12px; color:var(--color-tertiary);">Environment: Demo &bull; Platform status: ${ad.selectedDemoState === 'Health Check Failed' ? 'Degraded' : 'Operational'}</span>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 8px; border-bottom: 2px solid var(--color-outline-variant); margin-bottom: 20px; flex-wrap:wrap;">
+        ${tabsHtml}
+      </div>
+
+      ${paneHtml}
+    </div>
+  `;
+};
+
+window.changeAdminTab = function(tab) {
+  ensureAdminState();
+  state.admin.activeTab = tab;
+  renderAdminWorkspace(window.location.hash);
+};
+
+window.changeAdminImpersonatorRole = function(role) {
+  ensureAdminState();
+  state.admin.activeUserRole = role;
+  renderAdminWorkspace(window.location.hash);
+};
+
+function renderAdminAccessDenied(container) {
+  container.innerHTML = `
+    ${getAdminSandboxNavbarHTML(state.admin.selectedDemoState)}
+    <div class="form-card" style="padding:40px; text-align:center; max-width:600px; margin:0 auto;">
+      <h2 style="font-family:var(--font-family-headings); color:red; font-size:24px; font-weight:900;">⛔ Administration Access Not Available</h2>
+      <p style="color:var(--color-tertiary); font-size:13px; margin:12px 0 20px 0;">Your role permissions do not authorize administration console viewing. Security events and audit trails have been logged.</p>
+      <button class="btn btn-secondary" onclick="window.location.hash='#staff/dashboard'">Return to Staff Dashboard</button>
+    </div>
+  `;
+}
+
+// ==========================================================================
+// Admin Sandbox State Syncer (Rule 122)
+// ==========================================================================
+
+function getAdminSandboxNavbarHTML(activeState) {
+  return `
+    <div style="background-color: var(--color-surface-container-highest); border-bottom: 2px solid var(--color-outline-variant); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; border-radius: 8px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="font-weight: 900; font-size: 13.5px; color: var(--color-secondary);">🎛️ Platform Sandbox:</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 12px; font-weight: 700; color: var(--color-tertiary);">Demo State:</span>
+        <select class="form-input" style="width: 250px; height: 32px; font-size: 12px; margin-bottom: 0; font-weight: bold; background: #fff;" onchange="changeAdminDemoState(this.value)">
+          <option value="Healthy" ${activeState === 'Healthy' ? 'selected' : ''}>System Healthy</option>
+          <option value="Setting Draft" ${activeState === 'Setting Draft' ? 'selected' : ''}>Setting Version Draft</option>
+          <option value="Setting Approval Pending" ${activeState === 'Setting Approval Pending' ? 'selected' : ''}>Setting Approval Pending</option>
+          <option value="Setting Active" ${activeState === 'Setting Active' ? 'selected' : ''}>Setting Activated (Superseded)</option>
+          <option value="Reference In Use" ${activeState === 'Reference In Use' ? 'selected' : ''}>Reference Value In Use Lock</option>
+          <option value="Step-Up Required" ${activeState === 'Step-Up Required' ? 'selected' : ''}>High-Risk Step-Up Verification</option>
+          <option value="Feature Draft" ${activeState === 'Feature Draft' ? 'selected' : ''}>Feature Flag Draft</option>
+          <option value="Feature Enabled" ${activeState === 'Feature Enabled' ? 'selected' : ''}>Feature Flag Enabled</option>
+          <option value="Feature Rollback" ${activeState === 'Feature Rollback' ? 'selected' : ''}>Feature Flag Rolled Back</option>
+          <option value="Health Check Failed" ${activeState === 'Health Check Failed' ? 'selected' : ''}>Resend Integration Failure</option>
+          <option value="Integration Degraded" ${activeState === 'Integration Degraded' ? 'selected' : ''}>Daily Meeting degraded</option>
+          <option value="Job Processing" ${activeState === 'Job Processing' ? 'selected' : ''}>Queue Item Processing</option>
+          <option value="Retry Scheduled" ${activeState === 'Retry Scheduled' ? 'selected' : ''}>Queue Retry Scheduled</option>
+          <option value="Dead Letter" ${activeState === 'Dead Letter' ? 'selected' : ''}>Dead-letter Queue (DLQ)</option>
+          <option value="Replay Successful" ${activeState === 'Replay Successful' ? 'selected' : ''}>Controlled Replay Succeeded</option>
+          <option value="Replay Failed" ${activeState === 'Replay Failed' ? 'selected' : ''}>Replay Fail Retry</option>
+          <option value="Scheduler Paused" ${activeState === 'Scheduler Paused' ? 'selected' : ''}>Scheduler Cron Paused</option>
+          <option value="Scheduler Delayed" ${activeState === 'Scheduler Delayed' ? 'selected' : ''}>Scheduler Delayed Warning</option>
+          <option value="Duplicate Webhook" ${activeState === 'Duplicate Webhook' ? 'selected' : ''}>Duplicate Webhook Ignored</option>
+          <option value="Permission Change" ${activeState === 'Permission Change' ? 'selected' : ''}>Audited Permissions change</option>
+          <option value="Last Admin Safeguard" ${activeState === 'Last Admin Safeguard' ? 'selected' : ''}>Emergency Admin Safeguard</option>
+          <option value="Stale Read Model" ${activeState === 'Stale Read Model' ? 'selected' : ''}>Stale Dashboard warning</option>
+          <option value="Support View Disabled" ${activeState === 'Support View Disabled' ? 'selected' : ''}>Support Impersonation Block</option>
+          <option value="Unauthorized Attempt" ${activeState === 'Unauthorized Attempt' ? 'selected' : ''}>Access Denied (impersonate)</option>
+        </select>
+      </div>
+    </div>
+  `;
+}
+
+window.changeAdminDemoState = function(val) {
+  ensureAdminState();
+  const ad = state.admin;
+  ad.selectedDemoState = val;
+
+  const ref = ad.referenceDurations[0];
+  const set = ad.setting;
+  const flag = ad.featureFlags[0];
+  const job = ad.jobs[0];
+  const cron = ad.schedule;
+  const web = ad.webhooks[0];
+  const fresh = ad.freshness;
+
+  // Defaults clean resets
+  ref.status = "Active";
+  set.status = "Active";
+  set.version = 1;
+  set.val1 = "24-hour reminder";
+  flag.status = "Draft";
+  job.status = "Dead-letter";
+  cron.status = "Active";
+  fresh.data = "Current";
+  fresh.job = "Current";
+  ad.activeUserRole = "Platform Admin";
+
+  if (val === "Healthy") {
+    // Standard
+  } else if (val === "Setting Draft") {
+    set.status = "Draft";
+    set.version = 2;
+    set.val1 = "12-hour reminder";
+  } else if (val === "Setting Approval Pending") {
+    set.status = "Draft";
+    set.version = 2;
+    set.val1 = "12-hour reminder";
+  } else if (val === "Setting Active") {
+    set.status = "Active";
+    set.version = 2;
+    set.val1 = "12-hour reminder";
+  } else if (val === "Reference In Use") {
+    ref.status = "Active";
+  } else if (val === "Step-Up Required") {
+    // stepup prompt
+  } else if (val === "Feature Draft") {
+    flag.status = "Draft";
+  } else if (val === "Feature Enabled") {
+    flag.status = "Enabled";
+  } else if (val === "Feature Rollback") {
+    flag.status = "Disabled";
+  } else if (val === "Health Check Failed") {
+    ad.integrations.resend.status = "Failed";
+  } else if (val === "Integration Degraded") {
+    ad.integrations.daily.status = "Degraded";
+  } else if (val === "Job Processing") {
+    job.status = "Processing";
+  } else if (val === "Retry Scheduled") {
+    job.status = "Retry Scheduled";
+  } else if (val === "Dead Letter") {
+    job.status = "Dead-letter";
+  } else if (val === "Replay Successful") {
+    job.status = "Succeeded";
+  } else if (val === "Replay Failed") {
+    job.status = "Dead-letter";
+  } else if (val === "Scheduler Paused") {
+    cron.status = "Paused";
+  } else if (val === "Scheduler Delayed") {
+    cron.status = "Delayed";
+    fresh.job = "Delayed";
+  } else if (val === "Duplicate Webhook") {
+    // Duplicate test alert
+  } else if (val === "Permission Change") {
+    // Change audit
+  } else if (val === "Last Admin Safeguard") {
+    // Safeguard trigger
+  } else if (val === "Stale Read Model") {
+    fresh.data = "Delayed";
+  } else if (val === "Support View Disabled") {
+    // Impersonation block demo
+  } else if (val === "Unauthorized Attempt") {
+    ad.activeUserRole = "Unauthorized Staff";
+  }
+
+  showToastAlert(`✓ System Sandbox state updated: ${val}`);
+  renderAdminWorkspace(window.location.hash);
+};
+
+// ==========================================================================
+// Admin Overview View (Rule 4)
+// ==========================================================================
+
+function renderAdminOverview() {
+  const ad = state.admin;
+
+  return `
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:24px;">
+      <div class="kpi-card" style="padding:16px; border-left:4px solid var(--color-primary);">
+        <span style="font-size:12px; font-weight:700; color:var(--color-tertiary);">Config Pending Approvals</span>
+        <h3 style="font-size:24px; font-weight:900; margin:4px 0 0 0;">${ad.setting.status === 'Draft' ? 1 : 0}</h3>
+      </div>
+      <div class="kpi-card" style="padding:16px; border-left:4px solid green;">
+        <span style="font-size:12px; font-weight:700; color:var(--color-tertiary);">Integration Providers</span>
+        <h3 style="font-size:24px; font-weight:900; margin:4px 0 0 0;">3</h3>
+      </div>
+      <div class="kpi-card" style="padding:16px; border-left:4px solid var(--color-error);">
+        <span style="font-size:12px; font-weight:700; color:var(--color-tertiary);">Failed Queue Jobs</span>
+        <h3 style="font-size:24px; font-weight:900; margin:4px 0 0 0;">${ad.jobs[0].status === 'Dead-letter' ? 1 : 0}</h3>
+      </div>
+      <div class="kpi-card" style="padding:16px; border-left:4px solid #b78103;">
+        <span style="font-size:12px; font-weight:700; color:var(--color-tertiary);">Active Feature Flags</span>
+        <h3 style="font-size:24px; font-weight:900; margin:4px 0 0 0;">${ad.featureFlags.filter(f => f.status === 'Enabled').length}</h3>
+      </div>
+    </div>
+
+    <!-- Data & Job Freshness indicators (Rule 90 & 93) -->
+    <div class="form-card" style="padding:20px; margin-bottom:20px;">
+      <h3 style="font-family: var(--font-family-headings); font-weight:800; font-size:15px; margin:0 0 12px 0;">Platform Freshness Indicators</h3>
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px;">
+        <div style="background:var(--color-surface-container); padding:12px; border-radius:6px; border:1px solid var(--color-outline-variant);">
+          <span style="font-size:11px; color:var(--color-tertiary); display:block;">Read Model Freshness</span>
+          <strong style="font-size:14px; color:${ad.freshness.data === 'Delayed' ? 'red' : 'green'};">
+            ${ad.freshness.data === 'Delayed' ? '⚠️ Delayed (Stale read model)' : '✓ Current'}
+          </strong>
+        </div>
+        <div style="background:var(--color-surface-container); padding:12px; border-radius:6px; border:1px solid var(--color-outline-variant);">
+          <span style="font-size:11px; color:var(--color-tertiary); display:block;">Background Job Freshness</span>
+          <strong style="font-size:14px; color:${ad.freshness.job === 'Delayed' ? 'red' : 'green'};">
+            ${ad.freshness.job === 'Delayed' ? '⚠️ Delayed Queue Processing' : '✓ Current'}
+          </strong>
+        </div>
+        <div style="background:var(--color-surface-container); padding:12px; border-radius:6px; border:1px solid var(--color-outline-variant);">
+          <span style="font-size:11px; color:var(--color-tertiary); display:block;">Webhooks Health Status</span>
+          <strong style="font-size:14px; color:green;">✓ Connected</strong>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ==========================================================================
+// Reference Data: Used protection value & inactivate (Rule 6-14)
+// ==========================================================================
+
+function renderAdminReferenceData() {
+  const ad = state.admin;
+  const ref = ad.referenceDurations[0];
+
+  return `
+    <div style="display:grid; grid-template-columns: 1fr 340px; gap:20px; align-items:flex-start;">
+      
+      <!-- Duration table -->
+      <div class="form-card" style="padding:16px;">
+        <h3 style="font-weight:800; font-size:15px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">Class Duration Reference Values</h3>
+        
+        <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px; line-height:24px; margin-bottom:16px;">
+          <thead>
+            <tr style="border-bottom:1px solid var(--color-outline-variant); color:var(--color-tertiary); font-size:11px;">
+              <th>Reference Label</th>
+              <th>Display Order</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:bold;">${ref.label}</td>
+              <td>${ref.order}</td>
+              <td>
+                <span class="status-badge" style="background:#e6f4ea; color:#137333; font-weight:bold; font-size:11px; padding:2px 6px; border-radius:4px;">
+                  ${ref.status}
+                </span>
+              </td>
+              <td>
+                <button class="btn btn-secondary" style="color:#ba1a1a; border-color:#ba1a1a; padding:4px 8px; font-size:11px; height:26px;" onclick="triggerDeleteDuration('${ref.id}')">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Reference Data rules sidebar -->
+      <div class="form-card" style="padding:16px; font-size:12.5px; line-height:20px;">
+        <h3 style="font-weight:800; font-size:13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">🛡️ Reference Data Safeguards</h3>
+        <p style="color:var(--color-tertiary);">Durations or format tags referenced by historical classes (\`CLASS-001\` or \`CLASS-002-R1\`) cannot be hard-deleted. They must be inactivated to prevent broken historical traces.</p>
+      </div>
+
+    </div>
+  `;
+}
+
+window.triggerDeleteDuration = function(refId) {
+  ensureAdminState();
+  const ad = state.admin;
+  const ref = ad.referenceDurations.find(r => r.id === refId);
+  if (!ref) return;
+
+  // Open validation blocker modal (Rule 9)
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <p style="color:#ba1a1a; font-weight:bold; margin-top:0;">⛔ Cannot Delete Reference Value: Used by Existing Records</p>
+      <p style="color:var(--color-tertiary); line-height:1.5; margin-bottom:16px;">This duration value is currently referenced by <strong>CLASS-001</strong> and <strong>CLASS-002-R1</strong>. Deleting it would break audit histories.</p>
+      
+      <div style="display:flex; gap:12px;">
+        <button class="btn btn-primary" style="background-color:#ba1a1a; border-color:#ba1a1a; color:#fff; font-weight:800; flex:1.2;" onclick="executeInactivateDuration('${refId}')">Mark Inactive for Future Use</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Delete Blocked", content);
+};
+
+window.executeInactivateDuration = function(refId) {
+  ensureAdminState();
+  const ref = state.admin.referenceDurations.find(r => r.id === refId);
+  ref.status = "Inactive";
+  closeModal();
+  showToastAlert("✓ Reference value marked Inactive. Existing historical classes remain unaffected.");
+  renderAdminWorkspace(window.location.hash);
+};
+
+// ==========================================================================
+// Settings versions & Rollback (Rule 15-25)
+// ==========================================================================
+
+function renderAdminSettings() {
+  const ad = state.admin;
+  const set = ad.setting;
+
+  return `
+    <div style="display:grid; grid-template-columns: 1fr 340px; gap:20px; align-items:flex-start;">
+      
+      <!-- Setting details -->
+      <div class="form-card" style="padding:16px;">
+        <h3 style="font-weight:800; font-size:15px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">Class Reminder Timing Setting</h3>
+        
+        <table style="width:100%; font-size:13px; line-height:26px; margin-bottom:16px;">
+          <tr><td style="color:var(--color-tertiary);">Setting ID:</td><td style="font-weight:bold; text-align:right; font-family:monospace;">${set.id}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Current Version:</td><td style="font-weight:bold; text-align:right;">v${set.version}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Primary Reminder:</td><td style="font-weight:bold; text-align:right; color:var(--color-primary);">${set.val1}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Secondary Reminder:</td><td style="font-weight:bold; text-align:right;">${set.val2}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Status:</td><td style="font-weight:bold; text-align:right;">
+            <span class="status-badge" style="background:#e6f4ea; color:#137333; font-weight:bold; font-size:11px; padding:2px 6px; border-radius:4px;">
+              ${set.status}
+            </span>
+          </td></tr>
+        </table>
+
+        <!-- Configuration Version triggers (Rule 17) -->
+        ${set.version === 1 ? `
+          <div style="text-align:right;">
+            <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="triggerCreateSettingVersion()">Create New Version</button>
+          </div>
+        ` : ''}
+
+        ${set.version === 2 && set.status === 'Draft' ? `
+          <div style="background:#fff9ee; border:1px solid #faecc5; border-radius:6px; padding:12px;">
+            <strong style="color:#b78103; font-size:13px; display:block; margin-bottom:4px;">🔑 High-Risk Configuration Action</strong>
+            <p style="margin:2px 0 12px 0; font-size:12px; color:var(--color-tertiary);">Activation modifies system behavior for future class triggers. Step-Up authentication required.</p>
+            <div style="text-align:right;">
+              <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="triggerActivateSettingVersion()">Simulate Step-Up & Activate</button>
+            </div>
+          </div>
+        ` : ''}
+
+        ${set.version === 2 && set.status === 'Active' ? `
+          <div style="background:#f0faf2; border:1px solid #cce8d4; border-radius:6px; padding:12px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <strong style="color:green;">✓ Setting v2 Activated</strong>
+              <span style="font-size:11.5px; color:var(--color-tertiary); display:block; margin-top:2px;">v1 status marked Superseded.</span>
+            </div>
+            <button class="btn btn-secondary" style="color:#ba1a1a; border-color:#ba1a1a; height:30px;" onclick="triggerRollbackSetting()">Roll Back to v1</button>
+          </div>
+        ` : ''}
+
+      </div>
+
+      <!-- Settings Version history logs -->
+      <div class="form-card" style="padding:16px;">
+        <h3 style="font-weight:800; font-size:13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">📜 Settings Change Logs</h3>
+        
+        <div style="font-size:12px; line-height:18px;">
+          <div style="margin-bottom:8px;">
+            <strong style="color:var(--color-primary);">v1 &middot; Active</strong><br/>
+            <span style="color:var(--color-tertiary);">Actor: dev-cto-hamza &bull; Reason: Initial release values</span>
+          </div>
+          ${set.version === 2 ? `
+            <div style="margin-bottom:8px;">
+              <strong style="color:var(--color-primary);">v2 &middot; ${set.status}</strong><br/>
+              <span style="color:var(--color-tertiary);">Actor: Platform Operations &bull; Reason: Testing revised reminder timing.</span>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+
+    </div>
+  `;
+}
+
+window.triggerCreateSettingVersion = function() {
+  ensureAdminState();
+  const set = state.admin.setting;
+  set.version = 2;
+  set.status = "Draft";
+  set.val1 = "12-hour reminder"; // modified value
+  showToastAlert("✓ Draft version SETTING-CLASS-REMINDERS-v2 initialized. Pending activation.");
+  renderAdminWorkspace(window.location.hash);
+};
+
+window.triggerActivateSettingVersion = function() {
+  // Step-up verification simulation (Rule 22)
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <p style="font-weight:bold; margin-top:0;">🔐 Verify Administrative MFA Token</p>
+      <p style="color:var(--color-tertiary); line-height:1.5; margin-bottom:16px;">This high-risk action modifies operational reminders windows. Simulate step-up token code verification:</p>
+      
+      <div style="display:flex; gap:12px;">
+        <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="executeActivateSettingVersion()">Simulate Verification</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Step-Up Verification", content);
+};
+
+window.executeActivateSettingVersion = function() {
+  ensureAdminState();
+  const set = state.admin.setting;
+  set.status = "Active";
+  closeModal();
+  showToastAlert("✓ Step-Up Authentication verified. Version v2 activated. Version v1 marked Superseded.");
+  renderAdminWorkspace(window.location.hash);
+};
+
+window.triggerRollbackSetting = function() {
+  ensureAdminState();
+  const set = state.admin.setting;
+  set.version = 1;
+  set.status = "Active";
+  set.val1 = "24-hour reminder";
+  showToastAlert("✓ Configuration rolled back to Version v1. Version v2 marked Superseded / Rolled Back.");
+  renderAdminWorkspace(window.location.hash);
+};
+
+// ==========================================================================
+// Roles & Permissions matrix (Rule 27-34)
+// ==========================================================================
+
+function renderAdminRoles() {
+  const ad = state.admin;
+
+  return `
+    <div style="display:grid; grid-template-columns: 1fr 340px; gap:20px; align-items:flex-start;">
+      
+      <!-- Role Permission Grid -->
+      <div class="form-card" style="padding:16px;">
+        <h3 style="font-weight:800; font-size:15px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">Technical Admin Permission Matrix</h3>
+        
+        <table style="width:100%; font-size:13px; line-height:24px; border-collapse:collapse;">
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Platform Configuration:</td><td style="font-weight:bold; text-align:right; color:green;">Allowed</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Integration Diagnostics:</td><td style="font-weight:bold; text-align:right; color:green;">Allowed</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Queue Recovery:</td><td style="font-weight:bold; text-align:right; color:green;">Allowed</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Learner Academic Records:</td><td style="font-weight:bold; text-align:right; color:red;">Not Granted (Denied)</td></tr>
+          <tr style="border-bottom:1px solid var(--color-outline-variant);"><td style="color:var(--color-tertiary);">Payroll Details:</td><td style="font-weight:bold; text-align:right; color:red;">Not Granted (Denied)</td></tr>
+        </table>
+
+        <!-- Emergency Admin safeguard button (Rule 32) -->
+        <div style="margin-top:20px; border-top:1px solid var(--color-outline-variant); padding-top:16px;">
+          <button class="btn btn-secondary" style="color:#ba1a1a; border-color:#ba1a1a; width:100%;" onclick="triggerRemoveAdminSafeguard()">Remove Platform Admin Role</button>
+        </div>
+      </div>
+
+      <!-- Boundaries notes -->
+      <div class="form-card" style="padding:16px; font-size:12.5px; line-height:20px;">
+        <h3 style="font-weight:800; font-size:13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">🛡️ Boundary Guards</h3>
+        <p style="color:var(--color-tertiary);">Administrative configuration rights do not grant universal read-access to restricted payrolls, learners, or HR profiles files (default deny applies).</p>
+      </div>
+
+    </div>
+  `;
+}
+
+window.triggerRemoveAdminSafeguard = function() {
+  // Blocker (Rule 32)
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <p style="color:#ba1a1a; font-weight:bold; margin-top:0;">⛔ Action Blocked: Final Emergency Administrator</p>
+      <p style="color:var(--color-tertiary); line-height:1.5; margin-bottom:16px;">The final emergency administrator role assignment cannot be removed without establishing another approved administrator record first.</p>
+      <div style="text-align:right;">
+        <button class="btn btn-secondary" onclick="closeModal()">Close Panel</button>
+      </div>
+    </div>
+  `;
+  openModal("Action Blocked", content);
+};
+
+// ==========================================================================
+// Integrations: health check test Connection (Rule 35-47)
+// ==========================================================================
+
+function renderAdminIntegrations() {
+  const ad = state.admin;
+  const resend = ad.integrations.resend;
+
+  return `
+    <div style="display:grid; grid-template-columns: 1fr 340px; gap:20px; align-items:flex-start;">
+      
+      <!-- Integration config details -->
+      <div class="form-card" style="padding:16px;">
+        <h3 style="font-weight:800; font-size:15px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">Resend Email Provider Configuration</h3>
+        
+        <table style="width:100%; font-size:13px; line-height:26px; margin-bottom:16px;">
+          <tr><td style="color:var(--color-tertiary);">Approved Sender Domain:</td><td style="font-weight:bold; text-align:right;">${resend.domain}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Approved Sender Address:</td><td style="font-weight:bold; text-align:right;">${resend.sender}</td></tr>
+          
+          <!-- Secrets protection check (Rule 38 & 39) -->
+          <tr><td style="color:var(--color-tertiary);">API Authorization Key:</td><td style="font-weight:bold; text-align:right; color:var(--color-secondary);">Managed in Environment Store</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Health Check Status:</td><td style="font-weight:bold; text-align:right; color:${resend.status === 'Failed' ? 'red' : 'green'};">${resend.status}</td></tr>
+        </table>
+
+        <!-- Test Connection triggers (Rule 44 & 45) -->
+        <div style="display:flex; gap:12px; justify-content:flex-end;">
+          <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="triggerTestConnection()">Run Mock Health Check</button>
+        </div>
+
+        <!-- Failure alerts (Rule 45) -->
+        ${resend.status === 'Failed' ? `
+          <div style="background-color:#fff0f0; border-left:3px solid #ba1a1a; padding:12px; border-radius:6px; font-size:12.5px; margin-top:16px;">
+            <strong style="color:#ba1a1a;">⚠️ Resend Connection Failure Detected</strong>
+            <p style="margin:4px 0 0 0; color:var(--color-tertiary);">Identity verification returned timeout. Notification outbox will retain failed items.</p>
+          </div>
+        ` : ''}
+      </div>
+
+      <!-- Secret configuration details -->
+      <div class="form-card" style="padding:16px; font-size:12.5px; line-height:20px;">
+        <h3 style="font-weight:800; font-size:13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">📂 Secret Configuration Policy</h3>
+        <p style="color:var(--color-tertiary);">Secrets are managed in the server/environment secret store and cannot be viewed or edited in plain text via platform admin dashboards.</p>
+      </div>
+
+    </div>
+  `;
+}
+
+window.triggerTestConnection = function() {
+  ensureAdminState();
+  const resend = state.admin.integrations.resend;
+  resend.status = "Checking";
+  renderAdminWorkspace(window.location.hash);
+
+  setTimeout(() => {
+    resend.status = "Healthy";
+    showToastAlert("✓ Resend API connection check returned Healthy (latency 42ms).");
+    renderAdminWorkspace(window.location.hash);
+  }, 1000);
+};
+
+// ==========================================================================
+// Background Queue Replays (Rule 48-65)
+// ==========================================================================
+
+function renderAdminJobs() {
+  const ad = state.admin;
+  const job = ad.jobs[0];
+
+  return `
+    <div style="display:grid; grid-template-columns: 1fr 340px; gap:20px; align-items:flex-start;">
+      
+      <!-- Queue Job detail inspect -->
+      <div class="form-card" style="padding:16px;">
+        <h3 style="font-weight:800; font-size:15px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">Queue Inspect: ${job.id}</h3>
+        
+        <table style="width:100%; font-size:13px; line-height:26px; margin-bottom:16px;">
+          <tr><td style="color:var(--color-tertiary);">Job Type:</td><td style="font-weight:bold; text-align:right;">${job.type}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Owning Domain:</td><td style="font-weight:bold; text-align:right;">${job.owningDomain}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Source ID:</td><td style="font-weight:bold; text-align:right; font-family:monospace;">${job.sourceId}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Correlation ID:</td><td style="font-weight:bold; text-align:right; font-family:monospace;">${job.correlationId}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Job Status:</td><td style="font-weight:bold; text-align:right; color:${job.status === 'Dead-letter' ? 'red' : 'green'};">${job.status}</td></tr>
+        </table>
+
+        <!-- Replay Queue items action triggers (Rule 56 & 57) -->
+        ${job.status === 'Dead-letter' ? `
+          <div style="background:#fff9ee; border:1px solid #faecc5; border-radius:6px; padding:12px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <strong>Replay Dead-Letter Queue Item?</strong>
+              <p style="margin:2px 0 0 0; font-size:11.5px; color:var(--color-tertiary);">Replays reprocesses jobs without rewriting source records.</p>
+            </div>
+            <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="triggerReplayJob('${job.id}')">Replay Job</button>
+          </div>
+        ` : ''}
+
+        ${job.status === 'Succeeded' ? `
+          <div style="background:#f0faf2; border:1px solid #cce8d4; border-radius:6px; padding:10px; color:green; font-weight:bold; text-align:center;">
+            ✓ Replay Succeeded. Job completed successfully.
+          </div>
+        ` : ''}
+
+      </div>
+
+      <!-- Attempt history (Rule 55) -->
+      <div class="form-card" style="padding:16px;">
+        <h3 style="font-weight:800; font-size:13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">🔄 Queue Attempt History</h3>
+        <div style="font-size:12px; line-height:18px;">
+          ${job.attempts.map(att => `
+            <div style="margin-bottom:8px;">
+              <strong style="color:var(--color-primary);">Attempt ${att.attempt} &middot; ${att.result}</strong><br/>
+              <span style="color:var(--color-tertiary);">Time: ${att.time} &bull; Error: ${att.error}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+    </div>
+  `;
+}
+
+window.triggerReplayJob = function(jobId) {
+  ensureAdminState();
+  const job = state.admin.jobs.find(j => j.id === jobId);
+  job.status = "Processing";
+  renderAdminWorkspace(window.location.hash);
+
+  setTimeout(() => {
+    job.status = "Succeeded";
+    showToastAlert("✓ Replay Job completed. Notification event processed successfully.");
+    renderAdminWorkspace(window.location.hash);
+  }, 1000);
+};
+
+// ==========================================================================
+// Feature Flags: rollouts & step-up verification (Rule 78-89)
+// ==========================================================================
+
+function renderAdminFeatureFlags() {
+  const ad = state.admin;
+  const flag = ad.featureFlags[0];
+
+  return `
+    <div style="display:grid; grid-template-columns: 1fr 340px; gap:20px; align-items:flex-start;">
+      
+      <!-- Feature details -->
+      <div class="form-card" style="padding:16px;">
+        <h3 style="font-weight:800; font-size:15px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">Feature Flag: ${flag.id}</h3>
+        
+        <table style="width:100%; font-size:13px; line-height:26px; margin-bottom:16px;">
+          <tr><td style="color:var(--color-tertiary);">Flag Key:</td><td style="font-weight:bold; text-align:right; font-family:monospace;">${flag.key}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Target Audience:</td><td style="font-weight:bold; text-align:right;">${flag.audience}</td></tr>
+          <tr><td style="color:var(--color-tertiary);">Platform Status:</td><td style="font-weight:bold; text-align:right;">
+            <span class="status-badge" style="background:#f5f5f5; color:#333; font-weight:bold; font-size:11px; padding:2px 6px; border-radius:4px;">
+              ${flag.status}
+            </span>
+          </td></tr>
+        </table>
+
+        <!-- Enable / Rollback triggers -->
+        ${flag.status === 'Draft' ? `
+          <div style="text-align:right;">
+            <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800;" onclick="triggerEnableFeatureFlag('${flag.id}')">Enable Feature Flag</button>
+          </div>
+        ` : ''}
+
+        ${flag.status === 'Enabled' ? `
+          <div style="background:#f0faf2; border:1px solid #cce8d4; border-radius:6px; padding:12px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <strong style="color:green;">✓ Feature Flag Enabled</strong>
+              <span style="font-size:11.5px; color:var(--color-tertiary); display:block; margin-top:2px;">Available to targeted Platform/Ops audience.</span>
+            </div>
+            <button class="btn btn-secondary" style="color:#ba1a1a; border-color:#ba1a1a; height:30px;" onclick="triggerRollbackFeatureFlag('${flag.id}')">Roll Back Flag</button>
+          </div>
+        ` : ''}
+      </div>
+
+      <!-- Feature Flag rules metadata -->
+      <div class="form-card" style="padding:16px; font-size:12.5px; line-height:20px;">
+        <h3 style="font-weight:800; font-size:13.5px; border-bottom:1px solid var(--color-outline-variant); padding-bottom:6px; margin-bottom:12px;">🛡️ Feature Rollout Rules</h3>
+        <p style="color:var(--color-tertiary);">Feature flags control UI availability, not domain authorization checks. Un-authorized users remain blocked even if flags are enabled.</p>
+      </div>
+
+    </div>
+  `;
+}
+
+window.triggerEnableFeatureFlag = function(flagId) {
+  // Step-up verification simulation before enabling
+  const content = `
+    <div style="text-align:left; font-size:13px;">
+      <p style="font-weight:bold; margin-top:0;">🔐 Verify Administrative MFA Token</p>
+      <p style="color:var(--color-tertiary); line-height:1.5; margin-bottom:16px;">This action will release targeted features on the environment. Simulate step-up verification:</p>
+      
+      <div style="display:flex; gap:12px;">
+        <button class="btn btn-primary" style="background-color:var(--color-secondary); border-color:var(--color-secondary); color:#000; font-weight:800; flex:1.2;" onclick="executeEnableFeatureFlag('${flagId}')">Simulate Verification</button>
+        <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Step-Up Verification", content);
+};
+
+window.executeEnableFeatureFlag = function(flagId) {
+  ensureAdminState();
+  const flag = state.admin.featureFlags.find(f => f.id === flagId);
+  flag.status = "Enabled";
+  closeModal();
+  showToastAlert("✓ Feature flag enabled. Targeted rollout active.");
+  renderAdminWorkspace(window.location.hash);
+};
+
+window.triggerRollbackFeatureFlag = function(flagId) {
+  ensureAdminState();
+  const flag = state.admin.featureFlags.find(f => f.id === flagId);
+  flag.status = "Disabled";
+  showToastAlert("✓ Feature flag rolled back and disabled.");
+  renderAdminWorkspace(window.location.hash);
+};
