@@ -210,6 +210,39 @@ function handleRouting() {
   const opsClassChangeView = document.getElementById("ops-class-change-view");
   const learnerAssessmentView = document.getElementById("learner-assessment-view");
 
+  // Sync active persona with hash if navigating directly to a role-specific dashboard
+  if (window.PERSONAS) {
+    if (hash.includes("guardian/dashboard") || hash.startsWith("#guardian") || hash.startsWith("#k12/student")) {
+      window.currentPersonaId = "guardian-nadia";
+    } else if (hash.includes("coo/dashboard") || hash.startsWith("#coo")) {
+      window.currentPersonaId = "coo-omar";
+    } else if (hash.includes("trainer/dashboard") || hash.startsWith("#trainer")) {
+      window.currentPersonaId = "trainer-ayesha";
+    } else if (hash.includes("csr/dashboard") || hash.startsWith("#csr")) {
+      window.currentPersonaId = "csr-sarah";
+    } else if (hash.includes("finance/dashboard") || hash.startsWith("#finance")) {
+      window.currentPersonaId = "finance-tariq";
+    } else if (hash.includes("hr/dashboard") || hash.startsWith("#hr")) {
+      window.currentPersonaId = "hr-maria";
+    } else if (hash.includes("media/dashboard") || hash.startsWith("#media")) {
+      window.currentPersonaId = "media-noor";
+    } else if (hash.includes("development/dashboard") || hash.startsWith("#development")) {
+      window.currentPersonaId = "dev-bilal";
+    } else if (hash.startsWith("#admin/audit") || hash.startsWith("#admin/data-operations")) {
+      window.currentPersonaId = "compliance-zainab";
+    } else if (hash.includes("admin/dashboard") || hash.startsWith("#admin")) {
+      window.currentPersonaId = "admin-dev";
+    } else if (hash.includes("operations/dashboard") || hash.startsWith("#staff")) {
+      window.currentPersonaId = "ops-hamza";
+    }
+  }
+
+  // Update header and dynamic sidebar
+  if (typeof updateHeaderPersonaWidget === "function") updateHeaderPersonaWidget();
+  const currentPersona = window.PERSONAS ? window.PERSONAS[window.currentPersonaId || "learner-ali"] : null;
+  const currentRole = currentPersona ? currentPersona.role : "learner";
+  if (typeof renderDynamicSidebar === "function") renderDynamicSidebar(currentRole, hash);
+
   if (membershipRequestView) membershipRequestView.style.display = "none";
   if (staffEnrolmentsView) staffEnrolmentsView.style.display = "none";
   if (staffEnrolmentDetailView) staffEnrolmentDetailView.style.display = "none";
@@ -220,7 +253,8 @@ function handleRouting() {
   if (opsClassChangeView) opsClassChangeView.style.display = "none";
   if (learnerAssessmentView) learnerAssessmentView.style.display = "none";
 
-  if (hash.includes("dashboard")) {
+  // Check Screen 38 Audit / Data Operations routes
+  if (hash.startsWith("#admin/audit") || hash.startsWith("#admin/data-operations")) {
     if (catalogueView) catalogueView.style.display = "none";
     if (detailsView) detailsView.style.display = "none";
     if (trialView) trialView.style.display = "none";
@@ -230,19 +264,23 @@ function handleRouting() {
     if (classroomView) classroomView.style.display = "none";
     if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
 
-    // Handle sidebars based on dashboard type
-    const isStaffDash = hash.startsWith("#staff") || hash.startsWith("#operations") || hash.startsWith("#admin") || hash.startsWith("#finance") || hash.startsWith("#hr") || hash.startsWith("#media") || hash.startsWith("#development") || hash.startsWith("#csr") || hash.startsWith("#trainer");
-    if (isStaffDash) {
-      if (appSidebar) appSidebar.style.display = "none";
-      if (staffSidebar) staffSidebar.style.display = "block";
-      if (rolePill) rolePill.style.display = "flex";
-      if (switchBtn) switchBtn.innerText = "Learner View";
-    } else {
-      if (appSidebar) appSidebar.style.display = "block";
-      if (staffSidebar) staffSidebar.style.display = "none";
-      if (rolePill) rolePill.style.display = "none";
-      if (switchBtn) switchBtn.innerText = "Staff View";
+    const assessmentView = document.getElementById("learner-assessment-view");
+    if (assessmentView) {
+      assessmentView.style.display = "block";
+      renderAuditWorkspace(hash);
+      return;
     }
+  }
+
+  if (hash.includes("dashboard") || hash.startsWith("#guardian") || hash.startsWith("#coo") || hash.startsWith("#compliance")) {
+    if (catalogueView) catalogueView.style.display = "none";
+    if (detailsView) detailsView.style.display = "none";
+    if (trialView) trialView.style.display = "none";
+    const detailsTrialView = document.getElementById("learner-trial-details-view");
+    const classroomView = document.getElementById("learner-classroom-view");
+    if (detailsTrialView) detailsTrialView.style.display = "none";
+    if (classroomView) classroomView.style.display = "none";
+    if (learnerCourseWorkspaceView) learnerCourseWorkspaceView.style.display = "none";
 
     const assessmentView = document.getElementById("learner-assessment-view");
     if (assessmentView) {
@@ -1646,21 +1684,29 @@ function openViewDetailsModal(slug) {
 // Open General Authentication Modals
 function openSignInModal() {
   const content = `
-    <p class="modal-text">Sign in to your learner space to resume previews, join live lectures, and view invoices.</p>
+    <div style="background: var(--color-surface-container); border: 1px solid var(--color-outline-variant); border-radius: 8px; padding: 12px; margin-bottom: 16px; text-align: center;">
+      <div style="font-weight: 800; font-size: 13px; color: var(--color-primary); margin-bottom: 4px;">🎭 Prototype Role Simulator</div>
+      <p style="font-size: 11.5px; color: var(--color-tertiary); margin: 0 0 10px 0;">Switch directly between 12 distinct role personas and dashboards:</p>
+      <button class="btn btn-primary" style="width: 100%; height: 34px; font-size: 12px; font-weight: 800;" onclick="closeModal(); openRoleSwitcherModal();">
+        Open Role Switcher Modal ➜
+      </button>
+    </div>
+
+    <p class="modal-text" style="font-size: 12px; margin-bottom: 12px;">Or sign in with mock credentials:</p>
     
     <form id="modal-signin-form" onsubmit="handleMockSubmit(event, 'Welcome back! Logging you in...')">
       <div class="form-group">
         <label class="form-label" for="signin-email">Email Address</label>
-        <input class="form-input" type="email" id="signin-email" placeholder="name@domain.com" required>
+        <input class="form-input" type="email" id="signin-email" placeholder="name@domain.com" value="ali.khan@example.com" required>
       </div>
       <div class="form-group">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <label class="form-label" for="signin-pass">Password</label>
           <a href="#" style="font-size: 12px; color: var(--color-secondary); text-decoration: none;">Forgot?</a>
         </div>
-        <input class="form-input" type="password" id="signin-pass" placeholder="Password" required>
+        <input class="form-input" type="password" id="signin-pass" placeholder="Password" value="password123" required>
       </div>
-      <button type="submit" class="btn btn-primary" style="width: 100%; height: 44px; margin-top: 12px;">Sign In</button>
+      <button type="submit" class="btn btn-secondary" style="width: 100%; height: 40px; margin-top: 8px;">Sign In with Credentials</button>
     </form>
     
     <div style="margin-top: 16px; text-align: center; border-top: 1px solid var(--color-outline-variant); padding-top: 16px;">
@@ -31855,6 +31901,11 @@ window.ensureAdminState = function() {
 // ==========================================================================
 
 window.renderAdminWorkspace = function(hash) {
+  if (hash && (hash.startsWith("#admin/audit") || hash.startsWith("#admin/data-operations"))) {
+    renderAuditWorkspace(hash);
+    return;
+  }
+
   ensureAdminState();
   const ad = state.admin;
   const view = document.getElementById("learner-assessment-view");
@@ -32600,4 +32651,2188 @@ window.triggerRollbackFeatureFlag = function(flagId) {
   flag.status = "Disabled";
   showToastAlert("✓ Feature flag rolled back and disabled.");
   renderAdminWorkspace(window.location.hash);
+};
+// ==========================================================================
+// Centralized Personas & Role Simulation System
+// ==========================================================================
+
+window.PERSONAS = {
+  "learner-ali": {
+    id: "learner-ali",
+    name: "Ali Khan",
+    email: "ali.khan@example.com",
+    role: "learner",
+    roleTitle: "Enrolled Learner",
+    category: "Learners & Guardians",
+    avatar: "AK",
+    badgeColor: "var(--color-primary)",
+    badgeBg: "var(--color-primary-container)",
+    description: "Adult learner enrolled in Spoken English Bootcamp & Practical AI.",
+    primaryRoute: "#learner/dashboard"
+  },
+  "guardian-nadia": {
+    id: "guardian-nadia",
+    name: "Nadia Khan",
+    email: "nadia.khan@example.com",
+    role: "guardian",
+    roleTitle: "K-12 Guardian / Parent",
+    category: "Learners & Guardians",
+    avatar: "NK",
+    badgeColor: "#9333ea",
+    badgeBg: "#f3e8ff",
+    description: "Parent of Zara Khan (Grade 7 K-12 tuition bundle).",
+    primaryRoute: "#guardian/dashboard"
+  },
+  "trainer-ayesha": {
+    id: "trainer-ayesha",
+    name: "Ayesha Rahman",
+    email: "ayesha.rahman@example.com",
+    role: "trainer",
+    roleTitle: "Senior Faculty Trainer",
+    category: "Faculty & Trainers",
+    avatar: "AR",
+    badgeColor: "#2563eb",
+    badgeBg: "#dbeafe",
+    description: "Instructor for Spoken English Bootcamp & written/voice assignments evaluator.",
+    primaryRoute: "#trainer/dashboard"
+  },
+  "csr-sarah": {
+    id: "csr-sarah",
+    name: "Sarah Ahmed",
+    email: "sarah.ahmed@example.com",
+    role: "csr",
+    roleTitle: "Customer Success / Sales",
+    category: "Sales & Operations",
+    avatar: "SA",
+    badgeColor: "#059669",
+    badgeBg: "#d1fae5",
+    description: "Manages student trial qualification, lead conversions & follow-ups.",
+    primaryRoute: "#csr/dashboard"
+  },
+  "ops-hamza": {
+    id: "ops-hamza",
+    name: "Hamza Siddiqui",
+    email: "hamza.siddiqui@example.com",
+    role: "operations",
+    roleTitle: "Operations Manager",
+    category: "Sales & Operations",
+    avatar: "HS",
+    badgeColor: "var(--color-secondary)",
+    badgeBg: "var(--color-secondary-container)",
+    description: "Supervises class scheduling, delivery reviews, payments, and case queues.",
+    primaryRoute: "#operations/dashboard"
+  },
+  "finance-tariq": {
+    id: "finance-tariq",
+    name: "Tariq Mehmood",
+    email: "tariq.mehmood@example.com",
+    role: "finance",
+    roleTitle: "Finance Officer / Controller",
+    category: "Corporate & Specialist",
+    avatar: "TM",
+    badgeColor: "#0d9488",
+    badgeBg: "#ccfbf1",
+    description: "Bank reconciliation, ledger accounts, expense management & payroll settlements.",
+    primaryRoute: "#finance/dashboard"
+  },
+  "hr-maria": {
+    id: "hr-maria",
+    name: "Maria Hassan",
+    email: "maria.hassan@example.com",
+    role: "hr",
+    roleTitle: "Human Resources Manager",
+    category: "Corporate & Specialist",
+    avatar: "MH",
+    badgeColor: "#e11d48",
+    badgeBg: "#ffe4e6",
+    description: "Employee onboarding, credential verification, letter generation & offboarding.",
+    primaryRoute: "#hr/dashboard"
+  },
+  "media-noor": {
+    id: "media-noor",
+    name: "Noor Fatima",
+    email: "noor.fatima@example.com",
+    role: "media",
+    roleTitle: "Media Specialist / Editor",
+    category: "Corporate & Specialist",
+    avatar: "NF",
+    badgeColor: "#d97706",
+    badgeBg: "#fef3c7",
+    description: "Video asset production, creative briefs, version uploads & review wages.",
+    primaryRoute: "#media/dashboard"
+  },
+  "dev-bilal": {
+    id: "dev-bilal",
+    name: "Bilal Ahmed",
+    email: "bilal.ahmed@example.com",
+    role: "development",
+    roleTitle: "Senior Software Engineer",
+    category: "Engineering & Systems",
+    avatar: "BA",
+    badgeColor: "#4f46e5",
+    badgeBg: "#e0e7ff",
+    description: "Feature development, test runs, QA reviews, bug tracker & deployments.",
+    primaryRoute: "#development/dashboard"
+  },
+  "admin-dev": {
+    id: "admin-dev",
+    name: "Platform Admin",
+    email: "admin.platform@example.com",
+    role: "admin",
+    roleTitle: "Platform & Systems Admin",
+    category: "Engineering & Systems",
+    avatar: "PA",
+    badgeColor: "#b45309",
+    badgeBg: "#fde68a",
+    description: "Reference data rules, system settings, IAM roles, integrations & background jobs.",
+    primaryRoute: "#admin/platform"
+  },
+  "compliance-zainab": {
+    id: "compliance-zainab",
+    name: "Zainab Malik",
+    email: "zainab.malik@example.com",
+    role: "compliance",
+    roleTitle: "Compliance Officer / Auditor",
+    category: "Governance & Executive",
+    avatar: "ZM",
+    badgeColor: "#334155",
+    badgeBg: "#e2e8f0",
+    description: "Append-only audit trail, access logs, data exports, archives & legal holds.",
+    primaryRoute: "#admin/audit"
+  },
+  "coo-omar": {
+    id: "coo-omar",
+    name: "Omar Farooq",
+    email: "omar.farooq@example.com",
+    role: "coo",
+    roleTitle: "Chief Operating Officer (COO)",
+    category: "Governance & Executive",
+    avatar: "OF",
+    badgeColor: "#1e293b",
+    badgeBg: "#cbd5e1",
+    description: "Executive oversight, dual-control payroll & commission approvals, company health.",
+    primaryRoute: "#coo/dashboard"
+  }
+};
+
+// Ensure active persona is set
+if (!window.currentPersonaId) {
+  window.currentPersonaId = "learner-ali";
+}
+
+// Switch simulated login session
+window.simulateLogin = function(personaId) {
+  if (!PERSONAS[personaId]) personaId = "learner-ali";
+  window.currentPersonaId = personaId;
+  const persona = PERSONAS[personaId];
+  
+  // Sync state if dashboard state exists
+  if (window.state && window.state.dashboard) {
+    window.state.dashboard.activeRole = persona.role;
+  }
+  if (window.state && window.state.admin) {
+    window.state.admin.activeUserRole = (persona.role === "admin") ? "Platform Admin" : (persona.role === "coo" ? "COO" : (persona.role === "operations" ? "Operations Manager" : "Unauthorized Staff"));
+  }
+  
+  // Update header UI
+  updateHeaderPersonaWidget();
+  
+  // Close any modal
+  if (typeof closeModal === "function") closeModal();
+  
+  // Re-render sidebar
+  renderDynamicSidebar(persona.role);
+  
+  // Show toast notification
+  if (typeof showToastAlert === "function") {
+    showToastAlert(`✓ Logged in as ${persona.name} (${persona.roleTitle})`);
+  }
+  
+  // Navigate to primary route
+  window.location.hash = persona.primaryRoute;
+};
+
+// Update header widget
+window.updateHeaderPersonaWidget = function() {
+  const persona = PERSONAS[window.currentPersonaId] || PERSONAS["learner-ali"];
+  
+  const avatarEl = document.getElementById("user-persona-avatar");
+  const nameEl = document.getElementById("user-persona-name");
+  const roleBadgeEl = document.getElementById("user-persona-role-badge");
+  const quickSelect = document.getElementById("quick-role-select");
+  
+  if (avatarEl) {
+    avatarEl.innerText = persona.avatar;
+    avatarEl.style.backgroundColor = persona.badgeColor;
+  }
+  if (nameEl) {
+    nameEl.innerText = persona.name;
+  }
+  if (roleBadgeEl) {
+    roleBadgeEl.innerText = persona.roleTitle;
+    roleBadgeEl.style.backgroundColor = persona.badgeBg;
+    roleBadgeEl.style.color = persona.badgeColor;
+  }
+  if (quickSelect) {
+    quickSelect.value = persona.id;
+  }
+};
+
+// Open Role Switcher Simulation Modal
+window.openRoleSwitcherModal = function() {
+  const currentId = window.currentPersonaId || "learner-ali";
+  
+  const categories = [
+    "Learners & Guardians",
+    "Faculty & Trainers",
+    "Sales & Operations",
+    "Corporate & Specialist",
+    "Engineering & Systems",
+    "Governance & Executive"
+  ];
+  
+  let cardsHtml = "";
+  
+  categories.forEach(cat => {
+    const list = Object.values(PERSONAS).filter(p => p.category === cat);
+    if (list.length === 0) return;
+    
+    cardsHtml += `
+      <div style="margin-bottom: 20px;">
+        <h4 style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-secondary); font-weight: 800; border-bottom: 1px solid var(--color-outline-variant); padding-bottom: 4px; margin-bottom: 10px;">
+          ${cat}
+        </h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px;">
+          ${list.map(p => {
+            const isCurrent = p.id === currentId;
+            return `
+              <div style="border: 2px solid ${isCurrent ? 'var(--color-secondary)' : 'var(--color-outline-variant)'}; background: ${isCurrent ? 'var(--color-surface-container)' : '#fff'}; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s ease;">
+                <div>
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <div style="width: 32px; height: 32px; border-radius: 50%; background: ${p.badgeColor}; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800;">
+                        ${p.avatar}
+                      </div>
+                      <div>
+                        <div style="font-weight: 800; font-size: 13px; color: var(--color-on-surface); line-height: 1.2;">${p.name}</div>
+                        <span style="font-size: 10px; font-weight: 700; background: ${p.badgeBg}; color: ${p.badgeColor}; padding: 1px 6px; border-radius: 999px; display: inline-block;">
+                          ${p.roleTitle}
+                        </span>
+                      </div>
+                    </div>
+                    ${isCurrent ? '<span style="font-size: 10px; font-weight: 800; color: var(--color-secondary); background: var(--color-secondary-container); padding: 2px 6px; border-radius: 4px;">ACTIVE</span>' : ''}
+                  </div>
+                  <p style="font-size: 11.5px; color: var(--color-tertiary); line-height: 16px; margin: 4px 0 10px 0;">
+                    ${p.description}
+                  </p>
+                </div>
+                <button class="btn ${isCurrent ? 'btn-secondary' : 'btn-primary'}" style="width: 100%; height: 30px; font-size: 11.5px; font-weight: 800; padding: 0;" onclick="simulateLogin('${p.id}')">
+                  ${isCurrent ? '✓ Current Session' : 'Simulate Login ➜'}
+                </button>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      </div>
+    `;
+  });
+  
+  const content = `
+    <div style="max-height: 70vh; overflow-y: auto; padding-right: 4px;">
+      <p style="font-size: 13px; color: var(--color-tertiary); margin-bottom: 16px;">
+        Select any persona below to simulate logging in as that user. The interface, sidebar navigation, security boundaries, and dashboard views will automatically adapt to that role.
+      </p>
+      ${cardsHtml}
+    </div>
+  `;
+  
+  if (typeof openModal === "function") {
+    openModal("🎭 Simulate Role Login", content);
+  }
+};
+// ==========================================================================
+// Dynamic Role-Based Sidebar Navigation Engine
+// ==========================================================================
+
+window.renderDynamicSidebar = function(role, currentHash) {
+  const sidebarContainer = document.getElementById("app-sidebar");
+  if (!sidebarContainer) return;
+  
+  if (!currentHash) currentHash = window.location.hash || "#";
+  if (!role) {
+    const persona = window.PERSONAS ? window.PERSONAS[window.currentPersonaId || "learner-ali"] : null;
+    role = persona ? persona.role : "learner";
+  }
+
+  // Ensure sidebar is visible and staff/trainer sidebars are hidden/unified
+  sidebarContainer.style.display = "block";
+  const staffSidebar = document.getElementById("staff-sidebar");
+  if (staffSidebar) staffSidebar.style.display = "none";
+  const trainerSidebar = document.getElementById("trainer-sidebar");
+  if (trainerSidebar) trainerSidebar.style.display = "none";
+
+  let sections = [];
+
+  if (role === "learner") {
+    sections = [
+      {
+        heading: "Learner Space",
+        links: [
+          { label: "My Dashboard", hash: "#learner/dashboard", icon: "dashboard" },
+          { label: "Explore Courses", hash: "#", icon: "book" },
+          { label: "My Courses", hash: "#learner/my-courses", icon: "academic" },
+          { label: "My Trial Class", hash: "#learner/trials/OCC-TRIAL-001", icon: "clock" },
+          { label: "Payments & Invoices", hash: "#learner/payments", icon: "credit-card" },
+          { label: "Free Resources", hash: "#resources", icon: "document", isAction: "openDirectPreviewModal('Introductory Syllabus Guide')" },
+          { label: "Notifications", hash: "#learner/notifications", icon: "bell", badge: "2", badgeColor: "var(--color-error)" },
+          { label: "Support Cases", hash: "#learner/support", icon: "support" },
+          { label: "Notification Settings", hash: "#learner/settings/notifications", icon: "settings" }
+        ]
+      }
+    ];
+  } else if (role === "guardian") {
+    sections = [
+      {
+        heading: "Guardian Portal",
+        links: [
+          { label: "Guardian Dashboard", hash: "#guardian/dashboard", icon: "dashboard" },
+          { label: "Zara Khan (Grade 7)", hash: "#k12/student/zara", icon: "academic" },
+          { label: "Published Report Cards", hash: "#guardian/report-cards", icon: "document" },
+          { label: "Tuition Invoices", hash: "#guardian/payments", icon: "credit-card" },
+          { label: "Teacher Messaging", hash: "#chat/guardian", icon: "chat" }
+        ]
+      }
+    ];
+  } else if (role === "trainer") {
+    sections = [
+      {
+        heading: "Faculty Portal",
+        links: [
+          { label: "Trainer Dashboard", hash: "#trainer/dashboard", icon: "dashboard" },
+          { label: "My Live Classes", hash: "#staff/live-classes", icon: "calendar" },
+          { label: "Delivery Reports", hash: "#trainer/trials/OCC-TRIAL-001/report", icon: "document-check" },
+          { label: "Assignment Grading", hash: "#learner/review/ali-milestone-2", icon: "clipboard-check" },
+          { label: "Earnings & Payslips", hash: "#trainer/pay/statements/PAYSTATEMENT-AYESHA-2026-08", icon: "cash" },
+          { label: "Discussions & Chat", hash: "#chat/trainer", icon: "chat" }
+        ]
+      }
+    ];
+  } else if (role === "csr") {
+    sections = [
+      {
+        heading: "Sales & Conversion",
+        links: [
+          { label: "CSR Dashboard", hash: "#csr/dashboard", icon: "dashboard" },
+          { label: "Leads & Prospects", hash: "#csr/leads", icon: "users" },
+          { label: "Trial Requests Queue", hash: "#staff/trial-requests", icon: "clipboard-list" },
+          { label: "Follow-ups Queue", hash: "#staff/follow-ups", icon: "phone" },
+          { label: "Enrolment Attribution", hash: "#csr/attributions", icon: "user-check" },
+          { label: "Sales Commissions", hash: "#csr/commissions", icon: "cash" },
+          { label: "Support Intake", hash: "#staff/support/cases", icon: "support" }
+        ]
+      }
+    ];
+  } else if (role === "operations") {
+    sections = [
+      {
+        heading: "Operations Command",
+        links: [
+          { label: "Operations Dashboard", hash: "#operations/dashboard", icon: "dashboard" },
+          { label: "Trial Requests", hash: "#staff/trial-requests", icon: "clipboard-list" },
+          { label: "Delivery Reviews", hash: "#staff/delivery-reviews", icon: "document-check" },
+          { label: "Follow-ups Queue", hash: "#staff/follow-ups", icon: "phone" },
+          { label: "Enrolments & Batches", hash: "#staff/enrolments", icon: "academic" },
+          { label: "Live Class Schedule", hash: "#staff/live-classes", icon: "calendar" },
+          { label: "Payment Verification", hash: "#staff/payments", icon: "credit-card" },
+          { label: "Resource Library", hash: "#staff/resources", icon: "folder" },
+          { label: "Notification Queue", hash: "#staff/notifications", icon: "bell" },
+          { label: "Support Cases Queue", hash: "#staff/support/cases", icon: "support" }
+        ]
+      }
+    ];
+  } else if (role === "finance") {
+    sections = [
+      {
+        heading: "Finance & Accounting",
+        links: [
+          { label: "Finance Dashboard", hash: "#finance/dashboard", icon: "dashboard" },
+          { label: "Ledger & Reconciliation", hash: "#finance/reconciliation", icon: "cash" },
+          { label: "Expense Management", hash: "#finance/expenses", icon: "receipt" },
+          { label: "Refund Approvals", hash: "#finance/refunds", icon: "credit-card" },
+          { label: "Accounting Periods", hash: "#finance/periods", icon: "lock" },
+          { label: "Payroll Settlements", hash: "#payroll/dashboard", icon: "cash" },
+          { label: "Commission Approvals", hash: "#operations/commissions", icon: "check-circle" }
+        ]
+      }
+    ];
+  } else if (role === "hr") {
+    sections = [
+      {
+        heading: "Human Resources",
+        links: [
+          { label: "HR Dashboard", hash: "#hr/dashboard", icon: "dashboard" },
+          { label: "Employee Directory", hash: "#hr/employees", icon: "users" },
+          { label: "Onboarding Checklists", hash: "#hr/onboarding", icon: "clipboard-check" },
+          { label: "Letters & Certificates", hash: "#hr/documents", icon: "document" },
+          { label: "Staff Offboarding", hash: "#hr/offboarding", icon: "user-remove" },
+          { label: "Payroll Earning Rules", hash: "#payroll/dashboard", icon: "cash" }
+        ]
+      }
+    ];
+  } else if (role === "media") {
+    sections = [
+      {
+        heading: "Media Production",
+        links: [
+          { label: "Media Dashboard", hash: "#media/dashboard", icon: "dashboard" },
+          { label: "Creative Tasks & Briefs", hash: "#media/tasks", icon: "video" },
+          { label: "Submissions & Versions", hash: "#media/submissions", icon: "upload" },
+          { label: "Quality Review & Wages", hash: "#media/reviews", icon: "star" },
+          { label: "Shared Media Assets", hash: "#staff/resources", icon: "folder" }
+        ]
+      }
+    ];
+  } else if (role === "development") {
+    sections = [
+      {
+        heading: "Engineering & QA",
+        links: [
+          { label: "Development Dashboard", hash: "#development/dashboard", icon: "dashboard" },
+          { label: "Sprint Work Items", hash: "#development/tasks", icon: "code" },
+          { label: "QA & Test Runs", hash: "#development/testing", icon: "beaker" },
+          { label: "Release Deployments", hash: "#development/deployments", icon: "rocket" },
+          { label: "Bug Tracker", hash: "#development/bugs", icon: "bug" }
+        ]
+      }
+    ];
+  } else if (role === "admin") {
+    sections = [
+      {
+        heading: "Platform Administration",
+        links: [
+          { label: "Admin Console", hash: "#admin/platform", icon: "dashboard" },
+          { label: "Reference Data Rules", hash: "#admin/platform/reference-data", icon: "database" },
+          { label: "System Settings", hash: "#admin/platform/settings", icon: "settings" },
+          { label: "IAM Roles & Access", hash: "#admin/platform/roles", icon: "shield" },
+          { label: "Provider Health", hash: "#admin/platform/integrations", icon: "plug" },
+          { label: "Background Queues & DLQ", hash: "#admin/platform/jobs", icon: "refresh" },
+          { label: "Feature Flags", hash: "#admin/platform/feature-flags", icon: "flag" },
+          { label: "Audit & Governance", hash: "#admin/audit", icon: "document-search" }
+        ]
+      }
+    ];
+  } else if (role === "compliance") {
+    sections = [
+      {
+        heading: "Governance & Audit",
+        links: [
+          { label: "Compliance Overview", hash: "#admin/audit", icon: "shield-check" },
+          { label: "Audit Trail Search", hash: "#admin/audit/events", icon: "document-search" },
+          { label: "Correlation Explorer", hash: "#admin/audit/correlation", icon: "link" },
+          { label: "Sensitive Access Logs", hash: "#admin/audit/access", icon: "eye" },
+          { label: "Controlled Exports", hash: "#admin/data-operations/exports", icon: "download" },
+          { label: "Archive Operations", hash: "#admin/data-operations/archives", icon: "archive" },
+          { label: "Retention & Holds", hash: "#admin/data-operations/retention", icon: "scale" },
+          { label: "Recovery Requests", hash: "#admin/data-operations/recovery", icon: "refresh" }
+        ]
+      }
+    ];
+  } else if (role === "coo") {
+    sections = [
+      {
+        heading: "Executive Operations",
+        links: [
+          { label: "COO Overview", hash: "#coo/dashboard", icon: "dashboard" },
+          { label: "Operations Command", hash: "#operations/dashboard", icon: "dashboard" },
+          { label: "Payroll Run Approvals", hash: "#payroll/dashboard", icon: "cash" },
+          { label: "Commission Approvals", hash: "#operations/commissions", icon: "check-circle" },
+          { label: "Financial Ledger", hash: "#finance/dashboard", icon: "receipt" },
+          { label: "Staff Directory", hash: "#hr/employees", icon: "users" },
+          { label: "Governance & Audit", hash: "#admin/audit", icon: "shield-check" }
+        ]
+      }
+    ];
+  }
+
+  // Generate SVG icon helper
+  function getIconSVG(iconName) {
+    switch (iconName) {
+      case "dashboard":
+        return `<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg>`;
+      case "book":
+      case "academic":
+        return `<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>`;
+      case "clock":
+        return `<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
+      case "credit-card":
+        return `<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>`;
+      case "bell":
+        return `<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>`;
+      case "settings":
+        return `<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>`;
+      case "support":
+      case "chat":
+        return `<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>`;
+      case "calendar":
+        return `<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>`;
+      case "document":
+      case "document-check":
+      case "clipboard-check":
+      case "clipboard-list":
+        return `<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>`;
+      case "cash":
+      case "receipt":
+        return `<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
+      case "users":
+      case "user-check":
+      case "user-remove":
+        return `<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>`;
+      case "phone":
+        return `<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>`;
+      case "folder":
+      case "archive":
+        return `<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>`;
+      case "code":
+      case "beaker":
+      case "rocket":
+      case "bug":
+        return `<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>`;
+      case "video":
+      case "upload":
+      case "star":
+        return `<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>`;
+      case "shield":
+      case "shield-check":
+      case "lock":
+      case "scale":
+      case "check-circle":
+        return `<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>`;
+      case "document-search":
+      case "eye":
+      case "link":
+      case "download":
+      case "refresh":
+      case "plug":
+      case "flag":
+      case "database":
+      default:
+        return `<svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>`;
+    }
+  }
+
+  let html = "";
+  const persona = window.PERSONAS ? window.PERSONAS[window.currentPersonaId || "learner-ali"] : null;
+
+  // Persona Mini Header in Sidebar
+  if (persona) {
+    html += `
+      <div style="padding: 12px 14px; background: var(--color-surface-container); border-radius: 8px; margin-bottom: 16px; border: 1px solid var(--color-outline-variant); display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="width: 28px; height: 28px; border-radius: 50%; background: ${persona.badgeColor}; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800;">
+            ${persona.avatar}
+          </div>
+          <div>
+            <div style="font-size: 12px; font-weight: 800; color: var(--color-on-surface); line-height: 1.2;">${persona.name}</div>
+            <div style="font-size: 10px; font-weight: 700; color: var(--color-secondary);">${persona.roleTitle}</div>
+          </div>
+        </div>
+        <button onclick="openRoleSwitcherModal()" style="border: none; background: transparent; color: var(--color-secondary); cursor: pointer; font-size: 11px; font-weight: 800; padding: 2px 6px; border-radius: 4px;" title="Switch Role">
+          🔄 Switch
+        </button>
+      </div>
+    `;
+  }
+
+  sections.forEach(sec => {
+    html += `
+      <div class="sidebar-section">
+        <h3 class="sidebar-heading">${sec.heading}</h3>
+        <ul class="sidebar-menu">
+          ${sec.links.map(link => {
+            let isActive = false;
+            if (link.hash === "#" && (currentHash === "" || currentHash === "#")) {
+              isActive = true;
+            } else if (link.hash !== "#" && currentHash.startsWith(link.hash)) {
+              isActive = true;
+            }
+            
+            const actionAttr = link.isAction ? `onclick="event.preventDefault(); ${link.isAction};"` : "";
+            
+            return `
+              <li>
+                <a href="${link.hash}" class="sidebar-link ${isActive ? 'active' : ''}" ${actionAttr}>
+                  ${getIconSVG(link.icon)}
+                  <span>${link.label}</span>
+                  ${link.badge ? `<span class="badge" style="background-color: ${link.badgeColor || 'var(--color-secondary)'}; color: white; padding: 2px 6px; border-radius: 999px; font-size: 10px; margin-left: auto; font-weight:bold;">${link.badge}</span>` : ''}
+                </a>
+              </li>
+            `;
+          }).join("")}
+        </ul>
+      </div>
+    `;
+  });
+
+  // Bottom action card
+  if (role === "learner") {
+    html += `
+      <div class="sidebar-promo-card" style="margin-top: 16px;">
+        <h4>Try a Live Class</h4>
+        <p>Schedule a free live trial session.</p>
+        <button class="btn btn-primary" onclick="openTrialRequestModal('IHS Demonstration Course')">Request Trial</button>
+      </div>
+    `;
+  } else {
+    html += `
+      <div style="margin-top: 20px; padding: 12px; background: var(--color-surface-container-high); border-radius: 8px; border: 1px solid var(--color-outline-variant); font-size: 11.5px; text-align: center;">
+        <div style="font-weight: 800; color: var(--color-on-surface); margin-bottom: 4px;">Simulated Session</div>
+        <div style="color: var(--color-tertiary); margin-bottom: 8px;">Viewing as <strong>${persona ? persona.roleTitle : role}</strong></div>
+        <button class="btn btn-secondary" style="width: 100%; height: 28px; font-size: 11px; font-weight: 800;" onclick="openRoleSwitcherModal()">
+          🎭 Switch Role
+        </button>
+      </div>
+    `;
+  }
+
+  sidebarContainer.innerHTML = html;
+};
+// ==========================================================================
+// Comprehensive Role-Specific Dashboards Engine
+// ==========================================================================
+
+// Global sandbox role bar renderer for every dashboard
+window.getRoleDashboardHeaderHTML = function(activeRoleTitle, roleColor, subtitle) {
+  const currentId = window.currentPersonaId || "learner-ali";
+  
+  return `
+    <div style="background: var(--color-surface-container-highest); border-bottom: 2px solid var(--color-outline-variant); padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; border-radius: 8px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-weight: 900; font-size: 13px; color: var(--color-secondary);">🎭 Current Role Session:</span>
+        <span style="font-size: 11px; font-weight: 800; background: #fff; border: 1px solid var(--color-outline-variant); color: ${roleColor}; padding: 3px 10px; border-radius: 9999px;">
+          ${activeRoleTitle}
+        </span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 11.5px; font-weight: 700; color: var(--color-tertiary);">Quick Role Switch:</span>
+        <select class="form-input" style="width: 210px; height: 30px; font-size: 11.5px; margin-bottom: 0; font-weight: bold; background: #fff; padding: 2px 8px;" onchange="simulateLogin(this.value)">
+          <option value="learner-ali" ${currentId === 'learner-ali' ? 'selected' : ''}>🎓 Ali Khan (Learner)</option>
+          <option value="guardian-nadia" ${currentId === 'guardian-nadia' ? 'selected' : ''}>👨‍👩‍👧 Nadia Khan (Guardian)</option>
+          <option value="trainer-ayesha" ${currentId === 'trainer-ayesha' ? 'selected' : ''}>👩‍🏫 Ayesha Rahman (Trainer)</option>
+          <option value="csr-sarah" ${currentId === 'csr-sarah' ? 'selected' : ''}>🎧 Sarah Ahmed (CSR)</option>
+          <option value="ops-hamza" ${currentId === 'ops-hamza' ? 'selected' : ''}>⚙️ Hamza Siddiqui (Operations)</option>
+          <option value="finance-tariq" ${currentId === 'finance-tariq' ? 'selected' : ''}>💳 Tariq Mehmood (Finance)</option>
+          <option value="hr-maria" ${currentId === 'hr-maria' ? 'selected' : ''}>👥 Maria Hassan (HR)</option>
+          <option value="media-noor" ${currentId === 'media-noor' ? 'selected' : ''}>🎬 Noor Fatima (Media)</option>
+          <option value="dev-bilal" ${currentId === 'dev-bilal' ? 'selected' : ''}>💻 Bilal Ahmed (Developer)</option>
+          <option value="admin-dev" ${currentId === 'admin-dev' ? 'selected' : ''}>🛡️ Platform Admin</option>
+          <option value="compliance-zainab" ${currentId === 'compliance-zainab' ? 'selected' : ''}>⚖️ Zainab Malik (Compliance)</option>
+          <option value="coo-omar" ${currentId === 'coo-omar' ? 'selected' : ''}>👔 Omar Farooq (COO)</option>
+        </select>
+        <button class="btn btn-secondary" style="height: 30px; font-size: 11px; padding: 0 10px; font-weight: 800;" onclick="openRoleSwitcherModal()">
+          All Personas ➜
+        </button>
+      </div>
+    </div>
+  `;
+};
+
+// 1. Learner Dashboard View (Ali Khan)
+window.renderLearnerDashboard = function() {
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  view.innerHTML = `
+    ${getRoleDashboardHeaderHTML("Learner · Ali Khan", "var(--color-primary)", "Manage enrolled courses, homework, live classes, and billing.")}
+
+    <div class="form-card" style="padding: 24px;">
+      <!-- Welcome Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 800; margin-bottom: 4px;">
+            👋 Welcome back, Ali Khan!
+          </h2>
+          <p style="font-size: 13px; color: var(--color-tertiary);">
+            Here is an overview of your active courses, next live classes, pending assignments, and recent notifications.
+          </p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-primary" onclick="window.location.hash='#courses/spoken-english'">Join Next Class ➜</button>
+          <button class="btn btn-secondary" onclick="window.location.hash='#learner/payments'">Billing & Invoices</button>
+        </div>
+      </div>
+
+      <!-- Quick Stats Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <div class="form-card" style="padding: 16px; border-top: 3px solid var(--color-primary);">
+          <span style="font-size: 11px; text-transform: uppercase; color: var(--color-tertiary); font-weight: 700;">Enrolled Courses</span>
+          <div style="font-size: 24px; font-weight: 800; margin-top: 4px; color: var(--color-on-surface);">2 Active</div>
+          <span style="font-size: 11.5px; color: var(--color-primary); font-weight: bold;">Spoken English & Practical AI</span>
+        </div>
+
+        <div class="form-card" style="padding: 16px; border-top: 3px solid var(--color-secondary);">
+          <span style="font-size: 11px; text-transform: uppercase; color: var(--color-tertiary); font-weight: 700;">Next Live Session</span>
+          <div style="font-size: 22px; font-weight: 800; margin-top: 4px; color: var(--color-on-surface);">Fri, 7:00 PM</div>
+          <span style="font-size: 11.5px; color: green; font-weight: bold;">CLASS-002-R1 (Rescheduled)</span>
+        </div>
+
+        <div class="form-card" style="padding: 16px; border-top: 3px solid var(--color-tertiary);">
+          <span style="font-size: 11px; text-transform: uppercase; color: var(--color-tertiary); font-weight: 700;">Class Credits</span>
+          <div style="font-size: 24px; font-weight: 800; margin-top: 4px; color: var(--color-on-surface);">11 / 12</div>
+          <span style="font-size: 11.5px; color: var(--color-tertiary);">1 debited for Class 1</span>
+        </div>
+
+        <div class="form-card" style="padding: 16px; border-top: 3px solid #059669;">
+          <span style="font-size: 11px; text-transform: uppercase; color: var(--color-tertiary); font-weight: 700;">Assignments</span>
+          <div style="font-size: 24px; font-weight: 800; margin-top: 4px; color: var(--color-on-surface);">1 Pending Review</div>
+          <span style="font-size: 11.5px; color: #059669; font-weight: bold;">Milestone 2 Written Draft</span>
+        </div>
+      </div>
+
+      <!-- Active Courses List -->
+      <h3 style="font-weight: 800; font-size: 16px; margin-bottom: 14px;">📚 My Active Enrolments</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        
+        <!-- Course 1 -->
+        <div class="form-card" style="padding: 18px; border-left: 4px solid var(--color-primary); background: #fff;">
+          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+            <div>
+              <span class="badge" style="background: var(--color-primary-container); color: var(--color-on-primary-container); font-size: 10px; padding: 2px 8px;">LIVE BATCH</span>
+              <h4 style="font-weight: 800; font-size: 16px; margin-top: 4px;">Spoken English Bootcamp</h4>
+              <div style="font-size: 12px; color: var(--color-tertiary);">Enrolment ID: <strong>ENR-001</strong> &bull; Trainer: <strong>Ayesha Rahman</strong></div>
+            </div>
+            <span class="badge" style="background: #d1fae5; color: #065f46; font-size: 11px; font-weight: bold;">Active</span>
+          </div>
+
+          <div style="margin: 12px 0;">
+            <div style="display: flex; justify-content: space-between; font-size: 11.5px; margin-bottom: 4px;">
+              <span style="color: var(--color-tertiary);">Course Syllabus Progress</span>
+              <strong>45% (5 of 12 Classes)</strong>
+            </div>
+            <div style="width: 100%; height: 6px; background: var(--color-surface-container); border-radius: 999px; overflow: hidden;">
+              <div style="width: 45%; height: 100%; background: var(--color-primary);"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 8px; margin-top: 14px;">
+            <button class="btn btn-primary" style="flex: 1; height: 32px; font-size: 11.5px; font-weight: 800;" onclick="window.location.hash='#trainer/classes/CLASS-005/classroom'">
+              🚀 Launch Classroom
+            </button>
+            <button class="btn btn-secondary" style="height: 32px; font-size: 11.5px;" onclick="window.location.hash='#learner/courses/ENR-001'">
+              Syllabus & Materials
+            </button>
+          </div>
+        </div>
+
+        <!-- Course 2 -->
+        <div class="form-card" style="padding: 18px; border-left: 4px solid var(--color-secondary); background: #fff;">
+          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+            <div>
+              <span class="badge" style="background: var(--color-secondary-container); color: var(--color-on-secondary-container); font-size: 10px; padding: 2px 8px;">SELF-PACED</span>
+              <h4 style="font-weight: 800; font-size: 16px; margin-top: 4px;">Practical AI & Prompt Engineering</h4>
+              <div style="font-size: 12px; color: var(--color-tertiary);">Enrolment ID: <strong>ENR-PAI-001</strong> &bull; Access: <strong>Full Token Access</strong></div>
+            </div>
+            <span class="badge" style="background: #d1fae5; color: #065f46; font-size: 11px; font-weight: bold;">Active</span>
+          </div>
+
+          <div style="margin: 12px 0;">
+            <div style="display: flex; justify-content: space-between; font-size: 11.5px; margin-bottom: 4px;">
+              <span style="color: var(--color-tertiary);">Course Progress</span>
+              <strong>20% (1 of 5 Milestones)</strong>
+            </div>
+            <div style="width: 100%; height: 6px; background: var(--color-surface-container); border-radius: 999px; overflow: hidden;">
+              <div style="width: 20%; height: 100%; background: var(--color-secondary);"></div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 8px; margin-top: 14px;">
+            <button class="btn btn-secondary" style="flex: 1; height: 32px; font-size: 11.5px; font-weight: 800;" onclick="window.location.hash='#learner/courses/ENR-PAI-001'">
+              📖 Resume Learning
+            </button>
+            <button class="btn btn-secondary" style="height: 32px; font-size: 11.5px;" onclick="openDirectPreviewModal('Prompt Engineering Cheat Sheet')">
+              Download Cheatsheet
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Quick Action Shortcuts -->
+      <div style="padding: 16px; background: var(--color-surface-container); border-radius: 8px; border: 1px solid var(--color-outline-variant);">
+        <h4 style="font-weight: 800; font-size: 13.5px; margin-bottom: 8px;">⚡ Quick Actions</h4>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button class="btn btn-secondary" style="font-size: 12px; height: 32px;" onclick="window.location.hash='#learner/assignments/written-sandbox'">✍️ Written Assignment Sandbox</button>
+          <button class="btn btn-secondary" style="font-size: 12px; height: 32px;" onclick="window.location.hash='#learner/assignments/voice-sandbox'">🎙️ Voice Recorder Sandbox</button>
+          <button class="btn btn-secondary" style="font-size: 12px; height: 32px;" onclick="window.location.hash='#learner/payments'">💳 View Invoices (PAY-TXN-001)</button>
+          <button class="btn btn-secondary" style="font-size: 12px; height: 32px;" onclick="window.location.hash='#learner/support'">💬 Contact Student Support</button>
+        </div>
+      </div>
+    </div>
+  `;
+};
+
+// 2. Guardian Dashboard View (Nadia Khan)
+window.renderGuardianDashboard = function() {
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  view.innerHTML = `
+    ${getRoleDashboardHeaderHTML("Guardian / Parent · Nadia Khan", "#9333ea", "K-12 student progress, gradebook, report cards, and tuition billing.")}
+
+    <div class="form-card" style="padding: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <span class="badge" style="background: #f3e8ff; color: #7e22ce; font-weight: 800; font-size: 10.5px; padding: 2px 8px;">GUARDIAN PORTAL</span>
+          <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 800; margin: 4px 0;">
+            👧 Student Profile: Zara Khan (Grade 7)
+          </h2>
+          <p style="font-size: 13px; color: var(--color-tertiary);">
+            Academic Year: <strong>2026–2027</strong> &bull; Verified Parent: <strong>Nadia Khan</strong> &bull; Schooling Bundle: <strong>Grade 7 Core</strong>
+          </p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-primary" onclick="window.location.hash='#k12/student/zara'">View Full K-12 Workspace ➜</button>
+        </div>
+      </div>
+
+      <!-- KPIs -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <div class="form-card" style="padding: 16px; border-top: 3px solid #9333ea;">
+          <span style="font-size: 11px; text-transform: uppercase; color: var(--color-tertiary); font-weight: 700;">Overall Average</span>
+          <div style="font-size: 24px; font-weight: 800; margin-top: 4px; color: var(--color-on-surface);">88.0%</div>
+          <span style="font-size: 11.5px; color: #7e22ce; font-weight: bold;">Grade A- (Term 1)</span>
+        </div>
+
+        <div class="form-card" style="padding: 16px; border-top: 3px solid green;">
+          <span style="font-size: 11px; text-transform: uppercase; color: var(--color-tertiary); font-weight: 700;">Attendance Rate</span>
+          <div style="font-size: 24px; font-weight: 800; margin-top: 4px; color: var(--color-on-surface);">96.5%</div>
+          <span style="font-size: 11.5px; color: green; font-weight: bold;">28 / 29 Classes Attended</span>
+        </div>
+
+        <div class="form-card" style="padding: 16px; border-top: 3px solid var(--color-secondary);">
+          <span style="font-size: 11px; text-transform: uppercase; color: var(--color-tertiary); font-weight: 700;">Tuition Status</span>
+          <div style="font-size: 24px; font-weight: 800; margin-top: 4px; color: var(--color-on-surface);">Paid</div>
+          <span style="font-size: 11.5px; color: var(--color-tertiary);">August 2026 (PKR 10,000)</span>
+        </div>
+
+        <div class="form-card" style="padding: 16px; border-top: 3px solid #0284c7;">
+          <span style="font-size: 11px; text-transform: uppercase; color: var(--color-tertiary); font-weight: 700;">Term Report</span>
+          <div style="font-size: 24px; font-weight: 800; margin-top: 4px; color: #0284c7;">Published</div>
+          <span style="font-size: 11.5px; color: #0284c7; font-weight: bold;">Reviewed by Principal</span>
+        </div>
+      </div>
+
+      <!-- Subject Performance Table -->
+      <h3 style="font-weight: 800; font-size: 16px; margin-bottom: 12px;">📊 Subject Performance Breakdown</h3>
+      <table class="data-table" style="width: 100%; font-size: 13px; margin-bottom: 20px;">
+        <thead>
+          <tr style="background: var(--color-surface-container);">
+            <th style="padding: 10px;">Subject</th>
+            <th style="padding: 10px;">Instructor</th>
+            <th style="padding: 10px;">Schedule</th>
+            <th style="padding: 10px;">Homework Score</th>
+            <th style="padding: 10px;">Exam Score</th>
+            <th style="padding: 10px;">Current Grade</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding: 10px; font-weight: 800;">📐 Mathematics</td>
+            <td style="padding: 10px;">Mrs. Sana Tariq</td>
+            <td style="padding: 10px; color: var(--color-tertiary);">Mon & Wed 5:00 PM</td>
+            <td style="padding: 10px;">96% (4.8/5)</td>
+            <td style="padding: 10px;">92%</td>
+            <td style="padding: 10px; font-weight: bold; color: green;">94% (Grade A)</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px; font-weight: 800;">📖 English Language & Literature</td>
+            <td style="padding: 10px;">Mr. Farhan Ali</td>
+            <td style="padding: 10px; color: var(--color-tertiary);">Tue & Thu 4:00 PM</td>
+            <td style="padding: 10px;">90% (4.5/5)</td>
+            <td style="padding: 10px;">86%</td>
+            <td style="padding: 10px; font-weight: bold; color: #0284c7;">88% (Grade A-)</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px; font-weight: 800;">🔬 General Science</td>
+            <td style="padding: 10px;">Ms. Hira Qureshi</td>
+            <td style="padding: 10px; color: var(--color-tertiary);">Friday 4:00 PM</td>
+            <td style="padding: 10px;">84% (4.2/5)</td>
+            <td style="padding: 10px;">80%</td>
+            <td style="padding: 10px; font-weight: bold; color: var(--color-secondary);">82% (Grade B+)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Guardian Actions -->
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button class="btn btn-primary" onclick="window.location.hash='#k12/student/zara/report-cards'">📑 View Term 1 Report Card</button>
+        <button class="btn btn-secondary" onclick="window.location.hash='#k12/student/zara/attendance'">📅 Full Attendance History</button>
+        <button class="btn btn-secondary" onclick="window.location.hash='#chat/guardian'">💬 Message Teachers</button>
+      </div>
+    </div>
+  `;
+};
+
+// 3. Trainer Dashboard View (Ayesha Rahman)
+window.renderTrainerDashboard = function() {
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  view.innerHTML = `
+    ${getRoleDashboardHeaderHTML("Faculty Trainer · Ayesha Rahman", "#2563eb", "Manage live classes, submit delivery reports, grade submissions, and view earnings.")}
+
+    <div class="form-card" style="padding: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <span class="badge" style="background: #dbeafe; color: #1e40af; font-weight: 800; font-size: 10.5px; padding: 2px 8px;">FACULTY WORKSPACE</span>
+          <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 800; margin: 4px 0;">
+            🎓 Trainer Console: Ayesha Rahman
+          </h2>
+          <p style="font-size: 13px; color: var(--color-tertiary);">
+            Senior Instructor &bull; Spoken English Bootcamp &bull; Agreed Rate: <strong>PKR 1,350 / session</strong>
+          </p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-primary" onclick="window.location.hash='#trainer/classes/CLASS-005/classroom'">🚀 Enter Classroom</button>
+          <button class="btn btn-secondary" onclick="window.location.hash='#trainer/pay/statements/PAYSTATEMENT-AYESHA-2026-08'">My Payslips</button>
+        </div>
+      </div>
+
+      <!-- KPI Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <div class="form-card" style="padding: 16px; border-top: 3px solid #2563eb;">
+          <span style="font-size: 11px; text-transform: uppercase; color: var(--color-tertiary); font-weight: 700;">Upcoming Live Session</span>
+          <div style="font-size: 22px; font-weight: 800; margin-top: 4px; color: var(--color-on-surface);">Today, 7:00 PM</div>
+          <span style="font-size: 11.5px; color: #2563eb; font-weight: bold;">CLASS-002-R1 (12 Students)</span>
+        </div>
+
+        <div class="form-card" style="padding: 16px; border-top: 3px solid #ba1a1a;">
+          <span style="font-size: 11px; text-transform: uppercase; color: var(--color-tertiary); font-weight: 700;">Pending Delivery Report</span>
+          <div style="font-size: 24px; font-weight: 800; margin-top: 4px; color: #ba1a1a;">1 Due</div>
+          <span style="font-size: 11.5px; color: #ba1a1a; font-weight: bold;">CLASS-001 Report Needed</span>
+        </div>
+
+        <div class="form-card" style="padding: 16px; border-top: 3px solid #059669;">
+          <span style="font-size: 11px; text-transform: uppercase; color: var(--color-tertiary); font-weight: 700;">Assignments to Grade</span>
+          <div style="font-size: 24px; font-weight: 800; margin-top: 4px; color: #059669;">2 Items</div>
+          <span style="font-size: 11.5px; color: #059669;">Ali Khan (Written & Voice)</span>
+        </div>
+
+        <div class="form-card" style="padding: 16px; border-top: 3px solid var(--color-primary);">
+          <span style="font-size: 11px; text-transform: uppercase; color: var(--color-tertiary); font-weight: 700;">Month-To-Date Payout</span>
+          <div style="font-size: 22px; font-weight: 800; margin-top: 4px; color: var(--color-on-surface);">PKR 34,500</div>
+          <span style="font-size: 11.5px; color: green; font-weight: bold;">Accrued (EARN-CLASS-001)</span>
+        </div>
+      </div>
+
+      <!-- Priority Action Cards -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-bottom: 20px;">
+        <div class="form-card" style="padding: 18px; border-left: 4px solid #2563eb;">
+          <h4 style="font-weight: 800; font-size: 15px; margin-bottom: 6px;">📅 Next Scheduled Class</h4>
+          <div style="font-size: 13px; line-height: 20px; color: var(--color-tertiary); margin-bottom: 12px;">
+            <strong>Spoken English Bootcamp (CLASS-002-R1)</strong><br>
+            Time: Friday, 21 Aug &bull; 7:00 PM – 8:30 PM PKT<br>
+            Topic: <em>Debating & Business Negotiations</em>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-primary" style="height: 32px; font-size: 11.5px;" onclick="window.location.hash='#trainer/classes/CLASS-005/classroom'">Launch Live Classroom</button>
+            <button class="btn btn-secondary" style="height: 32px; font-size: 11.5px;" onclick="window.location.hash='#trainer/trials/OCC-TRIAL-001/report'">Submit Report</button>
+          </div>
+        </div>
+
+        <div class="form-card" style="padding: 18px; border-left: 4px solid #059669;">
+          <h4 style="font-weight: 800; font-size: 15px; margin-bottom: 6px;">✍️ Submissions Awaiting Review</h4>
+          <div style="font-size: 13px; line-height: 20px; color: var(--color-tertiary); margin-bottom: 12px;">
+            <strong>Ali Khan — Milestone 2 Written & Voice Brief</strong><br>
+            Submitted: 21 Aug 2026 &bull; Status: <em>Awaiting Rubric Evaluation</em>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-primary" style="height: 32px; font-size: 11.5px;" onclick="window.location.hash='#learner/review/ali-milestone-2'">Grade Assignment ➜</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+};
+
+// 4. CSR Dashboard View (Sarah Ahmed)
+window.renderCSRDashboard = function() {
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  view.innerHTML = `
+    ${getRoleDashboardHeaderHTML("CSR & Admissions · Sarah Ahmed", "#059669", "Manage student lead conversions, trial requests, follow-ups, and sales commissions.")}
+
+    <div class="form-card" style="padding: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <span class="badge" style="background: #d1fae5; color: #065f46; font-weight: 800; font-size: 10.5px; padding: 2px 8px;">SALES & CONVERSIONS</span>
+          <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 800; margin: 4px 0;">
+            📞 CSR Operations: Sarah Ahmed
+          </h2>
+          <p style="font-size: 13px; color: var(--color-tertiary);">
+            Lead Intake &bull; Trial Scheduling &bull; Conversion Attribution &bull; Commission Rate: <strong>5% (PKR 750/enrolment)</strong>
+          </p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-primary" onclick="window.location.hash='#staff/trial-requests'">Trial Requests Queue</button>
+          <button class="btn btn-secondary" onclick="window.location.hash='#csr/commissions'">My Commissions</button>
+        </div>
+      </div>
+
+      <!-- KPIs -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <div class="form-card" style="padding: 16px; border-top: 3px solid #059669;">
+          <span style="font-size: 11px; text-transform: uppercase; color: var(--color-tertiary); font-weight: 700;">Active Leads</span>
+          <div style="font-size: 24px; font-weight: 800; margin-top: 4px; color: var(--color-on-surface);">4 Active</div>
+          <span style="font-size: 11.5px; color: #059669; font-weight: bold;">Ali Khan, Zara, Hamza</span>
+        </div>
+
+        <div class="form-card" style="padding: 16px; border-top: 3px solid #0284c7;">
+          <span style="font-size: 11px; text-transform: uppercase; color: var(--color-tertiary); font-weight: 700;">Scheduled Trials</span>
+          <div style="font-size: 24px; font-weight: 800; margin-top: 4px; color: var(--color-on-surface);">2 Scheduled</div>
+          <span style="font-size: 11.5px; color: #0284c7;">Trial OCC-TRIAL-001</span>
+        </div>
+
+        <div class="form-card" style="padding: 16px; border-top: 3px solid #ba1a1a;">
+          <span style="font-size: 11px; text-transform: uppercase; color: var(--color-tertiary); font-weight: 700;">Follow-ups Due</span>
+          <div style="font-size: 24px; font-weight: 800; margin-top: 4px; color: #ba1a1a;">1 Urgent</div>
+          <span style="font-size: 11.5px; color: #ba1a1a; font-weight: bold;">FOLLOWUP-001 (Ali Khan)</span>
+        </div>
+
+        <div class="form-card" style="padding: 16px; border-top: 3px solid var(--color-secondary);">
+          <span style="font-size: 11px; text-transform: uppercase; color: var(--color-tertiary); font-weight: 700;">Attributed Commissions</span>
+          <div style="font-size: 22px; font-weight: 800; margin-top: 4px; color: var(--color-on-surface);">PKR 4,250</div>
+          <span style="font-size: 11.5px; color: green; font-weight: bold;">EARN-CSR-001 Approved</span>
+        </div>
+      </div>
+
+      <!-- Action Queue -->
+      <h3 style="font-weight: 800; font-size: 15px; margin-bottom: 10px;">📋 Actionable Follow-ups</h3>
+      <table class="data-table" style="width: 100%; font-size: 13px; margin-bottom: 20px;">
+        <thead>
+          <tr style="background: var(--color-surface-container);">
+            <th style="padding: 8px 12px;">Lead Name</th>
+            <th style="padding: 8px 12px;">Course</th>
+            <th style="padding: 8px 12px;">Stage</th>
+            <th style="padding: 8px 12px;">Last Contact</th>
+            <th style="padding: 8px 12px;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding: 8px 12px; font-weight: bold;">Ali Khan</td>
+            <td style="padding: 8px 12px;">Spoken English</td>
+            <td style="padding: 8px 12px;"><span class="badge" style="background:#d1fae5; color:#065f46;">Trial Completed</span></td>
+            <td style="padding: 8px 12px; color: var(--color-tertiary);">Today 2:30 PM</td>
+            <td style="padding: 8px 12px;">
+              <button class="btn btn-primary" style="height: 28px; font-size: 11px; padding: 0 10px;" onclick="window.location.hash='#staff/follow-ups'">
+                📞 Log Call & Send Invoice
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+};
+
+// 12. COO Dashboard View (Omar Farooq)
+window.renderCOODashboard = function() {
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  view.innerHTML = `
+    ${getRoleDashboardHeaderHTML("Executive Leadership · Omar Farooq (COO)", "#1e293b", "Executive oversight, dual-control payroll & commission approvals, company health.")}
+
+    <div class="form-card" style="padding: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <span class="badge" style="background: #e2e8f0; color: #1e293b; font-weight: 800; font-size: 10.5px; padding: 2px 8px;">EXECUTIVE COCKPIT</span>
+          <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 800; margin: 4px 0;">
+            👔 Executive Operations & Approvals
+          </h2>
+          <p style="font-size: 13px; color: var(--color-tertiary);">
+            Chief Operating Officer &bull; Dual-Control Signoff &bull; Operations & Financial Health
+          </p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-primary" onclick="window.location.hash='#payroll/dashboard'">Review Payroll Runs ➜</button>
+          <button class="btn btn-secondary" onclick="window.location.hash='#admin/audit'">Audit Trail</button>
+        </div>
+      </div>
+
+      <!-- Executive KPIs -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <div class="form-card" style="padding: 16px; border-top: 3px solid #1e293b;">
+          <span style="font-size: 11px; text-transform: uppercase; color: var(--color-tertiary); font-weight: 700;">Monthly Gross Revenue</span>
+          <div style="font-size: 22px; font-weight: 800; margin-top: 4px;">PKR 1,250,000</div>
+          <span style="font-size: 11.5px; color: green; font-weight: bold;">+14.2% MoM</span>
+        </div>
+
+        <div class="form-card" style="padding: 16px; border-top: 3px solid var(--color-primary);">
+          <span style="font-size: 11px; text-transform: uppercase; color: var(--color-tertiary); font-weight: 700;">Learner Retention</span>
+          <div style="font-size: 24px; font-weight: 800; margin-top: 4px;">96.2%</div>
+          <span style="font-size: 11.5px; color: var(--color-primary); font-weight: bold;">1,840 Active Enrolments</span>
+        </div>
+
+        <div class="form-card" style="padding: 16px; border-top: 3px solid #ba1a1a;">
+          <span style="font-size: 11px; text-transform: uppercase; color: var(--color-tertiary); font-weight: 700;">Pending COO Approvals</span>
+          <div style="font-size: 24px; font-weight: 800; margin-top: 4px; color: #ba1a1a;">2 Pending</div>
+          <span style="font-size: 11.5px; color: #ba1a1a; font-weight: bold;">Payroll Run & High-Value Comm</span>
+        </div>
+
+        <div class="form-card" style="padding: 16px; border-top: 3px solid #059669;">
+          <span style="font-size: 11px; text-transform: uppercase; color: var(--color-tertiary); font-weight: 700;">Platform Health</span>
+          <div style="font-size: 24px; font-weight: 800; margin-top: 4px; color: #059669;">99.8%</div>
+          <span style="font-size: 11.5px; color: #059669;">Zero Unresolved Incidents</span>
+        </div>
+      </div>
+
+      <!-- Pending Dual-Control Approvals -->
+      <h3 style="font-weight: 800; font-size: 15px; margin-bottom: 12px;">🛡️ Pending Dual-Control Approvals</h3>
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+        
+        <div class="form-card" style="padding: 16px; border-left: 4px solid var(--color-primary); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <div style="font-weight: 800; font-size: 14px;">💵 Monthly Payroll Run (PAYROLL-RUN-2026-08)</div>
+            <div style="font-size: 12.5px; color: var(--color-tertiary);">Total Amount: <strong>PKR 185,000.00</strong> &bull; Prepared By: <strong>Finance (Tariq Mehmood)</strong> &bull; Employees: <strong>18 Staff</strong></div>
+          </div>
+          <button class="btn btn-primary" style="height: 32px; font-size: 11.5px; font-weight: 800;" onclick="window.location.hash='#payroll/dashboard'">
+            Review & Authorize Payout ➜
+          </button>
+        </div>
+
+        <div class="form-card" style="padding: 16px; border-left: 4px solid var(--color-secondary); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <div style="font-weight: 800; font-size: 14px;">🎯 Sales Commission Qualification (COMM-CAND-001)</div>
+            <div style="font-size: 12.5px; color: var(--color-tertiary);">Payee: <strong>Sarah Ahmed (CSR)</strong> &bull; Amount: <strong>PKR 750.00</strong> &bull; Enrolment: <strong>ENR-001 (Ali Khan)</strong></div>
+          </div>
+          <button class="btn btn-primary" style="height: 32px; font-size: 11.5px; font-weight: 800;" onclick="window.location.hash='#operations/commissions'">
+            Approve Commission ➜
+          </button>
+        </div>
+
+      </div>
+    </div>
+  `;
+};
+// ==========================================================================
+// Screen 38 — Audit Trail, Data Export, Archive & Retention Operations
+// ==========================================================================
+
+window.ensureAuditState = function() {
+  if (!state.audit) {
+    state.audit = {
+      activeRole: "Auditor / Compliance", // Auditor, Compliance, Platform Admin, COO, Finance, HR, Unauthorized Staff
+      activeTab: "Audit Search", // Audit Search, Domain Events, Access Logs, Exports, Archives, Retention, Recovery
+      selectedDemoState: "Audit Search",
+      
+      // 1. Centralized Audit Events (Append-only)
+      auditEvents: [
+        {
+          id: "AUD-EVT-001",
+          actorId: "ops-sarah",
+          actorName: "Sarah Ahmed",
+          action: "Payment Approved",
+          entityType: "PaymentSubmission",
+          entityId: "PAY-SUB-001",
+          origin: "Operations Payment Review",
+          correlationId: "CORR-PAY-001",
+          timestamp: "2026-08-01 14:32",
+          outcome: "Success",
+          sensitivity: "Financial",
+          domain: "Finance",
+          beforeState: "Under Review",
+          afterState: "Approved",
+          reason: "Payment matched reconciled statement STMT-LINE-001.",
+          domainEventId: "DOMAIN-EVT-PAY-APPROVED-001"
+        },
+        {
+          id: "AUD-EVT-002",
+          actorId: "ops-reviewer",
+          actorName: "Hamza Siddiqui",
+          action: "Class Delivery Approved",
+          entityType: "ClassSession",
+          entityId: "CLASS-001",
+          origin: "Live Delivery Review",
+          correlationId: "CORR-CLASS-001",
+          timestamp: "2026-08-05 11:00",
+          outcome: "Success",
+          sensitivity: "Operational",
+          domain: "Operations",
+          beforeState: "Submitted for Review",
+          afterState: "Approved",
+          reason: "Trainer report verified and delivery confirmed.",
+          domainEventId: "DOMAIN-EVT-CLASS-APPROVED-001"
+        },
+        {
+          id: "AUD-EVT-003",
+          actorId: "coo-omar",
+          actorName: "Omar Farooq",
+          action: "Commission Approved",
+          entityType: "CommissionCandidate",
+          entityId: "COMM-CAND-001",
+          origin: "CSR Commission Review",
+          correlationId: "CORR-CSR-001",
+          timestamp: "2026-08-07 09:15",
+          outcome: "Success",
+          sensitivity: "Financial",
+          domain: "Finance / CSR",
+          beforeState: "Commission Eligible",
+          afterState: "Payable",
+          reason: "Qualification checklist complete. Attribution confirmed.",
+          domainEventId: "DOMAIN-EVT-COMM-APPROVED-001"
+        },
+        {
+          id: "AUD-EVT-004",
+          actorId: "hr-maria",
+          actorName: "Maria Hassan",
+          action: "Employment Verification Letter Issued",
+          entityType: "HRDocument",
+          entityId: "HRDOC-AYESHA-001",
+          origin: "HR Document Generation",
+          correlationId: "CORR-HR-001",
+          timestamp: "2026-08-08 10:45",
+          outcome: "Success",
+          sensitivity: "HR Sensitive",
+          domain: "HR",
+          beforeState: "Draft Generated",
+          afterState: "Issued",
+          reason: "Standard employment verification letter. Approved merge fields used.",
+          domainEventId: "DOMAIN-EVT-HR-DOC-ISSUED-001"
+        },
+        {
+          id: "AUD-EVT-005",
+          actorId: "tech-admin",
+          actorName: "Dev Admin (Hamza)",
+          action: "Feature Flag Rolled Back",
+          entityType: "FeatureFlag",
+          entityId: "FLAG-NOTIF-OPS-V2",
+          origin: "Platform Admin Console",
+          correlationId: "CORR-ADMIN-001",
+          timestamp: "2026-08-13 18:00",
+          outcome: "Success",
+          sensitivity: "Operational",
+          domain: "Admin",
+          beforeState: "Enabled",
+          afterState: "Disabled",
+          reason: "Stability check failed. Rolled back pending further testing.",
+          domainEventId: null
+        },
+        {
+          id: "AUD-EVT-EXPORT-001",
+          actorId: "ops-sarah",
+          actorName: "Sarah Ahmed",
+          action: "Export Approved",
+          entityType: "ExportRequest",
+          entityId: "EXPORT-REQ-001",
+          origin: "Audit Exports Console",
+          correlationId: "CORR-EXPORT-001",
+          timestamp: "2026-08-13 20:30",
+          outcome: "Success",
+          sensitivity: "Compliance",
+          domain: "Audit / Compliance",
+          beforeState: "Pending Approval",
+          afterState: "Processing",
+          reason: "Internal compliance review scope approved.",
+          domainEventId: null
+        },
+        {
+          id: "AUD-EVT-ARCHIVE-001",
+          actorId: "ops-hamza",
+          actorName: "Hamza Siddiqui",
+          action: "Record Archived",
+          entityType: "ArchiveRecord",
+          entityId: "ARCHIVE-REC-001",
+          origin: "Archive Operations Console",
+          correlationId: "CORR-ARCHIVE-001",
+          timestamp: "2026-08-13 21:00",
+          outcome: "Success",
+          sensitivity: "Operational",
+          domain: "Data Operations",
+          beforeState: "Active",
+          afterState: "Archived",
+          reason: "Operational retention window reached.",
+          domainEventId: null
+        },
+        {
+          id: "AUD-EVT-RECOVERY-001",
+          actorId: "ops-hamza",
+          actorName: "Hamza Siddiqui",
+          action: "Archive Restored",
+          entityType: "RecoveryRequest",
+          entityId: "RECOVERY-REQ-001",
+          origin: "Recovery Console",
+          correlationId: "CORR-ARCHIVE-001",
+          timestamp: "2026-08-13 21:30",
+          outcome: "Success",
+          sensitivity: "Operational",
+          domain: "Data Operations",
+          beforeState: "Archived",
+          afterState: "Restored",
+          reason: "Operational review requires the record.",
+          domainEventId: null
+        },
+        {
+          id: "AUD-EVT-SECURITY-001",
+          actorId: "unauthorized-trainer",
+          actorName: "[Restricted]",
+          action: "Restricted Audit Access Attempt",
+          entityType: "AuditConsole",
+          entityId: "[Restricted]",
+          origin: "Admin Routing Layer",
+          correlationId: null,
+          timestamp: "2026-08-13 20:00",
+          outcome: "Blocked",
+          sensitivity: "Security",
+          domain: "Security",
+          beforeState: null,
+          afterState: null,
+          reason: "Unauthorized role attempted to access audit console.",
+          domainEventId: null
+        }
+      ],
+
+      // 2. Domain Events (Separate from Audit Events)
+      domainEvents: [
+        {
+          id: "DOMAIN-EVT-CLASS-APPROVED-001",
+          type: "ClassDeliveryApproved",
+          sourceId: "CLASS-001",
+          sourceModule: "Live Delivery",
+          occurredAt: "2026-08-05 11:00",
+          correlationId: "CORR-CLASS-001",
+          downstreamRefs: [
+            { type: "Entitlement Debit", id: "ENT-DEBIT-CLASS-001", status: "Success" },
+            { type: "Progress Event", id: "PROGRESS-CLASS-001", status: "Success" },
+            { type: "Earning Item", id: "EARN-CLASS-001", status: "Success" },
+            { type: "Notification Intent", id: "NOTIF-CLASS-001", status: "Failed (DLQ Handled)" }
+          ]
+        },
+        {
+          id: "DOMAIN-EVT-PAY-APPROVED-001",
+          type: "PaymentApproved",
+          sourceId: "PAY-SUB-001",
+          sourceModule: "Payment Review",
+          occurredAt: "2026-08-01 14:32",
+          correlationId: "CORR-PAY-001",
+          downstreamRefs: [
+            { type: "Finance Posting", id: "FIN-POST-PAY-001", status: "Success" },
+            { type: "Enrolment Activation", id: "ENR-001", status: "Success" },
+            { type: "Notification", id: "NOTIF-PAY-001", status: "Success" }
+          ]
+        },
+        {
+          id: "DOMAIN-EVT-COMM-APPROVED-001",
+          type: "CommissionApproved",
+          sourceId: "COMM-CAND-001",
+          sourceModule: "CSR Commission Review",
+          occurredAt: "2026-08-07 09:15",
+          correlationId: "CORR-CSR-001",
+          downstreamRefs: [
+            { type: "Payroll Earning", id: "EARN-CSR-001", status: "Success" },
+            { type: "Notification", id: "NOTIF-CSR-001", status: "Success" }
+          ]
+        }
+      ],
+
+      // 3. Sensitive Access Logs (Minimization Enforced)
+      accessLogs: [
+        {
+          id: "ACCESSLOG-HR-001",
+          actorId: "hr-maria",
+          actorName: "Maria Hassan",
+          resourceType: "EmergencyContact",
+          resourceId: "EMERGENCY-AYESHA-001",
+          action: "View",
+          context: "Authorized HR profile review",
+          timestamp: "2026-08-08 10:40",
+          sensitivityClass: "HR Sensitive",
+          fieldValuesLogged: false // Never logs raw sensitive payload
+        },
+        {
+          id: "ACCESSLOG-RES-001",
+          actorId: "hr-maria",
+          actorName: "Maria Hassan",
+          resourceType: "PrivateHRDocument",
+          resourceId: "HRDOC-AYESHA-001",
+          action: "Download",
+          context: "HR document issuance workflow",
+          timestamp: "2026-08-08 10:46",
+          sensitivityClass: "HR Sensitive",
+          fieldValuesLogged: false
+        },
+        {
+          id: "ACCESSLOG-EXPORT-001",
+          actorId: "ops-sarah",
+          actorName: "Sarah Ahmed",
+          resourceType: "ExportFile",
+          resourceId: "EXPORT-FILE-001",
+          action: "Export File Accessed",
+          context: "Compliance review export access simulation",
+          timestamp: "2026-08-13 21:05",
+          sensitivityClass: "Compliance",
+          fieldValuesLogged: false
+        }
+      ],
+
+      // 4. Controlled Export Requests & Lifecycle
+      exportRequests: [
+        {
+          id: "EXPORT-REQ-001",
+          type: "Audit Activity Export",
+          purpose: "Internal compliance review",
+          scope: "Audit Events",
+          dateRangeFrom: "2026-08-01",
+          dateRangeTo: "2026-08-13",
+          domain: "All Domains",
+          format: "CSV",
+          sensitivity: "Compliance",
+          status: "Ready", // Draft, Pending Approval, Processing, Ready, Expired, Revoked, Processing Exception
+          requestedBy: "Sarah Ahmed",
+          requestedAt: "2026-08-13 20:00",
+          approvedBy: "Zainab Malik (Compliance)",
+          approvedAt: "2026-08-13 20:30",
+          expiresAt: "2026-08-20 20:30",
+          rowsMatching: 12,
+          rowsAuthorized: 10,
+          rowsRestricted: 2,
+          includedFields: ["timestamp", "actor identifier", "entity type", "entity reference", "action", "origin", "correlation ID"],
+          excludedFields: ["raw HR field values", "message bodies", "payment evidence files", "unrestricted learner notes"],
+          fileId: "EXPORT-FILE-001"
+        }
+      ],
+
+      // 5. Private Export Files
+      exportFiles: [
+        {
+          id: "EXPORT-FILE-001",
+          requestId: "EXPORT-REQ-001",
+          label: "Audit Activity Export",
+          format: "CSV",
+          createdAt: "2026-08-13 20:45",
+          requestedBy: "Sarah Ahmed",
+          rowCount: 10,
+          checksum: "MOCK-SHA256-a7f3d2e1c9b8",
+          expiresAt: "2026-08-20 20:45",
+          status: "Available" // Available, Expired, Revoked
+        }
+      ],
+
+      // 6. Archive Records & Lifecycle
+      archiveRecords: [
+        {
+          id: "ARCHIVE-REC-001",
+          sourceId: "ARCHIVE-SRC-DEMO-001",
+          sourceType: "Closed Notification Exception",
+          sourceDomain: "Messaging / Operations",
+          status: "Active", // Active, Archived, Restored, Purged
+          createdAt: "2026-03-01 09:00",
+          archivedAt: null,
+          archivedBy: null,
+          archiveReason: null,
+          policyId: "RET-POLICY-OPS-001",
+          activeReferences: 0,
+          legalHold: null,
+          financialHold: null,
+          recoveryEligible: true,
+          recoveryWindowExpiresAt: "2026-11-01",
+          restoredAt: null,
+          restoredBy: null,
+          history: [
+            { action: "Record Created", timestamp: "2026-03-01 09:00", actor: "System" }
+          ]
+        }
+      ],
+
+      // 7. Versioned Retention Policies
+      retentionPolicies: [
+        {
+          id: "RET-POLICY-OPS-001",
+          version: "v1",
+          label: "Operational Exception Records",
+          entityClass: "Operational Exception",
+          purpose: "Govern retention of closed operational exception records",
+          activeRetentionPeriod: "Configured Demo Retention Period (180 days active)",
+          archiveAction: "Archive after 180 days",
+          purgeEligibility: "Purge eligible after 730 days from archive when no holds active",
+          recoveryWindow: "90 days from archive",
+          legalHoldBehavior: "Legal hold blocks purge. Archive proceeds per schedule.",
+          financialHoldBehavior: "Financial hold blocks purge and archive for affected scope.",
+          status: "Active",
+          effectiveDate: "2026-08-10",
+          owner: "Compliance Officer",
+          history: [
+            { version: "v1", status: "Active", actor: "Compliance Officer", timestamp: "2026-08-10 09:00", reason: "Initial policy approved" }
+          ]
+        }
+      ],
+
+      // 8. Legal Holds
+      legalHolds: [
+        {
+          id: "HOLD-LEGAL-001",
+          status: "Active",
+          appliesTo: "Demo notification exception records",
+          reason: "Configured Demo Legal Hold",
+          effectiveFrom: "2026-08-01",
+          issuedBy: "Compliance Officer",
+          effect: "Purge blocked. Archive may still proceed per policy."
+        }
+      ],
+
+      // 9. Recovery Requests
+      recoveryRequests: [
+        {
+          id: "RECOVERY-REQ-001",
+          archiveRecordId: "ARCHIVE-REC-001",
+          requestedBy: "Hamza Siddiqui",
+          reason: "Operational review requires the record",
+          intendedUse: "Operations audit trail cross-reference",
+          status: "Pending", // Pending, Approved, Completed, Denied, Expired
+          requestedAt: "2026-08-13 21:15",
+          approvedBy: null,
+          approvedAt: null
+        }
+      ],
+
+      // 10. Privacy Requests Readiness
+      privacyRequests: [
+        {
+          id: "PRIVREQ-DEMO-001",
+          type: "Data Access / Deletion Request",
+          status: "Under Review",
+          requestedAt: "2026-08-13 19:00",
+          subject: "Demo Data Subject",
+          eligibleForExport: ["Profile & Contact Data"],
+          eligibleForDeletion: ["Configured demo inactive records"],
+          restrictedFromDeletion: ["Financial records (PAY-TXN-001)", "Payroll records", "Required audit / history", "Active legal hold records"]
+        }
+      ],
+
+      // Filters
+      searchActor: "",
+      searchEntity: "",
+      searchAction: "",
+      searchCorrelation: "",
+      selectedCorrelationId: null,
+      selectedEventId: null
+    };
+  }
+};
+
+// Main Audit Workspace Renderer
+window.renderAuditWorkspace = function(hash) {
+  ensureAuditState();
+  const aud = state.audit;
+  const view = document.getElementById("learner-assessment-view");
+  if (!view) return;
+
+  // Authorization check (Rule 111)
+  if (aud.activeRole === "Unauthorized Staff") {
+    view.innerHTML = `
+      ${getAuditSandboxNavbarHTML()}
+      <div class="form-card" style="padding: 40px; text-align: center; max-width: 580px; margin: 40px auto; border-top: 4px solid var(--color-error);">
+        <span style="font-size: 36px;">⛔</span>
+        <h3 style="font-family: var(--font-family-headings); font-weight: 800; font-size: 18px; margin-top: 10px;">Audit Access Not Available</h3>
+        <p style="font-size: 13px; color: var(--color-tertiary);">Your current role is not authorized to inspect audit logs, controlled exports, or data governance registries.</p>
+        <button class="btn btn-secondary" onclick="changeAuditImpersonatorRole('Auditor / Compliance')">Switch to Compliance Role</button>
+      </div>
+    `;
+    return;
+  }
+
+  // Determine active tab from hash
+  if (hash.includes("audit/access")) aud.activeTab = "Access Logs";
+  else if (hash.includes("data-operations/exports")) aud.activeTab = "Exports";
+  else if (hash.includes("data-operations/archives")) aud.activeTab = "Archives";
+  else if (hash.includes("data-operations/retention")) aud.activeTab = "Retention";
+  else if (hash.includes("data-operations/recovery")) aud.activeTab = "Recovery";
+  else if (hash.includes("audit/correlation")) aud.activeTab = "Domain Events";
+  else aud.activeTab = "Audit Search";
+
+  const tabs = [
+    { label: "Audit Search", hash: "#admin/audit/events" },
+    { label: "Domain Events & Correlation", hash: "#admin/audit/correlation" },
+    { label: "Sensitive Access Logs", hash: "#admin/audit/access" },
+    { label: "Controlled Exports", hash: "#admin/data-operations/exports" },
+    { label: "Archive Operations", hash: "#admin/data-operations/archives" },
+    { label: "Retention & Holds", hash: "#admin/data-operations/retention" },
+    { label: "Recovery Requests", hash: "#admin/data-operations/recovery" }
+  ];
+
+  let tabContentHtml = "";
+  if (aud.activeTab === "Audit Search") tabContentHtml = renderAuditSearchTab();
+  else if (aud.activeTab === "Domain Events") tabContentHtml = renderAuditDomainEventsTab();
+  else if (aud.activeTab === "Access Logs") tabContentHtml = renderAuditAccessLogsTab();
+  else if (aud.activeTab === "Exports") tabContentHtml = renderAuditExportsTab();
+  else if (aud.activeTab === "Archives") tabContentHtml = renderAuditArchivesTab();
+  else if (aud.activeTab === "Retention") tabContentHtml = renderAuditRetentionTab();
+  else if (aud.activeTab === "Recovery") tabContentHtml = renderAuditRecoveryTab();
+
+  view.innerHTML = `
+    ${getAuditSandboxNavbarHTML()}
+
+    <div class="form-card" style="padding: 24px;">
+      
+      <!-- Impersonator bar -->
+      <div style="background: var(--color-surface-container); padding: 10px 16px; border-radius: 6px; margin-bottom: 20px; border: 1px solid var(--color-outline-variant); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-weight: 900; font-size: 13px; color: var(--color-primary);">👤 Audit Inspector Role:</span>
+          <span style="font-size: 11px; color: var(--color-tertiary);">Permissions dictate visible domains, field masking, and retention triggers.</span>
+        </div>
+        <select class="form-input" style="width: 220px; height: 32px; font-size: 12px; margin-bottom: 0; font-weight: bold; background: #fff;" onchange="changeAuditImpersonatorRole(this.value)">
+          <option value="Auditor / Compliance" ${aud.activeRole === 'Auditor / Compliance' ? 'selected' : ''}>Auditor / Compliance (Default)</option>
+          <option value="Platform Admin" ${aud.activeRole === 'Platform Admin' ? 'selected' : ''}>Platform Admin</option>
+          <option value="COO" ${aud.activeRole === 'COO' ? 'selected' : ''}>COO / Executive</option>
+          <option value="Finance" ${aud.activeRole === 'Finance' ? 'selected' : ''}>Finance / Accountant</option>
+          <option value="HR" ${aud.activeRole === 'HR' ? 'selected' : ''}>HR Manager</option>
+          <option value="Unauthorized Staff" ${aud.activeRole === 'Unauthorized Staff' ? 'selected' : ''}>Unauthorized Staff (CSR / Editor)</option>
+        </select>
+      </div>
+
+      <!-- Header Title -->
+      <div style="margin-bottom: 16px;">
+        <h2 style="font-family: var(--font-family-headings); font-size: 22px; font-weight: 900; margin: 0;">
+          📜 Audit Trail, Data Export, Archive & Retention Operations
+        </h2>
+        <p style="font-size: 13px; color: var(--color-tertiary); margin: 4px 0 0 0;">
+          Search sensitive activity across all historical workflows, govern controlled data exports, and manage archive/retention actions with verifiable traceability.
+        </p>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div style="display: flex; gap: 6px; border-bottom: 2px solid var(--color-outline-variant); margin-bottom: 20px; flex-wrap: wrap;">
+        ${tabs.map(t => {
+          const isSel = (t.label.startsWith(aud.activeTab) || (aud.activeTab === "Domain Events" && t.label.includes("Domain")));
+          return `
+            <a href="${t.hash}" class="btn" style="border: none; padding: 10px 14px; font-weight: bold; font-size: 12px; text-decoration: none; border-radius: 0; background: ${isSel ? 'var(--color-primary-container)' : 'transparent'}; border-bottom: ${isSel ? '3px solid var(--color-secondary)' : 'none'}; color: ${isSel ? 'var(--color-on-primary-container)' : 'var(--color-tertiary)'};">
+              ${t.label}
+            </a>
+          `;
+        }).join("")}
+      </div>
+
+      <!-- Tab Pane -->
+      ${tabContentHtml}
+    </div>
+  `;
+};
+
+// Sandbox selector bar for Audit console
+function getAuditSandboxNavbarHTML() {
+  const aud = state.audit;
+  const currentDemoState = aud ? aud.selectedDemoState : "Audit Search";
+  
+  return `
+    <div style="background-color: var(--color-surface-container-highest); border-bottom: 2px solid var(--color-outline-variant); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; border-radius: 8px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-weight: 900; font-size: 13px; color: var(--color-secondary);">🎛️ Governance Sandbox:</span>
+        <span style="font-size: 11px; font-weight: bold; background: #fff; padding: 2px 8px; border-radius: 9999px; border: 1px solid var(--color-outline-variant);">Screen 38</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 12px; font-weight: 700; color: var(--color-tertiary);">Demo Scenario:</span>
+        <select class="form-input" style="width: 250px; height: 32px; font-size: 11.5px; margin-bottom: 0; font-weight: bold; background: #fff;" onchange="changeAuditDemoState(this.value)">
+          <option value="Audit Search" ${currentDemoState === 'Audit Search' ? 'selected' : ''}>Audit Search (Default)</option>
+          <option value="Correlation Timeline" ${currentDemoState === 'Correlation Timeline' ? 'selected' : ''}>Correlation Timeline (CLASS-001)</option>
+          <option value="Restricted Audit" ${currentDemoState === 'Restricted Audit' ? 'selected' : ''}>Restricted Audit (HR Masking)</option>
+          <option value="Sensitive Access" ${currentDemoState === 'Sensitive Access' ? 'selected' : ''}>Sensitive Access (Emergency Contact)</option>
+          <option value="Export Ready" ${currentDemoState === 'Export Ready' ? 'selected' : ''}>Controlled Export (Ready & Minimized)</option>
+          <option value="Archive Eligible" ${currentDemoState === 'Archive Eligible' ? 'selected' : ''}>Archive Operations (Active ➔ Archived)</option>
+          <option value="Retention Conflict" ${currentDemoState === 'Retention Conflict' ? 'selected' : ''}>Retention Conflict (Legal Hold Block)</option>
+          <option value="Privacy Request" ${currentDemoState === 'Privacy Request' ? 'selected' : ''}>Privacy Request Evaluation (No Hard Delete)</option>
+          <option value="Permission Restricted" ${currentDemoState === 'Permission Restricted' ? 'selected' : ''}>Unauthorized Staff (Access Denied)</option>
+        </select>
+      </div>
+    </div>
+  `;
+}
+
+window.changeAuditImpersonatorRole = function(role) {
+  ensureAuditState();
+  state.audit.activeRole = role;
+  if (role === "Unauthorized Staff") {
+    state.audit.selectedDemoState = "Permission Restricted";
+  }
+  renderAuditWorkspace(window.location.hash);
+};
+
+window.changeAuditDemoState = function(val) {
+  ensureAuditState();
+  state.audit.selectedDemoState = val;
+  
+  if (val === "Permission Restricted") {
+    state.audit.activeRole = "Unauthorized Staff";
+  } else if (val === "Correlation Timeline") {
+    state.audit.activeTab = "Domain Events";
+    state.audit.selectedCorrelationId = "CORR-CLASS-001";
+  } else if (val === "Sensitive Access") {
+    state.audit.activeTab = "Access Logs";
+  } else if (val === "Export Ready") {
+    state.audit.activeTab = "Exports";
+  } else if (val === "Archive Eligible") {
+    state.audit.activeTab = "Archives";
+  } else if (val === "Retention Conflict") {
+    state.audit.activeTab = "Retention";
+  } else if (val === "Privacy Request") {
+    state.audit.activeTab = "Retention";
+  }
+  
+  showToastAlert(`✓ Audit demo scenario: ${val}`);
+  renderAuditWorkspace(window.location.hash);
+};
+
+// 1. Audit Search Tab
+function renderAuditSearchTab() {
+  const aud = state.audit;
+  const isHRMasked = (aud.activeRole !== "HR" && aud.activeRole !== "COO" && aud.activeRole !== "Auditor / Compliance");
+
+  return `
+    <div>
+      <!-- Filter Bar -->
+      <div style="background: var(--color-surface-container); padding: 14px; border-radius: 8px; border: 1px solid var(--color-outline-variant); margin-bottom: 20px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px;">
+          <div>
+            <label class="form-label" style="font-size: 11px;">Search Actor</label>
+            <input type="text" class="form-input" placeholder="e.g. Sarah Ahmed" value="${aud.searchActor || ''}" oninput="filterAuditEvents('actor', this.value)" style="height: 32px; font-size: 12px; margin-bottom: 0;">
+          </div>
+          <div>
+            <label class="form-label" style="font-size: 11px;">Entity / Record ID</label>
+            <input type="text" class="form-input" placeholder="e.g. PAY-SUB-001" value="${aud.searchEntity || ''}" oninput="filterAuditEvents('entity', this.value)" style="height: 32px; font-size: 12px; margin-bottom: 0;">
+          </div>
+          <div>
+            <label class="form-label" style="font-size: 11px;">Action / Operation</label>
+            <input type="text" class="form-input" placeholder="e.g. Approved" value="${aud.searchAction || ''}" oninput="filterAuditEvents('action', this.value)" style="height: 32px; font-size: 12px; margin-bottom: 0;">
+          </div>
+          <div>
+            <label class="form-label" style="font-size: 11px;">Correlation ID</label>
+            <input type="text" class="form-input" placeholder="e.g. CORR-PAY-001" value="${aud.searchCorrelation || ''}" oninput="filterAuditEvents('correlation', this.value)" style="height: 32px; font-size: 12px; margin-bottom: 0;">
+          </div>
+        </div>
+      </div>
+
+      <!-- Audit Events Table (Append-only / Immutable) -->
+      <div style="overflow-x: auto; margin-bottom: 20px;">
+        <table class="data-table" style="width: 100%; font-size: 12.5px;">
+          <thead>
+            <tr style="background: var(--color-surface-container);">
+              <th style="padding: 10px;">Event ID</th>
+              <th style="padding: 10px;">Actor</th>
+              <th style="padding: 10px;">Action</th>
+              <th style="padding: 10px;">Entity</th>
+              <th style="padding: 10px;">Origin</th>
+              <th style="padding: 10px;">Correlation ID</th>
+              <th style="padding: 10px;">State Transition</th>
+              <th style="padding: 10px; text-align: right;">Inspect</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${aud.auditEvents.map(evt => {
+              const isMasked = isHRMasked && evt.sensitivity === "HR Sensitive";
+              return `
+                <tr>
+                  <td style="padding: 10px; font-weight: bold; color: var(--color-secondary);">${evt.id}</td>
+                  <td style="padding: 10px;">${isMasked ? '<em>[Restricted Actor]</em>' : evt.actorName}</td>
+                  <td style="padding: 10px;"><span class="badge" style="background:#e0f2fe; color:#0369a1; font-weight:bold;">${evt.action}</span></td>
+                  <td style="padding: 10px; font-family:monospace;">${isMasked ? '<em>[Restricted Entity]</em>' : `${evt.entityType}: ${evt.entityId}`}</td>
+                  <td style="padding: 10px; color: var(--color-tertiary);">${evt.origin}</td>
+                  <td style="padding: 10px; font-family:monospace; color: var(--color-primary);">${evt.correlationId || '—'}</td>
+                  <td style="padding: 10px; font-size: 11px;">
+                    ${evt.beforeState ? `${evt.beforeState} &rarr; <strong>${evt.afterState}</strong>` : '—'}
+                  </td>
+                  <td style="padding: 10px; text-align: right;">
+                    <button class="btn btn-secondary" style="padding: 3px 8px; font-size: 11px; height: 26px;" onclick="inspectAuditEventDetail('${evt.id}')">
+                      View Trace
+                    </button>
+                  </td>
+                </tr>
+              `;
+            }).join("")}
+          </tbody>
+        </table>
+      </div>
+
+      <div style="background: var(--color-surface-container-low); padding: 12px 16px; border-radius: 6px; border: 1px solid var(--color-outline-variant); font-size: 12px; color: var(--color-tertiary); display: flex; justify-content: space-between; align-items: center;">
+        <span>🔒 <strong>Append-Only Integrity:</strong> Audit records cannot be modified, deleted, or reassigned through administrative tools.</span>
+        <span style="font-weight: 700; color: green;">✓ Integrity: Verified (Mock Checksum)</span>
+      </div>
+    </div>
+  `;
+}
+
+// Inspect Event Detail Modal
+window.inspectAuditEventDetail = function(eventId) {
+  ensureAuditState();
+  const evt = state.audit.auditEvents.find(e => e.id === eventId);
+  if (!evt) return;
+
+  const content = `
+    <div style="text-align: left; font-size: 13px;">
+      <div style="background: var(--color-surface-container); padding: 12px; border-radius: 6px; margin-bottom: 14px;">
+        <div style="font-weight: 800; font-size: 15px; color: var(--color-secondary);">${evt.action}</div>
+        <div style="font-size: 11px; color: var(--color-tertiary);">Event ID: ${evt.id} &bull; Timestamp: ${evt.timestamp} &bull; Origin: ${evt.origin}</div>
+      </div>
+
+      <table style="width: 100%; font-size: 12.5px; line-height: 22px; margin-bottom: 16px;">
+        <tr><td style="color: var(--color-tertiary); width: 140px;">Actor:</td><td><strong>${evt.actorName}</strong> (${evt.actorId})</td></tr>
+        <tr><td style="color: var(--color-tertiary);">Entity Target:</td><td><strong>${evt.entityType}</strong> &bull; ID: <code>${evt.entityId}</code></td></tr>
+        <tr><td style="color: var(--color-tertiary);">Correlation ID:</td><td><code>${evt.correlationId || 'N/A'}</code></td></tr>
+        <tr><td style="color: var(--color-tertiary);">State Transition:</td><td><code>${evt.beforeState || 'N/A'}</code> &rarr; <code>${evt.afterState || 'N/A'}</code></td></tr>
+        <tr><td style="color: var(--color-tertiary);">Recorded Reason:</td><td><em>${evt.reason || 'None provided'}</em></td></tr>
+      </table>
+
+      <div style="display: flex; gap: 8px;">
+        ${evt.domainEventId ? `<button class="btn btn-primary" style="font-size: 11.5px; height: 32px;" onclick="closeModal(); inspectDomainEvent('${evt.domainEventId}');">View Linked Domain Event</button>` : ''}
+        <button class="btn btn-secondary" style="font-size: 11.5px; height: 32px;" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  `;
+  openModal(`Audit Event Detail: ${evt.id}`, content);
+};
+
+// 2. Domain Events & Correlation Tab
+function renderAuditDomainEventsTab() {
+  const aud = state.audit;
+
+  return `
+    <div>
+      <div style="background: var(--color-surface-container); padding: 14px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--color-outline-variant);">
+        <h4 style="font-weight: 800; font-size: 14px; margin-bottom: 4px;">🔗 Correlation Explorer: CORR-CLASS-001 (Live Class Delivery & Downstream Tracing)</h4>
+        <p style="font-size: 12px; color: var(--color-tertiary); margin: 0;">
+          Demonstrates how a single business action triggers separate, correlated downstream events (debit, earning, notification) without conflating domain states.
+        </p>
+      </div>
+
+      <!-- Correlation Timeline -->
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
+        <div class="form-card" style="padding: 14px; border-left: 4px solid green;">
+          <div style="display: flex; justify-content: space-between;">
+            <strong>1. Operations Review Approved</strong>
+            <span style="font-size: 11px; color: var(--color-tertiary);">2026-08-05 11:00</span>
+          </div>
+          <p style="font-size: 12px; color: var(--color-tertiary); margin: 4px 0 0 0;">Source: CLASS-001 verified by Hamza Siddiqui.</p>
+        </div>
+
+        <div class="form-card" style="padding: 14px; border-left: 4px solid #0284c7;">
+          <div style="display: flex; justify-content: space-between;">
+            <strong>2. Entitlement Debit Posted</strong>
+            <span style="font-size: 11px; color: var(--color-tertiary);">2026-08-05 11:00</span>
+          </div>
+          <p style="font-size: 12px; color: var(--color-tertiary); margin: 4px 0 0 0;">Record: ENT-DEBIT-CLASS-001 &bull; 1 credit debited from Ali Khan.</p>
+        </div>
+
+        <div class="form-card" style="padding: 14px; border-left: 4px solid var(--color-primary);">
+          <div style="display: flex; justify-content: space-between;">
+            <strong>3. Trainer Payroll Earning Generated</strong>
+            <span style="font-size: 11px; color: var(--color-tertiary);">2026-08-05 11:00</span>
+          </div>
+          <p style="font-size: 12px; color: var(--color-tertiary); margin: 4px 0 0 0;">Record: EARN-CLASS-001 &bull; PKR 1,200 accrued for Ayesha Rahman.</p>
+        </div>
+
+        <div class="form-card" style="padding: 14px; border-left: 4px solid #ba1a1a;">
+          <div style="display: flex; justify-content: space-between;">
+            <strong>4. Notification Delivery Attempted</strong>
+            <span style="font-size: 11px; color: #ba1a1a; font-weight: bold;">Failed &bull; DLQ Handled</span>
+          </div>
+          <p style="font-size: 12px; color: var(--color-tertiary); margin: 4px 0 0 0;">Record: NOTIF-CLASS-001 &bull; Connection timeout &bull; Moved to DLQ-NOTIF-001.</p>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// 3. Sensitive Access Logs Tab
+function renderAuditAccessLogsTab() {
+  const aud = state.audit;
+
+  return `
+    <div>
+      <div style="background: var(--color-surface-container); padding: 14px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--color-outline-variant);">
+        <h4 style="font-weight: 800; font-size: 14px; margin-bottom: 4px;">👁️ Sensitive Access Logs (Data Minimization Standard)</h4>
+        <p style="font-size: 12px; color: var(--color-tertiary); margin: 0;">
+          Logs authorized views of sensitive resources (emergency contacts, private contracts, export files) without storing payload contents or document bodies.
+        </p>
+      </div>
+
+      <table class="data-table" style="width: 100%; font-size: 12.5px;">
+        <thead>
+          <tr style="background: var(--color-surface-container);">
+            <th style="padding: 10px;">Log ID</th>
+            <th style="padding: 10px;">Actor</th>
+            <th style="padding: 10px;">Action</th>
+            <th style="padding: 10px;">Resource Class</th>
+            <th style="padding: 10px;">Resource Reference</th>
+            <th style="padding: 10px;">Context / Purpose</th>
+            <th style="padding: 10px;">Timestamp</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${aud.accessLogs.map(log => `
+            <tr>
+              <td style="padding: 10px; font-weight: bold; color: var(--color-secondary);">${log.id}</td>
+              <td style="padding: 10px;">${log.actorName}</td>
+              <td style="padding: 10px;"><span class="badge" style="background:#fef3c7; color:#92400e; font-weight:bold;">${log.action}</span></td>
+              <td style="padding: 10px;"><code>${log.resourceType}</code></td>
+              <td style="padding: 10px; font-family: monospace;">${log.resourceId}</td>
+              <td style="padding: 10px; color: var(--color-tertiary);">${log.context}</td>
+              <td style="padding: 10px; font-size: 11.5px;">${log.timestamp}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+// 4. Controlled Exports Tab
+function renderAuditExportsTab() {
+  const aud = state.audit;
+  const req = aud.exportRequests[0];
+
+  return `
+    <div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <h3 style="font-weight: 800; font-size: 16px; margin: 0;">📦 Controlled Data Exports Queue</h3>
+          <p style="font-size: 12px; color: var(--color-tertiary); margin: 2px 0 0 0;">
+            Export requests require defined business purpose, field minimization, dual-control signoff, and time-bounded file expiry.
+          </p>
+        </div>
+        <button class="btn btn-primary" onclick="triggerRequestNewExport()">Request New Export ➜</button>
+      </div>
+
+      <div class="form-card" style="padding: 18px; border-left: 4px solid var(--color-primary); margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+          <div>
+            <span class="badge" style="background:#d1fae5; color:#065f46; font-weight:bold;">STATUS: ${req.status.toUpperCase()}</span>
+            <h4 style="font-weight: 800; font-size: 16px; margin: 4px 0;">Request: ${req.id} — ${req.type}</h4>
+            <div style="font-size: 12px; color: var(--color-tertiary);">Purpose: <em>${req.purpose}</em> &bull; Requester: <strong>${req.requestedBy}</strong></div>
+          </div>
+          <button class="btn btn-secondary" style="font-size: 11.5px; height: 30px;" onclick="simulateAccessExportFile('${req.fileId}')">
+            Simulate File Access
+          </button>
+        </div>
+
+        <div style="background: var(--color-surface-container); padding: 12px; border-radius: 6px; font-size: 12px; margin-bottom: 12px;">
+          <div style="font-weight: bold; margin-bottom: 4px;">🛡️ Data Minimization Scope:</div>
+          <div style="color: green;">✓ Included Fields: ${req.includedFields.join(", ")}</div>
+          <div style="color: #ba1a1a; margin-top: 4px;">⛔ Excluded Fields: ${req.excludedFields.join(", ")}</div>
+        </div>
+
+        <div style="display: flex; gap: 16px; font-size: 11.5px; color: var(--color-tertiary);">
+          <span>Matching Rows: <strong>${req.rowsMatching}</strong></span>
+          <span>Authorized Rows: <strong>${req.rowsAuthorized}</strong></span>
+          <span>Restricted Rows: <strong>${req.rowsRestricted}</strong></span>
+          <span>Expires: <strong>${req.expiresAt}</strong></span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+window.simulateAccessExportFile = function(fileId) {
+  ensureAuditState();
+  const aud = state.audit;
+  aud.accessLogs.push({
+    id: `ACCESSLOG-EXPORT-${Date.now().toString().slice(-3)}`,
+    actorId: "current-user",
+    actorName: "Zainab Malik",
+    resourceType: "ExportFile",
+    resourceId: fileId,
+    action: "Export File Accessed",
+    context: "Simulated authorized export access",
+    timestamp: "Just Now",
+    sensitivityClass: "Compliance",
+    fieldValuesLogged: false
+  });
+  showToastAlert(`✓ Export file ${fileId} accessed. Access log recorded.`);
+  renderAuditWorkspace(window.location.hash);
+};
+
+window.triggerRequestNewExport = function() {
+  const content = `
+    <div style="text-align: left; font-size: 13px;">
+      <p style="margin-top: 0; color: var(--color-tertiary);">Select parameters for controlled audit data export:</p>
+      
+      <div class="form-group" style="margin-bottom: 12px;">
+        <label class="form-label">Export Scope</label>
+        <select class="form-input" style="height: 32px; font-size: 12px;">
+          <option>Audit Activity Events (Standard Minimization)</option>
+          <option>Domain Business Events</option>
+        </select>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 12px;">
+        <label class="form-label">Business Review Purpose <span style="color:red;">*</span></label>
+        <input type="text" class="form-input" placeholder="e.g. Q3 Compliance & Audit Inspection" required style="height: 32px; font-size: 12px;">
+      </div>
+
+      <div style="background: var(--color-surface-container); padding: 10px; border-radius: 6px; font-size: 11.5px; margin-bottom: 16px;">
+        <strong>Minimization Notice:</strong> Raw HR fields, emergency contacts, and sensitive payment evidence will be stripped from the export output.
+      </div>
+
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-primary" style="flex: 1; height: 34px; font-size: 12px; font-weight: 800;" onclick="closeModal(); showToastAlert('✓ Export Request submitted for Compliance review.');">
+          Submit for Approval
+        </button>
+        <button class="btn btn-secondary" style="flex: 0.5; height: 34px; font-size: 12px;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  `;
+  openModal("Request Controlled Export", content);
+};
+
+// 5. Archive Operations Tab
+function renderAuditArchivesTab() {
+  const aud = state.audit;
+  const rec = aud.archiveRecords[0];
+
+  return `
+    <div>
+      <div style="background: var(--color-surface-container); padding: 14px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--color-outline-variant);">
+        <h4 style="font-weight: 800; font-size: 14px; margin-bottom: 4px;">🗄️ Archival Operations & Recovery Life Cycle</h4>
+        <p style="font-size: 12px; color: var(--color-tertiary); margin: 0;">
+          Archiving removes records from active operational views while preserving complete history. Archived records can be restored during configured recovery windows.
+        </p>
+      </div>
+
+      <div class="form-card" style="padding: 18px; border-left: 4px solid var(--color-secondary); margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+          <div>
+            <span class="badge" style="background: ${rec.status === 'Archived' ? '#fef3c7' : '#d1fae5'}; color: ${rec.status === 'Archived' ? '#92400e' : '#065f46'}; font-weight: bold;">
+              STATUS: ${rec.status.toUpperCase()}
+            </span>
+            <h4 style="font-weight: 800; font-size: 16px; margin: 4px 0;">Record: ${rec.id} (${rec.sourceType})</h4>
+            <div style="font-size: 12px; color: var(--color-tertiary);">Source ID: <code>${rec.sourceId}</code> &bull; Domain: <strong>${rec.sourceDomain}</strong></div>
+          </div>
+          <div>
+            ${rec.status === 'Active' ? `
+              <button class="btn btn-primary" style="font-size: 11.5px; height: 30px;" onclick="triggerArchiveRecord('${rec.id}')">
+                Archive Record ➜
+              </button>
+            ` : `
+              <button class="btn btn-primary" style="font-size: 11.5px; height: 30px;" onclick="triggerRestoreRecord('${rec.id}')">
+                Request Restore ➜
+              </button>
+            `}
+          </div>
+        </div>
+
+        <table style="width: 100%; font-size: 12px; line-height: 20px; color: var(--color-tertiary);">
+          <tr><td style="width: 160px;">Active Dependencies:</td><td><strong>${rec.activeReferences}</strong> (Safe to archive)</td></tr>
+          <tr><td>Legal Hold Status:</td><td><strong>${rec.legalHold || 'None'}</strong></td></tr>
+          <tr><td>Recovery Window:</td><td><strong>Eligible until ${rec.recoveryWindowExpiresAt}</strong></td></tr>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+window.triggerArchiveRecord = function(recId) {
+  ensureAuditState();
+  const rec = state.audit.archiveRecords.find(r => r.id === recId);
+  if (rec) {
+    rec.status = "Archived";
+    rec.archivedAt = "Just Now";
+    rec.archivedBy = "Zainab Malik";
+    showToastAlert(`✓ Record ${recId} moved to Archived state.`);
+    renderAuditWorkspace(window.location.hash);
+  }
+};
+
+window.triggerRestoreRecord = function(recId) {
+  ensureAuditState();
+  const rec = state.audit.archiveRecords.find(r => r.id === recId);
+  if (rec) {
+    rec.status = "Active";
+    showToastAlert(`✓ Recovery request approved. Record ${recId} restored to active operational views.`);
+    renderAuditWorkspace(window.location.hash);
+  }
+};
+
+// 6. Retention Policies Tab
+function renderAuditRetentionTab() {
+  const aud = state.audit;
+  const pol = aud.retentionPolicies[0];
+
+  return `
+    <div>
+      <div style="background: var(--color-surface-container); padding: 14px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--color-outline-variant);">
+        <h4 style="font-weight: 800; font-size: 14px; margin-bottom: 4px;">⚖️ Data Retention Policies & Legal Holds</h4>
+        <p style="font-size: 12px; color: var(--color-tertiary); margin: 0;">
+          Policies specify time-bounded archival and purge eligibility rules. Active legal holds and financial retention obligations strictly block destructive purge operations.
+        </p>
+      </div>
+
+      <div class="form-card" style="padding: 18px; border-left: 4px solid #334155; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+          <div>
+            <span class="badge" style="background:#e2e8f0; color:#1e293b; font-weight:bold;">POLICY: ${pol.id} (${pol.version})</span>
+            <h4 style="font-weight: 800; font-size: 16px; margin: 4px 0;">${pol.label}</h4>
+            <div style="font-size: 12px; color: var(--color-tertiary);">${pol.purpose}</div>
+          </div>
+          <span class="badge" style="background:#d1fae5; color:#065f46; font-weight:bold;">Active</span>
+        </div>
+
+        <table style="width: 100%; font-size: 12px; line-height: 22px; margin-bottom: 12px;">
+          <tr><td style="color: var(--color-tertiary); width: 160px;">Active Retention:</td><td><strong>${pol.activeRetentionPeriod}</strong></td></tr>
+          <tr><td style="color: var(--color-tertiary);">Purge Eligibility:</td><td><strong>${pol.purgeEligibility}</strong></td></tr>
+          <tr><td style="color: var(--color-tertiary);">Hold Conflict Behavior:</td><td><strong style="color: #ba1a1a;">${pol.legalHoldBehavior}</strong></td></tr>
+        </table>
+      </div>
+
+      <!-- Legal Hold Alert Card -->
+      <div class="form-card" style="padding: 16px; border-left: 4px solid #ba1a1a; background: #fff5f5;">
+        <div style="font-weight: 800; color: #ba1a1a; font-size: 14px; margin-bottom: 4px;">🛑 Active Hold: HOLD-LEGAL-001</div>
+        <p style="font-size: 12px; color: var(--color-tertiary); margin: 0;">
+          A configured demonstration legal hold is currently active on operational notification exception records. Destructive purge operations are blocked by policy.
+        </p>
+      </div>
+    </div>
+  `;
+}
+
+// 7. Recovery Requests Tab
+function renderAuditRecoveryTab() {
+  const aud = state.audit;
+  const req = aud.recoveryRequests[0];
+
+  return `
+    <div>
+      <div style="background: var(--color-surface-container); padding: 14px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--color-outline-variant);">
+        <h4 style="font-weight: 800; font-size: 14px; margin-bottom: 4px;">🔄 Formal Archive Recovery Queue</h4>
+        <p style="font-size: 12px; color: var(--color-tertiary); margin: 0;">
+          Review formal requests to unarchive records back into active operational views. Re-activation preserves the original source ID without record duplication.
+        </p>
+      </div>
+
+      <div class="form-card" style="padding: 16px; border-left: 4px solid var(--color-primary);">
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+          <div>
+            <span class="badge" style="background:#fef3c7; color:#92400e; font-weight:bold;">PENDING RECOVERY</span>
+            <h4 style="font-weight: 800; font-size: 15px; margin: 4px 0;">Request: ${req.id} &bull; Target: ${req.archiveRecordId}</h4>
+            <div style="font-size: 12px; color: var(--color-tertiary);">Reason: <em>${req.reason}</em> &bull; Requester: <strong>${req.requestedBy}</strong></div>
+          </div>
+          <button class="btn btn-primary" style="height: 30px; font-size: 11.5px; font-weight: 800;" onclick="triggerApproveRecovery('${req.id}')">
+            Approve & Restore Record
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+window.triggerApproveRecovery = function(reqId) {
+  ensureAuditState();
+  const aud = state.audit;
+  const req = aud.recoveryRequests.find(r => r.id === reqId);
+  if (req) {
+    req.status = "Completed";
+    const rec = aud.archiveRecords.find(a => a.id === req.archiveRecordId);
+    if (rec) rec.status = "Active";
+    showToastAlert(`✓ Recovery request ${reqId} approved. Original source record restored.`);
+    renderAuditWorkspace(window.location.hash);
+  }
 };

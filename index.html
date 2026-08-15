@@ -34,14 +34,37 @@
       </div>
       
       <div class="header-actions" style="display: flex; gap: var(--spacing-sm); align-items: center;">
-        <!-- Visual role indicator / switcher for the visual prototype -->
-        <div id="role-display-pill" class="badge badge-delivery-live" style="background-color: var(--color-surface-container); border: 1px solid var(--color-outline-variant); color: var(--color-secondary); font-size: 12px; font-weight: 700; padding: 6px 12px; display: none; align-items: center; gap: 6px; border-radius: 9999px;">
-          <span style="width: 8px; height: 8px; background-color: var(--color-secondary); border-radius: 50%;"></span>
-          Sarah Ahmed &middot; CSR
+        <!-- Quick Role Selector Dropdown -->
+        <div style="display: flex; align-items: center; gap: 6px; background: var(--color-surface-container); border: 1px solid var(--color-outline-variant); border-radius: 8px; padding: 2px 8px;">
+          <span style="font-size: 11px; font-weight: 800; color: var(--color-secondary); text-transform: uppercase;">Role:</span>
+          <select id="quick-role-select" onchange="simulateLogin(this.value)" style="border: none; background: transparent; font-size: 12px; font-weight: 700; color: var(--color-on-surface); cursor: pointer; outline: none; padding: 4px 0;">
+            <option value="learner-ali">Ali Khan (Learner)</option>
+            <option value="guardian-nadia">Nadia Khan (Guardian)</option>
+            <option value="trainer-ayesha">Ayesha Rahman (Trainer)</option>
+            <option value="csr-sarah">Sarah Ahmed (CSR)</option>
+            <option value="ops-hamza">Hamza Siddiqui (Operations)</option>
+            <option value="finance-tariq">Tariq Mehmood (Finance)</option>
+            <option value="hr-maria">Maria Hassan (HR)</option>
+            <option value="media-noor">Noor Fatima (Media)</option>
+            <option value="dev-bilal">Bilal Ahmed (Developer)</option>
+            <option value="admin-dev">Platform Admin</option>
+            <option value="compliance-zainab">Zainab Malik (Compliance)</option>
+            <option value="coo-omar">Omar Farooq (COO)</option>
+          </select>
         </div>
-        <button class="btn btn-secondary" id="portal-switch-btn" onclick="togglePortalMode()" style="background-color: var(--color-surface-lowest); border-color: var(--color-outline-variant); color: var(--color-on-tertiary-fixed); font-size: 13px; font-weight: 700; height: 36px; padding: 0 12px; border-radius: 6px; cursor: pointer;">Staff View</button>
-        <button class="btn btn-secondary" id="signin-btn">Sign In</button>
-        <button class="btn btn-primary" id="signup-btn">Create Account</button>
+
+        <!-- Simulated User Persona Button -->
+        <button class="btn btn-secondary" id="user-persona-btn" onclick="openRoleSwitcherModal()" style="height: 36px; padding: 0 10px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 8px; border-radius: 8px; border-color: var(--color-outline-variant); background: #fff;" title="Click to Switch Role Persona">
+          <div id="user-persona-avatar" style="width: 22px; height: 22px; border-radius: 50%; background: var(--color-primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800;">AK</div>
+          <span id="user-persona-name">Ali Khan</span>
+          <span id="user-persona-role-badge" class="badge" style="background: var(--color-primary-container); color: var(--color-on-primary-container); font-size: 10px; padding: 2px 6px; border-radius: 9999px;">Learner</span>
+        </button>
+
+        <button class="btn btn-primary" id="role-switch-modal-btn" onclick="openRoleSwitcherModal()" style="height: 36px; padding: 0 12px; font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 6px; border-radius: 8px;">
+          <span>🎭</span> Log In As...
+        </button>
+
+        <button class="btn btn-secondary" id="signin-btn" style="height: 36px; font-size: 12.5px;">Sign In</button>
       </div>
     </div>
   </header>

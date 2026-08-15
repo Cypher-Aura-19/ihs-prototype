@@ -3783,6 +3783,21 @@ body {
   gap: 8px;
 }
 
+/* Role Persona Switcher & Badge Styles */
+.persona-card:hover {
+  border-color: var(--color-primary) !important;
+  box-shadow: var(--shadow-md);
+}
+
+@media (max-width: 768px) {
+  #user-persona-btn span {
+    display: none;
+  }
+  #quick-role-select {
+    max-width: 110px;
+  }
+}
+
 
 
 
